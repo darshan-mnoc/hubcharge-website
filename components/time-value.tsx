@@ -146,7 +146,7 @@ export function TimeValue() {
             </div>
 
             {/* Activity Timeline */}
-            <div className="grid grid-cols-5 gap-2 lg:gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 lg:gap-4">
               {timeActivities.map((item, i) => {
                 const isActive = currentMinute >= item.time;
                 const isCurrent = currentMinute >= item.time - 2 && currentMinute < item.time;

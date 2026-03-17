@@ -10,6 +10,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hubcharge.com"),
   title: "HubCharge | Fastest EV Charging Stations Near You | DC Fast Charger",
   description:
     "Find the fastest EV charging stations near you. 180kW DC fast charging in 10 minutes for $12.50. Tesla, BMW, Mercedes, Ford, Rivian compatible. Premium valet service. CCS & NACS connectors. Open 24/7 in California.",
@@ -90,7 +91,7 @@ const jsonLd = {
   url: "https://hubcharge.com",
   telephone: "+1-800-HUBCHARGE",
   priceRange: "$12.50-$24.50",
-  image: "https://hubcharge.com/images/hubcharge-logo.png",
+  image: "/images/hubcharge-logo.png",
   address: {
     "@type": "PostalAddress",
     addressLocality: "San Francisco",
