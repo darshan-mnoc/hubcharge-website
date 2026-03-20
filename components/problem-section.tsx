@@ -9,7 +9,7 @@ import WaitImg from "../public/images/waiting.jpg";
 const solutionCards = [
   {
     icon: User,
-    title: "Valet Greets You",
+    title: "Attendant Greets You",
     desc: "A real person comes to your car the moment you arrive. No apps, no kiosks.",
     image: "/images/valet-greet.png",
   },
@@ -169,7 +169,7 @@ export function ProblemSection() {
             10 minutes. 100 miles.
             <br />
             <span className="text-gradient text-glow">
-              A valet who handles everything.
+              An attendant who handles everything.
             </span>
           </h2>
         </motion.div>

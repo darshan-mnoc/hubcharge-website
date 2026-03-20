@@ -78,7 +78,7 @@ export function TimeClubMembership() {
               {[
                 "Access all HubCharge locations",
                 "$12.50 flat rate per charge",
-                "Valet service included",
+                "Attendant service included",
                 "Order food & drinks to car",
               ].map((feature, i) => (
                 <motion.li
@@ -169,7 +169,7 @@ export function TimeClubMembership() {
                 {[
                   "Dedicated charger reserved for you",
                   "FREE charging every time",
-                  "Priority valet service",
+                  "Priority attendant service",
                   "Earn $0.0035 per $ spent at Hub",
                   "Exclusive member lounge access",
                   "Premium partner perks & discounts",

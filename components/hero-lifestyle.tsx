@@ -118,7 +118,7 @@ export function HeroLifestyle() {
           variants={itemVariants}
           className="text-body-lg mb-12 max-w-2xl mx-auto"
         >
-          Our valet handles everything — plug in, charge, unplug.
+          Our attendant handles everything — plug in, charge, unplug.
           <span className="text-white font-medium">
             {" "}
             You never leave your car.
@@ -160,7 +160,7 @@ export function HeroLifestyle() {
           {[
             { value: "180kW", label: "DC Fast Charging" },
             { value: "10 min", label: "100 Miles" },
-            { value: "24/7", label: "Valet Service" },
+            { value: "24/7", label: "Attendant Service" },
           ].map((stat, i) => (
             <motion.div
               key={i}

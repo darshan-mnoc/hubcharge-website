@@ -90,7 +90,7 @@ export function LifestyleDestinations() {
             <span className="text-gradient text-glow">to your window</span>
           </h2>
           <p className="text-body-lg max-w-3xl mx-auto">
-            Stay in your car. Our valet brings everything to you — food, drinks,
+            Stay in your car. Our attendant brings everything to you — food, drinks,
             groceries, services.
             <span className="text-white/80 font-medium">
               {" "}

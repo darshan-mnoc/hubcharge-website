@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://hubcharge.com"),
   title: "HubCharge | Fastest EV Charging Stations Near You | DC Fast Charger",
   description:
-    "Find the fastest EV charging stations near you. 180kW DC fast charging in 10 minutes for $12.50. Tesla, BMW, Mercedes, Ford, Rivian compatible. Premium valet service. CCS & NACS connectors. Open 24/7 in California.",
+    "Find the fastest EV charging stations near you. 180kW DC fast charging in 10 minutes for $12.50. Tesla, BMW, Mercedes, Ford, Rivian compatible. Premium attendant service. CCS & NACS connectors. Open 24/7 in California.",
   keywords: [
     "EV charging near me",
     "fast EV charging",
@@ -87,7 +87,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: "HubCharge",
-  description: "Premium DC fast EV charging stations with valet service",
+  description: "Premium DC fast EV charging stations with attendant service",
   url: "https://hubcharge.com",
   telephone: "+1-800-HUBCHARGE",
   priceRange: "$12.50-$24.50",
@@ -128,7 +128,7 @@ const jsonLd = {
         itemOffered: {
           "@type": "Service",
           name: "10-Minute DC Fast Charge",
-          description: "180kW DC fast charging with valet service",
+          description: "180kW DC fast charging with attendant service",
         },
         price: "12.50",
         priceCurrency: "USD",

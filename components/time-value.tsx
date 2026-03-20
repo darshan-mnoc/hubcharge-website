@@ -221,7 +221,7 @@ export function TimeValue() {
           ))}
         </div>
 
-        {/* Don't Have Time - Valet Service */}
+        {/* Don't Have Time - Attendant Service */}
         <div className="time-value-content">
           <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl p-8 lg:p-10 flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="text-center lg:text-left">
@@ -230,14 +230,14 @@ export function TimeValue() {
                 Don't have time to unplug?
               </h3>
               <p className="text-white/60 max-w-md">
-                Our valet unplugs for you. Just tap "Ready to Go" in the app, and we handle the rest. Your time is sacred.
+                Our attendant unplugs for you. Just tap "Ready to Go" in the app, and we handle the rest. Your time is sacred.
               </p>
             </div>
             <a
               href="#how-it-works"
               className="inline-flex items-center gap-3 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 whitespace-nowrap"
             >
-              See Valet Service
+              See Attendant Service
               <ArrowRight className="h-5 w-5" />
             </a>
           </div>

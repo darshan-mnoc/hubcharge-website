@@ -68,7 +68,7 @@ export function FindYourHub() {
             Visit Our First Location
           </h2>
           <p className="text-body-lg max-w-xl mx-auto">
-            Experience full-service EV charging with valet, food delivery, and
+            Experience full-service EV charging with attendant, food delivery, and
             more.
           </p>
         </motion.div>
@@ -128,7 +128,7 @@ export function FindYourHub() {
               {[
                 { value: "2", label: "Chargers", color: "text-orange-400" },
                 { value: "180", label: "kW Power", color: "text-green-400" },
-                { value: "24/7", label: "Valet", color: "text-white" },
+                { value: "24/7", label: "Attendant", color: "text-white" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}

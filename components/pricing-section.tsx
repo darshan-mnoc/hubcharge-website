@@ -39,7 +39,7 @@ export function PricingSection() {
             <span className="text-gradient text-glow"> simple</span>
           </h2>
           <p className="text-body-lg max-w-2xl mx-auto">
-            One flat rate. No surprises. Valet service included with every charge.
+            One flat rate. No surprises. Attendant service included with every charge.
           </p>
         </motion.div>
 
@@ -83,7 +83,7 @@ export function PricingSection() {
                     <span className="text-white font-medium">100 miles</span>
                   </div>
                 </div>
-                <p className="text-white/40 text-sm">Full valet service included. We handle everything.</p>
+                <p className="text-white/40 text-sm">Full attendant service included. We handle everything.</p>
               </div>
 
               {/* Right - What's Included */}
@@ -91,10 +91,10 @@ export function PricingSection() {
                 <h3 className="text-white font-semibold mb-4">Everything Included:</h3>
                 <ul className="space-y-3">
                   {[
-                    "Valet greets you at arrival",
+                    "Attendant greets you at arrival",
                     "They plug in your car",
                     "Payment at your window",
-                    "Valet unplugs when ready",
+                    "Attendant unplugs when ready",
                     "Order food to your car",
                   ].map((item, i) => (
                     <motion.li

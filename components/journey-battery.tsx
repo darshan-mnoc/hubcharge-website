@@ -8,11 +8,11 @@ import { gsap } from "@/lib/gsap";
  */
 
 const journeySteps = [
-  { id: 1, title: "ARRIVE", subtitle: "Valet greets you" },
+  { id: 1, title: "ARRIVE", subtitle: "Attendant greets you" },
   { id: 2, title: "TAP", subtitle: "Quick QR payment" },
-  { id: 3, title: "CHARGE & RELAX", subtitle: "Valet plugs you in" },
+  { id: 3, title: "CHARGE & RELAX", subtitle: "Attendant plugs you in" },
   { id: 4, title: "ENJOY", subtitle: "Food & coffee delivered" },
-  { id: 5, title: "GO", subtitle: "Valet unplugs • You're done" },
+  { id: 5, title: "GO", subtitle: "Attendant unplugs • You're done" },
 ];
 
 // ============================================
@@ -760,7 +760,7 @@ function Scene2({
         <ChargerSVG className="w-7 h-14" active={false} />
       </div>
 
-      {/* Valet with terminal */}
+      {/* Attendant with terminal */}
       <div
         className={valetPosition}
         style={{
@@ -838,7 +838,7 @@ function Scene3({
         <ChargerSVG className="w-7 h-14" active={showCable} />
       </div>
 
-      {/* Valet walking with cable */}
+      {/* Attendant walking with cable */}
       <div
         className="absolute bottom-4 z-20 transition-all duration-500"
         style={{
@@ -965,7 +965,7 @@ function Scene4({
         )}
       </div>
 
-      {/* Valet with food */}
+      {/* Attendant with food */}
       <div
         className={valetPosition}
         style={{
@@ -1596,10 +1596,10 @@ export function JourneyBattery() {
                   className="text-2xl lg:text-3xl font-black tracking-tight"
                   style={{ color: "#10b981" }}
                 >
-                  Valet
+                  Attendant
                 </p>
                 <p className="text-slate-400 text-xs font-medium mt-0.5">
-                  plug & unplug
+                  Plug & unplug
                 </p>
               </div>
 
@@ -1614,7 +1614,7 @@ export function JourneyBattery() {
                   Lifestyle
                 </p>
                 <p className="text-slate-400 text-xs font-medium mt-0.5">
-                  delivered
+                  Delivered
                 </p>
               </div>
             </div>
