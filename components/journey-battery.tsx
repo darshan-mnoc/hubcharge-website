@@ -1228,7 +1228,7 @@ export function JourneyBattery() {
         {
           scrollTrigger: {
             trigger: batteryRef.current,
-            start: "top 20%",
+            start: "top 15%",
             end: "+=200%",
             scrub: 0.5,
             pin: true,
@@ -1279,24 +1279,26 @@ export function JourneyBattery() {
       className="relative bg-gradient-soft"
     >
       {/* ---- TOP SECTION ---- */}
-      <div className="relative py-16 lg:py-24">
+      <div className="relative py-8 lg:py-12">
         <div className="max-w-5xl mx-auto px-6">
-          {/* Header */}
-          <div className="journey-header text-center mb-3 lg:mb-3">
-            <div className="inline-flex items-center gap-2 badge badge-primary mb-6">
+          {/* Header - Mobile only (desktop header is inside pinned container) */}
+          <div className="journey-header text-center mb-6 md:hidden">
+            <div className="inline-flex items-center gap-2 badge badge-primary mb-4">
               <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
               <span className="text-sm font-semibold uppercase tracking-wider">
                 The Experience
               </span>
             </div>
-            <h2 className="heading-section mb-2">Your 10-minute journey</h2>
-            <p className="text-body-lg max-w-md mx-auto">
+            <h2 className="heading-section mb-2 text-2xl">
+              Your 10-minute journey
+            </h2>
+            <p className="text-body-lg max-w-md mx-auto text-sm">
               From arrival to adventure. Every second designed for you.
             </p>
           </div>
 
           {/* ---- MOBILE VERTICAL LAYOUT ---- */}
-          <div className="md:hidden">
+          <div className="md:hidden mt-4">
             <div className="space-y-4">
               {journeySteps.map((step, i) => {
                 const Scene = scenes[i];
@@ -1346,6 +1348,21 @@ export function JourneyBattery() {
 
           {/* ---- DESKTOP BATTERY WIDGET ---- */}
           <div ref={batteryRef} className="hidden md:block">
+            {/* Header - Inside pinned container for desktop */}
+            <div className="text-center mb-20">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 border border-orange-200 mb-4">
+                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                <span className="text-sm font-semibold uppercase tracking-wider text-orange-600">
+                  The Experience
+                </span>
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-2">
+                Your charging journey
+              </h2>
+              <p className="text-slate-500 max-w-md mx-auto text-base">
+                From arrival to adventure. Every minute designed for you.
+              </p>
+            </div>
             <div className="relative">
               {/* Outer shell — battery casing with subtle depth */}
               <div
