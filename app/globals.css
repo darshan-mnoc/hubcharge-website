@@ -125,6 +125,15 @@
    ============================================ */
 
 @layer utilities {
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Section Spacing */
   .section-padding {
     @apply py-24 lg:py-32;

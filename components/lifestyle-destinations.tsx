@@ -17,28 +17,28 @@ const features = [
     icon: Coffee,
     title: "Coffee & Drinks",
     desc: "Fresh coffee, boba, smoothies delivered hot to your window.",
-    image: "/images/lifestyle-coffee.png",
+    image: "/images/lifestyle-coffee-v2.png",
     color: "from-amber-500",
   },
   {
     icon: Utensils,
     title: "Food & Meals",
     desc: "Breakfast, lunch, dinner — from local restaurants to your car.",
-    image: "/images/lifestyle-food.png",
+    image: "/images/lifestyle-food-v2.png",
     color: "from-orange-500",
   },
   {
     icon: ShoppingBag,
     title: "Groceries & Errands",
     desc: "Quick essentials, pharmacy runs, anything you need picked up.",
-    image: "/images/lifestyle-groceries.png",
+    image: "/images/lifestyle-groceries-v2.png",
     color: "from-blue-500",
   },
   {
     icon: Sparkles,
     title: "Services",
     desc: "Car detailing, dry cleaning pickup — make your 10 minutes count.",
-    image: "/images/lifestyle-services.png",
+    image: "/images/lifestyle-services-v2.png",
     color: "from-purple-500",
   },
 ];
@@ -90,8 +90,8 @@ export function LifestyleDestinations() {
             <span className="text-gradient text-glow">to your window</span>
           </h2>
           <p className="text-body-lg max-w-3xl mx-auto">
-            Stay in your car. Our attendant brings everything to you — food, drinks,
-            groceries, services.
+            Stay in your car. Our attendant brings everything to you — food,
+            drinks, groceries, services.
             <span className="text-white/80 font-medium">
               {" "}
               Your 10 minutes, fully utilized.

@@ -4,26 +4,26 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowDown, Zap, Clock, User } from "lucide-react";
 import Image from "next/image";
-import WaitImg from "../public/images/waiting.jpg";
+import WaitImg from "../public/images/waiting-v3.png";
 
 const solutionCards = [
   {
     icon: User,
     title: "Attendant Greets You",
     desc: "A real person comes to your car the moment you arrive. No apps, no kiosks.",
-    image: "/images/valet-greet.png",
+    image: "/images/valet-greet-v2.png",
   },
   {
     icon: Zap,
     title: "They Handle It All",
     desc: "Plug in, payment, unplug when done. You stay in your car the entire time.",
-    image: "/images/charging-service.png",
+    image: "/images/charging-service-v2.png",
   },
   {
     icon: Clock,
     title: "You Live Your Life",
     desc: "Order coffee, food, groceries — delivered to your window while you charge.",
-    image: "/images/coffee-delivery.png",
+    image: "/images/coffee-delivery-v3.png",
   },
 ];
 
@@ -247,7 +247,7 @@ export function ProblemSection() {
             whileHover={{ scale: 1.05 }}
             className="inline-flex items-center gap-3 link text-lg font-semibold group"
           >
-            Watch the 10-minute journey
+            Experience your 10-minute journey
             <motion.span
               animate={{ y: [0, 4, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}

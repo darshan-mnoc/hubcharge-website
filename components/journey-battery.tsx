@@ -1126,13 +1126,31 @@ export function JourneyBattery() {
   const panelsRef = useRef<HTMLDivElement>(null);
   const progressBarsRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
+  const mobileCarouselRef = useRef<HTMLDivElement>(null);
   const [activeStep, setActiveStep] = useState(0);
+  const [mobileActiveCard, setMobileActiveCard] = useState(0);
   const [allDone, setAllDone] = useState(false);
   const scrollProgressRef = useRef(0);
   const lastStepRef = useRef(0);
   const allDoneRef = useRef(false);
 
   const [isMobile, setIsMobile] = useState(false);
+
+  // Handle mobile carousel scroll to update active dot
+  useEffect(() => {
+    const carousel = mobileCarouselRef.current;
+    if (!carousel) return;
+
+    const handleScroll = () => {
+      const scrollLeft = carousel.scrollLeft;
+      const cardWidth = carousel.offsetWidth * 0.85 + 16; // 85vw + gap
+      const activeIndex = Math.round(scrollLeft / cardWidth);
+      setMobileActiveCard(Math.min(activeIndex, 4));
+    };
+
+    carousel.addEventListener('scroll', handleScroll, { passive: true });
+    return () => carousel.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -1282,68 +1300,103 @@ export function JourneyBattery() {
       <div className="relative py-8 lg:py-12">
         <div className="max-w-5xl mx-auto px-6">
           {/* Header - Mobile only (desktop header is inside pinned container) */}
-          <div className="journey-header text-center mb-6 md:hidden">
-            <div className="inline-flex items-center gap-2 badge badge-primary mb-4">
+          <div className="journey-header text-center mb-4 md:hidden">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 border border-orange-200 mb-3">
               <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-              <span className="text-sm font-semibold uppercase tracking-wider">
+              <span className="text-sm font-semibold uppercase tracking-wider text-orange-600">
                 The Experience
               </span>
             </div>
-            <h2 className="heading-section mb-2 text-2xl">
-              Your 10-minute journey
+            <h2 className="text-2xl font-bold text-slate-900 mb-1">
+              Your charging journey
             </h2>
-            <p className="text-body-lg max-w-md mx-auto text-sm">
-              From arrival to adventure. Every second designed for you.
+            <p className="text-slate-500 text-sm">
+              Swipe to explore each step
             </p>
           </div>
 
-          {/* ---- MOBILE VERTICAL LAYOUT ---- */}
-          <div className="md:hidden mt-4">
-            <div className="space-y-4">
+          {/* ---- MOBILE HORIZONTAL CAROUSEL ---- */}
+          <div className="md:hidden -mx-6">
+            {/* Swipeable cards container */}
+            <div
+              ref={mobileCarouselRef}
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-6 gap-4"
+              style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch'
+              }}
+            >
               {journeySteps.map((step, i) => {
                 const Scene = scenes[i];
                 return (
                   <div
                     key={step.id}
-                    className="relative rounded-2xl overflow-hidden"
+                    className="flex-shrink-0 w-[85vw] snap-center rounded-2xl overflow-hidden"
                     style={{
-                      background: "#f8fafc",
-                      boxShadow:
-                        "0 0 0 1px rgba(0,0,0,0.06), 0 4px 12px -2px rgba(0,0,0,0.08)",
+                      background: "#ffffff",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
                     }}
                   >
-                    <div className="flex items-center gap-4 p-4">
-                      {/* Step number */}
-                      <div
-                        className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                        style={{
-                          background: "linear-gradient(135deg,#f97316,#fb923c)",
-                          color: "#fff",
-                          boxShadow: "0 2px 8px rgba(249,115,22,0.4)",
-                        }}
-                      >
-                        {step.id}
-                      </div>
-
-                      {/* Step text */}
-                      <div className="flex-1">
-                        <p className="text-sm font-bold text-orange-500 uppercase tracking-widest">
-                          {step.title}
-                        </p>
-                        <p className="text-xs text-slate-500 mt-0.5">
-                          {step.subtitle}
-                        </p>
-                      </div>
+                    {/* Scene visualization - larger for mobile */}
+                    <div className="relative h-[180px] bg-gradient-to-b from-slate-50 to-white">
+                      <Scene progress={1} isActive={true} isMobile={true} />
                     </div>
 
-                    {/* Scene visualization */}
-                    <div className="relative h-[140px] border-t border-slate-100">
-                      <Scene progress={1} isActive={true} isMobile={isMobile} />
+                    {/* Step content */}
+                    <div className="p-5 border-t border-slate-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        {/* Step number */}
+                        <div
+                          className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+                          style={{
+                            background: "linear-gradient(135deg,#f97316,#fb923c)",
+                            color: "#fff",
+                            boxShadow: "0 2px 8px rgba(249,115,22,0.35)",
+                          }}
+                        >
+                          {step.id}
+                        </div>
+                        <div>
+                          <p className="text-base font-bold text-orange-500 uppercase tracking-wider">
+                            {step.title}
+                          </p>
+                          <p className="text-sm text-slate-500">
+                            {step.subtitle}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
+
+            {/* Dot indicators */}
+            <div className="flex justify-center gap-2 mt-2 px-6">
+              {journeySteps.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    const carousel = mobileCarouselRef.current;
+                    if (carousel) {
+                      const cardWidth = carousel.offsetWidth * 0.85 + 16;
+                      carousel.scrollTo({ left: i * cardWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    mobileActiveCard === i
+                      ? 'bg-orange-500 w-6'
+                      : 'bg-slate-300'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Step counter */}
+            <p className="text-center text-xs text-slate-400 mt-3">
+              {mobileActiveCard + 1} of 5
+            </p>
           </div>
 
           {/* ---- DESKTOP BATTERY WIDGET ---- */}
