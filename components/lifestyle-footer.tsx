@@ -305,12 +305,12 @@ export function LifestyleFooter() {
               <ul className="space-y-3">
                 <li>
                   <motion.a
-                    href="mailto:hello@hubcharge.com"
+                    href="mailto:info@micronocinc.com"
                     whileHover={{ x: 4 }}
                     className="flex items-center gap-2 text-white/40 hover:text-orange-400 text-sm transition-colors"
                   >
                     <Mail className="h-4 w-4" />
-                    hello@hubcharge.com
+                    <span className="break-all">{`info@micronocinc.com`}</span>
                   </motion.a>
                 </li>
                 <li>
@@ -326,9 +326,9 @@ export function LifestyleFooter() {
                 <li>
                   <span className="flex items-start gap-2 text-white/40 text-sm">
                     <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                    108 S Monterey St
+                    9383 Charles Smith Avenue
                     <br />
-                    Alhambra, CA 91801
+                    Rancho Cucamonga, CA 91730
                   </span>
                 </li>
               </ul>

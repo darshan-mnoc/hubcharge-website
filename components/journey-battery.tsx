@@ -1318,7 +1318,7 @@ export function JourneyBattery() {
             {/* Swipeable cards container */}
             <div
               ref={mobileCarouselRef}
-              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-6 gap-4"
+              className="flex overflow-x-auto bg-gradient-to-b snap-x snap-mandatory scrollbar-hide pb-4 px-6 gap-4"
               style={{
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
@@ -1337,7 +1337,7 @@ export function JourneyBattery() {
                     }}
                   >
                     {/* Scene visualization */}
-                    <div className="relative h-[180px] bg-gradient-to-b from-slate-50/50 to-white">
+                    <div className="relative ml-10 h-[180px] bg-gradient-to-b from-slate-50/50 to-white">
                       <Scene progress={1} isActive={true} isMobile={true} />
                     </div>
 
@@ -1347,7 +1347,8 @@ export function JourneyBattery() {
                         <div
                           className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
                           style={{
-                            background: "linear-gradient(135deg,#f97316,#fb923c)",
+                            background:
+                              "linear-gradient(135deg,#f97316,#fb923c)",
                             color: "#fff",
                           }}
                         >
@@ -1376,7 +1377,8 @@ export function JourneyBattery() {
                   className="relative flex items-center rounded-2xl px-1.5 py-1.5"
                   style={{
                     background: "linear-gradient(145deg, #1e293b, #0f172a)",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)",
+                    boxShadow:
+                      "0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)",
                   }}
                 >
                   {/* Inner glow when charging */}
@@ -1384,7 +1386,8 @@ export function JourneyBattery() {
                     <div
                       className="absolute inset-0 rounded-2xl opacity-30"
                       style={{
-                        background: "radial-gradient(ellipse at center, rgba(34,197,94,0.4) 0%, transparent 70%)",
+                        background:
+                          "radial-gradient(ellipse at center, rgba(34,197,94,0.4) 0%, transparent 70%)",
                         animation: "pulse 2s ease-in-out infinite",
                       }}
                     />
@@ -1396,7 +1399,8 @@ export function JourneyBattery() {
                       const isActive = mobileActiveCard === i;
                       const isCompleted = mobileActiveCard > i;
                       const isFilled = isActive || isCompleted;
-                      const isCharging = mobileActiveCard >= 2 && mobileActiveCard < 4;
+                      const isCharging =
+                        mobileActiveCard >= 2 && mobileActiveCard < 4;
 
                       return (
                         <button
@@ -1404,7 +1408,8 @@ export function JourneyBattery() {
                           onClick={() => {
                             const carousel = mobileCarouselRef.current;
                             if (carousel) {
-                              const cardWidth = carousel.offsetWidth * 0.85 + 16;
+                              const cardWidth =
+                                carousel.offsetWidth * 0.85 + 16;
                               carousel.scrollTo({
                                 left: i * cardWidth,
                                 behavior: "smooth",
@@ -1415,7 +1420,8 @@ export function JourneyBattery() {
                           style={{
                             width: isActive ? "20px" : "14px",
                             background: isFilled
-                              ? isCharging || (mobileActiveCard >= 4 && isCompleted)
+                              ? isCharging ||
+                                (mobileActiveCard >= 4 && isCompleted)
                                 ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
                                 : "linear-gradient(180deg, #fb923c 0%, #f97316 100%)"
                               : "rgba(71,85,105,0.4)",
@@ -1431,7 +1437,8 @@ export function JourneyBattery() {
                             <div
                               className="absolute inset-x-0 top-0 h-1/3 rounded-t-md"
                               style={{
-                                background: "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 100%)",
+                                background:
+                                  "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 100%)",
                               }}
                             />
                           )}
@@ -1440,7 +1447,8 @@ export function JourneyBattery() {
                             <div
                               className="absolute inset-0"
                               style={{
-                                background: "linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
+                                background:
+                                  "linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
                                 animation: "pulse 1.5s ease-in-out infinite",
                               }}
                             />
@@ -1454,7 +1462,8 @@ export function JourneyBattery() {
                   <div
                     className="w-1.5 h-3 rounded-r-sm ml-1"
                     style={{
-                      background: "linear-gradient(180deg, #64748b 0%, #475569 100%)",
+                      background:
+                        "linear-gradient(180deg, #64748b 0%, #475569 100%)",
                     }}
                   />
                 </div>
@@ -1464,11 +1473,12 @@ export function JourneyBattery() {
                   <p
                     className="text-xs font-semibold"
                     style={{
-                      color: mobileActiveCard >= 4
-                        ? "#22c55e"
-                        : mobileActiveCard >= 2
-                          ? "#4ade80"
-                          : "#94a3b8",
+                      color:
+                        mobileActiveCard >= 4
+                          ? "#22c55e"
+                          : mobileActiveCard >= 2
+                            ? "#4ade80"
+                            : "#94a3b8",
                     }}
                   >
                     {mobileActiveCard >= 4

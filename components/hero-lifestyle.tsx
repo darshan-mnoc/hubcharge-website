@@ -155,7 +155,7 @@ export function HeroLifestyle() {
         {/* Stats Bar */}
         <motion.div
           variants={itemVariants}
-          className="inline-flex flex-wrap justify-center gap-6 lg:gap-10 glass-card px-8 py-6"
+          className="inline-flex mb-10 flex-wrap justify-center gap-6 lg:gap-10 glass-card px-8 py-6"
         >
           {[
             { value: "180kW", label: "DC Fast Charging" },
