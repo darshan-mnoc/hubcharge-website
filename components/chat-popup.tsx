@@ -2,7 +2,16 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, MapPin, Coffee, Utensils, ShoppingBag, Sparkles } from "lucide-react";
+import {
+  MessageCircle,
+  X,
+  Send,
+  MapPin,
+  Coffee,
+  Utensils,
+  ShoppingBag,
+  Sparkles,
+} from "lucide-react";
 
 const quickOptions = [
   { icon: Coffee, label: "Coffee shops", value: "coffee" },
@@ -19,9 +28,7 @@ export function ChatPopup() {
 
   const toggleOption = (value: string) => {
     setSelectedOptions((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   };
 
@@ -49,13 +56,17 @@ export function ChatPopup() {
         animate={{
           boxShadow: isOpen
             ? "0 0 0 rgba(244, 130, 69, 0)"
-            : ["0 0 20px rgba(244, 130, 69, 0.3)", "0 0 40px rgba(244, 130, 69, 0.5)", "0 0 20px rgba(244, 130, 69, 0.3)"],
+            : [
+                "0 0 20px rgba(244, 130, 69, 0.3)",
+                "0 0 40px rgba(244, 130, 69, 0.5)",
+                "0 0 20px rgba(244, 130, 69, 0.3)",
+              ],
         }}
         transition={{
           boxShadow: { duration: 2, repeat: Infinity },
           scale: { duration: 0.2 },
         }}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
+        className={`fixed bottom-20 right-6 lg:bottom-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
           isOpen
             ? "bg-[#1a1a1a] border border-white/20"
             : "bg-gradient-to-br from-orange-500 to-amber-500"
@@ -86,6 +97,19 @@ export function ChatPopup() {
         </AnimatePresence>
       </motion.button>
 
+      {/* Backdrop - Click to close */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Popup */}
       <AnimatePresence>
         {isOpen && (
@@ -94,7 +118,7 @@ export function ChatPopup() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] card shadow-2xl overflow-hidden"
+            className="fixed bottom-36 right-6 lg:bottom-24 z-50 w-[360px] max-w-[calc(100vw-3rem)] card shadow-2xl overflow-hidden"
           >
             {/* Header */}
             <div className="relative overflow-hidden">
@@ -105,6 +129,13 @@ export function ChatPopup() {
                 transition={{ delay: 0.1 }}
                 className="relative p-6"
               >
+                {/* Close button */}
+                {/* <button
+                  onClick={() => setIsOpen(false)}
+                  className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                >
+                  <X className="h-4 w-4 text-white" />
+                </button> */}
                 <div className="flex items-center gap-3 mb-2">
                   <motion.div
                     animate={{ scale: [1, 1.1, 1] }}
@@ -114,8 +145,12 @@ export function ChatPopup() {
                     <MapPin className="h-5 w-5 text-white" />
                   </motion.div>
                   <div>
-                    <h3 className="font-bold text-lg text-white">Help Us Grow</h3>
-                    <p className="text-white/80 text-sm">What do you want near HubCharge?</p>
+                    <h3 className="font-bold text-lg text-white">
+                      Help Us Grow
+                    </h3>
+                    <p className="text-white/80 text-sm">
+                      What do you want near HubCharge?
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -154,8 +189,12 @@ export function ChatPopup() {
                       />
                     </motion.svg>
                   </motion.div>
-                  <h4 className="text-xl font-bold text-white mb-2">Thank You!</h4>
-                  <p className="text-white/50">Your feedback helps us bring the best to your area.</p>
+                  <h4 className="text-xl font-bold text-white mb-2">
+                    Thank You!
+                  </h4>
+                  <p className="text-white/50">
+                    Your feedback helps us bring the best to your area.
+                  </p>
                 </motion.div>
               ) : (
                 <motion.form
@@ -190,8 +229,12 @@ export function ChatPopup() {
                               : "border-white/10 bg-white/5 hover:border-white/20"
                           }`}
                         >
-                          <option.icon className={`h-5 w-5 ${isSelected ? "text-orange-400" : "text-white/40"}`} />
-                          <span className={`text-sm font-medium ${isSelected ? "text-orange-400" : "text-white/60"}`}>
+                          <option.icon
+                            className={`h-5 w-5 ${isSelected ? "text-orange-400" : "text-white/40"}`}
+                          />
+                          <span
+                            className={`text-sm font-medium ${isSelected ? "text-orange-400" : "text-white/60"}`}
+                          >
                             {option.label}
                           </span>
                         </motion.button>
@@ -216,7 +259,10 @@ export function ChatPopup() {
                   <motion.button
                     type="submit"
                     disabled={!message.trim() && selectedOptions.length === 0}
-                    whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(244, 130, 69, 0.3)" }}
+                    whileHover={{
+                      scale: 1.02,
+                      boxShadow: "0 0 30px rgba(244, 130, 69, 0.3)",
+                    }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full btn btn-primary rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >

@@ -81,7 +81,7 @@ export function BatteryNav() {
               alt="HubCharge"
               width={140}
               height={36}
-              className="h-8 w-auto "
+              className="h-6 sm:h-7 lg:h-8 w-auto mt-2 sm:mt-0"
               priority
             />
           </motion.a>
@@ -120,21 +120,37 @@ export function BatteryNav() {
             </div>
           </div>
 
-          {/* CTA Button */}
+          {/* CTA Button - Desktop Only */}
+          <div className="hidden lg:block">
+            <motion.a
+              href="#locations"
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 0 30px rgba(244, 130, 69, 0.5)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick("locations");
+              }}
+              className="flex items-center gap-2 btn btn-primary"
+            >
+              <Zap className="h-4 w-4" strokeWidth={2.5} />
+              <span>Start Charging</span>
+            </motion.a>
+          </div>
+
+          {/* Mobile CTA Button - Small, between logo and hamburger */}
           <motion.a
             href="#locations"
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 0 30px rgba(244, 130, 69, 0.5)",
-            }}
             whileTap={{ scale: 0.95 }}
             onClick={(e) => {
               e.preventDefault();
               handleNavClick("locations");
             }}
-            className="hidden lg:flex items-center gap-2 btn btn-primary"
+            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full"
           >
-            <Zap className="h-4 w-4" strokeWidth={2.5} />
+            <Zap className="h-3 w-3" strokeWidth={2.5} />
             <span>Start Charging</span>
           </motion.a>
 
@@ -198,9 +214,9 @@ export function BatteryNav() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
                 onClick={() => handleNavClick("locations")}
-                className="flex items-center justify-center gap-3 w-full btn btn-primary btn-lg"
+                className="flex items-center justify-center gap-2 w-full btn btn-primary text-sm py-3"
               >
-                <Zap className="h-5 w-5" strokeWidth={2.5} />
+                <Zap className="h-4 w-4" strokeWidth={2.5} />
                 Start Charging Now
               </motion.button>
             </div>

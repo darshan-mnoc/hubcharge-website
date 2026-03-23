@@ -39,7 +39,7 @@ export default function HomePage() {
       <FindYourHub />
 
       {/* 8. APP: Stay connected */}
-      <AppDownload />
+      {/* <AppDownload /> */}
 
       {/* 9. CONTACT: Get in touch */}
       <ContactSection />

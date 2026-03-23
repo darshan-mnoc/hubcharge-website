@@ -1148,8 +1148,8 @@ export function JourneyBattery() {
       setMobileActiveCard(Math.min(activeIndex, 4));
     };
 
-    carousel.addEventListener('scroll', handleScroll, { passive: true });
-    return () => carousel.removeEventListener('scroll', handleScroll);
+    carousel.addEventListener("scroll", handleScroll, { passive: true });
+    return () => carousel.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -1310,9 +1310,7 @@ export function JourneyBattery() {
             <h2 className="text-2xl font-bold text-slate-900 mb-1">
               Your charging journey
             </h2>
-            <p className="text-slate-500 text-sm">
-              Swipe to explore each step
-            </p>
+            <p className="text-slate-500 text-sm">Swipe to explore each step</p>
           </div>
 
           {/* ---- MOBILE HORIZONTAL CAROUSEL ---- */}
@@ -1322,9 +1320,9 @@ export function JourneyBattery() {
               ref={mobileCarouselRef}
               className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-6 gap-4"
               style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-                WebkitOverflowScrolling: 'touch'
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+                WebkitOverflowScrolling: "touch",
               }}
             >
               {journeySteps.map((step, i) => {
@@ -1335,11 +1333,12 @@ export function JourneyBattery() {
                     className="flex-shrink-0 w-[85vw] snap-center rounded-2xl overflow-hidden"
                     style={{
                       background: "#ffffff",
-                      boxShadow: "0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
+                      boxShadow:
+                        "0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
                     }}
                   >
                     {/* Scene visualization - larger for mobile */}
-                    <div className="relative h-[180px] bg-gradient-to-b from-slate-50 to-white">
+                    <div className="relative ml-20 h-[180px] bg-gradient-to-b from-slate-50 to-white">
                       <Scene progress={1} isActive={true} isMobile={true} />
                     </div>
 
@@ -1350,7 +1349,8 @@ export function JourneyBattery() {
                         <div
                           className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
                           style={{
-                            background: "linear-gradient(135deg,#f97316,#fb923c)",
+                            background:
+                              "linear-gradient(135deg,#f97316,#fb923c)",
                             color: "#fff",
                             boxShadow: "0 2px 8px rgba(249,115,22,0.35)",
                           }}
@@ -1381,13 +1381,16 @@ export function JourneyBattery() {
                     const carousel = mobileCarouselRef.current;
                     if (carousel) {
                       const cardWidth = carousel.offsetWidth * 0.85 + 16;
-                      carousel.scrollTo({ left: i * cardWidth, behavior: 'smooth' });
+                      carousel.scrollTo({
+                        left: i * cardWidth,
+                        behavior: "smooth",
+                      });
                     }
                   }}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     mobileActiveCard === i
-                      ? 'bg-orange-500 w-6'
-                      : 'bg-slate-300'
+                      ? "bg-orange-500 w-6"
+                      : "bg-slate-300"
                   }`}
                 />
               ))}
@@ -1644,46 +1647,55 @@ export function JourneyBattery() {
               </p>
             </div>
 
-            <div className="flex items-center gap-6 lg:gap-8">
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-8 w-full md:w-auto">
               {/* Stat 1 */}
-              <div className="text-center">
+              <div className="flex md:flex-col items-center md:items-center justify-between w-full md:w-auto md:text-center">
+                <p className="text-slate-400 text-xs font-medium md:hidden">
+                  100 miles
+                </p>
                 <p
                   className="text-2xl lg:text-3xl font-black tracking-tight"
                   style={{ color: "#f97316" }}
                 >
                   10 min
                 </p>
-                <p className="text-slate-400 text-xs font-medium mt-0.5">
+                <p className="text-slate-400 text-xs font-medium mt-0.5 hidden md:block">
                   100 miles
                 </p>
               </div>
 
-              <div className="w-px h-10 bg-slate-100" />
+              <div className="w-full h-px md:w-px md:h-10 bg-slate-100" />
 
               {/* Stat 2 */}
-              <div className="text-center">
+              <div className="flex md:flex-col items-center md:items-center justify-between w-full md:w-auto md:text-center">
+                <p className="text-slate-400 text-xs font-medium md:hidden">
+                  Plug & unplug
+                </p>
                 <p
                   className="text-2xl lg:text-3xl font-black tracking-tight"
                   style={{ color: "#10b981" }}
                 >
                   Attendant
                 </p>
-                <p className="text-slate-400 text-xs font-medium mt-0.5">
+                <p className="text-slate-400 text-xs font-medium mt-0.5 hidden md:block">
                   Plug & unplug
                 </p>
               </div>
 
-              <div className="w-px h-10 bg-slate-100" />
+              <div className="w-full h-px md:w-px md:h-10 bg-slate-100" />
 
               {/* Stat 3 */}
-              <div className="text-center">
+              <div className="flex md:flex-col items-center md:items-center justify-between w-full md:w-auto md:text-center">
+                <p className="text-slate-400 text-xs font-medium md:hidden">
+                  Delivered
+                </p>
                 <p
                   className="text-2xl lg:text-3xl font-black tracking-tight"
                   style={{ color: "#3b82f6" }}
                 >
                   Lifestyle
                 </p>
-                <p className="text-slate-400 text-xs font-medium mt-0.5">
+                <p className="text-slate-400 text-xs font-medium mt-0.5 hidden md:block">
                   Delivered
                 </p>
               </div>
