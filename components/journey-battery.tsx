@@ -1333,32 +1333,28 @@ export function JourneyBattery() {
                     className="flex-shrink-0 w-[85vw] snap-center rounded-2xl overflow-hidden"
                     style={{
                       background: "#ffffff",
-                      boxShadow:
-                        "0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
+                      boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
                     }}
                   >
-                    {/* Scene visualization - larger for mobile */}
-                    <div className="relative ml-20 h-[180px] bg-gradient-to-b from-slate-50 to-white">
+                    {/* Scene visualization */}
+                    <div className="relative h-[180px] bg-gradient-to-b from-slate-50/50 to-white">
                       <Scene progress={1} isActive={true} isMobile={true} />
                     </div>
 
                     {/* Step content */}
-                    <div className="p-5 border-t border-slate-100">
-                      <div className="flex items-center gap-3 mb-2">
-                        {/* Step number */}
+                    <div className="p-5">
+                      <div className="flex items-center gap-3">
                         <div
-                          className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
                           style={{
-                            background:
-                              "linear-gradient(135deg,#f97316,#fb923c)",
+                            background: "linear-gradient(135deg,#f97316,#fb923c)",
                             color: "#fff",
-                            boxShadow: "0 2px 8px rgba(249,115,22,0.35)",
                           }}
                         >
                           {step.id}
                         </div>
                         <div>
-                          <p className="text-base font-bold text-orange-500 uppercase tracking-wider">
+                          <p className="text-base font-bold text-slate-900">
                             {step.title}
                           </p>
                           <p className="text-sm text-slate-500">
@@ -1372,34 +1368,128 @@ export function JourneyBattery() {
               })}
             </div>
 
-            {/* Dot indicators */}
-            <div className="flex justify-center gap-2 mt-2 px-6">
-              {journeySteps.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    const carousel = mobileCarouselRef.current;
-                    if (carousel) {
-                      const cardWidth = carousel.offsetWidth * 0.85 + 16;
-                      carousel.scrollTo({
-                        left: i * cardWidth,
-                        behavior: "smooth",
-                      });
-                    }
+            {/* Smart Battery Indicator */}
+            <div className="px-6 mt-5">
+              <div className="flex items-center justify-center">
+                {/* Battery container */}
+                <div
+                  className="relative flex items-center rounded-2xl px-1.5 py-1.5"
+                  style={{
+                    background: "linear-gradient(145deg, #1e293b, #0f172a)",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)",
                   }}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    mobileActiveCard === i
-                      ? "bg-orange-500 w-6"
-                      : "bg-slate-300"
-                  }`}
-                />
-              ))}
-            </div>
+                >
+                  {/* Inner glow when charging */}
+                  {mobileActiveCard >= 2 && mobileActiveCard < 4 && (
+                    <div
+                      className="absolute inset-0 rounded-2xl opacity-30"
+                      style={{
+                        background: "radial-gradient(ellipse at center, rgba(34,197,94,0.4) 0%, transparent 70%)",
+                        animation: "pulse 2s ease-in-out infinite",
+                      }}
+                    />
+                  )}
 
-            {/* Step counter */}
-            <p className="text-center text-xs text-slate-400 mt-3">
-              {mobileActiveCard + 1} of 5
-            </p>
+                  {/* Battery cells */}
+                  <div className="flex items-center gap-1 relative z-10">
+                    {journeySteps.map((_, i) => {
+                      const isActive = mobileActiveCard === i;
+                      const isCompleted = mobileActiveCard > i;
+                      const isFilled = isActive || isCompleted;
+                      const isCharging = mobileActiveCard >= 2 && mobileActiveCard < 4;
+
+                      return (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            const carousel = mobileCarouselRef.current;
+                            if (carousel) {
+                              const cardWidth = carousel.offsetWidth * 0.85 + 16;
+                              carousel.scrollTo({
+                                left: i * cardWidth,
+                                behavior: "smooth",
+                              });
+                            }
+                          }}
+                          className="relative h-7 rounded-md transition-all duration-400 overflow-hidden"
+                          style={{
+                            width: isActive ? "20px" : "14px",
+                            background: isFilled
+                              ? isCharging || (mobileActiveCard >= 4 && isCompleted)
+                                ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
+                                : "linear-gradient(180deg, #fb923c 0%, #f97316 100%)"
+                              : "rgba(71,85,105,0.4)",
+                            boxShadow: isFilled
+                              ? isCharging
+                                ? "0 0 8px rgba(74,222,128,0.6), inset 0 1px 0 rgba(255,255,255,0.3)"
+                                : "0 0 8px rgba(251,146,60,0.5), inset 0 1px 0 rgba(255,255,255,0.3)"
+                              : "inset 0 2px 4px rgba(0,0,0,0.3)",
+                          }}
+                        >
+                          {/* Cell shine */}
+                          {isFilled && (
+                            <div
+                              className="absolute inset-x-0 top-0 h-1/3 rounded-t-md"
+                              style={{
+                                background: "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 100%)",
+                              }}
+                            />
+                          )}
+                          {/* Charging pulse */}
+                          {isActive && isCharging && (
+                            <div
+                              className="absolute inset-0"
+                              style={{
+                                background: "linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
+                                animation: "pulse 1.5s ease-in-out infinite",
+                              }}
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Battery terminal */}
+                  <div
+                    className="w-1.5 h-3 rounded-r-sm ml-1"
+                    style={{
+                      background: "linear-gradient(180deg, #64748b 0%, #475569 100%)",
+                    }}
+                  />
+                </div>
+
+                {/* Status text */}
+                <div className="ml-4 text-left">
+                  <p
+                    className="text-xs font-semibold"
+                    style={{
+                      color: mobileActiveCard >= 4
+                        ? "#22c55e"
+                        : mobileActiveCard >= 2
+                          ? "#4ade80"
+                          : "#94a3b8",
+                    }}
+                  >
+                    {mobileActiveCard >= 4
+                      ? "Ready!"
+                      : mobileActiveCard >= 2
+                        ? "Charging..."
+                        : `Step ${mobileActiveCard + 1}`}
+                  </p>
+                  <p className="text-[10px] text-slate-500">
+                    {mobileActiveCard + 1} of 5
+                  </p>
+                </div>
+              </div>
+
+              {/* Tap hint */}
+              <p className="text-center text-[10px] text-slate-400 mt-3 flex items-center justify-center gap-2">
+                <span className="w-4 h-px bg-slate-300" />
+                Tap battery or swipe
+                <span className="w-4 h-px bg-slate-300" />
+              </p>
+            </div>
           </div>
 
           {/* ---- DESKTOP BATTERY WIDGET ---- */}

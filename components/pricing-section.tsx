@@ -2,7 +2,17 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Zap, Clock, Plus, Coffee, Utensils, Sparkles, Check, ArrowRight, Battery } from "lucide-react";
+import {
+  Zap,
+  Clock,
+  Plus,
+  Coffee,
+  Utensils,
+  Sparkles,
+  Check,
+  ArrowRight,
+  Battery,
+} from "lucide-react";
 
 export function PricingSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -31,7 +41,9 @@ export function PricingSection() {
         >
           <div className="inline-flex items-center gap-2 badge badge-primary mb-8">
             <Battery className="h-4 w-4" />
-            <span className="text-sm font-semibold uppercase tracking-wider">Simple Pricing</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">
+              Simple Pricing
+            </span>
           </div>
 
           <h2 className="heading-section text-white mb-6">
@@ -39,7 +51,8 @@ export function PricingSection() {
             <span className="text-gradient text-glow"> simple</span>
           </h2>
           <p className="text-body-lg max-w-2xl mx-auto">
-            One flat rate. No surprises. Attendant service included with every charge.
+            One flat rate. No surprises. Attendant service included with every
+            charge.
           </p>
         </motion.div>
 
@@ -57,7 +70,9 @@ export function PricingSection() {
             <div className="relative grid lg:grid-cols-2 gap-10 items-center">
               {/* Left - Price */}
               <div className="text-center lg:text-left">
-                <p className="text-white/40 text-sm uppercase tracking-widest mb-4">Base Charge Session</p>
+                <p className="text-white/40 text-sm uppercase tracking-widest mb-4">
+                  Base Charge Session
+                </p>
                 <motion.div
                   initial={{ scale: 0.8 }}
                   whileInView={{ scale: 1 }}
@@ -65,13 +80,21 @@ export function PricingSection() {
                   className="flex items-baseline justify-center lg:justify-start gap-2 mb-4"
                 >
                   <motion.span
-                    animate={{ textShadow: ["0 0 20px rgba(244, 130, 69, 0.3)", "0 0 40px rgba(244, 130, 69, 0.6)", "0 0 20px rgba(244, 130, 69, 0.3)"] }}
+                    animate={{
+                      textShadow: [
+                        "0 0 20px rgba(244, 130, 69, 0.3)",
+                        "0 0 40px rgba(244, 130, 69, 0.6)",
+                        "0 0 20px rgba(244, 130, 69, 0.3)",
+                      ],
+                    }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="text-7xl lg:text-8xl font-black text-orange-400"
                   >
                     $12
                   </motion.span>
-                  <span className="text-4xl lg:text-5xl font-bold text-amber-400">.50</span>
+                  <span className="text-4xl lg:text-5xl font-bold text-amber-400">
+                    .50
+                  </span>
                 </motion.div>
                 <div className="flex items-center justify-center lg:justify-start gap-3 mb-6">
                   <div className="flex items-center gap-2 glass rounded-full px-4 py-2 border border-white/10">
@@ -83,12 +106,16 @@ export function PricingSection() {
                     <span className="text-white font-medium">100 miles</span>
                   </div>
                 </div>
-                <p className="text-white/40 text-sm">Full attendant service included. We handle everything.</p>
+                <p className="text-white/40 text-sm">
+                  Full attendant service included. We handle everything.
+                </p>
               </div>
 
               {/* Right - What's Included */}
               <div className="glass rounded-2xl p-6 border border-white/10">
-                <h3 className="text-white font-semibold mb-4">Everything Included:</h3>
+                <h3 className="text-white font-semibold mb-4">
+                  Everything Included:
+                </h3>
                 <ul className="space-y-3">
                   {[
                     "Attendant greets you at arrival",
@@ -106,7 +133,10 @@ export function PricingSection() {
                       className="flex items-center gap-3 text-white/70"
                     >
                       <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
-                        <Check className="h-3 w-3 text-green-400" strokeWidth={3} />
+                        <Check
+                          className="h-3 w-3 text-green-400"
+                          strokeWidth={3}
+                        />
                       </div>
                       {item}
                     </motion.li>
@@ -125,8 +155,12 @@ export function PricingSection() {
           className="max-w-4xl mx-auto mb-20"
         >
           <div className="text-center mb-8">
-            <h3 className="text-2xl lg:text-3xl font-bold text-white mb-3">Need More Time?</h3>
-            <p className="text-white/50">Add up to 4 extensions of 5 minutes each</p>
+            <h3 className="text-2xl lg:text-3xl font-bold text-white mb-3">
+              Need More Time?
+            </h3>
+            <p className="text-white/50">
+              Add up to 4 extensions of 5 minutes each
+            </p>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -156,7 +190,8 @@ export function PricingSection() {
 
           <div className="text-center mt-6 glass rounded-xl p-4 max-w-lg mx-auto border border-white/10">
             <p className="text-white/60">
-              <span className="font-semibold text-white">Maximum session:</span> 30 minutes =
+              <span className="font-semibold text-white">Maximum session:</span>{" "}
+              30 minutes =
               <span className="text-orange-400 font-bold"> $24.50</span>
             </p>
           </div>
@@ -165,46 +200,6 @@ export function PricingSection() {
         {/* Promo Section */}
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Promo Card 1 */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            whileHover={{ scale: 1.02, y: -4 }}
-            className="relative overflow-hidden rounded-3xl p-8 cursor-pointer group"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-500" />
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-
-            <div className="relative">
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="flex items-center gap-3 mb-6"
-              >
-                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                  <Utensils className="h-7 w-7 text-white" />
-                </div>
-                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                  <Coffee className="h-7 w-7 text-white" />
-                </div>
-              </motion.div>
-              <h4 className="text-2xl lg:text-3xl font-bold text-white mb-3">Order Food</h4>
-              <p className="text-white/90 text-lg mb-6">
-                Get your <span className="font-bold">charge FREE</span> when you order $15+ of food or drinks
-              </p>
-              <motion.a
-                href="#lifestyle"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 bg-white text-orange-600 px-6 py-3 rounded-full font-semibold shadow-lg"
-              >
-                See What's Available
-                <ArrowRight className="h-4 w-4" />
-              </motion.a>
-            </div>
-          </motion.div>
-
-          {/* Promo Card 2 */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -228,17 +223,87 @@ export function PricingSection() {
                   <Sparkles className="h-7 w-7 text-white" />
                 </div>
               </motion.div>
-              <h4 className="text-2xl lg:text-3xl font-bold text-white mb-3">Charge Up</h4>
+              <h4 className="text-2xl lg:text-3xl font-bold text-white mb-3">
+                Charge Up
+              </h4>
               <p className="text-white/90 text-lg mb-6">
-                Get a <span className="font-bold">FREE coffee</span> or snack with every charging session
+                Get a <span className="font-bold">FREE coffee</span> or snack
+                with every charging session
               </p>
               <motion.a
                 href="#locations"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById("locations");
+                  if (element) {
+                    const yOffset = 100;
+                    const y =
+                      element.getBoundingClientRect().top +
+                      window.pageYOffset +
+                      yOffset;
+                    window.scrollTo({ top: y, behavior: "smooth" });
+                  }
+                }}
                 className="inline-flex items-center gap-2 bg-white text-green-600 px-6 py-3 rounded-full font-semibold shadow-lg"
               >
                 Find a Location
+                <ArrowRight className="h-4 w-4" />
+              </motion.a>
+            </div>
+          </motion.div>
+
+          {/* Promo Card 2 */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.02, y: -4 }}
+            className="relative overflow-hidden rounded-3xl p-8 cursor-pointer group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+
+            <div className="relative">
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="flex items-center gap-3 mb-6"
+              >
+                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                  <Utensils className="h-7 w-7 text-white" />
+                </div>
+                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                  <Coffee className="h-7 w-7 text-white" />
+                </div>
+              </motion.div>
+              <h4 className="text-2xl lg:text-3xl font-bold text-white mb-3">
+                Order Food
+              </h4>
+              <p className="text-white/90 text-lg mb-6">
+                Get your <span className="font-bold">charge FREE</span> when you
+                order $15+ of food or drinks
+              </p>
+              <motion.a
+                href="#locations"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById("locations");
+                  if (element) {
+                    const yOffset = 1000;
+                    const y =
+                      element.getBoundingClientRect().top +
+                      window.pageYOffset +
+                      yOffset;
+                    window.scrollTo({ top: y, behavior: "smooth" });
+                  }
+                }}
+                className="inline-flex items-center gap-2 bg-white text-orange-600 px-6 py-3 rounded-full font-semibold shadow-lg"
+              >
+                See What's Available
                 <ArrowRight className="h-4 w-4" />
               </motion.a>
             </div>
@@ -253,7 +318,8 @@ export function PricingSection() {
           className="text-center mt-16"
         >
           <p className="text-white/30 text-lg">
-            <span className="text-white/50 font-medium">Charge & Chill.</span> It's that simple.
+            <span className="text-white/50 font-medium">Charge & Chill.</span>{" "}
+            It's that simple.
           </p>
         </motion.div>
       </div>

@@ -32,7 +32,7 @@ export function HeroLifestyle() {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.4, 0.9], [1, 1, 0]);
 
   return (
     <section

@@ -43,10 +43,14 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Youtube, href: "#", label: "YouTube" },
+  // { icon: Instagram, href: "#", label: "Instagram" },
+  // { icon: Twitter, href: "#", label: "Twitter" },
+  {
+    icon: Linkedin,
+    href: "https://www.linkedin.com/company/micronocinc",
+    label: "LinkedIn",
+  },
+  // { icon: Youtube, href: "#", label: "YouTube" },
 ];
 
 export function LifestyleFooter() {
@@ -114,14 +118,14 @@ export function LifestyleFooter() {
               <Zap className="h-5 w-5" />
               Find Your Hub
             </motion.a>
-            <motion.a
+            {/* <motion.a
               href="#app"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg rounded-full border-2 border-white/20 text-white hover:bg-white/10 transition-colors"
             >
               Download the App
-            </motion.a>
+            </motion.a> */}
           </motion.div>
         </div>
       </div>
