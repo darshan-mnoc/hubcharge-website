@@ -183,7 +183,7 @@ export function HeroLifestyle() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+        className="absolute bottom-2  -translate-x-1/2 flex flex-col items-center gap-3"
       >
         <span className="text-white/30 text-xs uppercase tracking-[0.2em]">
           Scroll

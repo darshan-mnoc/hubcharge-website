@@ -1318,7 +1318,7 @@ export function JourneyBattery() {
             {/* Swipeable cards container */}
             <div
               ref={mobileCarouselRef}
-              className="flex overflow-x-auto bg-gradient-to-b snap-x snap-mandatory scrollbar-hide pb-4 px-6 gap-4"
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-6 gap-4"
               style={{
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
@@ -1330,32 +1330,35 @@ export function JourneyBattery() {
                 return (
                   <div
                     key={step.id}
-                    className="flex-shrink-0 w-[85vw] snap-center rounded-2xl overflow-hidden"
+                    className="flex-shrink-0 w-[85vw] snap-center rounded-2xl overflow-hidden border border-slate-200/60"
                     style={{
-                      background: "#ffffff",
-                      boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+                      background: "linear-gradient(180deg, #f8fafc 0%, #ffffff 40%, #ffffff 100%)",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03)",
                     }}
                   >
                     {/* Scene visualization */}
-                    <div className="relative ml-10 h-[180px] bg-gradient-to-b from-slate-50/50 to-white">
-                      <Scene progress={1} isActive={true} isMobile={true} />
+                    <div className="relative h-[170px] overflow-hidden">
+                      {/* Scene container with padding to shift content right */}
+                      <div className="absolute inset-0 pl-8">
+                        <Scene progress={1} isActive={true} isMobile={true} />
+                      </div>
                     </div>
 
                     {/* Step content */}
-                    <div className="p-5">
+                    <div className="p-4 bg-white border-t border-slate-100">
                       <div className="flex items-center gap-3">
                         <div
                           className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
                           style={{
-                            background:
-                              "linear-gradient(135deg,#f97316,#fb923c)",
+                            background: "linear-gradient(135deg, #f97316, #fb923c)",
                             color: "#fff",
+                            boxShadow: "0 2px 6px rgba(249,115,22,0.3)",
                           }}
                         >
                           {step.id}
                         </div>
                         <div>
-                          <p className="text-base font-bold text-slate-900">
+                          <p className="text-base font-bold text-slate-800">
                             {step.title}
                           </p>
                           <p className="text-sm text-slate-500">
