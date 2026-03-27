@@ -15,13 +15,13 @@ const solutionCards = [
   },
   {
     icon: Zap,
-    title: "They Handle It All",
+    title: "Zero Effort. We Handle Everything.",
     desc: "Plug in, payment, unplug when done. You stay in your car the entire time.",
     image: "/images/charging-service-v2.png",
   },
   {
     icon: Clock,
-    title: "You Live Your Life",
+    title: "Turn Charging Time Into Your Time.",
     desc: "Order coffee, food, groceries — delivered to your window while you charge.",
     image: "/images/coffee-delivery-v3.png",
   },

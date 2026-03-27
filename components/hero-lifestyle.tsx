@@ -90,7 +90,7 @@ export function HeroLifestyle() {
         className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-20"
       >
         {/* Badge */}
-        <motion.div
+        {/* <motion.div
           variants={itemVariants}
           className="inline-flex items-center gap-3 badge badge-primary mb-8"
         >
@@ -100,17 +100,18 @@ export function HeroLifestyle() {
           >
             <Zap className="h-4 w-4 text-orange-400" />
           </motion.div>
-          <span className="text-sm font-medium">Full-Service EV Charging</span>
-        </motion.div>
+          <span className="text-sm font-medium">Full Service EV Charging</span>
+        </motion.div> */}
 
         {/* Main Headline */}
         <motion.h1
           variants={itemVariants}
-          className="heading-display text-white mb-8"
+          className="heading-display text-white mb-4"
         >
-          We charge your car.
+          Full Service EV Charging
+          {/* Drive In. Charge Up. Get Your Time Back. */}
           <br />
-          <span className="text-gradient text-glow">You enjoy your time.</span>
+          <span className="text-gradient text-glow">Buy back your time.</span>
         </motion.h1>
 
         {/* Subheadline */}
@@ -118,10 +119,10 @@ export function HeroLifestyle() {
           variants={itemVariants}
           className="text-body-lg mb-12 max-w-2xl mx-auto"
         >
-          Our attendant handles everything — plug in, charge, unplug.
+          {/* Our attendant handles everything — plug in, charge, unplug. */}
           <span className="text-white font-medium">
             {" "}
-            You never leave your car.
+            {/* You never leave your car. */}
           </span>
         </motion.p>
 
@@ -158,9 +159,9 @@ export function HeroLifestyle() {
           className="inline-flex mb-10 flex-wrap justify-center gap-6 lg:gap-10 glass-card px-8 py-6"
         >
           {[
-            { value: "180kW", label: "DC Fast Charging" },
-            { value: "10 min", label: "100 Miles" },
-            { value: "24/7", label: "Attendant Service" },
+            { value: "160kW+", label: "DC Fast Chargers" },
+            { value: "10 min", label: "Adds up to 100+ Miles" },
+            // { value: "24/7", label: "Attendant Service" },
           ].map((stat, i) => (
             <motion.div
               key={i}
