@@ -129,19 +129,19 @@ export function FindYourHub() {
           className="text-center mb-12"
         >
           <div className="inline-flex items-center gap-2 badge badge-primary mb-8">
-            <Zap className="h-4 w-4" />
+            <MapPin className="h-4 w-4" />
             <span className="text-sm font-semibold uppercase tracking-wider">
-              Find a Station
+              Locations
             </span>
           </div>
           <h2 className="heading-section text-white mb-4">
-            Charge your car, and
+            Find your nearest
             <br />
-            <span className="text-gradient text-glow">get things done.</span>
+            <span className="text-gradient text-glow">HubCharge station</span>
           </h2>
           <p className="text-body-lg max-w-xl mx-auto">
-            Find the nearest HubCharge station. Ultra-fast charging with services
-            that make your time productive.
+            Enter your ZIP code to find ultra-fast EV charging near you.
+            180kW chargers with attendant service and lifestyle amenities.
           </p>
         </motion.div>
 
