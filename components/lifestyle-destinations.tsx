@@ -80,21 +80,21 @@ export function LifestyleDestinations() {
           <div className="inline-flex items-center gap-2 badge badge-primary mb-8">
             <Car className="h-4 w-4" />
             <span className="text-sm font-semibold uppercase tracking-wider">
-              Your Car, Your Space
+              More Than Charging
             </span>
           </div>
 
           <h2 className="heading-section text-white mb-6">
-            Everything delivered
+            Charge your car, and
             <br />
-            <span className="text-gradient text-glow">to your window</span>
+            <span className="text-gradient text-glow">get things done.</span>
           </h2>
           <p className="text-body-lg max-w-3xl mx-auto">
-            Stay in your car. Our attendant brings everything to you — food,
-            drinks, groceries, services.
+            Your EV charges while you're productive. At select locations, our attendant brings
+            food, coffee, groceries — right to your window.
             <span className="text-white/80 font-medium">
               {" "}
-              Your 10 minutes, fully utilized.
+              Every minute optimized.
             </span>
           </p>
         </motion.div>

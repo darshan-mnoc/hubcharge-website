@@ -131,12 +131,17 @@ export function BatteryNav() {
               whileTap={{ scale: 0.95 }}
               onClick={(e) => {
                 e.preventDefault();
-                handleNavClick("locations");
+                // handleNavClick("locations");
+                window.open(
+                  "https://hubcharge.micronocinc.com/login.html",
+                  "_blank",
+                );
               }}
               className="flex items-center gap-2 btn btn-primary"
             >
               <Zap className="h-4 w-4" strokeWidth={2.5} />
-              <span>Start Charging</span>
+              {/* <span>Start Charging</span> */}
+              <span>Login</span>
             </motion.a>
           </div>
 
@@ -146,12 +151,17 @@ export function BatteryNav() {
             whileTap={{ scale: 0.95 }}
             onClick={(e) => {
               e.preventDefault();
-              handleNavClick("locations");
+              // handleNavClick("locations");
+              window.open(
+                "https://hubcharge.micronocinc.com/login.html",
+                "_blank",
+              );
             }}
             className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full"
           >
             <Zap className="h-3 w-3" strokeWidth={2.5} />
-            <span>Start Charging</span>
+            {/* <span>Start Charging</span> */}
+            <span>Login</span>
           </motion.a>
 
           {/* Mobile Menu Button */}

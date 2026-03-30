@@ -230,7 +230,7 @@ export function TimeValue() {
                 Don't have time to unplug?
               </h3>
               <p className="text-white/60 max-w-md">
-                Our attendant unplugs for you. Just tap "Ready to Go" in the app, and we handle the rest. Your time is sacred.
+                At select locations, our attendant unplugs for you. Just tap "Ready to Go" in the app, and we handle the rest. Your time is sacred.
               </p>
             </div>
             <a

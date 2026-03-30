@@ -2,11 +2,12 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { TextPlugin } from "gsap/TextPlugin";
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, TextPlugin);
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, TextPlugin);
 
   // Set global GSAP defaults for consistent animations
   gsap.defaults({
@@ -15,7 +16,7 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { gsap, ScrollTrigger, TextPlugin };
+export { gsap, ScrollTrigger, ScrollToPlugin, TextPlugin };
 
 // Consistent animation presets used across all components
 export const animations = {

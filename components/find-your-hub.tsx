@@ -1,18 +1,48 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   MapPin,
-  Coffee,
-  Utensils,
-  ShoppingBag,
+  Search,
   Navigation,
   Clock,
   Zap,
   Phone,
   ExternalLink,
+  Truck,
+  Package,
+  Car,
+  CheckCircle2,
+  AlertCircle,
+  ChevronRight,
+  Coffee,
+  Utensils,
+  ShoppingBag,
 } from "lucide-react";
+
+// Mock station data - in production this would come from an API
+const stations = [
+  {
+    id: 1,
+    name: "HubCharge Alhambra",
+    address: "108 S Monterey St, Unit 102",
+    city: "Alhambra",
+    state: "CA",
+    zip: "91801",
+    distance: null,
+    chargers: 2,
+    power: "180kW",
+    hours: "6 AM - 10 PM",
+    phone: "(949) 391-4676",
+    hasAttendant: true,
+    services: ["delivery", "pickup"],
+    status: "open",
+    coords: { lat: 34.095, lng: -118.127 },
+  },
+];
+
+const upcomingLocations = ["Los Angeles", "Pasadena", "Irvine", "San Diego"];
 
 const nearbyPlaces = {
   coffee: [
@@ -33,9 +63,49 @@ const nearbyPlaces = {
   ],
 };
 
+const services = [
+  {
+    icon: Truck,
+    title: "Delivery",
+    desc: "Food, coffee, and essentials delivered to your car window",
+    color: "text-orange-400",
+    bgColor: "bg-orange-500/20",
+  },
+  {
+    icon: Package,
+    title: "Pickup",
+    desc: "Order ahead from nearby stores — we'll have it ready",
+    color: "text-blue-400",
+    bgColor: "bg-blue-500/20",
+  },
+  {
+    icon: Car,
+    title: "Drop-off",
+    desc: "Car services like detailing while you charge",
+    color: "text-green-400",
+    bgColor: "bg-green-500/20",
+  },
+];
+
 export function FindYourHub() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const [zipCode, setZipCode] = useState("");
+  const [searchResults, setSearchResults] = useState<typeof stations | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!zipCode.trim()) return;
+
+    setIsSearching(true);
+    // Simulate API call
+    setTimeout(() => {
+      // For demo, always return Alhambra station
+      setSearchResults(stations);
+      setIsSearching(false);
+    }, 800);
+  };
 
   return (
     <section
@@ -59,117 +129,193 @@ export function FindYourHub() {
           className="text-center mb-12"
         >
           <div className="inline-flex items-center gap-2 badge badge-primary mb-8">
-            <MapPin className="h-4 w-4" />
+            <Zap className="h-4 w-4" />
             <span className="text-sm font-semibold uppercase tracking-wider">
-              Now Open in Alhambra
+              Find a Station
             </span>
           </div>
           <h2 className="heading-section text-white mb-4">
-            Visit Our First Location
+            Charge your car, and
+            <br />
+            <span className="text-gradient text-glow">get things done.</span>
           </h2>
           <p className="text-body-lg max-w-xl mx-auto">
-            Experience full-service EV charging with attendant, food delivery, and
-            more.
+            Find the nearest HubCharge station. Ultra-fast charging with services
+            that make your time productive.
           </p>
         </motion.div>
 
-        {/* Main Location Card */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-12">
-          {/* Left - Location Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="card p-8"
-          >
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  HubCharge Alhambra
-                </h3>
-                <p className="text-white/40">Our flagship location</p>
+        {/* Search Box */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-2xl mx-auto mb-12"
+        >
+          <form onSubmit={handleSearch} className="relative">
+            <div className="relative flex items-center">
+              <div className="absolute left-4 pointer-events-none">
+                <Search className="h-5 w-5 text-white/40" />
               </div>
-              <motion.div
-                animate={{
-                  boxShadow: [
-                    "0 0 20px rgba(244, 130, 69, 0.3)",
-                    "0 0 40px rgba(244, 130, 69, 0.5)",
-                    "0 0 20px rgba(244, 130, 69, 0.3)",
-                  ],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-12 h-12 rounded-xl bg-orange-500 flex items-center justify-center"
+              <input
+                type="text"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                placeholder="Enter ZIP code to find stations near you"
+                className="w-full pl-12 pr-36 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all"
+              />
+              <motion.button
+                type="submit"
+                disabled={isSearching}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="absolute right-2 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
               >
-                <Zap className="h-6 w-6 text-white" />
-              </motion.div>
+                {isSearching ? (
+                  <span className="flex items-center gap-2">
+                    <motion.span
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                    />
+                    Searching
+                  </span>
+                ) : (
+                  "Find Stations"
+                )}
+              </motion.button>
             </div>
+          </form>
 
-            <div className="space-y-4 mb-8">
-              <div className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-orange-400 mt-0.5" />
-                <div>
-                  <p className="font-medium text-white">
-                    108 S Monterey St, Unit 102
-                  </p>
-                  <p className="text-white/40">Alhambra, CA 91801</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 text-orange-400" />
-                <p className="text-white">Open Daily: 6 AM - 10 PM</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-orange-400" />
-                <p className="text-white">(949) 391-4676</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              {[
-                { value: "2", label: "Chargers", color: "text-orange-400" },
-                { value: "180", label: "kW Power", color: "text-green-400" },
-                { value: "24/7", label: "Attendant", color: "text-white" },
-              ].map((stat, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
-                  className="glass rounded-xl p-4 text-center border border-white/10"
-                >
-                  <p className={`text-2xl font-bold ${stat.color}`}>
-                    {stat.value}
-                  </p>
-                  <p className="text-white/40 text-sm">{stat.label}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.a
-              href="https://maps.google.com/?q=108+S+Monterey+St+Alhambra+CA"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0 0 30px rgba(244, 130, 69, 0.4)",
+          {/* Quick location link */}
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <button
+              onClick={() => {
+                setZipCode("91801");
+                setSearchResults(stations);
               }}
-              whileTap={{ scale: 0.98 }}
-              className="flex items-center justify-center gap-2 w-full btn btn-primary"
+              className="flex items-center gap-1.5 text-sm text-white/50 hover:text-orange-400 transition-colors"
             >
-              <Navigation className="h-5 w-5" />
-              Get Directions
-              <ExternalLink className="h-4 w-4" />
-            </motion.a>
-          </motion.div>
+              <Navigation className="h-3.5 w-3.5" />
+              Use current location
+            </button>
+          </div>
+        </motion.div>
 
-          {/* Right - Map */}
+        {/* Services Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="grid md:grid-cols-3 gap-4 mb-12"
+        >
+          {services.map((service, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -4 }}
+              className="flex items-center gap-4 p-4 rounded-2xl glass border border-white/10"
+            >
+              <div className={`w-12 h-12 rounded-xl ${service.bgColor} flex items-center justify-center`}>
+                <service.icon className={`h-6 w-6 ${service.color}`} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-white">{service.title}</h4>
+                <p className="text-white/50 text-sm">{service.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Search Results / Station List */}
+        <div className="grid lg:grid-cols-5 gap-8">
+          {/* Station List */}
+          <div className="lg:col-span-2">
+            <div className="sticky top-24">
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-orange-400" />
+                {searchResults ? `${searchResults.length} Station Found` : "Available Stations"}
+              </h3>
+
+              <div className="space-y-4">
+                {(searchResults || stations).map((station) => (
+                  <motion.div
+                    key={station.id}
+                    whileHover={{ scale: 1.02 }}
+                    className="card p-5 cursor-pointer group"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-bold text-white">{station.name}</h4>
+                          {station.status === "open" && (
+                            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                              Open
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-white/50 text-sm">{station.address}</p>
+                        <p className="text-white/40 text-sm">{station.city}, {station.state} {station.zip}</p>
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-white/30 group-hover:text-orange-400 transition-colors" />
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-orange-500/10 text-orange-400 text-xs">
+                        <Zap className="h-3 w-3" />
+                        {station.power}
+                      </span>
+                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 text-white/60 text-xs">
+                        <Clock className="h-3 w-3" />
+                        {station.hours}
+                      </span>
+                      {station.hasAttendant && (
+                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-500/10 text-green-400 text-xs">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Attendant
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <motion.a
+                        href={`https://maps.google.com/?q=${station.address}+${station.city}+${station.state}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors"
+                      >
+                        <Navigation className="h-4 w-4" />
+                        Directions
+                      </motion.a>
+                      <a
+                        href={`tel:${station.phone}`}
+                        className="flex items-center justify-center w-10 h-10 rounded-lg glass border border-white/10 hover:border-orange-500/50 transition-colors"
+                      >
+                        <Phone className="h-4 w-4 text-white/60" />
+                      </a>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Attendant note */}
+              <div className="flex items-start gap-2 mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                <AlertCircle className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-amber-400/80">
+                  Attendant availability varies by location and time. Check station details for current availability.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Map */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#111] min-h-[400px]"
+            className="lg:col-span-3 relative rounded-3xl overflow-hidden border border-white/10 bg-[#111] min-h-[500px]"
           >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3302.5!2d-118.127!3d34.095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDA1JzQyLjAiTiAxMTjCsDA3JzM3LjIiVw!5e0!3m2!1sen!2sus!4v1234567890"
@@ -177,7 +323,7 @@ export function FindYourHub() {
               height="100%"
               style={{
                 border: 0,
-                minHeight: "400px",
+                minHeight: "500px",
                 filter: "invert(90%) hue-rotate(180deg)",
               }}
               allowFullScreen
@@ -197,14 +343,40 @@ export function FindYourHub() {
                 </div>
               </div>
             </div>
+
+            {/* Map Legend */}
+            <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl glass border border-white/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-orange-500" />
+                    <span className="text-white/60 text-sm">HubCharge Station</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                    <span className="text-white/60 text-sm">Coming Soon</span>
+                  </div>
+                </div>
+                <a
+                  href="https://maps.google.com/?q=108+S+Monterey+St+Alhambra+CA"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-orange-400 text-sm hover:underline"
+                >
+                  Open in Maps
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
           </motion.div>
         </div>
 
-        {/* Nearby Places */}
+        {/* Nearby Places - Delivered to Your Car */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          className="mt-12"
         >
           <h3 className="text-xl font-bold text-white mb-6 text-center">
             What's Nearby — Delivered to Your Car
@@ -299,16 +471,43 @@ export function FindYourHub() {
 
         {/* Coming Soon */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-12 text-center"
+          className="mt-12"
         >
-          <div className="inline-flex items-center gap-2 glass rounded-full px-6 py-3 border border-white/10">
-            <span className="text-white/40">More locations coming:</span>
-            <span className="text-white font-medium">
-              Los Angeles, Pasadena, Irvine
-            </span>
+          <div className="card p-8 text-center">
+            <h3 className="text-xl font-bold text-white mb-4">
+              More Locations Coming Soon
+            </h3>
+            <p className="text-white/50 mb-6 max-w-lg mx-auto">
+              We're expanding across California. Enter your email to be notified when we open near you.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3 mb-6">
+              {upcomingLocations.map((location, i) => (
+                <span
+                  key={i}
+                  className="px-4 py-2 rounded-full glass border border-white/10 text-white/70"
+                >
+                  {location}
+                </span>
+              ))}
+            </div>
+            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:border-orange-500/50"
+              />
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors"
+              >
+                Notify Me
+              </motion.button>
+            </form>
           </div>
         </motion.div>
       </div>

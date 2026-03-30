@@ -51,8 +51,7 @@ export function PricingSection() {
             <span className="text-gradient text-glow"> simple</span>
           </h2>
           <p className="text-body-lg max-w-2xl mx-auto">
-            One flat rate. No surprises. Attendant service included with every
-            charge.
+            One flat rate. No surprises. Attendant service at select locations.
           </p>
         </motion.div>
 
@@ -107,7 +106,7 @@ export function PricingSection() {
                   </div>
                 </div>
                 <p className="text-white/40 text-sm">
-                  Full attendant service included. We handle everything.
+                  Attendant service at select locations. We handle everything.
                 </p>
               </div>
 

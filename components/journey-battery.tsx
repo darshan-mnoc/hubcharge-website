@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback, memo } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 /**
  * HUBCHARGE JOURNEY - Premium UX Redesign
@@ -1133,6 +1133,7 @@ export function JourneyBattery() {
   const scrollProgressRef = useRef(0);
   const lastStepRef = useRef(0);
   const allDoneRef = useRef(false);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -1239,30 +1240,48 @@ export function JourneyBattery() {
     }
   }, []);
 
+  // Handle clicking on a step card
+  const handleStepClick = useCallback((stepIndex: number) => {
+    if (!scrollTriggerRef.current) return;
+
+    const st = scrollTriggerRef.current;
+    const targetProgress = (stepIndex + 0.5) / 5; // Center of the step
+
+    // Calculate the scroll position for this progress
+    const scrollStart = st.start;
+    const scrollEnd = st.end;
+    const targetScroll = scrollStart + (scrollEnd - scrollStart) * targetProgress;
+
+    // Smooth scroll to that position
+    gsap.to(window, {
+      scrollTo: { y: targetScroll, autoKill: false },
+      duration: 0.6,
+      ease: "power2.out",
+    });
+  }, []);
+
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.to(
-        {},
-        {
-          scrollTrigger: {
-            trigger: batteryRef.current,
-            start: "top 15%",
-            end: "+=200%",
-            scrub: 0.5,
-            pin: true,
-            pinSpacing: true,
-            onUpdate: (self) => {
-              scrollProgressRef.current = self.progress;
-              const newStep = Math.min(Math.floor(self.progress * 5), 4);
-              if (newStep !== lastStepRef.current) {
-                lastStepRef.current = newStep;
-                setActiveStep(newStep);
-              }
-              updatePanels(self.progress);
-            },
-          },
+      const st = ScrollTrigger.create({
+        trigger: batteryRef.current,
+        start: "top 15%",
+        end: "+=200%",
+        scrub: 0.5,
+        pin: true,
+        pinSpacing: true,
+        onUpdate: (self) => {
+          scrollProgressRef.current = self.progress;
+          const newStep = Math.min(Math.floor(self.progress * 5), 4);
+          if (newStep !== lastStepRef.current) {
+            lastStepRef.current = newStep;
+            setActiveStep(newStep);
+          }
+          updatePanels(self.progress);
         },
-      );
+      });
+
+      // Store the ScrollTrigger instance
+      scrollTriggerRef.current = st;
 
       gsap.fromTo(
         ".journey-header",
@@ -1668,15 +1687,16 @@ export function JourneyBattery() {
                   const isLarge = isCurrent && !allDone;
 
                   return (
-                    <div
+                    <button
                       key={step.id}
-                      className="flex flex-col items-center gap-2 transition-opacity duration-300"
-                      style={{ opacity: isActive ? 1 : 0.35 }}
+                      onClick={() => handleStepClick(i)}
+                      className="flex flex-col items-center gap-2 transition-all duration-300 cursor-pointer group hover:scale-105"
+                      style={{ opacity: isActive ? 1 : 0.5 }}
                     >
                       {/* Pill */}
                       <div
                         data-pill
-                        className="inline-flex items-center justify-center rounded-full font-bold transition-all duration-500"
+                        className="inline-flex items-center justify-center rounded-full font-bold transition-all duration-500 group-hover:scale-110"
                         style={{
                           width: isLarge ? "36px" : "20px",
                           height: isLarge ? "36px" : "20px",
@@ -1700,7 +1720,7 @@ export function JourneyBattery() {
                       <div className="text-center">
                         <p
                           data-title
-                          className="font-bold tracking-widest uppercase transition-all duration-500"
+                          className="font-bold tracking-widest uppercase transition-all duration-500 group-hover:text-orange-500"
                           style={{
                             fontSize: isLarge ? "20px" : "11px",
                             letterSpacing: isLarge ? "0.12em" : "0.08em",
@@ -1721,9 +1741,26 @@ export function JourneyBattery() {
                           {step.subtitle}
                         </p>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
+              </div>
+
+              {/* Scroll/Click indicator */}
+              <div className="flex items-center justify-center gap-3 mt-6 text-slate-400">
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
+                  </svg>
+                  <span className="text-xs font-medium">Click cards</span>
+                </div>
+                <span className="text-slate-300">or</span>
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                  </svg>
+                  <span className="text-xs font-medium">Scroll</span>
+                </div>
               </div>
             </div>
           </div>
