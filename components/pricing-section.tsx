@@ -51,149 +51,130 @@ export function PricingSection() {
             <span className="text-gradient text-glow"> simple</span>
           </h2>
           <p className="text-body-lg max-w-2xl mx-auto">
-            One flat rate. No surprises. Attendant service at select locations.
+            One flat rate. Attendant service at select locations
+            <span className="text-red-500">*</span>
           </p>
         </motion.div>
 
-        {/* Main Pricing Card */}
+        {/* Main Pricing Card - Clean Design */}
         <motion.div
-          initial={{ opacity: 0, y: 60, scale: 0.95 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto mb-16"
+          className="max-w-4xl mx-auto mb-12"
         >
-          <div className="relative card p-8 lg:p-12 overflow-hidden gradient-border">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/20 rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-green-500/10 rounded-full blur-[80px]" />
+          <div className="relative overflow-hidden rounded-3xl border border-white/10">
+            {/* Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#151515] to-[#0a0a0a]" />
+            <div className="absolute top-0 right-1/4 w-80 h-80 bg-orange-500/8 rounded-full blur-[120px]" />
 
-            <div className="relative grid lg:grid-cols-2 gap-10 items-center">
-              {/* Left - Price */}
-              <div className="text-center lg:text-left">
-                <p className="text-white/40 text-sm uppercase tracking-widest mb-4">
-                  Base Charge Session
+            <div className="relative p-10 lg:p-14">
+              {/* Price Hero - Centered */}
+              <div className="text-center mb-12">
+                <p className="text-white/50 text-sm uppercase tracking-[0.15em] mb-6">
+                  10-Minute Charge Session
                 </p>
-                <motion.div
-                  initial={{ scale: 0.8 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  className="flex items-baseline justify-center lg:justify-start gap-2 mb-4"
-                >
+                <div className="flex items-start justify-center">
                   <motion.span
                     animate={{
                       textShadow: [
-                        "0 0 20px rgba(244, 130, 69, 0.3)",
-                        "0 0 40px rgba(244, 130, 69, 0.6)",
-                        "0 0 20px rgba(244, 130, 69, 0.3)",
+                        "0 0 40px rgba(251, 146, 60, 0.3)",
+                        "0 0 80px rgba(251, 146, 60, 0.5)",
+                        "0 0 40px rgba(251, 146, 60, 0.3)",
                       ],
                     }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="text-7xl lg:text-8xl font-black text-orange-400"
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className="text-8xl lg:text-9xl font-black text-orange-500"
                   >
-                    $12
+                    $12.50
                   </motion.span>
-                  <span className="text-4xl lg:text-5xl font-bold text-amber-400">
-                    .50
-                  </span>
-                </motion.div>
-                <div className="flex items-center justify-center lg:justify-start gap-3 mb-6">
-                  <div className="flex items-center gap-2 glass rounded-full px-4 py-2 border border-white/10">
-                    <Clock className="h-4 w-4 text-orange-400" />
-                    <span className="text-white font-medium">10 minutes</span>
+                  <span className="text-red-500 text-xl font-bold mt-4 ml-1">*</span>
+                </div>
+                <div className="flex items-center justify-center gap-6 mt-8">
+                  <div className="flex items-center gap-2 text-white/60">
+                    <Clock className="h-5 w-5 text-orange-400" />
+                    <span className="font-medium">10 minutes</span>
                   </div>
-                  <div className="flex items-center gap-2 glass rounded-full px-4 py-2 border border-white/10">
-                    <Zap className="h-4 w-4 text-green-400" />
-                    <span className="text-white font-medium">100 miles</span>
+                  <div className="w-px h-5 bg-white/20" />
+                  <div className="flex items-center gap-2 text-white/60">
+                    <Zap className="h-5 w-5 text-orange-400" />
+                    <span className="font-medium">Up to 100 miles</span>
                   </div>
                 </div>
-                <p className="text-white/40 text-sm">
-                  Attendant service at select locations. We handle everything.
-                </p>
               </div>
 
-              {/* Right - What's Included */}
-              <div className="glass rounded-2xl p-6 border border-white/10">
-                <h3 className="text-white font-semibold mb-4">
-                  Everything Included:
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    "Attendant greets you at arrival",
-                    "They plug in your car",
-                    "Payment at your window",
-                    "Attendant unplugs when ready",
-                    "Order food to your car",
-                  ].map((item, i) => (
-                    <motion.li
-                      key={i}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                      className="flex items-center gap-3 text-white/70"
-                    >
-                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
-                        <Check
-                          className="h-3 w-3 text-green-400"
-                          strokeWidth={3}
-                        />
+              {/* Two Cards */}
+              <div className="grid md:grid-cols-2 gap-5">
+                {/* Extension Card */}
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-orange-500/30 transition-all"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="text-white font-semibold text-lg mb-1">Need more time?</h4>
+                      <p className="text-white/50 text-sm">Add 5-minute extensions as needed</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-start">
+                        <span className="text-3xl font-bold text-orange-400">$3</span>
+                        <span className="text-red-500 text-xs mt-1 ml-0.5">*</span>
                       </div>
-                      {item}
-                    </motion.li>
-                  ))}
-                </ul>
+                      <p className="text-white/40 text-xs">per 5 min</p>
+                    </div>
+                  </div>
+                  <div className="mt-5 pt-5 border-t border-white/5">
+                    <p className="text-white/40 text-sm">
+                      Add up to 4 extensions for a maximum 30-minute session
+                    </p>
+                  </div>
+                </motion.div>
+
+                {/* What's Included Card */}
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-green-500/30 transition-all"
+                >
+                  <h4 className="text-white font-semibold text-lg mb-4 flex items-center gap-1">
+                    Full-Service Included
+                    <span className="text-red-500 text-sm">*</span>
+                  </h4>
+                  <ul className="space-y-3">
+                    {[
+                      "Attendant greets you at arrival",
+                      "We plug in your car",
+                      "Pay at your window",
+                      "We unplug when you're ready",
+                    ].map((item, i) => (
+                      <motion.li
+                        key={i}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 }}
+                        className="flex items-center gap-3 text-white/60 text-sm"
+                      >
+                        <Check className="h-4 w-4 text-green-500 flex-shrink-0" strokeWidth={2.5} />
+                        {item}
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.div>
               </div>
             </div>
           </div>
-        </motion.div>
 
-        {/* Extensions Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto mb-20"
-        >
-          <div className="text-center mb-8">
-            <h3 className="text-2xl lg:text-3xl font-bold text-white mb-3">
-              Need More Time?
-            </h3>
-            <p className="text-white/50">
-              Add up to 4 extensions of 5 minutes each
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((ext, i) => (
-              <motion.div
-                key={ext}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ scale: 1.05, y: -4 }}
-                className="card p-5 text-center cursor-pointer group"
-              >
-                <motion.div
-                  whileHover={{ rotate: 90 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-10 h-10 mx-auto glass rounded-full flex items-center justify-center mb-3 group-hover:bg-orange-500/20"
-                >
-                  <Plus className="h-5 w-5 text-orange-400" />
-                </motion.div>
-                <p className="text-2xl font-bold text-white">$3</p>
-                <p className="text-white/50 text-sm">+5 minutes</p>
-                <p className="text-xs text-white/30 mt-1">Extension {ext}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="text-center mt-6 glass rounded-xl p-4 max-w-lg mx-auto border border-white/10">
-            <p className="text-white/60">
-              <span className="font-semibold text-white">Maximum session:</span>{" "}
-              30 minutes =
-              <span className="text-orange-400 font-bold"> $24.50</span>
-            </p>
-          </div>
+          {/* Disclaimer */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mt-5 text-center text-sm text-white/40"
+          >
+            <span className="text-red-500">*</span> Prices may vary. Full-service attendant at select locations.
+          </motion.p>
         </motion.div>
 
         {/* Promo Section */}

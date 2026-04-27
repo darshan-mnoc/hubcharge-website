@@ -16,15 +16,35 @@ const solutionSteps = [
   },
   {
     number: "02",
-    title: "We Handle Charging",
-    desc: "Payment, plug-in, monitoring — all taken care of. Stay in your car.",
+    title: (
+      <>
+        We Handle Charging
+        <span className="text-red-500">*</span>
+      </>
+    ),
+    desc: (
+      <>
+        Payment, plug-in, monitoring — all taken care of. Stay in your car.
+        {/* <span className="text-red-500">*</span>. */}
+      </>
+    ),
     highlight: "Zero effort required",
     image: "/images/charging-service-v2.png",
   },
   {
     number: "03",
-    title: "Get Things Done",
-    desc: "Order food, coffee, or essentials. Delivered right to your window.",
+    title: (
+      <>
+        Get Things Done
+        <span className="text-red-500">*</span>
+      </>
+    ),
+    desc: (
+      <>
+        Order food, coffee, or essentials. Delivered right to your window.
+        {/* <span className="text-red-500">*</span>. */}
+      </>
+    ),
     highlight: "Time well spent",
     image: "/images/coffee-delivery-v3.png",
   },
@@ -87,15 +107,19 @@ export function ProblemSection() {
           >
             30 minutes at a "fast" charger.
             <br />
-            <span className="text-gradient text-glow">What do you do with that time?</span>
+            <span className="text-gradient text-glow">
+              What do you do with that time?
+            </span>
           </motion.h2>
 
           <motion.p
             variants={itemVariants}
             className="text-xl text-white/60 max-w-2xl mx-auto leading-relaxed"
           >
-            Most DC fast chargers take <span className="text-white font-medium">30-40 minutes</span> to reach 80%.
-            That's half an hour standing around, scrolling your phone, waiting.
+            Most DC fast chargers take{" "}
+            <span className="text-white font-medium">30-40 minutes</span> to
+            reach 80%. That's half an hour standing around, scrolling your
+            phone, waiting.
           </motion.p>
 
           <motion.p
@@ -136,7 +160,9 @@ export function ProblemSection() {
               >
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/30">
                   <Clock className="h-3.5 w-3.5 text-amber-400" />
-                  <span className="text-amber-400 text-xs font-semibold">30+ MIN WAIT</span>
+                  <span className="text-amber-400 text-xs font-semibold">
+                    30+ MIN WAIT
+                  </span>
                 </div>
               </motion.div>
               <p className="text-white text-lg lg:text-xl font-medium">
@@ -153,7 +179,9 @@ export function ProblemSection() {
           viewport={{ once: true }}
           className="flex flex-col items-center gap-4 mb-20"
         >
-          <p className="text-white/40 text-sm uppercase tracking-widest">There's a better way</p>
+          <p className="text-white/40 text-sm uppercase tracking-widest">
+            There's a better way
+          </p>
           <motion.div
             animate={{
               boxShadow: [
@@ -184,16 +212,16 @@ export function ProblemSection() {
           </div>
 
           <h2 className="heading-section text-white mb-6 leading-tight">
-            10 minutes. 100 miles.
+            10 minutes. Add up to 100 miles.
             <br />
             <span className="text-gradient text-glow">
-              Make every minute count.
+              All with full-service convenience*
             </span>
           </h2>
-
           <p className="text-xl text-white/60 max-w-2xl mx-auto">
-            Ultra-fast <span className="text-white font-medium">180kW DC charging</span> with full-service convenience.
-            Your car charges while you get things done.
+            {/* Ultra-fast{" "}
+            <span className="text-white font-medium">180kW DC charging</span> */}
+            {/* with full-service convenience. Your car charges while you get things done. */}
           </p>
         </motion.div>
 
@@ -256,6 +284,17 @@ export function ProblemSection() {
                         {step.highlight}
                       </span>
                     </motion.div>
+
+                    {i === 2 && (
+                      <motion.div
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        whileHover={{ scale: 1.05 }}
+                        className="inline-flex items-center gap-2 mt-2 ml-1 px-3 py-1.5 rounded-full bg-purple-500/20 text-purple-400 text-xs font-semibold border border-purple-500/30"
+                      >
+                        Coming Soon
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Hover Arrow */}
@@ -280,8 +319,13 @@ export function ProblemSection() {
             className="mt-10 text-center"
           >
             <p className="text-white/40 text-sm">
-              Attendant service available at select locations. Visit our{" "}
-              <a href="#locations" className="text-orange-400 hover:text-orange-300 underline underline-offset-2">
+              <span className="text-red-500">*</span>Full-service attendant
+              (including vehicle handling) is available at select locations and
+              coming soon to others. Visit our{" "}
+              <a
+                href="#locations"
+                className="text-orange-400 hover:text-orange-300 underline underline-offset-2"
+              >
                 locations page
               </a>{" "}
               to see what's available near you.

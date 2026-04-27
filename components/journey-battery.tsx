@@ -8,11 +8,15 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
  */
 
 const journeySteps = [
-  { id: 1, title: "ARRIVE", subtitle: "Attendant greets you" },
-  { id: 2, title: "TAP", subtitle: "Quick QR payment" },
-  { id: 3, title: "CHARGE & RELAX", subtitle: "Attendant plugs you in" },
-  { id: 4, title: "ENJOY", subtitle: "Food & coffee delivered" },
-  { id: 5, title: "GO", subtitle: "Attendant unplugs • You're done" },
+  { id: 1, title: "ARRIVE", subtitle: "Pick a charger spot" },
+  { id: 2, title: "EASY PAYMENT", subtitle: "Stay in your car" },
+  { id: 3, title: "CHARGE", subtitle: "We plug you in" },
+  {
+    id: 4,
+    title: "SELECT SERVICE / ADD MORE TIME",
+    subtitle: "Add time or order food",
+  },
+  { id: 5, title: "FINISH", subtitle: "We unplug • You're done" },
 ];
 
 // ============================================
@@ -702,6 +706,7 @@ function Scene1({
   isActive: boolean;
   isMobile: boolean;
 }) {
+  const showBadge = isActive && progress > 0.3;
   const carPosition = isMobile
     ? "absolute left-[45%] -translate-x-1/2 bottom-3"
     : "absolute left-[65%] -translate-x-1/2 bottom-4";
@@ -711,6 +716,43 @@ function Scene1({
     : "absolute left-2 bottom-6";
   return (
     <div className="relative w-full h-full">
+      {/* Floating card - Pick your spot */}
+      {showBadge && (
+        <FloatingCard
+          className="absolute top-6 right-2 transition-all duration-500 z-30"
+          style={{
+            opacity: showBadge ? 1 : 0,
+            transform: `translateY(${showBadge ? 0 : -10}px)`,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center shadow-sm">
+              <svg
+                className="w-3 h-3 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold text-gray-800 leading-tight">
+                Pick your spot
+              </p>
+              <p className="text-[8px] text-gray-500 leading-tight font-medium">
+                NACS or CCS
+              </p>
+            </div>
+          </div>
+        </FloatingCard>
+      )}
+
       {/* Charger */}
       <div className={chargerPosition} style={{ opacity: isActive ? 1 : 0.3 }}>
         <ChargerSVG className="w-7 h-14" active={progress > 0.7} />
@@ -743,6 +785,7 @@ function Scene2({
   isActive: boolean;
   isMobile: boolean;
 }) {
+  const showBadge = isActive && progress > 0.2;
   const valetPosition = isMobile
     ? "absolute left-[25%] bottom-3 transition-all duration-700 z-10"
     : "absolute left-[45%] bottom-4 transition-all duration-700 z-10";
@@ -752,6 +795,43 @@ function Scene2({
     : "absolute left-[65%] -translate-x-1/2 bottom-4";
   return (
     <div className="relative w-full h-full">
+      {/* Floating card - Stay in your car */}
+      {showBadge && (
+        <FloatingCard
+          className="absolute top-6 right-2 transition-all duration-500 z-30"
+          style={{
+            opacity: showBadge ? 1 : 0,
+            transform: `translateY(${showBadge ? 0 : -10}px)`,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm">
+              <svg
+                className="w-3 h-3 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  d="M20 6L9 17l-5-5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold text-gray-800 leading-tight">
+                Stay in your car<span className="text-red-500">*</span>
+              </p>
+              <p className="text-[8px] text-gray-500 leading-tight font-medium">
+                We come to you
+              </p>
+            </div>
+          </div>
+        </FloatingCard>
+      )}
+
       {/* Charger */}
       <div
         className="absolute left-2 bottom-6"
@@ -806,8 +886,41 @@ function Scene3({
 
   return (
     <div className="relative w-full h-full">
-      {/* Floating badge */}
+      {/* Floating card - Pick your spot */}
       {showBadge && (
+        <FloatingCard
+          className="absolute top-6 right-2 transition-all duration-500 z-30"
+          style={{
+            opacity: showBadge ? 1 : 0,
+            transform: `translateY(${showBadge ? 0 : -10}px)`,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center shadow-sm">
+              <svg
+                className="w-3 h-3 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path
+                  d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold text-gray-800 leading-tight">
+                Charge 10 minutes
+              </p>
+            </div>
+          </div>
+        </FloatingCard>
+      )}
+      {/* Floating badge */}
+      {/* {showBadge && (
         <FloatingCard
           className="absolute top-8 right-2 transition-all duration-500 z-30"
           style={{
@@ -828,7 +941,7 @@ function Scene3({
             </span>
           </div>
         </FloatingCard>
-      )}
+      )} */}
 
       {/* Charger */}
       <div
@@ -882,6 +995,7 @@ function Scene4({
   isMobile: boolean;
 }) {
   const showNotif = isActive && progress > 0.2;
+  const showBadge = isActive && progress > 0.5;
   const carPosition = isMobile
     ? "absolute left-[40%] -translate-x-1/2 bottom-3"
     : "absolute left-[65%] -translate-x-1/2 bottom-4";
@@ -893,30 +1007,39 @@ function Scene4({
   return (
     <div className="relative w-full h-full">
       {/* Notification card */}
-      {showNotif && (
+      {showBadge && (
         <FloatingCard
-          className="absolute top-8 right-2 transition-all duration-500 z-30"
+          className="absolute top-6 right-2 transition-all duration-500 z-30"
           style={{
-            opacity: showNotif ? 1 : 0,
-            transform: `translateY(${showNotif ? 0 : -10}px)`,
+            opacity: showBadge ? 1 : 0,
+            transform: `translateY(${showBadge ? 0 : -10}px)`,
           }}
         >
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center shadow-sm">
-              <span className="text-[9px] text-white font-bold">H</span>
+              <svg
+                className="w-3.5 h-3.5 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
             </div>
             <div>
               <p className="text-[10px] font-semibold text-gray-800 leading-tight">
-                Order ready!
+                Select your services
               </p>
-              <p className="text-[8px] text-gray-400 leading-tight">
-                Arriving now
+              <p className="text-[8px] text-gray-500 leading-tight font-medium">
+                or add more charging time
               </p>
             </div>
           </div>
         </FloatingCard>
       )}
-      {showNotif && (
+      {/* {showNotif && (
         <FloatingCard
           className="absolute top-20 right-2 transition-all duration-500 z-30"
           style={{
@@ -935,7 +1058,7 @@ function Scene4({
             </div>
           </div>
         </FloatingCard>
-      )}
+      )} */}
 
       {/* Charger */}
       <div
@@ -995,7 +1118,7 @@ function Scene5({
   return (
     <div className="relative w-full h-full">
       {/* Ready badge */}
-      {showBadge && (
+      {/* {showBadge && (
         <FloatingCard
           className="absolute top-8 right-2 transition-all duration-500 z-30"
           style={{
@@ -1022,9 +1145,9 @@ function Scene5({
             </span>
           </div>
         </FloatingCard>
-      )}
+      )} */}
 
-      {showBadge && (
+      {/* {showBadge && (
         <FloatingCard
           className="absolute top-20 right-2 transition-all duration-500 z-30"
           style={{
@@ -1051,7 +1174,7 @@ function Scene5({
             </span>
           </div>
         </FloatingCard>
-      )}
+      )} */}
 
       {/* Charger */}
       <div
@@ -1202,39 +1325,32 @@ export function JourneyBattery() {
       }
 
       if (label) {
-        const done = allDoneRef.current;
-        const isLarge = isCurrent && !done;
+        label.style.opacity = isActive ? "1" : "0.4";
 
-        label.style.opacity = isActive ? "1" : "0.35";
-
-        // Pill sizing
+        // Pill - consistent size, just color changes
         const pill = label.querySelector("[data-pill]") as HTMLElement;
         if (pill) {
-          pill.style.width = isLarge ? "36px" : "20px";
-          pill.style.height = isLarge ? "36px" : "20px";
-          pill.style.fontSize = isLarge ? "14px" : "9px";
-          pill.style.boxShadow =
-            isCurrent && !done
-              ? "0 4px 14px rgba(249,115,22,0.45)"
-              : isCurrent
-                ? "0 2px 8px rgba(249,115,22,0.4)"
-                : "none";
+          pill.style.background = isCurrent
+            ? "linear-gradient(135deg,#f97316,#fb923c)"
+            : isActive
+              ? "#1e293b"
+              : "#e2e8f0";
+          pill.style.color = isActive ? "#fff" : "#94a3b8";
+          pill.style.boxShadow = isCurrent
+            ? "0 4px 12px rgba(249,115,22,0.4)"
+            : "none";
         }
 
-        // Title sizing
+        // Title - consistent size, just color changes
         const title = label.querySelector("[data-title]") as HTMLElement;
         if (title) {
-          title.style.fontSize = isLarge ? "20px" : "11px";
-          title.style.letterSpacing = isLarge ? "0.12em" : "0.08em";
-          title.style.marginBottom = isLarge ? "4px" : "2px";
           title.style.color = isCurrent ? "#f97316" : "#1e293b";
         }
 
-        // Subtitle sizing
+        // Subtitle - just opacity change
         const subtitle = label.querySelector("[data-subtitle]") as HTMLElement;
         if (subtitle) {
-          subtitle.style.fontSize = isLarge ? "13px" : "10px";
-          subtitle.style.opacity = isActive ? "1" : "0";
+          subtitle.style.opacity = isActive ? "0.8" : "0";
         }
       }
     }
@@ -1250,7 +1366,8 @@ export function JourneyBattery() {
     // Calculate the scroll position for this progress
     const scrollStart = st.start;
     const scrollEnd = st.end;
-    const targetScroll = scrollStart + (scrollEnd - scrollStart) * targetProgress;
+    const targetScroll =
+      scrollStart + (scrollEnd - scrollStart) * targetProgress;
 
     // Smooth scroll to that position
     gsap.to(window, {
@@ -1351,8 +1468,10 @@ export function JourneyBattery() {
                     key={step.id}
                     className="flex-shrink-0 w-[85vw] snap-center rounded-2xl overflow-hidden border border-slate-200/60"
                     style={{
-                      background: "linear-gradient(180deg, #f8fafc 0%, #ffffff 40%, #ffffff 100%)",
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03)",
+                      background:
+                        "linear-gradient(180deg, #f8fafc 0%, #ffffff 40%, #ffffff 100%)",
+                      boxShadow:
+                        "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03)",
                     }}
                   >
                     {/* Scene visualization */}
@@ -1369,7 +1488,8 @@ export function JourneyBattery() {
                         <div
                           className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
                           style={{
-                            background: "linear-gradient(135deg, #f97316, #fb923c)",
+                            background:
+                              "linear-gradient(135deg, #f97316, #fb923c)",
                             color: "#fff",
                             boxShadow: "0 2px 6px rgba(249,115,22,0.3)",
                           }}
@@ -1380,9 +1500,9 @@ export function JourneyBattery() {
                           <p className="text-base font-bold text-slate-800">
                             {step.title}
                           </p>
-                          <p className="text-sm text-slate-500">
+                          {/* <p className="text-sm text-slate-500">
                             {step.subtitle}
-                          </p>
+                          </p> */}
                         </div>
                       </div>
                     </div>
@@ -1538,7 +1658,7 @@ export function JourneyBattery() {
                 Your charging journey
               </h2>
               <p className="text-slate-500 max-w-md mx-auto text-base">
-                From arrival to adventure. Every minute designed for you.
+                Charging made simple, fast, and effortless.
               </p>
             </div>
             <div className="relative">
@@ -1676,70 +1796,60 @@ export function JourneyBattery() {
                   </div>
                 ))}
               </div> */}
-              <div
-                ref={labelsRef}
-                className="grid grid-cols-5 mt-5"
-                style={{ minHeight: "88px" }}
-              >
+              <div ref={labelsRef} className="grid grid-cols-5 mt-6">
                 {journeySteps.map((step, i) => {
                   const isActive = activeStep >= i;
                   const isCurrent = activeStep === i;
-                  const isLarge = isCurrent && !allDone;
 
                   return (
                     <button
                       key={step.id}
                       onClick={() => handleStepClick(i)}
-                      className="flex flex-col items-center gap-2 transition-all duration-300 cursor-pointer group hover:scale-105"
-                      style={{ opacity: isActive ? 1 : 0.5 }}
+                      className="flex flex-col items-center gap-2.5 transition-all duration-300 cursor-pointer group py-2"
+                      style={{ opacity: isActive ? 1 : 0.4 }}
                     >
                       {/* Pill */}
                       <div
                         data-pill
-                        className="inline-flex items-center justify-center rounded-full font-bold transition-all duration-500 group-hover:scale-110"
+                        className="inline-flex items-center justify-center rounded-full font-bold transition-all duration-300 group-hover:scale-110"
                         style={{
-                          width: isLarge ? "36px" : "20px",
-                          height: isLarge ? "36px" : "20px",
-                          fontSize: isLarge ? "14px" : "9px",
+                          width: "28px",
+                          height: "28px",
+                          fontSize: "11px",
                           background: isCurrent
                             ? "linear-gradient(135deg,#f97316,#fb923c)"
                             : isActive
                               ? "#1e293b"
                               : "#e2e8f0",
                           color: isActive ? "#fff" : "#94a3b8",
-                          boxShadow: isLarge
-                            ? "0 4px 14px rgba(249,115,22,0.45)"
-                            : isCurrent
-                              ? "0 2px 8px rgba(249,115,22,0.4)"
-                              : "none",
+                          boxShadow: isCurrent
+                            ? "0 4px 12px rgba(249,115,22,0.4)"
+                            : "none",
                         }}
                       >
                         {step.id}
                       </div>
 
-                      <div className="text-center">
+                      <div className="text-center px-1">
                         <p
                           data-title
-                          className="font-bold tracking-widest uppercase transition-all duration-500 group-hover:text-orange-500"
+                          className="font-bold tracking-wide uppercase transition-all duration-300 group-hover:text-orange-500 text-sm lg:text-base"
                           style={{
-                            fontSize: isLarge ? "20px" : "11px",
-                            letterSpacing: isLarge ? "0.12em" : "0.08em",
-                            marginBottom: isLarge ? "4px" : "2px",
                             color: isCurrent ? "#f97316" : "#1e293b",
+                            marginBottom: "2px",
                           }}
                         >
                           {step.title}
                         </p>
-                        <p
+                        {/* <p
                           data-subtitle
-                          className="text-slate-400 leading-snug transition-all duration-500"
+                          className="text-slate-400 leading-snug transition-all duration-300 text-xs lg:text-sm"
                           style={{
-                            fontSize: isLarge ? "13px" : "10px",
-                            opacity: isActive ? 1 : 0,
+                            opacity: isActive ? 0.8 : 0,
                           }}
                         >
                           {step.subtitle}
-                        </p>
+                        </p> */}
                       </div>
                     </button>
                   );
@@ -1749,15 +1859,35 @@ export function JourneyBattery() {
               {/* Scroll/Click indicator */}
               <div className="flex items-center justify-center gap-3 mt-6 text-slate-400">
                 <div className="flex items-center gap-1.5">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59"
+                    />
                   </svg>
                   <span className="text-xs font-medium">Click cards</span>
                 </div>
                 <span className="text-slate-300">or</span>
                 <div className="flex items-center gap-1.5">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                    />
                   </svg>
                   <span className="text-xs font-medium">Scroll</span>
                 </div>

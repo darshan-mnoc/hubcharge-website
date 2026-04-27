@@ -33,7 +33,7 @@ export default function HomePage() {
       <PricingSection />
 
       {/* 6. MEMBERSHIP: Get more value */}
-      <TimeClubMembership />
+      {/* <TimeClubMembership /> */}
 
       {/* 7. LOCATIONS: Find your Hub */}
       <FindYourHub />
