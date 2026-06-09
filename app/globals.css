@@ -3,54 +3,64 @@
 @tailwind utilities;
 
 /* ============================================
-   HUBCHARGE - DARK INTERACTIVE DESIGN SYSTEM
-   Premium, Sleek, Electric Feel
+   HUBCHARGE - CHARGETRIP-INSPIRED DESIGN SYSTEM
+   Premium, Warm, Modern Feel
+   Based on chargetrip.com design system
    ============================================ */
 
 @layer base {
   :root {
-    /* Dark Theme Core */
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
+    /* Chargetrip Color Palette */
+    --color-dark: #262322;
+    --color-dark-secondary: #1a1918;
+    --color-muted: #877f78;
+    --color-muted-dark: #59524f;
+    --color-light: #f4f3f2;
+    --color-light-secondary: #e8e6e4;
+    --color-accent: #f94d00;
+    --color-accent-hover: #e04500;
+    --color-accent-light: rgba(249, 77, 0, 0.15);
 
     /* Surfaces */
-    --surface: 0 0% 7%;
-    --surface-hover: 0 0% 10%;
-    --surface-elevated: 0 0% 9%;
+    --background: 18 14% 14%;
+    --foreground: 30 8% 95%;
+    --surface: 20 10% 18%;
+    --surface-hover: 20 10% 22%;
+    --surface-elevated: 20 10% 20%;
 
-    /* Brand Orange */
-    --primary: 24 90% 55%;
-    --primary-hover: 24 90% 48%;
-    --primary-light: 24 80% 15%;
+    /* Brand Orange - Chargetrip Style */
+    --primary: 18 100% 49%;
+    --primary-hover: 18 100% 44%;
+    --primary-light: 18 100% 49% / 0.15;
     --primary-foreground: 0 0% 100%;
 
     /* Accent Colors */
     --accent-green: 142 71% 45%;
     --accent-blue: 217 91% 60%;
 
-    /* Text */
-    --text-primary: 0 0% 98%;
-    --text-secondary: 0 0% 70%;
-    --text-muted: 0 0% 45%;
+    /* Text - Warm tones */
+    --text-primary: 30 8% 95%;
+    --text-secondary: 24 8% 55%;
+    --text-muted: 24 8% 45%;
 
     /* Borders */
-    --border: 0 0% 15%;
-    --border-hover: 0 0% 25%;
+    --border: 24 8% 22%;
+    --border-hover: 24 8% 32%;
 
     /* System */
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --card: 20 10% 16%;
+    --card-foreground: 30 8% 95%;
+    --muted: 24 8% 20%;
+    --muted-foreground: 24 8% 55%;
     --destructive: 0 72% 51%;
-    --ring: 24 90% 55%;
-    --radius: 1rem;
+    --ring: 18 100% 49%;
+    --radius: 0.75rem;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-[#3a3533];
   }
 
   html {
@@ -59,8 +69,9 @@
   }
 
   body {
-    @apply bg-[#0a0a0a] text-white antialiased;
+    @apply bg-[#262322] text-[#f4f3f2] antialiased;
     font-family:
+      "Geist",
       "Inter",
       -apple-system,
       BlinkMacSystemFont,
@@ -69,7 +80,7 @@
   }
 
   ::selection {
-    background: rgba(244, 130, 69, 0.3);
+    background: rgba(249, 77, 0, 0.3);
     color: white;
   }
 
@@ -79,16 +90,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #0a0a0a;
+    background: #262322;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #333;
+    background: #59524f;
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #f48245;
+    background: #f94d00;
   }
 }
 
@@ -99,10 +110,10 @@
 @keyframes glow-pulse {
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(244, 130, 69, 0.4);
+    box-shadow: 0 0 20px rgba(249, 77, 0, 0.4);
   }
   50% {
-    box-shadow: 0 0 40px rgba(244, 130, 69, 0.6);
+    box-shadow: 0 0 40px rgba(249, 77, 0, 0.6);
   }
 }
 
@@ -160,7 +171,7 @@
     display: none;
   }
 
-  /* Section Spacing */
+  /* Section Spacing - 8px system */
   .section-padding {
     @apply py-24 lg:py-32;
   }
@@ -173,86 +184,89 @@
   .heading-display {
     font-size: clamp(2.5rem, 6vw, 4rem);
     @apply font-bold leading-[1.05] tracking-tight;
+    letter-spacing: -0.02em;
   }
 
   .heading-section {
     font-size: clamp(2rem, 4vw, 3.5rem);
-    @apply font-bold leading-tight tracking-tight;
+    @apply font-bold leading-tight;
+    letter-spacing: -0.02em;
   }
 
   .heading-card {
     @apply text-xl lg:text-2xl font-semibold;
+    letter-spacing: -0.01em;
   }
 
   .text-body {
-    @apply text-white/60 leading-relaxed;
+    @apply text-[#877f78] leading-relaxed;
   }
 
   .text-body-lg {
-    @apply text-lg lg:text-xl text-white/60 leading-relaxed;
+    @apply text-lg lg:text-xl text-[#877f78] leading-relaxed;
   }
 
-  /* Gradient Text */
+  /* Gradient Text - Chargetrip Orange */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-orange-500 to-amber-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#f94d00] via-[#ff6b2c] to-[#f94d00];
   }
 
   .text-glow {
-    text-shadow: 0 0 40px rgba(244, 130, 69, 0.5);
+    text-shadow: 0 0 40px rgba(249, 77, 0, 0.5);
   }
 
   /* Badges */
   .badge {
     @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium;
-    @apply bg-white/5 border border-white/10 backdrop-blur-sm;
+    @apply bg-[#f4f3f2]/5 border border-[#f4f3f2]/10 backdrop-blur-sm;
   }
 
   .badge-primary {
-    @apply bg-orange-500/10 border-orange-500/20 text-orange-400;
+    @apply bg-[#f94d00]/10 border-[#f94d00]/20 text-[#f94d00];
   }
 
   /* Glass Effects */
   .glass {
-    @apply bg-white/5 backdrop-blur-xl;
+    @apply bg-[#f4f3f2]/5 backdrop-blur-xl;
   }
 
   .glass-card {
-    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] rounded-2xl;
+    @apply bg-[#f4f3f2]/[0.03] backdrop-blur-xl border border-[#f4f3f2]/[0.08] rounded-2xl;
   }
 
-  /* Cards */
+  /* Cards - Chargetrip Style */
   .card {
-    @apply bg-[#111] rounded-2xl border border-white/[0.08];
+    @apply bg-[#1a1918] rounded-2xl border border-[#3a3533];
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card:hover {
-    @apply border-white/[0.15] bg-[#151515];
+    @apply border-[#59524f] bg-[#2a2725];
   }
 
   .card-glow:hover {
-    box-shadow: 0 0 40px rgba(244, 130, 69, 0.1);
+    box-shadow: 0 0 40px rgba(249, 77, 0, 0.1);
   }
 
-  /* Buttons */
+  /* Buttons - Chargetrip Style */
   .btn {
     @apply inline-flex items-center justify-center gap-2 font-semibold rounded-full transition-all duration-300;
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3;
-    @apply hover:shadow-lg hover:shadow-orange-500/25 hover:scale-[1.02];
+    @apply bg-[#f94d00] text-white px-6 py-3;
+    @apply hover:bg-[#e04500] hover:shadow-lg hover:shadow-[#f94d00]/25 hover:scale-[1.02];
     @apply active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply bg-white/10 text-white px-6 py-3 border border-white/10;
-    @apply hover:bg-white/15 hover:border-white/20;
+    @apply bg-[#f4f3f2]/10 text-[#f4f3f2] px-6 py-3 border border-[#f4f3f2]/10;
+    @apply hover:bg-[#f4f3f2]/15 hover:border-[#f4f3f2]/20;
   }
 
   .btn-outline {
-    @apply border-2 border-white/20 text-white px-6 py-3;
-    @apply hover:border-orange-500 hover:text-orange-400 hover:bg-orange-500/10;
+    @apply border-2 border-[#f4f3f2]/20 text-[#f4f3f2] px-6 py-3;
+    @apply hover:border-[#f94d00] hover:text-[#f94d00] hover:bg-[#f94d00]/10;
   }
 
   .btn-lg {
@@ -265,23 +279,23 @@
   }
 
   .icon-box-primary {
-    @apply bg-orange-500/20 text-orange-400;
+    @apply bg-[#f94d00]/20 text-[#f94d00];
   }
 
   /* Glow Effects */
   .glow-orange {
-    box-shadow: 0 0 30px rgba(244, 130, 69, 0.4);
+    box-shadow: 0 0 30px rgba(249, 77, 0, 0.4);
   }
 
   .glow-green {
     box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
   }
 
-  /* Grid Pattern */
+  /* Grid Pattern - Subtler */
   .grid-pattern {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(244, 243, 242, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244, 243, 242, 0.02) 1px, transparent 1px);
     background-size: 60px 60px;
   }
 
@@ -301,16 +315,16 @@
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Form Elements */
+  /* Form Elements - Chargetrip Style */
   .input {
-    @apply w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white;
-    @apply placeholder:text-white/30;
-    @apply focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50;
+    @apply w-full px-4 py-3 bg-[#f4f3f2]/5 border border-[#3a3533] rounded-xl text-[#f4f3f2];
+    @apply placeholder:text-[#59524f];
+    @apply focus:outline-none focus:ring-2 focus:ring-[#f94d00]/30 focus:border-[#f94d00]/50;
     @apply transition-all duration-200;
   }
 
   .input:hover {
-    @apply border-white/20;
+    @apply border-[#59524f];
   }
 
   /* Safe Area */
@@ -334,7 +348,7 @@
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, #f48245, #fbbf24, #f48245);
+  background: linear-gradient(135deg, #f94d00, #ff6b2c, #f94d00);
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
   -webkit-mask:
@@ -347,7 +361,7 @@
 
 /* Energy Lines */
 .energy-line {
-  background: linear-gradient(90deg, transparent, #f48245, transparent);
+  background: linear-gradient(90deg, transparent, #f94d00, transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
@@ -361,7 +375,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(244, 130, 69, 0.5),
+    rgba(249, 77, 0, 0.5),
     transparent
   );
   animation: scan 4s linear infinite;
@@ -386,26 +400,26 @@
 
 /* Progress Bar */
 .progress-bar {
-  @apply h-1 bg-white/10 rounded-full overflow-hidden;
+  @apply h-1 bg-[#f4f3f2]/10 rounded-full overflow-hidden;
 }
 
 .progress-fill {
-  @apply h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full;
+  @apply h-full bg-[#f94d00] rounded-full;
   transition: width 0.5s ease-out;
 }
 
 /* Link Styles */
 .link {
-  @apply text-orange-400 font-medium transition-colors duration-200;
+  @apply text-[#f94d00] font-medium transition-colors duration-200;
 }
 
 .link:hover {
-  @apply text-orange-300;
+  @apply text-[#ff6b2c];
 }
 
 /* Focus States */
 *:focus-visible {
-  @apply outline-none ring-2 ring-orange-500 ring-offset-2 ring-offset-[#0a0a0a];
+  @apply outline-none ring-2 ring-[#f94d00] ring-offset-2 ring-offset-[#262322];
 }
 
 /* Reduced Motion */

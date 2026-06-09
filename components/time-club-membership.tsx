@@ -17,13 +17,13 @@ export function TimeClubMembership() {
     <section
       ref={sectionRef}
       id="membership"
-      className="relative section-padding bg-[#080808] overflow-hidden"
+      className="relative section-padding bg-[#1a1918] overflow-hidden"
     >
       {/* Grid Pattern */}
       <div className="absolute inset-0 grid-pattern opacity-20" />
 
       {/* Gradient Orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-orange-500/10 rounded-full blur-[200px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-[#f94d00]/10 rounded-full blur-[200px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -39,7 +39,7 @@ export function TimeClubMembership() {
               HubCharge Membership
             </span>
           </div>
-          <h2 className="heading-section text-white mb-6">
+          <h2 className="heading-section text-[#f4f3f2] mb-6">
             Your time deserves
             <span className="text-gradient text-glow"> rewards</span>
           </h2>
@@ -61,17 +61,17 @@ export function TimeClubMembership() {
           >
             <div className="flex items-center justify-between mb-6">
               <div>
-                <p className="text-white/40 text-sm mb-1">Pay As You Go</p>
-                <h3 className="text-2xl font-bold text-white">Standard</h3>
+                <p className="text-[#59524f] text-sm mb-1">Pay As You Go</p>
+                <h3 className="text-2xl font-bold text-[#f4f3f2]">Standard</h3>
               </div>
-              <div className="w-14 h-14 rounded-2xl glass flex items-center justify-center border border-white/10">
-                <Car className="h-7 w-7 text-white/60" />
+              <div className="w-14 h-14 rounded-2xl glass flex items-center justify-center border border-[#3a3533]">
+                <Car className="h-7 w-7 text-[#877f78]" />
               </div>
             </div>
 
             <div className="mb-8">
-              <span className="text-5xl font-bold text-white">Free</span>
-              <p className="text-white/30 text-sm mt-2">No commitment needed</p>
+              <span className="text-5xl font-bold text-[#f4f3f2]">Free</span>
+              <p className="text-[#59524f] text-sm mt-2">No commitment needed</p>
             </div>
 
             <ul className="space-y-4 mb-8">
@@ -87,11 +87,11 @@ export function TimeClubMembership() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex items-center gap-3 text-white/60"
+                  className="flex items-center gap-3 text-[#877f78]"
                 >
                   <div className="w-5 h-5 rounded-full glass flex items-center justify-center flex-shrink-0">
                     <Check
-                      className="h-3 w-3 text-white/40"
+                      className="h-3 w-3 text-[#59524f]"
                       strokeWidth={2.5}
                     />
                   </div>
@@ -121,13 +121,13 @@ export function TimeClubMembership() {
             <motion.div
               animate={{
                 boxShadow: [
-                  "0 0 30px rgba(244, 130, 69, 0.2)",
-                  "0 0 60px rgba(244, 130, 69, 0.4)",
-                  "0 0 30px rgba(244, 130, 69, 0.2)",
+                  "0 0 30px rgba(249, 77, 0, 0.2)",
+                  "0 0 60px rgba(249, 77, 0, 0.4)",
+                  "0 0 30px rgba(249, 77, 0, 0.2)",
                 ],
               }}
               transition={{ duration: 3, repeat: Infinity }}
-              className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-500"
+              className="absolute inset-0 bg-gradient-to-br from-[#f94d00] to-[#ff6b2c]"
             />
 
             {/* Badge */}
@@ -147,20 +147,20 @@ export function TimeClubMembership() {
             <div className="relative p-8 pt-12">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <p className="text-white/70 text-sm mb-1">
+                  <p className="text-[#f4f3f2]/80 text-sm mb-1">
                     Dedicated Charger
                   </p>
-                  <h3 className="text-2xl font-bold text-white">Member</h3>
+                  <h3 className="text-2xl font-bold text-[#f4f3f2]">Member</h3>
                 </div>
                 <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                  <Zap className="h-7 w-7 text-white" />
+                  <Zap className="h-7 w-7 text-[#f4f3f2]" />
                 </div>
               </div>
 
               <div className="mb-8">
-                <span className="text-5xl font-bold text-white">$1,009</span>
-                <span className="text-white/70">/year</span>
-                <p className="text-white/60 text-sm mt-2">
+                <span className="text-5xl font-bold text-[#f4f3f2]">$1,009</span>
+                <span className="text-[#f4f3f2]/80">/year</span>
+                <p className="text-[#877f78] text-sm mt-2">
                   Your personal charging spot
                 </p>
               </div>
@@ -180,10 +180,10 @@ export function TimeClubMembership() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className="flex items-center gap-3 text-white"
+                    className="flex items-center gap-3 text-[#f4f3f2]"
                   >
                     <div className="w-5 h-5 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
-                      <Check className="h-3 w-3 text-white" strokeWidth={2.5} />
+                      <Check className="h-3 w-3 text-[#f4f3f2]" strokeWidth={2.5} />
                     </div>
                     {feature}
                   </motion.li>
@@ -214,10 +214,10 @@ export function TimeClubMembership() {
               <Gift className="h-6 w-6" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">
+              <h3 className="text-xl font-bold text-[#f4f3f2]">
                 Rewards Calculator
               </h3>
-              <p className="text-white/40 text-sm">
+              <p className="text-[#59524f] text-sm">
                 See how much you'll earn back
               </p>
             </div>
@@ -225,14 +225,14 @@ export function TimeClubMembership() {
 
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div>
-              <p className="text-white/50 text-sm mb-3">
+              <p className="text-[#f4f3f2]/50 text-sm mb-3">
                 Monthly spend at HubCharge locations
               </p>
               <div className="flex items-center gap-4 mb-4">
-                <span className="text-4xl font-bold text-white">
+                <span className="text-4xl font-bold text-[#f4f3f2]">
                   ${monthlySpend}
                 </span>
-                <span className="text-white/30">/month</span>
+                <span className="text-[#59524f]">/month</span>
               </div>
               <input
                 type="range"
@@ -245,13 +245,13 @@ export function TimeClubMembership() {
                   [&::-webkit-slider-thumb]:appearance-none
                   [&::-webkit-slider-thumb]:w-5
                   [&::-webkit-slider-thumb]:h-5
-                  [&::-webkit-slider-thumb]:bg-orange-500
+                  [&::-webkit-slider-thumb]:bg-[#f94d00]
                   [&::-webkit-slider-thumb]:rounded-full
                   [&::-webkit-slider-thumb]:cursor-pointer
                   [&::-webkit-slider-thumb]:shadow-lg
-                  [&::-webkit-slider-thumb]:shadow-orange-500/30"
+                  [&::-webkit-slider-thumb]:shadow-[#f94d00]/30"
               />
-              <div className="flex justify-between text-white/20 text-xs mt-2">
+              <div className="flex justify-between text-[#f4f3f2]/20 text-xs mt-2">
                 <span>$50</span>
                 <span>$500</span>
                 <span>$1000</span>
@@ -261,26 +261,26 @@ export function TimeClubMembership() {
             <div className="grid grid-cols-2 gap-4">
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                className="glass rounded-2xl p-5 text-center border border-white/10"
+                className="glass rounded-2xl p-5 text-center border border-[#3a3533]"
               >
-                <p className="text-white/40 text-xs mb-2">Monthly Rewards</p>
+                <p className="text-[#59524f] text-xs mb-2">Monthly Rewards</p>
                 <p className="text-2xl font-bold text-orange-400">
                   ${monthlyRewards}
                 </p>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                className="rounded-2xl p-5 text-center bg-orange-500/20 border border-orange-500/30"
+                className="rounded-2xl p-5 text-center bg-[#f94d00]/20 border border-[#f94d00]/30"
               >
-                <p className="text-white/60 text-xs mb-2">Yearly Rewards</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-[#877f78] text-xs mb-2">Yearly Rewards</p>
+                <p className="text-2xl font-bold text-[#f4f3f2]">
                   ${yearlyRewards}
                 </p>
               </motion.div>
             </div>
           </div>
 
-          <p className="text-white/30 text-xs mt-6 text-center">
+          <p className="text-[#59524f] text-xs mt-6 text-center">
             Earn $0.0035 for every dollar spent on food, drinks, and services at
             HubCharge partner locations.
           </p>
@@ -293,9 +293,9 @@ export function TimeClubMembership() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <p className="text-white/30 text-sm">
+          <p className="text-[#59524f] text-sm">
             All memberships include{" "}
-            <span className="text-white/50 font-medium">free cancellation</span>{" "}
+            <span className="text-[#f4f3f2]/50 font-medium">free cancellation</span>{" "}
             anytime.
           </p>
         </motion.div>

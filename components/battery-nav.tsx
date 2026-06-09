@@ -60,7 +60,7 @@ export function BatteryNav() {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/[0.06]"
+            ? "bg-[#262322]/90 backdrop-blur-xl border-b border-[#f4f3f2]/[0.06]"
             : "bg-transparent"
         }`}
       >
@@ -88,7 +88,7 @@ export function BatteryNav() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center">
-            <div className="relative flex items-center glass rounded-full px-1 py-1 border border-white/10">
+            <div className="relative flex items-center glass rounded-full px-1 py-1 border border-[#f4f3f2]/10">
               {navLinks.map((link) => (
                 <motion.button
                   key={link.id}
@@ -99,14 +99,14 @@ export function BatteryNav() {
                   whileTap={{ scale: 0.95 }}
                   className={`relative px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-200 ${
                     activeLink === link.id
-                      ? "text-white"
-                      : "text-white/60 hover:text-white"
+                      ? "text-[#f4f3f2]"
+                      : "text-[#877f78] hover:text-[#f4f3f2]"
                   }`}
                 >
                   {activeLink === link.id && (
                     <motion.div
                       layoutId="navHighlight"
-                      className="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"
+                      className="absolute inset-0 bg-[#f94d00] rounded-full"
                       transition={{
                         type: "spring",
                         bounce: 0.2,
@@ -126,7 +126,7 @@ export function BatteryNav() {
               href="#locations"
               whileHover={{
                 scale: 1.05,
-                boxShadow: "0 0 30px rgba(244, 130, 69, 0.5)",
+                boxShadow: "0 0 30px rgba(249, 77, 0, 0.5)",
               }}
               whileTap={{ scale: 0.95 }}
               onClick={(e) => {
@@ -157,7 +157,7 @@ export function BatteryNav() {
                 "_blank",
               );
             }}
-            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full"
+            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-[#f94d00] text-[#f4f3f2] rounded-full"
           >
             <Zap className="h-3 w-3" strokeWidth={2.5} />
             {/* <span>Start Charging</span> */}
@@ -168,7 +168,7 @@ export function BatteryNav() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden p-3 rounded-xl text-white/80 hover:text-white hover:bg-white/[0.06]"
+            className="lg:hidden p-3 rounded-xl text-[#f4f3f2]/80 hover:text-[#f4f3f2] hover:bg-[#f4f3f2]/[0.06]"
           >
             {mobileOpen ? (
               <X className="h-6 w-6" />
@@ -186,13 +186,13 @@ export function BatteryNav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-[#0a0a0a] lg:hidden"
+            className="fixed inset-0 z-40 bg-[#262322] lg:hidden"
           >
             <div className="absolute inset-0 grid-pattern opacity-30" />
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.3 }}
-              className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-orange-500 rounded-full blur-[150px]"
+              className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-[#f94d00] rounded-full blur-[150px]"
             />
 
             <div className="relative pt-28 px-6 pb-10 h-full overflow-y-auto">
@@ -204,15 +204,15 @@ export function BatteryNav() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
                     onClick={() => handleNavClick(link.id)}
-                    className="w-full flex items-center gap-4 p-5 rounded-2xl glass border border-white/[0.06] hover:border-orange-500/30 text-left group"
+                    className="w-full flex items-center gap-4 p-5 rounded-2xl glass border border-[#f4f3f2]/[0.06] hover:border-[#f94d00]/30 text-left group"
                   >
-                    <div className="w-14 h-14 rounded-xl bg-orange-500/10 group-hover:bg-orange-500/20 flex items-center justify-center transition-colors">
+                    <div className="w-14 h-14 rounded-xl bg-[#f94d00]/10 group-hover:bg-[#f94d00]/20 flex items-center justify-center transition-colors">
                       <link.icon
-                        className="h-6 w-6 text-orange-400"
+                        className="h-6 w-6 text-[#f94d00]"
                         strokeWidth={1.5}
                       />
                     </div>
-                    <span className="text-white/90 font-semibold text-lg">
+                    <span className="text-[#f4f3f2]/90 font-semibold text-lg">
                       {link.label}
                     </span>
                   </motion.button>
@@ -238,7 +238,7 @@ export function BatteryNav() {
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-white/[0.06] safe-area-bottom"
+        className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-[#262322]/95 backdrop-blur-xl border-t border-[#f4f3f2]/[0.06] safe-area-bottom"
       >
         <div className="grid grid-cols-5">
           {[
@@ -252,7 +252,7 @@ export function BatteryNav() {
               key={item.id}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleNavClick(item.id)}
-              className="flex flex-col items-center py-3 text-white/40 hover:text-orange-400 transition-colors"
+              className="flex flex-col items-center py-3 text-[#877f78] hover:text-[#f94d00] transition-colors"
             >
               <item.icon className="h-5 w-5" strokeWidth={1.5} />
               <span className="text-[10px] mt-1 font-medium">{item.label}</span>

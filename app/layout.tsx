@@ -1,13 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Geist, Inter } from "next/font/google";
 
 import "./globals.css";
 
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hubcharge.com"),
@@ -143,7 +140,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${geist.variable} ${inter.variable}`}>
       <head>
         <link rel="icon" href="/images/hubcharge-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/images/hubcharge-logo.png" />

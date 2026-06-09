@@ -38,7 +38,7 @@ export function HeroLifestyle() {
     <section
       ref={heroRef}
       id="top"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#262322]"
     >
       {/* Background with parallax */}
       <motion.div style={{ y }} className="absolute inset-0">
@@ -57,8 +57,8 @@ export function HeroLifestyle() {
           alt="HubCharge - Premium EV Charging"
           className="absolute inset-0 w-full h-full object-cover opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/80 via-transparent to-[#0a0a0a]/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#262322] via-transparent to-[#262322]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#262322]/80 via-transparent to-[#262322]/80" />
       </motion.div>
 
       {/* Grid Pattern */}
@@ -68,7 +68,7 @@ export function HeroLifestyle() {
       <motion.div
         animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-orange-500 rounded-full blur-[200px]"
+        className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#f94d00] rounded-full blur-[200px]"
       />
       <motion.div
         animate={{ scale: [1.2, 1, 1.2], opacity: [0.05, 0.1, 0.05] }}
@@ -78,7 +78,7 @@ export function HeroLifestyle() {
           ease: "easeInOut",
           delay: 1,
         }}
-        className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-amber-500 rounded-full blur-[150px]"
+        className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#ff6b2c] rounded-full blur-[150px]"
       />
 
       {/* Content */}
@@ -106,7 +106,7 @@ export function HeroLifestyle() {
         {/* Main Headline */}
         <motion.h1
           variants={itemVariants}
-          className="heading-display text-white mb-4"
+          className="heading-display text-[#f4f3f2] mb-4"
         >
           Full Service EV Charging
           {/* Drive In. Charge Up. Get Your Time Back. */}
@@ -120,7 +120,7 @@ export function HeroLifestyle() {
           className="text-body-lg mb-12 max-w-2xl mx-auto"
         >
           {/* Our attendant handles everything — plug in, charge, unplug. */}
-          <span className="text-white font-medium">
+          <span className="text-[#f4f3f2] font-medium">
             {" "}
             {/* You never leave your car. */}
           </span>
@@ -135,7 +135,7 @@ export function HeroLifestyle() {
             href="#story"
             whileHover={{
               scale: 1.05,
-              boxShadow: "0 0 40px rgba(244, 130, 69, 0.5)",
+              boxShadow: "0 0 40px rgba(249, 77, 0, 0.5)",
             }}
             whileTap={{ scale: 0.95 }}
             className="group btn btn-primary btn-lg"
@@ -170,10 +170,10 @@ export function HeroLifestyle() {
               transition={{ delay: 1 + i * 0.15 }}
               className="text-center px-4"
             >
-              <p className="text-2xl lg:text-3xl font-bold text-orange-400 text-glow mb-1">
+              <p className="text-2xl lg:text-3xl font-bold text-[#f94d00] text-glow mb-1">
                 {stat.value}
               </p>
-              <p className="text-white/40 text-sm">{stat.label}</p>
+              <p className="text-[#877f78] text-sm">{stat.label}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -186,19 +186,19 @@ export function HeroLifestyle() {
         transition={{ delay: 1.5 }}
         className="absolute bottom-2  -translate-x-1/2 flex flex-col items-center gap-3"
       >
-        <span className="text-white/30 text-xs uppercase tracking-[0.2em]">
+        <span className="text-[#59524f] text-xs uppercase tracking-[0.2em]">
           Scroll
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          <ChevronDown className="h-5 w-5 text-orange-400" />
+          <ChevronDown className="h-5 w-5 text-[#f94d00]" />
         </motion.div>
       </motion.div>
 
       {/* Bottom Energy Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-50" />
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f94d00] to-transparent opacity-50" />
     </section>
   );
 }

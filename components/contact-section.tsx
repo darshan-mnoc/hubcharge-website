@@ -24,11 +24,11 @@ export function ContactSection() {
     <section
       ref={sectionRef}
       id="contact"
-      className="relative section-padding bg-[#080808] overflow-hidden"
+      className="relative section-padding bg-[#1a1918] overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 grid-pattern opacity-10" />
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[200px]" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#f94d00]/10 rounded-full blur-[200px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -45,7 +45,7 @@ export function ContactSection() {
             </span>
           </div>
 
-          <h2 className="heading-section text-white mb-4">
+          <h2 className="heading-section text-[#f4f3f2] mb-4">
             Questions?{" "}
             <span className="text-gradient text-glow">We're here.</span>
           </h2>
@@ -90,10 +90,10 @@ export function ContactSection() {
                   />
                 </svg>
               </motion.div>
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-xl font-bold text-[#f4f3f2] mb-2">
                 Message Sent!
               </h3>
-              <p className="text-white/50 text-sm">
+              <p className="text-[#877f78] text-sm">
                 We'll get back to you within 24 hours.
               </p>
             </motion.div>
@@ -101,7 +101,7 @@ export function ContactSection() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-white/50 text-sm mb-2 block">
+                  <label className="text-[#877f78] text-sm mb-2 block">
                     Name
                   </label>
                   <input
@@ -116,7 +116,7 @@ export function ContactSection() {
                   />
                 </div>
                 <div>
-                  <label className="text-white/50 text-sm mb-2 block">
+                  <label className="text-[#877f78] text-sm mb-2 block">
                     Email
                   </label>
                   <input
@@ -133,7 +133,7 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label className="text-white/50 text-sm mb-2 block">
+                <label className="text-[#877f78] text-sm mb-2 block">
                   Subject
                 </label>
                 <input
@@ -149,7 +149,7 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label className="text-white/50 text-sm mb-2 block">
+                <label className="text-[#877f78] text-sm mb-2 block">
                   Message
                 </label>
                 <textarea
@@ -168,7 +168,7 @@ export function ContactSection() {
                 type="submit"
                 whileHover={{
                   scale: 1.02,
-                  boxShadow: "0 0 30px rgba(244, 130, 69, 0.4)",
+                  boxShadow: "0 0 30px rgba(249, 77, 0, 0.4)",
                 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full btn btn-primary btn-lg"
@@ -186,21 +186,21 @@ export function ContactSection() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 mt-10 pt-8 border-t border-white/5"
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 mt-10 pt-8 border-t border-[#3a3533]"
         >
           {/* Phone */}
           <a
             href="tel:+19493914676"
-            className="flex items-center gap-3 text-white/50 hover:text-orange-400 transition-colors group"
+            className="flex items-center gap-3 text-[#877f78] hover:text-[#f94d00] transition-colors group"
           >
-            <Phone className="h-4 w-4 text-orange-400" />
+            <Phone className="h-4 w-4 text-[#f94d00]" />
             <span className="text-sm font-medium">(949) 391-4676</span>
           </a>
 
-          <div className="hidden sm:block w-px h-4 bg-white/10" />
+          <div className="hidden sm:block w-px h-4 bg-[#3a3533]" />
 
           {/* Hours */}
-          <div className="flex items-center gap-3 text-white/50">
+          <div className="flex items-center gap-3 text-[#877f78]">
             <Clock className="h-4 w-4 text-green-400" />
             <span className="text-sm">
               Mon–Fri, 9 AM – 6 PM PST
