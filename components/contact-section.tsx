@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Phone, Clock, Headphones, Send } from "lucide-react";
+import Image from "next/image";
+import { CtaButton } from "@/components/ui/cta-button";
 
 export function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -24,11 +26,31 @@ export function ContactSection() {
     <section
       ref={sectionRef}
       id="contact"
-      className="relative section-padding bg-[#1a1918] overflow-hidden"
+      data-reveal
+      className="relative section-padding bg-hero overflow-hidden"
     >
+      {/* Background photo + navy overlay (§5a) */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/charging-service-v2.png"
+          alt=""
+          aria-hidden
+          fill
+          className="object-cover opacity-20"
+          sizes="100vw"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(10,25,47,0.95) 0%, rgba(10,25,47,0.86) 50%, rgba(10,25,47,0.97) 100%)",
+          }}
+        />
+      </div>
+
       {/* Background */}
       <div className="absolute inset-0 grid-pattern opacity-10" />
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#f94d00]/10 rounded-full blur-[200px]" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FF7A00]/10 rounded-full blur-[70px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -49,7 +71,7 @@ export function ContactSection() {
             Questions?{" "}
             <span className="text-gradient text-glow">We're here.</span>
           </h2>
-          <p className="text-body-lg max-w-lg mx-auto">
+          <p className="text-body-lg text-muted-dark max-w-lg mx-auto">
             Our team is ready to help with charging, membership, or services.
           </p>
         </motion.div>
@@ -93,7 +115,7 @@ export function ContactSection() {
               <h3 className="text-xl font-bold text-[#f4f3f2] mb-2">
                 Message Sent!
               </h3>
-              <p className="text-[#877f78] text-sm">
+              <p className="text-[#8A9BB5] text-sm">
                 We'll get back to you within 24 hours.
               </p>
             </motion.div>
@@ -101,7 +123,7 @@ export function ContactSection() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[#877f78] text-sm mb-2 block">
+                  <label className="text-[#8A9BB5] text-sm mb-2 block">
                     Name
                   </label>
                   <input
@@ -116,7 +138,7 @@ export function ContactSection() {
                   />
                 </div>
                 <div>
-                  <label className="text-[#877f78] text-sm mb-2 block">
+                  <label className="text-[#8A9BB5] text-sm mb-2 block">
                     Email
                   </label>
                   <input
@@ -133,7 +155,7 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label className="text-[#877f78] text-sm mb-2 block">
+                <label className="text-[#8A9BB5] text-sm mb-2 block">
                   Subject
                 </label>
                 <input
@@ -149,7 +171,7 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label className="text-[#877f78] text-sm mb-2 block">
+                <label className="text-[#8A9BB5] text-sm mb-2 block">
                   Message
                 </label>
                 <textarea
@@ -164,18 +186,10 @@ export function ContactSection() {
                 />
               </div>
 
-              <motion.button
-                type="submit"
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: "0 0 30px rgba(249, 77, 0, 0.4)",
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full btn btn-primary btn-lg"
-              >
+              <CtaButton type="submit" size="lg" fullWidth>
                 <Send className="h-5 w-5" />
                 Send Message
-              </motion.button>
+              </CtaButton>
             </form>
           )}
         </motion.div>
@@ -186,21 +200,21 @@ export function ContactSection() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 mt-10 pt-8 border-t border-[#3a3533]"
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 mt-10 pt-8 border-t border-[#334155]"
         >
           {/* Phone */}
           <a
             href="tel:+19493914676"
-            className="flex items-center gap-3 text-[#877f78] hover:text-[#f94d00] transition-colors group"
+            className="flex items-center gap-3 text-[#8A9BB5] hover:text-[#FF7A00] transition-colors group"
           >
-            <Phone className="h-4 w-4 text-[#f94d00]" />
+            <Phone className="h-4 w-4 text-[#FF7A00]" />
             <span className="text-sm font-medium">(949) 391-4676</span>
           </a>
 
-          <div className="hidden sm:block w-px h-4 bg-[#3a3533]" />
+          <div className="hidden sm:block w-px h-4 bg-[#334155]" />
 
           {/* Hours */}
-          <div className="flex items-center gap-3 text-[#877f78]">
+          <div className="flex items-center gap-3 text-[#8A9BB5]">
             <Clock className="h-4 w-4 text-green-400" />
             <span className="text-sm">
               Mon–Fri, 9 AM – 6 PM PST

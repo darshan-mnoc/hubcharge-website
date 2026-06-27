@@ -114,13 +114,27 @@ function CarSVG({
 
       {/* front wheel */}
       <circle cx="60" cy="54" r="11" fill={`url(#wheel-${id})`} />
-      <circle cx="60" cy="54" r="6" fill="#334155" />
-      <circle cx="60" cy="54" r="2" fill="#94a3b8" />
+      <circle cx="60" cy="54" r="11" fill="none" stroke="#020617" strokeWidth="1" />
+      <circle cx="60" cy="54" r="6.6" fill="#1e293b" />
+      <g stroke="#94a3b8" strokeWidth="0.9" opacity="0.6" strokeLinecap="round">
+        <line x1="60" y1="48.5" x2="60" y2="59.5" />
+        <line x1="54.5" y1="54" x2="65.5" y2="54" />
+        <line x1="56.2" y1="50.2" x2="63.8" y2="57.8" />
+        <line x1="56.2" y1="57.8" x2="63.8" y2="50.2" />
+      </g>
+      <circle cx="60" cy="54" r="1.7" fill="#cbd5e1" />
 
       {/* rear wheel */}
       <circle cx="140" cy="54" r="11" fill={`url(#wheel-${id})`} />
-      <circle cx="140" cy="54" r="6" fill="#334155" />
-      <circle cx="140" cy="54" r="2" fill="#94a3b8" />
+      <circle cx="140" cy="54" r="11" fill="none" stroke="#020617" strokeWidth="1" />
+      <circle cx="140" cy="54" r="6.6" fill="#1e293b" />
+      <g stroke="#94a3b8" strokeWidth="0.9" opacity="0.6" strokeLinecap="round">
+        <line x1="140" y1="48.5" x2="140" y2="59.5" />
+        <line x1="134.5" y1="54" x2="145.5" y2="54" />
+        <line x1="136.2" y1="50.2" x2="143.8" y2="57.8" />
+        <line x1="136.2" y1="57.8" x2="143.8" y2="50.2" />
+      </g>
+      <circle cx="140" cy="54" r="1.7" fill="#cbd5e1" />
 
       {/* LED headlight */}
       <rect
@@ -136,9 +150,9 @@ function CarSVG({
       {/* LED rear light bar */}
       <rect x="178" y="45" width="6" height="3" rx="1" fill="#fb7185" />
 
-      {/* charge port glow */}
-      <circle cx="155" cy="36" r="3" fill="#22d3ee" opacity="0.9" />
-      <circle cx="155" cy="36" r="6" fill="#22d3ee" opacity="0.12" />
+      {/* charge port glow (brand) */}
+      <circle cx="155" cy="36" r="3" fill="#FF7A00" opacity="0.95" />
+      <circle cx="155" cy="36" r="7" fill="#FF7A00" opacity="0.18" />
     </svg>
   );
 }
@@ -163,7 +177,7 @@ function ValetSVG({
       {/* Uniform body */}
       <path
         d="M17,34 Q17,27 30,27 Q43,27 43,34 L45,62 L15,62 Z"
-        fill="#ea580c"
+        fill="#FF7A00"
       />
       {/* Uniform chest pocket */}
       <rect
@@ -185,7 +199,7 @@ function ValetSVG({
             width="8"
             height="22"
             rx="4"
-            fill="#ea580c"
+            fill="#FF7A00"
             transform="rotate(-12, 13, 35)"
           />
           <rect
@@ -194,7 +208,7 @@ function ValetSVG({
             width="8"
             height="22"
             rx="4"
-            fill="#ea580c"
+            fill="#FF7A00"
             transform="rotate(12, 47, 35)"
           />
           {/* Terminal body */}
@@ -270,7 +284,7 @@ function ValetSVG({
             width="8"
             height="26"
             rx="4"
-            fill="#ea580c"
+            fill="#FF7A00"
             transform="rotate(-25, 12, 35)"
           />
           <rect
@@ -279,7 +293,7 @@ function ValetSVG({
             width="8"
             height="26"
             rx="4"
-            fill="#ea580c"
+            fill="#FF7A00"
             transform="rotate(25, 48, 35)"
           />
           {/* Cable plug in hands */}
@@ -303,7 +317,7 @@ function ValetSVG({
             width="8"
             height="24"
             rx="4"
-            fill="#ea580c"
+            fill="#FF7A00"
             transform="rotate(-18, 11, 35)"
           />
           <rect
@@ -312,7 +326,7 @@ function ValetSVG({
             width="8"
             height="24"
             rx="4"
-            fill="#ea580c"
+            fill="#FF7A00"
             transform="rotate(18, 49, 35)"
           />
           {/* Bag */}
@@ -335,13 +349,13 @@ function ValetSVG({
             strokeLinecap="round"
           />
           {/* H logo on bag */}
-          <circle cx="30" cy="70" r="9" fill="#ea580c" opacity="0.15" />
+          <circle cx="30" cy="70" r="9" fill="#FF7A00" opacity="0.15" />
           <text
             x="30"
             y="74"
             textAnchor="middle"
             fontSize="11"
-            fill="#ea580c"
+            fill="#FF7A00"
             fontWeight="800"
             fontFamily="sans-serif"
           >
@@ -387,103 +401,58 @@ function ChargerSVG({
 }) {
   return (
     <svg viewBox="0 0 40 80" className={className} style={style}>
-      <ellipse cx="20" cy="78" rx="10" ry="2" fill="#0f172a" opacity="0.08" />
+      {/* ground shadow */}
+      <ellipse cx="20" cy="78" rx="12" ry="2.2" fill="#0f172a" opacity="0.13" />
 
-      {/* Base */}
-      <rect x="8" y="68" width="24" height="10" rx="3" fill="#334155" />
-      <rect
-        x="8"
-        y="68"
-        width="24"
-        height="3"
-        rx="0"
-        fill="#475569"
-        opacity="0.5"
-      />
+      {/* base plinth */}
+      <rect x="6.5" y="64" width="27" height="13" rx="4" fill="#0f172a" />
+      <rect x="6.5" y="64" width="27" height="3" rx="1.5" fill="#334155" opacity="0.6" />
 
-      {/* Post */}
-      <rect x="13" y="16" width="14" height="54" rx="3" fill="#475569" />
-      <rect
-        x="13"
-        y="16"
-        width="14"
-        height="54"
-        rx="3"
-        fill="none"
-        stroke="#64748b"
-        strokeWidth="0.5"
-      />
+      {/* main body */}
+      <rect x="9.5" y="6" width="21" height="62" rx="7" fill="#16233b" />
+      <rect x="9.5" y="6" width="21" height="62" rx="7" fill="none" stroke="#0b1220" strokeWidth="0.6" />
+      {/* roundness shading */}
+      <rect x="11" y="9" width="2.6" height="55" rx="1.3" fill="#3b4d6b" opacity="0.5" />
+      <rect x="27" y="9" width="2.6" height="55" rx="1.3" fill="#0b1220" opacity="0.7" />
 
-      {/* Screen */}
-      <rect
-        x="14.5"
-        y="22"
-        width="11"
-        height="14"
-        rx="2"
-        fill={active ? "#022c22" : "#1e293b"}
-      >
-        {active && (
-          <animate
-            attributeName="opacity"
-            values="1;0.8;1"
-            dur="1.8s"
-            repeatCount="indefinite"
-          />
-        )}
+      {/* front face panel */}
+      <rect x="12.5" y="10" width="15" height="45" rx="5" fill="#0c1626" />
+
+      {/* live screen */}
+      <rect x="14" y="13.5" width="12" height="15" rx="2.5" fill="#06121f" stroke="#1e293b" strokeWidth="0.5" />
+      {/* battery icon */}
+      <rect x="15.8" y="16" width="8" height="4.6" rx="1" fill="none" stroke={active ? "#4ade80" : "#3a4a63"} strokeWidth="0.8" />
+      <rect x="24" y="17.3" width="1" height="2" rx="0.5" fill={active ? "#4ade80" : "#3a4a63"} />
+      {/* battery fill (counts up while charging) */}
+      <rect x="16.5" y="16.7" width={active ? "6.6" : "2"} height="3.2" rx="0.5" fill={active ? "#22c55e" : "#26354c"}>
+        {active && <animate attributeName="width" values="1.5;6.6;1.5" dur="2.6s" repeatCount="indefinite" />}
       </rect>
-      {active ? (
-        <>
-          <text
-            x="20"
-            y="32"
-            textAnchor="middle"
-            fontSize="5.5"
-            fill="#4ade80"
-            fontWeight="bold"
-            fontFamily="monospace"
-          >
-            ⚡
-          </text>
-          <rect
-            x="15.5"
-            y="34"
-            width="9"
-            height="1.5"
-            rx="0.75"
-            fill="#4ade80"
-            opacity="0.6"
-          />
-        </>
-      ) : (
-        <rect
-          x="15.5"
-          y="27"
-          width="9"
-          height="1.5"
-          rx="0.75"
-          fill="#475569"
-          opacity="0.5"
-        />
-      )}
+      {/* readout bars */}
+      <rect x="15.8" y="22.4" width={active ? "8" : "5"} height="1.5" rx="0.75" fill={active ? "#FF7A00" : "#26354c"}>
+        {active && <animate attributeName="width" values="2;8;2" dur="2.6s" repeatCount="indefinite" />}
+      </rect>
+      <rect x="15.8" y="25" width="5.5" height="1.2" rx="0.6" fill="#1c2a40" />
 
-      {/* Cable nozzle */}
-      <circle cx="20" cy="52" r="6.5" fill={active ? "#14532d" : "#334155"} />
-      <circle cx="20" cy="52" r="4.5" fill={active ? "#16a34a" : "#475569"}>
-        {active && (
-          <animate
-            attributeName="fill"
-            values="#16a34a;#4ade80;#16a34a"
-            dur="1s"
-            repeatCount="indefinite"
-          />
-        )}
+      {/* status LED strip */}
+      <rect x="18.4" y="33" width="3.2" height="13" rx="1.6" fill="#0b1220" />
+      <rect x="18.8" y="33.4" width="2.4" height="12.2" rx="1.2" fill={active ? "#34d399" : "#FF7A00"}>
+        <animate attributeName="opacity" values={active ? "0.55;1;0.55" : "0.5;0.9;0.5"} dur={active ? "1s" : "2.4s"} repeatCount="indefinite" />
+      </rect>
+
+      {/* brand wordmark hint */}
+      <rect x="14.5" y="49.5" width="11" height="2" rx="1" fill="#FF7A00" opacity="0.85" />
+      <rect x="14.5" y="52.4" width="7" height="1.2" rx="0.6" fill="#FF7A00" opacity="0.35" />
+
+      {/* connector holster */}
+      <circle cx="20" cy="60" r="5.6" fill="#0b1220" />
+      <circle cx="20" cy="60" r="3.7" fill={active ? "#16a34a" : "#2a3a52"}>
+        {active && <animate attributeName="fill" values="#16a34a;#4ade80;#16a34a" dur="1.1s" repeatCount="indefinite" />}
       </circle>
-      <circle cx="20" cy="52" r="2" fill={active ? "#4ade80" : "#64748b"} />
+      <circle cx="20" cy="60" r="1.6" fill={active ? "#bbf7d0" : "#64748b"} />
 
-      {/* Top cap */}
-      <rect x="11" y="12" width="18" height="6" rx="3" fill="#64748b" />
-      <rect x="14" y="10" width="12" height="4" rx="2" fill="#94a3b8" />
+      {/* top cap */}
+      <rect x="11.5" y="4.5" width="17" height="5" rx="2.5" fill="#0c1626" />
+      <rect x="14" y="3" width="12" height="3.6" rx="1.8" fill="#1c2a40" />
     </svg>
   );
 }
@@ -563,60 +532,53 @@ function CableSVG({
   const path = isMobile
     ? "M2,5 C10,20 30,26 50,20 C60,18 65,18 70,30"
     : "M2,5 C10,20 30,26 45,20 C50,18 52,18 55,23";
+  const endX = isMobile ? 70 : 55;
+  const endY = isMobile ? 30 : 23;
+  // staggered begins create a continuous stream of energy
+  const particles = [0, 0.3, 0.6, 0.9, 1.2];
 
   return (
-    <svg viewBox="0 0 70 28" className={className} style={style}>
-      {/* Main cable body */}
-      <path
-        d={path}
-        stroke="#334155"
-        strokeWidth="4"
-        fill="none"
-        strokeLinecap="round"
-      />
+    <svg viewBox="0 0 70 28" className={className} style={style} overflow="visible">
+      {/* cable casing */}
+      <path d={path} stroke="#0f172a" strokeWidth="5" fill="none" strokeLinecap="round" />
+      <path d={path} stroke="#334155" strokeWidth="3.4" fill="none" strokeLinecap="round" />
+      <path d={path} stroke="#64748b" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.55" />
 
-      {/* Cable highlight */}
-      <path
-        d={path}
-        stroke="#64748b"
-        strokeWidth="1.5"
-        fill="none"
-        strokeLinecap="round"
-        opacity="0.8"
-      />
-
-      {/* Plug head near car */}
-      {/* <rect x="66" y="16" width="4" height="4" rx="1" fill="#0f172a" /> */}
-
-      {/* Plug tip */}
-      {/* <rect x="69" y="17" width="2" height="2" rx="0.5" fill="#22d3ee" /> */}
-
-      {/* Energy flow animation */}
       {active && (
         <>
-          <path
-            d={path}
-            stroke="#4ade80"
-            strokeWidth="2"
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray="5 10"
-            opacity="0.9"
-          >
-            <animate
-              attributeName="stroke-dashoffset"
-              from="0"
-              to="-30"
-              dur="0.7s"
-              repeatCount="indefinite"
-            />
+          {/* glowing energy core travelling down the cable */}
+          <path d={path} stroke="#FF7A00" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeDasharray="6 9" opacity="0.85">
+            <animate attributeName="stroke-dashoffset" from="0" to="-30" dur="0.6s" repeatCount="indefinite" />
+          </path>
+          <path d={path} stroke="#fbbf24" strokeWidth="1" fill="none" strokeLinecap="round" strokeDasharray="3 12" opacity="0.9">
+            <animate attributeName="stroke-dashoffset" from="0" to="-30" dur="0.6s" repeatCount="indefinite" />
           </path>
 
-          <circle r="2.2" fill="#4ade80">
-            <animateMotion dur="0.9s" repeatCount="indefinite" path={path} />
+          {/* flowing energy particles (soft glow + bright core) */}
+          {particles.map((begin, i) => (
+            <g key={i}>
+              <circle r="2.6" fill="#FF7A00" opacity="0.22">
+                <animateMotion dur="1.5s" begin={`${begin}s`} repeatCount="indefinite" path={path} />
+              </circle>
+              <circle r="1.2" fill="#ffe2bd">
+                <animateMotion dur="1.5s" begin={`${begin}s`} repeatCount="indefinite" path={path} />
+              </circle>
+            </g>
+          ))}
+
+          {/* connection spark where the plug meets the car */}
+          <circle cx={endX} cy={endY} r="3.4" fill="#FF7A00" opacity="0.3">
+            <animate attributeName="r" values="2.4;4.4;2.4" dur="1s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.15;0.4;0.15" dur="1s" repeatCount="indefinite" />
           </circle>
         </>
       )}
+
+      {/* plug head at the car end */}
+      <g transform={`translate(${endX - 4}, ${endY - 3})`}>
+        <rect x="0" y="0" width="7" height="6" rx="2" fill="#0f172a" />
+        <rect x="5.5" y="1.6" width="2.5" height="2.8" rx="0.8" fill={active ? "#FF7A00" : "#475569"} />
+      </g>
     </svg>
   );
 }
@@ -1016,7 +978,7 @@ function Scene4({
           }}
         >
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center shadow-sm">
+            <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center shadow-sm">
               <svg
                 className="w-3.5 h-3.5 text-white"
                 viewBox="0 0 24 24"
@@ -1048,7 +1010,7 @@ function Scene4({
           }}
         >
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center shadow-sm">
+            <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center shadow-sm">
               <span className="text-[9px] text-white font-bold">H</span>
             </div>
             <div>
@@ -1226,7 +1188,7 @@ function StepPill({
       className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[9px] font-bold transition-all duration-300"
       style={{
         background: isCurrent
-          ? "linear-gradient(135deg,#f97316,#fb923c)"
+          ? "linear-gradient(135deg,#FF7A00,#FF9433)"
           : isActive
             ? "#1e293b"
             : "#e2e8f0",
@@ -1308,10 +1270,10 @@ export function JourneyBattery() {
 
       if (panel) {
         panel.style.backgroundColor = isActive
-          ? `rgba(255, 237, 213, ${0.25 + stepProgress * 0.35})`
-          : "rgba(248, 250, 252, 0.5)";
+          ? `rgba(255, 245, 234, ${0.6 + stepProgress * 0.3})`
+          : "rgba(248, 250, 252, 0.7)";
         const overlay = panel.querySelector("[data-overlay]") as HTMLElement;
-        if (overlay) overlay.style.opacity = isActive ? "0" : "0.5";
+        if (overlay) overlay.style.opacity = isActive ? "0" : "0.3";
         const dot = panel.querySelector("[data-dot]") as HTMLElement;
         if (dot) dot.style.display = isCurrent ? "block" : "none";
       }
@@ -1331,7 +1293,7 @@ export function JourneyBattery() {
         const pill = label.querySelector("[data-pill]") as HTMLElement;
         if (pill) {
           pill.style.background = isCurrent
-            ? "linear-gradient(135deg,#f97316,#fb923c)"
+            ? "linear-gradient(135deg,#FF7A00,#FF9433)"
             : isActive
               ? "#1e293b"
               : "#e2e8f0";
@@ -1344,7 +1306,7 @@ export function JourneyBattery() {
         // Title - consistent size, just color changes
         const title = label.querySelector("[data-title]") as HTMLElement;
         if (title) {
-          title.style.color = isCurrent ? "#f97316" : "#1e293b";
+          title.style.color = isCurrent ? "#FF7A00" : "#1e293b";
         }
 
         // Subtitle - just opacity change
@@ -1437,9 +1399,9 @@ export function JourneyBattery() {
         <div className="max-w-5xl mx-auto px-6">
           {/* Header - Mobile only (desktop header is inside pinned container) */}
           <div className="journey-header text-center mb-4 md:hidden">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 border border-orange-200 mb-3">
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-              <span className="text-sm font-semibold uppercase tracking-wider text-orange-600">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20 mb-3">
+              <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
+              <span className="text-sm font-semibold uppercase tracking-wider text-brand">
                 The Experience
               </span>
             </div>
@@ -1489,7 +1451,7 @@ export function JourneyBattery() {
                           className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
                           style={{
                             background:
-                              "linear-gradient(135deg, #f97316, #fb923c)",
+                              "linear-gradient(135deg, #FF7A00, #FF9433)",
                             color: "#fff",
                             boxShadow: "0 2px 6px rgba(249,115,22,0.3)",
                           }}
@@ -1565,7 +1527,7 @@ export function JourneyBattery() {
                               ? isCharging ||
                                 (mobileActiveCard >= 4 && isCompleted)
                                 ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
-                                : "linear-gradient(180deg, #fb923c 0%, #f97316 100%)"
+                                : "linear-gradient(180deg, #FF9433 0%, #FF7A00 100%)"
                               : "rgba(71,85,105,0.4)",
                             boxShadow: isFilled
                               ? isCharging
@@ -1648,9 +1610,9 @@ export function JourneyBattery() {
           <div ref={batteryRef} className="hidden md:block">
             {/* Header - Inside pinned container for desktop */}
             <div className="text-center mb-20">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 border border-orange-200 mb-4">
-                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                <span className="text-sm font-semibold uppercase tracking-wider text-orange-600">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20 mb-4">
+                <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
+                <span className="text-sm font-semibold uppercase tracking-wider text-brand">
                   The Experience
                 </span>
               </div>
@@ -1662,27 +1624,17 @@ export function JourneyBattery() {
               </p>
             </div>
             <div className="relative">
-              {/* Outer shell — battery casing with subtle depth */}
+              {/* Outer shell — clean premium casing */}
               <div
-                className="relative rounded-2xl overflow-hidden"
+                className="relative rounded-3xl overflow-hidden border border-slate-200/80"
                 style={{
-                  background: "#f8fafc",
+                  background: "#ffffff",
                   boxShadow:
-                    "0 0 0 1px rgba(0,0,0,0.06), 0 4px 6px -1px rgba(0,0,0,0.05), 0 24px 48px -8px rgba(0,0,0,0.12)",
+                    "0 1px 2px rgba(16,24,40,0.04), 0 24px 48px -16px rgba(16,24,40,0.16)",
                 }}
               >
-                {/* Battery terminal nub */}
-                <div
-                  className="absolute -right-2.5 top-1/2 -translate-y-1/2 z-20"
-                  style={{
-                    width: "10px",
-                    height: "40px",
-                    borderRadius: "0 6px 6px 0",
-                    background:
-                      "linear-gradient(180deg, #94a3b8 0%, #64748b 50%, #94a3b8 100%)",
-                    boxShadow: "2px 0 6px rgba(0,0,0,0.15)",
-                  }}
-                />
+                {/* Brand accent hairline at the very top */}
+                <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-[#FF7A00]/70 to-transparent z-20 pointer-events-none" />
 
                 {/* Inner inset border */}
                 <div
@@ -1719,8 +1671,8 @@ export function JourneyBattery() {
                         {/* Inactive overlay */}
                         <div
                           data-overlay
-                          className="absolute inset-0 bg-slate-50/60 pointer-events-none transition-opacity duration-300"
-                          style={{ opacity: isActive ? 0 : 0.5 }}
+                          className="absolute inset-0 bg-slate-50/50 pointer-events-none transition-opacity duration-300"
+                          style={{ opacity: isActive ? 0 : 0.3 }}
                         />
 
                         {/* Current step pulse dot */}
@@ -1730,8 +1682,8 @@ export function JourneyBattery() {
                           style={{ display: isCurrent ? "block" : "none" }}
                         >
                           <span className="relative flex h-2.5 w-2.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-60" />
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500" />
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-60" />
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand" />
                           </span>
                         </div>
                       </div>
@@ -1751,7 +1703,7 @@ export function JourneyBattery() {
                         className="h-full transition-none"
                         style={{
                           background:
-                            "linear-gradient(90deg, #f97316, #fbbf24)",
+                            "linear-gradient(90deg, #FF7A00, #fbbf24)",
                           width:
                             activeStep === i
                               ? `${getStepProgress(i) * 100}%`
@@ -1783,7 +1735,7 @@ export function JourneyBattery() {
                         data-title
                         className={`text-xs font-bold tracking-widest uppercase mb-0.5 transition-colors ${
                           activeStep === i
-                            ? "text-orange-500"
+                            ? "text-brand"
                             : "text-slate-700"
                         }`}
                       >
@@ -1817,7 +1769,7 @@ export function JourneyBattery() {
                           height: "28px",
                           fontSize: "11px",
                           background: isCurrent
-                            ? "linear-gradient(135deg,#f97316,#fb923c)"
+                            ? "linear-gradient(135deg,#FF7A00,#FF9433)"
                             : isActive
                               ? "#1e293b"
                               : "#e2e8f0",
@@ -1833,9 +1785,9 @@ export function JourneyBattery() {
                       <div className="text-center px-1">
                         <p
                           data-title
-                          className="font-bold tracking-wide uppercase transition-all duration-300 group-hover:text-orange-500 text-sm lg:text-base"
+                          className="font-bold tracking-wide uppercase transition-all duration-300 group-hover:text-brand text-sm lg:text-base"
                           style={{
-                            color: isCurrent ? "#f97316" : "#1e293b",
+                            color: isCurrent ? "#FF7A00" : "#1e293b",
                             marginBottom: "2px",
                           }}
                         >
@@ -1925,7 +1877,7 @@ export function JourneyBattery() {
                 </p>
                 <p
                   className="text-2xl lg:text-3xl font-black tracking-tight"
-                  style={{ color: "#f97316" }}
+                  style={{ color: "#FF7A00" }}
                 >
                   10 min
                 </p>
@@ -1943,7 +1895,7 @@ export function JourneyBattery() {
                 </p>
                 <p
                   className="text-2xl lg:text-3xl font-black tracking-tight"
-                  style={{ color: "#10b981" }}
+                  style={{ color: "#0F172A" }}
                 >
                   Attendant
                 </p>
@@ -1961,7 +1913,7 @@ export function JourneyBattery() {
                 </p>
                 <p
                   className="text-2xl lg:text-3xl font-black tracking-tight"
-                  style={{ color: "#3b82f6" }}
+                  style={{ color: "#0F172A" }}
                 >
                   Lifestyle
                 </p>
@@ -2005,7 +1957,7 @@ export function JourneyBattery() {
             <div className="text-center lg:text-left">
               <p
                 className="text-xs font-bold uppercase tracking-widest mb-2"
-                style={{ color: "#f97316" }}
+                style={{ color: "#FF7A00" }}
               >
                 Coming Back?
               </p>

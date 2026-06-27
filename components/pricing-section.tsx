@@ -22,14 +22,15 @@ export function PricingSection() {
     <section
       ref={sectionRef}
       id="pricing"
-      className="relative section-padding bg-[#262322] overflow-hidden"
+      data-reveal
+      className="relative section-padding bg-surface-warm overflow-hidden"
     >
       {/* Grid Pattern */}
       <div className="absolute inset-0 grid-pattern opacity-20" />
 
       {/* Gradient Orbs */}
-      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-[#f94d00]/10 rounded-full blur-[200px]" />
-      <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-green-500/5 rounded-full blur-[150px]" />
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-[#FF7A00]/10 rounded-full blur-[70px]" />
+      <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-green-500/5 rounded-full blur-[60px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -46,7 +47,7 @@ export function PricingSection() {
             </span>
           </div>
 
-          <h2 className="heading-section text-[#f4f3f2] mb-6">
+          <h2 className="heading-section text-gray-900 mb-6">
             Charging made
             <span className="text-gradient text-glow"> simple</span>
           </h2>
@@ -63,41 +64,41 @@ export function PricingSection() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto mb-12"
         >
-          <div className="relative overflow-hidden rounded-3xl border border-[#3a3533]">
+          <div className="relative overflow-hidden rounded-3xl border border-gray-200">
             {/* Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#2a2725] to-[#1a1918]" />
-            <div className="absolute top-0 right-1/4 w-80 h-80 bg-[#f94d00]/8 rounded-full blur-[120px]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50" />
+            <div className="absolute top-0 right-1/4 w-80 h-80 bg-[#FF7A00]/8 rounded-full blur-[60px]" />
 
             <div className="relative p-10 lg:p-14">
               {/* Price Hero - Centered */}
               <div className="text-center mb-12">
-                <p className="text-[#877f78] text-sm uppercase tracking-[0.15em] mb-6">
+                <p className="text-gray-500 text-sm uppercase tracking-[0.15em] mb-6">
                   10-Minute Charge Session
                 </p>
                 <div className="flex items-start justify-center">
                   <motion.span
                     animate={{
                       textShadow: [
-                        "0 0 40px rgba(249, 77, 0, 0.3)",
-                        "0 0 80px rgba(249, 77, 0, 0.5)",
-                        "0 0 40px rgba(249, 77, 0, 0.3)",
+                        "0 0 40px rgba(255, 122, 0, 0.3)",
+                        "0 0 80px rgba(255, 122, 0, 0.5)",
+                        "0 0 40px rgba(255, 122, 0, 0.3)",
                       ],
                     }}
                     transition={{ duration: 3, repeat: Infinity }}
-                    className="text-8xl lg:text-9xl font-black text-[#f94d00]"
+                    className="text-8xl lg:text-9xl font-black text-[#FF7A00]"
                   >
                     $12.50
                   </motion.span>
                   <span className="text-red-500 text-xl font-bold mt-4 ml-1">*</span>
                 </div>
                 <div className="flex items-center justify-center gap-6 mt-8">
-                  <div className="flex items-center gap-2 text-[#877f78]">
-                    <Clock className="h-5 w-5 text-[#f94d00]" />
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <Clock className="h-5 w-5 text-[#FF7A00]" />
                     <span className="font-medium">10 minutes</span>
                   </div>
-                  <div className="w-px h-5 bg-[#3a3533]" />
-                  <div className="flex items-center gap-2 text-[#877f78]">
-                    <Zap className="h-5 w-5 text-[#f94d00]" />
+                  <div className="w-px h-5 bg-[#334155]" />
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <Zap className="h-5 w-5 text-[#FF7A00]" />
                     <span className="font-medium">Up to 100 miles</span>
                   </div>
                 </div>
@@ -109,23 +110,23 @@ export function PricingSection() {
                 <motion.div
                   whileHover={{ y: -4 }}
                   transition={{ duration: 0.2 }}
-                  className="p-6 rounded-2xl bg-[#f4f3f2]/[0.03] border border-[#3a3533] hover:border-[#f94d00]/30 transition-all"
+                  className="p-6 rounded-2xl bg-gray-50 border border-gray-200 hover:border-[#FF7A00]/30 transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h4 className="text-[#f4f3f2] font-semibold text-lg mb-1">Need more time?</h4>
-                      <p className="text-[#877f78] text-sm">Add 5-minute extensions as needed</p>
+                      <h4 className="text-gray-900 font-semibold text-lg mb-1">Need more time?</h4>
+                      <p className="text-gray-500 text-sm">Add 5-minute extensions as needed</p>
                     </div>
                     <div className="text-right">
                       <div className="flex items-start">
-                        <span className="text-3xl font-bold text-[#f94d00]">$3</span>
+                        <span className="text-3xl font-bold text-[#FF7A00]">$3</span>
                         <span className="text-red-500 text-xs mt-1 ml-0.5">*</span>
                       </div>
-                      <p className="text-[#59524f] text-xs">per 5 min</p>
+                      <p className="text-gray-400 text-xs">per 5 min</p>
                     </div>
                   </div>
-                  <div className="mt-5 pt-5 border-t border-[#3a3533]">
-                    <p className="text-[#59524f] text-sm">
+                  <div className="mt-5 pt-5 border-t border-gray-200">
+                    <p className="text-gray-400 text-sm">
                       Add up to 4 extensions for a maximum 30-minute session
                     </p>
                   </div>
@@ -135,9 +136,9 @@ export function PricingSection() {
                 <motion.div
                   whileHover={{ y: -4 }}
                   transition={{ duration: 0.2 }}
-                  className="p-6 rounded-2xl bg-[#f4f3f2]/[0.03] border border-[#3a3533] hover:border-green-500/30 transition-all"
+                  className="p-6 rounded-2xl bg-gray-50 border border-gray-200 hover:border-green-500/30 transition-all"
                 >
-                  <h4 className="text-[#f4f3f2] font-semibold text-lg mb-4 flex items-center gap-1">
+                  <h4 className="text-gray-900 font-semibold text-lg mb-4 flex items-center gap-1">
                     Full-Service Included
                     <span className="text-red-500 text-sm">*</span>
                   </h4>
@@ -154,7 +155,7 @@ export function PricingSection() {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ delay: i * 0.1 }}
-                        className="flex items-center gap-3 text-[#877f78] text-sm"
+                        className="flex items-center gap-3 text-gray-500 text-sm"
                       >
                         <Check className="h-4 w-4 text-green-500 flex-shrink-0" strokeWidth={2.5} />
                         {item}
@@ -171,7 +172,7 @@ export function PricingSection() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="mt-5 text-center text-sm text-[#59524f]"
+            className="mt-5 text-center text-sm text-gray-400"
           >
             <span className="text-red-500">*</span> Prices may vary. Full-service attendant at select locations.
           </motion.p>
@@ -249,7 +250,7 @@ export function PricingSection() {
             whileHover={{ scale: 1.02, y: -4 }}
             className="relative overflow-hidden rounded-3xl p-8 cursor-pointer group"
           >
-            <div className="absolute inset-0 bg-[#f94d00]" />
+            <div className="absolute inset-0 bg-[#FF7A00]" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#f4f3f2]/10 rounded-full blur-2xl" />
 
             {/* Coming Soon Badge */}
@@ -295,7 +296,7 @@ export function PricingSection() {
                     window.scrollTo({ top: y, behavior: "smooth" });
                   }
                 }}
-                className="inline-flex items-center gap-2 bg-[#f4f3f2] text-[#f94d00] px-6 py-3 rounded-full font-semibold shadow-lg"
+                className="inline-flex items-center gap-2 bg-[#f4f3f2] text-[#FF7A00] px-6 py-3 rounded-full font-semibold shadow-lg"
               >
                 See What's Available
                 <ArrowRight className="h-4 w-4" />
@@ -311,8 +312,8 @@ export function PricingSection() {
           viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <p className="text-[#59524f] text-lg">
-            <span className="text-[#877f78] font-medium">Charge & Chill.</span>{" "}
+          <p className="text-gray-400 text-lg">
+            <span className="text-gray-600 font-medium">Charge & Chill.</span>{" "}
             It's that simple.
           </p>
         </motion.div>

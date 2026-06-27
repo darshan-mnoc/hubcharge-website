@@ -68,8 +68,8 @@ const services = [
     icon: Truck,
     title: "Delivery",
     desc: "Food, coffee, and essentials delivered to your car window",
-    color: "text-[#f94d00]",
-    bgColor: "bg-[#f94d00]/20",
+    color: "text-[#FF7A00]",
+    bgColor: "bg-[#FF7A00]/20",
   },
   {
     icon: Package,
@@ -113,14 +113,15 @@ export function FindYourHub() {
     <section
       ref={sectionRef}
       id="locations"
-      className="relative section-padding bg-[#262322] overflow-hidden"
+      data-reveal
+      className="relative section-padding bg-surface overflow-hidden"
     >
       {/* Grid Pattern */}
       <div className="absolute inset-0 grid-pattern opacity-20" />
 
       {/* Gradient Orbs */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#f94d00]/10 rounded-full blur-[200px]" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-green-500/5 rounded-full blur-[150px]" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FF7A00]/10 rounded-full blur-[70px]" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-green-500/5 rounded-full blur-[60px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -136,7 +137,7 @@ export function FindYourHub() {
               Locations
             </span>
           </div>
-          <h2 className="heading-section text-[#f4f3f2] mb-4">
+          <h2 className="heading-section text-gray-900 mb-4">
             Find your nearest
             <br />
             <span className="text-gradient text-glow">HubCharge station</span>
@@ -157,21 +158,21 @@ export function FindYourHub() {
           <form onSubmit={handleSearch} className="relative">
             <div className="relative flex items-center">
               <div className="absolute left-4 pointer-events-none">
-                <Search className="h-5 w-5 text-[#59524f]" />
+                <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 type="text"
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
                 placeholder="Enter ZIP code to find stations near you"
-                className="w-full pl-12 pr-36 py-4 bg-[#f4f3f2]/5 border border-[#3a3533] rounded-2xl text-[#f4f3f2] placeholder:text-[#59524f] focus:outline-none focus:border-[#f94d00]/50 focus:ring-2 focus:ring-[#f94d00]/20 transition-all"
+                className="w-full pl-12 pr-36 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#FF7A00]/50 focus:ring-2 focus:ring-[#FF7A00]/20 transition-all"
               />
               <motion.button
                 type="submit"
                 disabled={isSearching}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="absolute right-2 px-6 py-2.5 bg-[#f94d00] hover:bg-orange-600 text-[#f4f3f2] font-semibold rounded-xl transition-colors disabled:opacity-50"
+                className="absolute right-2 px-6 py-2.5 bg-[#FF7A00] hover:bg-[#E66E00] text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
               >
                 {isSearching ? (
                   <span className="flex items-center gap-2">
@@ -200,7 +201,7 @@ export function FindYourHub() {
                 setZipCode("91801");
                 setSearchResults(stations);
               }}
-              className="flex items-center gap-1.5 text-sm text-[#877f78] hover:text-[#f94d00] transition-colors"
+              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#FF7A00] transition-colors"
             >
               <Navigation className="h-3.5 w-3.5" />
               Use current location
@@ -219,14 +220,14 @@ export function FindYourHub() {
             <motion.div
               key={i}
               whileHover={{ y: -4 }}
-              className="flex items-center gap-4 p-4 rounded-2xl glass border border-[#3a3533]"
+              className="flex items-center gap-4 p-4 rounded-2xl glass-light border border-gray-200"
             >
               <div className={`w-12 h-12 rounded-xl ${service.bgColor} flex items-center justify-center`}>
                 <service.icon className={`h-6 w-6 ${service.color}`} />
               </div>
               <div>
-                <h4 className="font-semibold text-[#f4f3f2]">{service.title}</h4>
-                <p className="text-[#877f78] text-sm">{service.desc}</p>
+                <h4 className="font-semibold text-gray-900">{service.title}</h4>
+                <p className="text-gray-500 text-sm">{service.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -237,8 +238,8 @@ export function FindYourHub() {
           {/* Station List */}
           <div className="lg:col-span-2">
             <div className="sticky top-24">
-              <h3 className="text-lg font-bold text-[#f4f3f2] mb-4 flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-[#f94d00]" />
+              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-[#FF7A00]" />
                 {searchResults
                   ? `${searchResults.length} Station Found`
                   : "Available Stations"}
@@ -249,12 +250,12 @@ export function FindYourHub() {
                   <motion.div
                     key={station.id}
                     whileHover={{ scale: 1.02 }}
-                    className="card p-5 cursor-pointer group"
+                    className="card-light p-5 cursor-pointer group"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-bold text-[#f4f3f2]">
+                          <h4 className="font-bold text-gray-900">
                             {station.name}
                           </h4>
                           {station.status === "open" && (
@@ -264,22 +265,22 @@ export function FindYourHub() {
                             </span>
                           )}
                         </div>
-                        <p className="text-[#877f78] text-sm">
+                        <p className="text-gray-500 text-sm">
                           {station.address}
                         </p>
-                        <p className="text-[#59524f] text-sm">
+                        <p className="text-gray-400 text-sm">
                           {station.city}, {station.state} {station.zip}
                         </p>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-[#f4f3f2]/30 group-hover:text-[#f94d00] transition-colors" />
+                      <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-[#FF7A00] transition-colors" />
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#f94d00]/10 text-[#f94d00] text-xs">
+                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#FF7A00]/10 text-[#FF7A00] text-xs">
                         <Zap className="h-3 w-3" />
                         {station.power}
                       </span>
-                      {/* <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#f4f3f2]/5 text-[#877f78] text-xs">
+                      {/* <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-gray-50 text-gray-500 text-xs">
                         <Clock className="h-3 w-3" />
                         {station.hours}
                       </span> */}
@@ -298,16 +299,16 @@ export function FindYourHub() {
                         rel="noopener noreferrer"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#f94d00] hover:bg-orange-600 text-[#f4f3f2] text-sm font-semibold transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#FF7A00] hover:bg-[#E66E00] text-white text-sm font-semibold transition-colors"
                       >
                         <Navigation className="h-4 w-4" />
                         Directions
                       </motion.a>
                       <a
                         href={`tel:${station.phone}`}
-                        className="flex items-center justify-center w-10 h-10 rounded-lg glass border border-[#3a3533] hover:border-[#f94d00]/50 transition-colors"
+                        className="flex items-center justify-center w-10 h-10 rounded-lg glass-light border border-gray-200 hover:border-[#FF7A00]/50 transition-colors"
                       >
-                        <Phone className="h-4 w-4 text-[#877f78]" />
+                        <Phone className="h-4 w-4 text-gray-500" />
                       </a>
                     </div>
                   </motion.div>
@@ -330,7 +331,7 @@ export function FindYourHub() {
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-3 relative rounded-3xl overflow-hidden border border-[#3a3533] bg-[#1a1918] min-h-[500px]"
+            className="lg:col-span-3 relative rounded-3xl overflow-hidden border border-gray-200 bg-gray-100 min-h-[500px]"
           >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3302.5!2d-118.127!3d34.095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDA1JzQyLjAiTiAxMTjCsDA3JzM3LjIiVw!5e0!3m2!1sen!2sus!4v1234567890"
@@ -339,7 +340,6 @@ export function FindYourHub() {
               style={{
                 border: 0,
                 minHeight: "500px",
-                filter: "invert(90%) hue-rotate(180deg)",
               }}
               allowFullScreen
               loading="lazy"
@@ -351,34 +351,34 @@ export function FindYourHub() {
                 <motion.div
                   animate={{ scale: [1, 2, 1], opacity: [0.6, 0, 0.6] }}
                   transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute inset-0 bg-[#f94d00] rounded-full"
+                  className="absolute inset-0 bg-[#FF7A00] rounded-full"
                 />
-                <div className="relative w-12 h-12 bg-[#f94d00] rounded-full flex items-center justify-center shadow-lg glow-orange">
-                  <MapPin className="h-6 w-6 text-[#f4f3f2]" />
+                <div className="relative w-12 h-12 bg-[#FF7A00] rounded-full flex items-center justify-center shadow-lg glow-orange">
+                  <MapPin className="h-6 w-6 text-white" />
                 </div>
               </div>
             </div>
 
             {/* Map Legend */}
-            <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl glass border border-[#3a3533]">
+            <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl glass-light border border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#f94d00]" />
-                    <span className="text-[#877f78] text-sm">
+                    <div className="w-3 h-3 rounded-full bg-[#FF7A00]" />
+                    <span className="text-gray-500 text-sm">
                       HubCharge Station
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-green-500" />
-                    <span className="text-[#877f78] text-sm">Coming Soon</span>
+                    <span className="text-gray-500 text-sm">Coming Soon</span>
                   </div>
                 </div>
                 <a
                   href="https://maps.google.com/?q=108+S+Monterey+St+Alhambra+CA"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-[#f94d00] text-sm hover:underline"
+                  className="flex items-center gap-1 text-[#FF7A00] text-sm hover:underline"
                 >
                   Open in Maps
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -395,18 +395,18 @@ export function FindYourHub() {
           viewport={{ once: true }}
           className="mt-12"
         >
-          <h3 className="text-xl font-bold text-[#f4f3f2] mb-6 text-center">
+          <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">
             What's Nearby — Delivered to Your Car
           </h3>
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* Coffee */}
-            <motion.div whileHover={{ y: -4 }} className="card p-6">
+            <motion.div whileHover={{ y: -4 }} className="card-light p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
                   <Coffee className="h-5 w-5 text-amber-400" />
                 </div>
-                <h4 className="font-semibold text-[#f4f3f2]">Coffee & Tea</h4>
+                <h4 className="font-semibold text-gray-900">Coffee & Tea</h4>
               </div>
               <div className="space-y-3">
                 {nearbyPlaces.coffee.map((place, i) => (
@@ -417,9 +417,9 @@ export function FindYourHub() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass rounded-lg px-4 py-3 border border-[#3a3533]/50 cursor-pointer"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 cursor-pointer"
                   >
-                    <span className="text-[#f4f3f2]/80">{place.name}</span>
+                    <span className="text-gray-700">{place.name}</span>
                     <span className="text-amber-400 text-sm font-medium">
                       {place.walk}
                     </span>
@@ -429,12 +429,12 @@ export function FindYourHub() {
             </motion.div>
 
             {/* Food */}
-            <motion.div whileHover={{ y: -4 }} className="card p-6">
+            <motion.div whileHover={{ y: -4 }} className="card-light p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-[#f94d00]/20 flex items-center justify-center">
-                  <Utensils className="h-5 w-5 text-[#f94d00]" />
+                <div className="w-10 h-10 rounded-lg bg-[#FF7A00]/20 flex items-center justify-center">
+                  <Utensils className="h-5 w-5 text-[#FF7A00]" />
                 </div>
-                <h4 className="font-semibold text-[#f4f3f2]">Food & Dining</h4>
+                <h4 className="font-semibold text-gray-900">Food & Dining</h4>
               </div>
               <div className="space-y-3">
                 {nearbyPlaces.food.map((place, i) => (
@@ -445,10 +445,10 @@ export function FindYourHub() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass rounded-lg px-4 py-3 border border-[#3a3533]/50 cursor-pointer"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 cursor-pointer"
                   >
-                    <span className="text-[#f4f3f2]/80">{place.name}</span>
-                    <span className="text-[#f94d00] text-sm font-medium">
+                    <span className="text-gray-700">{place.name}</span>
+                    <span className="text-[#FF7A00] text-sm font-medium">
                       {place.walk}
                     </span>
                   </motion.div>
@@ -457,12 +457,12 @@ export function FindYourHub() {
             </motion.div>
 
             {/* Retail */}
-            <motion.div whileHover={{ y: -4 }} className="card p-6">
+            <motion.div whileHover={{ y: -4 }} className="card-light p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
                   <ShoppingBag className="h-5 w-5 text-blue-400" />
                 </div>
-                <h4 className="font-semibold text-[#f4f3f2]">Shopping & More</h4>
+                <h4 className="font-semibold text-gray-900">Shopping & More</h4>
               </div>
               <div className="space-y-3">
                 {nearbyPlaces.retail.map((place, i) => (
@@ -473,9 +473,9 @@ export function FindYourHub() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass rounded-lg px-4 py-3 border border-[#3a3533]/50 cursor-pointer"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 cursor-pointer"
                   >
-                    <span className="text-[#f4f3f2]/80">{place.name}</span>
+                    <span className="text-gray-700">{place.name}</span>
                     <span className="text-blue-400 text-sm font-medium">
                       {place.walk}
                     </span>
@@ -493,11 +493,11 @@ export function FindYourHub() {
           viewport={{ once: true }}
           className="mt-12"
         >
-          <div className="card p-8 text-center">
-            <h3 className="text-xl font-bold text-[#f4f3f2] mb-4">
+          <div className="card-light p-8 text-center">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
               More Locations Coming Soon
             </h3>
-            <p className="text-[#877f78] mb-6 max-w-lg mx-auto">
+            <p className="text-gray-500 mb-6 max-w-lg mx-auto">
               We're expanding across California. Enter your email to be notified
               when we open near you.
             </p>
@@ -505,7 +505,7 @@ export function FindYourHub() {
               {upcomingLocations.map((location, i) => (
                 <span
                   key={i}
-                  className="px-4 py-2 rounded-full glass border border-[#3a3533] text-[#f4f3f2]/80"
+                  className="px-4 py-2 rounded-full glass-light border border-gray-200 text-gray-700"
                 >
                   {location}
                 </span>
@@ -515,13 +515,13 @@ export function FindYourHub() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-[#f4f3f2]/5 border border-[#3a3533] rounded-xl text-[#f4f3f2] placeholder:text-[#59524f] focus:outline-none focus:border-[#f94d00]/50"
+                className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#FF7A00]/50"
               />
               <motion.button
                 type="submit"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-6 py-3 bg-[#f94d00] hover:bg-orange-600 text-[#f4f3f2] font-semibold rounded-xl transition-colors"
+                className="px-6 py-3 bg-[#FF7A00] hover:bg-[#E66E00] text-white font-semibold rounded-xl transition-colors"
               >
                 Notify Me
               </motion.button>

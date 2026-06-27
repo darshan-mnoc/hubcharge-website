@@ -1,5 +1,6 @@
 import { BatteryNav } from "@/components/battery-nav";
 import { HeroLifestyle } from "@/components/hero-lifestyle";
+// import { FleetBusiness } from "@/components/fleet-business";
 import { ProblemSection } from "@/components/problem-section";
 import { JourneyBattery } from "@/components/journey-battery";
 import { LifestyleDestinations } from "@/components/lifestyle-destinations";
@@ -31,6 +32,9 @@ export default function HomePage() {
 
       {/* 5. PRICING: Simple pricing model */}
       <PricingSection />
+
+      {/* For Business & Fleets (dark feature) — hidden for now */}
+      {/* <FleetBusiness /> */}
 
       {/* 6. MEMBERSHIP: Get more value */}
       {/* <TimeClubMembership /> */}

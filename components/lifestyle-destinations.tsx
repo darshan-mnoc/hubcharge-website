@@ -14,6 +14,7 @@ import {
   Clock,
 } from "lucide-react";
 import Image from "next/image";
+import { CtaButton } from "@/components/ui/cta-button";
 
 const features = [
   {
@@ -28,7 +29,7 @@ const features = [
     title: "Food & Meals",
     desc: "Breakfast, lunch, dinner — from local restaurants to your car.",
     image: "/images/lifestyle-food-v2.png",
-    color: "from-orange-500",
+    color: "from-brand",
   },
   {
     icon: ShoppingBag,
@@ -62,14 +63,34 @@ export function LifestyleDestinations() {
     <section
       ref={sectionRef}
       id="lifestyle"
-      className="relative section-padding bg-[#1a1918] overflow-hidden"
+      data-reveal
+      className="relative section-padding bg-hero overflow-hidden"
     >
+      {/* Background photo + navy overlay (§5a) */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/lifestyle-coffee-v2.png"
+          alt=""
+          aria-hidden
+          fill
+          className="object-cover opacity-[0.18]"
+          sizes="100vw"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(10,25,47,0.94) 0%, rgba(10,25,47,0.82) 45%, rgba(10,25,47,0.96) 100%)",
+          }}
+        />
+      </div>
+
       {/* Grid Pattern */}
       <div className="absolute inset-0 grid-pattern opacity-20" />
 
       {/* Gradient Orbs */}
-      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-[#f94d00]/10 rounded-full blur-[200px]" />
-      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[150px]" />
+      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-[#FF7A00]/10 rounded-full blur-[70px]" />
+      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-brand/5 rounded-full blur-[60px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -91,7 +112,7 @@ export function LifestyleDestinations() {
             <br />
             <span className="text-gradient text-glow">get things done.</span>
           </h2>
-          <p className="text-body-lg max-w-3xl mx-auto">
+          <p className="text-body-lg text-muted-dark max-w-3xl mx-auto">
             Why waste time waiting? Order food, grab coffee, or run errands —
             all delivered to your car window while your EV charges.
             <span className="text-[#f4f3f2]/80 font-medium">
@@ -110,37 +131,25 @@ export function LifestyleDestinations() {
         >
           <div className="relative card p-8 lg:p-12 overflow-hidden">
             {/* Animated background elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#f94d00]/10 rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/10 rounded-full blur-[80px]" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF7A00]/10 rounded-full blur-[50px]" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand/10 rounded-full blur-[40px]" />
 
-            <div className="relative flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-              {/* Car icon with charging animation */}
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="flex-shrink-0"
-              >
-                <div className="relative">
-                  <div className="w-40 h-40 lg:w-48 lg:h-48 glass rounded-3xl flex items-center justify-center border border-[#3a3533]">
-                    <Car
-                      className="h-20 w-20 lg:h-24 lg:w-24 text-[#f94d00]"
-                      strokeWidth={1}
-                    />
-                  </div>
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                    className="absolute -inset-4 bg-[#f94d00] rounded-full blur-2xl -z-10"
-                  />
-                  {/* Charging indicator */}
-                  <motion.div
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                    className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center"
-                  >
-                    <Zap className="h-4 w-4 text-[#f4f3f2]" />
-                  </motion.div>
+            <div className="relative flex flex-col lg:flex-row items-center lg:items-stretch gap-10 lg:gap-16">
+              {/* Full image panel */}
+              <div className="group relative w-full lg:w-80 flex-shrink-0 self-stretch min-h-[280px] lg:min-h-[340px] rounded-3xl overflow-hidden border border-white/10 shadow-card-hover">
+                <Image
+                  src="/images/coffee-delivery-v3.png"
+                  alt="HubCharge attendant delivering coffee to a car window"
+                  fill
+                  className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.05]"
+                  sizes="(max-width: 1024px) 100vw, 320px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/55 via-transparent to-transparent" />
+                {/* Charging badge */}
+                <div className="absolute top-4 right-4 w-9 h-9 bg-brand rounded-full flex items-center justify-center shadow-lg ring-4 ring-[#0A192F]/40">
+                  <Zap className="h-4 w-4 text-white" />
                 </div>
-              </motion.div>
+              </div>
 
               {/* Arrow */}
               <motion.div
@@ -151,20 +160,20 @@ export function LifestyleDestinations() {
               >
                 <div className="flex items-center gap-2">
                   <div className="w-20 h-[2px] energy-line" />
-                  <ArrowRight className="h-8 w-8 text-[#f94d00]" />
+                  <ArrowRight className="h-8 w-8 text-[#FF7A00]" />
                 </div>
               </motion.div>
 
               {/* Services delivered to your car */}
               <div className="flex-1 text-center lg:text-left">
                 <div className="flex items-center gap-2 justify-center lg:justify-start mb-3">
-                  <p className="text-[#f94d00] text-sm font-semibold uppercase tracking-widest">
+                  <p className="text-[#FF7A00] text-sm font-semibold uppercase tracking-widest">
                     While you charge
                   </p>
                   <motion.span
                     animate={{ opacity: [0.5, 1, 0.5] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 text-xs font-semibold border border-purple-500/30"
+                    className="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-xs font-semibold border border-brand/25"
                   >
                     Coming Soon
                   </motion.span>
@@ -172,7 +181,7 @@ export function LifestyleDestinations() {
                 <h3 className="text-3xl lg:text-4xl font-bold text-[#f4f3f2] mb-4">
                   Services delivered to your car
                 </h3>
-                <p className="text-[#877f78] mb-6 max-w-md">
+                <p className="text-[#8A9BB5] mb-6 max-w-md">
                   Food, coffee, errands — brought right to your window while
                   your EV charges. No waiting, no walking.
                 </p>
@@ -187,24 +196,24 @@ export function LifestyleDestinations() {
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 }}
                       whileHover={{ scale: 1.03, y: -2 }}
-                      className="group relative glass rounded-xl p-4 border border-[#3a3533] hover:border-[#f94d00]/30 cursor-pointer transition-all overflow-hidden"
+                      className="group relative glass rounded-xl p-4 border border-[#334155] hover:border-[#FF7A00]/30 cursor-pointer transition-all overflow-hidden"
                     >
                       {/* Hover glow */}
                       <motion.div
                         initial={{ opacity: 0 }}
                         whileHover={{ opacity: 1 }}
-                        className="absolute inset-0 bg-gradient-to-br from-[#f94d00]/10 to-transparent"
+                        className="absolute inset-0 bg-gradient-to-br from-[#FF7A00]/10 to-transparent"
                       />
 
                       <div className="relative flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-[#f94d00]/20 flex items-center justify-center group-hover:bg-[#f94d00]/30 transition-colors">
-                          <category.icon className="h-5 w-5 text-[#f94d00]" />
+                        <div className="w-10 h-10 rounded-lg bg-[#FF7A00]/20 flex items-center justify-center group-hover:bg-[#FF7A00]/30 transition-colors">
+                          <category.icon className="h-5 w-5 text-[#FF7A00]" />
                         </div>
                         <div>
                           <p className="text-[#f4f3f2] font-semibold text-sm group-hover:text-[#f4f3f2] transition-colors">
                             {category.label}
                           </p>
-                          <p className="text-[#59524f] text-xs group-hover:text-[#877f78] transition-colors">
+                          <p className="text-[#475569] text-xs group-hover:text-[#8A9BB5] transition-colors">
                             {category.desc}
                           </p>
                         </div>
@@ -221,9 +230,9 @@ export function LifestyleDestinations() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
-              className="mt-8 pt-6 border-t border-[#3a3533] text-center"
+              className="mt-8 pt-6 border-t border-[#334155] text-center"
             >
-              <div className="flex items-center justify-center gap-2 text-[#59524f] text-sm">
+              <div className="flex items-center justify-center gap-2 text-[#475569] text-sm">
                 <Clock className="h-4 w-4" />
                 <span>
                   Full lifestyle services launching soon at select locations
@@ -241,23 +250,15 @@ export function LifestyleDestinations() {
           className="text-center"
         >
           <div className="inline-flex flex-col sm:flex-row items-center gap-4">
-            <motion.a
-              href="#locations"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 0 40px rgba(249, 77, 0, 0.4)",
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="btn btn-primary btn-lg"
-            >
+            <CtaButton href="#locations" size="lg">
               Find a Station
               <ArrowRight className="h-5 w-5" />
-            </motion.a>
-            <span className="text-[#59524f] text-sm hidden sm:block">or</span>
+            </CtaButton>
+            <span className="text-[#475569] text-sm hidden sm:block">or</span>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="text-[#f94d00] hover:text-[#ff6b2c] text-sm font-medium underline underline-offset-4 transition-colors"
+              className="text-[#FF7A00] hover:text-[#FF9433] text-sm font-medium underline underline-offset-4 transition-colors"
             >
               Get notified when services launch →
             </motion.button>

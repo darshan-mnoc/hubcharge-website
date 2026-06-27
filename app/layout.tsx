@@ -1,10 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Inter } from "next/font/google";
+import { Geist, Inter, Plus_Jakarta_Sans } from "next/font/google";
 
 import "./globals.css";
+import { SmoothScroll } from "@/components/smooth-scroll";
+import { ScrollReveal } from "@/components/scroll-reveal";
+import { Cursor } from "@/components/cursor";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+// Design system typeface — exposed as var(--font-jakarta) (referenced by fontFamily.sans)
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-jakarta",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hubcharge.com"),
@@ -140,7 +149,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${inter.variable}`}>
+    <html lang="en" className={`${geist.variable} ${inter.variable} ${jakarta.variable}`}>
       <head>
         <link rel="icon" href="/images/hubcharge-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/images/hubcharge-logo.png" />
@@ -151,7 +160,12 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <SmoothScroll />
+        <ScrollReveal />
+        <Cursor />
+        {children}
+      </body>
     </html>
   );
 }

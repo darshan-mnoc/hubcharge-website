@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, ChevronDown, Zap } from "lucide-react";
+import Image from "next/image";
+import { CtaButton } from "@/components/ui/cta-button";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -38,48 +40,28 @@ export function HeroLifestyle() {
     <section
       ref={heroRef}
       id="top"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#262322]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-hero"
     >
       {/* Background with parallax */}
       <motion.div style={{ y }} className="absolute inset-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/home.png"
-          className="w-full h-full object-cover opacity-40"
-        >
-          <source src="/videos/hero.mp4" type="video/mp4" />
-        </video>
-        <img
+        <Image
           src="/images/home.png"
-          alt="HubCharge - Premium EV Charging"
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          alt="HubCharge premium EV charging station"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#262322] via-transparent to-[#262322]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#262322]/80 via-transparent to-[#262322]/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A192F] via-transparent to-[#0A192F]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A192F]/80 via-transparent to-[#0A192F]/80" />
       </motion.div>
 
       {/* Grid Pattern */}
       <div className="absolute inset-0 grid-pattern opacity-30" />
 
-      {/* Animated Orbs */}
-      <motion.div
-        animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#f94d00] rounded-full blur-[200px]"
-      />
-      <motion.div
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.05, 0.1, 0.05] }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
-        }}
-        className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#ff6b2c] rounded-full blur-[150px]"
-      />
+      {/* Static glow orbs (no animation — keeps paint cost low) */}
+      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#FF7A00] opacity-[0.12] rounded-full blur-[70px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#FF9433] opacity-[0.08] rounded-full blur-[60px]" />
 
       {/* Content */}
       <motion.div
@@ -98,7 +80,7 @@ export function HeroLifestyle() {
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <Zap className="h-4 w-4 text-orange-400" />
+            <Zap className="h-4 w-4 text-[#FF9433]" />
           </motion.div>
           <span className="text-sm font-medium">Full Service EV Charging</span>
         </motion.div> */}
@@ -131,18 +113,10 @@ export function HeroLifestyle() {
           variants={itemVariants}
           className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
         >
-          <motion.a
-            href="#story"
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 0 40px rgba(249, 77, 0, 0.5)",
-            }}
-            whileTap={{ scale: 0.95 }}
-            className="group btn btn-primary btn-lg"
-          >
+          <CtaButton href="#story" size="lg">
             See How It Works
-            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </motion.a>
+            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </CtaButton>
           <motion.a
             href="#locations"
             whileHover={{ scale: 1.05 }}
@@ -170,10 +144,10 @@ export function HeroLifestyle() {
               transition={{ delay: 1 + i * 0.15 }}
               className="text-center px-4"
             >
-              <p className="text-2xl lg:text-3xl font-bold text-[#f94d00] text-glow mb-1">
+              <p className="text-2xl lg:text-3xl font-bold text-[#FF7A00] text-glow mb-1">
                 {stat.value}
               </p>
-              <p className="text-[#877f78] text-sm">{stat.label}</p>
+              <p className="text-[#8A9BB5] text-sm">{stat.label}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -186,19 +160,19 @@ export function HeroLifestyle() {
         transition={{ delay: 1.5 }}
         className="absolute bottom-2  -translate-x-1/2 flex flex-col items-center gap-3"
       >
-        <span className="text-[#59524f] text-xs uppercase tracking-[0.2em]">
+        <span className="text-[#475569] text-xs uppercase tracking-[0.2em]">
           Scroll
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          <ChevronDown className="h-5 w-5 text-[#f94d00]" />
+          <ChevronDown className="h-5 w-5 text-[#FF7A00]" />
         </motion.div>
       </motion.div>
 
       {/* Bottom Energy Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f94d00] to-transparent opacity-50" />
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FF7A00] to-transparent opacity-50" />
     </section>
   );
 }

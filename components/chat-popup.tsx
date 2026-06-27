@@ -69,7 +69,7 @@ export function ChatPopup() {
         className={`fixed bottom-20 right-6 lg:bottom-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
           isOpen
             ? "bg-[#1a1a1a] border border-white/20"
-            : "bg-gradient-to-br from-orange-500 to-amber-500"
+            : "bg-gradient-to-br from-brand to-amber-500"
         }`}
       >
         <AnimatePresence mode="wait">
@@ -128,7 +128,7 @@ export function ChatPopup() {
           >
             {/* Header */}
             <div className="relative overflow-hidden shrink-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand to-amber-500" />
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

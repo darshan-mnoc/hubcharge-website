@@ -15,6 +15,7 @@ import {
   Heart,
 } from "lucide-react";
 import Image from "next/image";
+import { CtaButton } from "@/components/ui/cta-button";
 
 const footerLinks = {
   experience: [
@@ -68,17 +69,17 @@ export function LifestyleFooter() {
   };
 
   return (
-    <footer className="relative bg-[#1a1918]">
+    <footer className="relative bg-[#0F172A]">
       {/* Pre-footer CTA */}
       <div
         ref={ctaRef}
-        className="relative py-20 overflow-hidden border-b border-[#3a3533]"
+        className="relative py-20 overflow-hidden border-b border-[#334155]"
       >
         {/* Gradient orbs */}
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
           transition={{ duration: 8, repeat: Infinity }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#f94d00] rounded-full blur-[200px]"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#FF7A00] rounded-full blur-[70px]"
         />
 
         <div className="relative max-w-4xl mx-auto px-6 text-center">
@@ -94,7 +95,7 @@ export function LifestyleFooter() {
             initial={{ opacity: 0, y: 30 }}
             animate={isCtaInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-xl text-[#877f78] mb-10 max-w-2xl mx-auto"
+            className="text-xl text-[#8A9BB5] mb-10 max-w-2xl mx-auto"
           >
             Join thousands who've transformed charging from a chore into an
             experience. Your first 10 minutes are waiting.
@@ -106,18 +107,10 @@ export function LifestyleFooter() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <motion.a
-              href="#locations"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 0 40px rgba(249, 77, 0, 0.4)",
-              }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center gap-2 btn btn-primary btn-lg rounded-full"
-            >
+            <CtaButton href="#locations" size="lg">
               <Zap className="h-5 w-5" />
               Find Your Hub
-            </motion.a>
+            </CtaButton>
             {/* <motion.a
               href="#app"
               whileHover={{ scale: 1.05 }}
@@ -149,7 +142,7 @@ export function LifestyleFooter() {
                   className="h-8 w-auto"
                 />
               </motion.a>
-              <p className="text-[#59524f] text-sm mb-6 max-w-xs">
+              <p className="text-[#475569] text-sm mb-6 max-w-xs">
                 Transforming EV charging into lifestyle moments. Because your
                 time deserves more than waiting.
               </p>
@@ -191,17 +184,17 @@ export function LifestyleFooter() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="flex-1 bg-[#f4f3f2]/10 rounded-full px-4 py-2.5 text-[#f4f3f2] text-sm placeholder:text-[#59524f] border border-[#3a3533] focus:border-[#f94d00]/50 focus:outline-none"
+                        className="flex-1 bg-[#f4f3f2]/10 rounded-full px-4 py-2.5 text-[#f4f3f2] text-sm placeholder:text-[#475569] border border-[#334155] focus:border-[#FF7A00]/50 focus:outline-none"
                         required
                       />
                       <motion.button
                         type="submit"
                         whileHover={{
                           scale: 1.1,
-                          boxShadow: "0 0 20px rgba(249, 77, 0, 0.3)",
+                          boxShadow: "0 0 20px rgba(255, 122, 0, 0.3)",
                         }}
                         whileTap={{ scale: 0.95 }}
-                        className="w-10 h-10 rounded-full bg-[#f94d00] hover:bg-[#e04500] flex items-center justify-center text-[#f4f3f2] transition-colors"
+                        className="w-10 h-10 rounded-full bg-[#FF7A00] hover:bg-[#E66E00] flex items-center justify-center text-[#f4f3f2] transition-colors"
                       >
                         <ArrowRight className="h-4 w-4" />
                       </motion.button>
@@ -219,7 +212,7 @@ export function LifestyleFooter() {
                     aria-label={social.label}
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-10 h-10 rounded-full bg-[#f4f3f2]/10 border border-[#3a3533] flex items-center justify-center text-[#59524f] hover:text-[#f94d00] hover:border-[#f94d00]/30 transition-colors"
+                    className="w-10 h-10 rounded-full bg-[#f4f3f2]/10 border border-[#334155] flex items-center justify-center text-[#475569] hover:text-[#FF7A00] hover:border-[#FF7A00]/30 transition-colors"
                   >
                     <social.icon className="h-4 w-4" />
                   </motion.a>
@@ -242,7 +235,7 @@ export function LifestyleFooter() {
                     <motion.a
                       href={link.href}
                       whileHover={{ x: 4 }}
-                      className="text-[#59524f] hover:text-[#f94d00] text-sm transition-colors inline-block"
+                      className="text-[#475569] hover:text-[#FF7A00] text-sm transition-colors inline-block"
                     >
                       {link.label}
                     </motion.a>
@@ -266,7 +259,7 @@ export function LifestyleFooter() {
                     <motion.a
                       href={link.href}
                       whileHover={{ x: 4 }}
-                      className="text-[#59524f] hover:text-[#f94d00] text-sm transition-colors inline-block"
+                      className="text-[#475569] hover:text-[#FF7A00] text-sm transition-colors inline-block"
                     >
                       {link.label}
                     </motion.a>
@@ -290,7 +283,7 @@ export function LifestyleFooter() {
                     <motion.a
                       href={link.href}
                       whileHover={{ x: 4 }}
-                      className="text-[#59524f] hover:text-[#f94d00] text-sm transition-colors inline-block"
+                      className="text-[#475569] hover:text-[#FF7A00] text-sm transition-colors inline-block"
                     >
                       {link.label}
                     </motion.a>
@@ -307,7 +300,7 @@ export function LifestyleFooter() {
                   <motion.a
                     href="mailto:info@micronocinc.com"
                     whileHover={{ x: 4 }}
-                    className="flex items-center gap-2 text-[#59524f] hover:text-[#f94d00] text-sm transition-colors"
+                    className="flex items-center gap-2 text-[#475569] hover:text-[#FF7A00] text-sm transition-colors"
                   >
                     <Mail className="h-4 w-4" />
                     <span className="break-all">{`info@micronocinc.com`}</span>
@@ -317,14 +310,14 @@ export function LifestyleFooter() {
                   <motion.a
                     href="tel:+19493914676"
                     whileHover={{ x: 4 }}
-                    className="flex items-center gap-2 text-[#59524f] hover:text-[#f94d00] text-sm transition-colors"
+                    className="flex items-center gap-2 text-[#475569] hover:text-[#FF7A00] text-sm transition-colors"
                   >
                     <Phone className="h-4 w-4" />
                     (949) 391-4676
                   </motion.a>
                 </li>
                 <li>
-                  <span className="flex items-start gap-2 text-[#59524f] text-sm">
+                  <span className="flex items-start gap-2 text-[#475569] text-sm">
                     <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
                     9383 Charles Smith Avenue
                     <br />
@@ -338,7 +331,7 @@ export function LifestyleFooter() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-[#3a3533] py-6">
+      <div className="border-t border-[#334155] py-6">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
@@ -347,20 +340,20 @@ export function LifestyleFooter() {
                   key={i}
                   href={link.href}
                   whileHover={{ y: -2 }}
-                  className="text-[#59524f] hover:text-[#877f78] text-xs transition-colors"
+                  className="text-[#475569] hover:text-[#8A9BB5] text-xs transition-colors"
                 >
                   {link.label}
                 </motion.a>
               ))}
             </div>
 
-            <p className="text-[#59524f] text-xs text-center md:text-right">
+            <p className="text-[#475569] text-xs text-center md:text-right">
               © {new Date().getFullYear()} HubCharge. All rights reserved.
               <br className="md:hidden" />
               <span className="hidden md:inline"> • </span>
               Made with{" "}
               <motion.span whileHover={{ scale: 1.2 }} className="inline-block">
-                <Heart className="inline h-3 w-3 text-[#f94d00]" />
+                <Heart className="inline h-3 w-3 text-[#FF7A00]" />
               </motion.span>{" "}
               for your time.
             </p>
@@ -374,7 +367,7 @@ export function LifestyleFooter() {
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="h-[2px] bg-gradient-to-r from-transparent via-[#f94d00]/50 to-transparent origin-center"
+        className="h-[2px] bg-gradient-to-r from-transparent via-[#FF7A00]/50 to-transparent origin-center"
       />
     </footer>
   );
