@@ -15,7 +15,7 @@ const steps = [
   {
     icon: Globe,
     title: "Opens in your browser",
-    desc: "HubCharge® loads instantly — no app to download, no account to create.",
+    desc: "HubCharge® loads instantly — no app to download. Start as a guest, or sign in to see history of your sessions and easy quick access for nex time",
   },
   {
     icon: Zap,
@@ -24,7 +24,11 @@ const steps = [
   },
 ];
 
-const reassurance = ["No app to install", "No account needed", "Works on any phone"];
+const reassurance = [
+  "No app to install",
+  "Account optional",
+  "Works on any phone",
+];
 
 export function ChargerAccess() {
   return (
@@ -75,16 +79,24 @@ export function ChargerAccess() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">{s.title}</p>
-                    <p className="text-sm text-gray-600 leading-relaxed">{s.desc}</p>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {s.desc}
+                    </p>
                   </div>
                 </li>
               ))}
             </motion.ol>
 
             {/* reassurance + cta */}
-            <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8">
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8"
+            >
               {reassurance.map((r) => (
-                <span key={r} className="inline-flex items-center gap-2 text-sm text-gray-700">
+                <span
+                  key={r}
+                  className="inline-flex items-center gap-2 text-sm text-gray-700"
+                >
                   <Check className="h-4 w-4 text-brand" />
                   {r}
                 </span>
@@ -115,7 +127,7 @@ export function ChargerAccess() {
               <div className="relative rounded-[2.75rem] bg-[#0A192F] p-2.5 shadow-[0_34px_70px_-22px_rgba(10,25,47,0.55)] border border-[#1E293B]">
                 <div className="relative rounded-[2.25rem] overflow-hidden bg-black aspect-[9/16]">
                   <Image
-                    src="/images/charging-service.jpg"
+                    src="/images/charging-service.jpeg"
                     alt="HubCharge web charging interface — choose connector, add card, swipe to start"
                     fill
                     className="object-cover object-top"
@@ -127,7 +139,9 @@ export function ChargerAccess() {
               {/* floating "in your browser" badge — sits over the empty lower screen, not the UI */}
               <div className="absolute -left-3 bottom-6 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_8px_24px_-8px_rgba(16,24,40,0.25)] border border-gray-100">
                 <Globe className="h-4 w-4 text-brand" />
-                <span className="text-xs font-semibold text-gray-800">In your browser</span>
+                <span className="text-xs font-semibold text-gray-800">
+                  In your browser
+                </span>
               </div>
             </div>
           </motion.div>
