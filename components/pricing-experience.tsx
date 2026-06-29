@@ -55,13 +55,12 @@ const addons = [
 
 type AddonId = (typeof addons)[number]["id"];
 
-// What the flat session rate spares you (kept to claims that stay true
-// even with a membership / idle policy).
+// Real advantages of a flat, predictable session rate.
 const gotchas = [
-  "Per-kWh math",
-  "Time-of-use surcharges",
-  "Final-cost guesswork",
-  "Surprise session fees",
+  "Unexpected final cost",
+  "Unexpected final time",
+  "Time-of-use pricing spikes",
+  "Congestion surcharges",
 ];
 
 export function PricingExperience() {
@@ -83,10 +82,9 @@ export function PricingExperience() {
 
   const included = useMemo(
     () => [
-      "Attendant plugs you in",
-      "Pay from your window",
+      "Your full charging session",
+      "Pay right from your phone",
       ...chosenList.map((a) => `${a.label} delivered`),
-      "We unplug when you're done",
     ],
     [chosenList],
   );
@@ -115,16 +113,17 @@ export function PricingExperience() {
             Pricing, reimagined
           </motion.p>
           <motion.h2 variants={fadeUp} className="text-h1 text-gray-900 mb-4">
-            No math. No surprises.
+            One flat rate. No surprises.
           </motion.h2>
           <motion.p
             variants={fadeUp}
             className="text-body-lg text-gray-600 max-w-xl mx-auto"
           >
-            Design your stop below. Whatever you pick, it&apos;s{" "}
+            Design your stop below. Whatever you pick, you&apos;ll{" "}
             <span className="font-semibold text-gray-800">
-              one flat rate — everything included.
+              know your flat rate before you plug in
             </span>
+            .
           </motion.p>
         </motion.div>
 
@@ -134,7 +133,9 @@ export function PricingExperience() {
           <div className="rounded-3xl bg-white border border-gray-100 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_12px_28px_-12px_rgba(16,24,40,0.10)] p-6 lg:p-8 space-y-8">
             {/* 1. distance */}
             <div>
-              <p className="text-label-md text-gray-500 mb-3">1 · How far do you need?</p>
+              <p className="text-label-md text-gray-500 mb-3">
+                1 · How far do you need?
+              </p>
               <div className="grid grid-cols-3 gap-2">
                 {distances.map((d) => {
                   const active = d.id === distance;
@@ -153,7 +154,9 @@ export function PricingExperience() {
                       >
                         {d.label}
                       </span>
-                      <span className="block text-xs text-gray-400 mt-0.5">{d.time}</span>
+                      <span className="block text-xs text-gray-400 mt-0.5">
+                        {d.time}
+                      </span>
                     </button>
                   );
                 })}
@@ -185,7 +188,9 @@ export function PricingExperience() {
 
             {/* 3. addons */}
             <div>
-              <p className="text-label-md text-gray-500 mb-3">3 · While you charge</p>
+              <p className="text-label-md text-gray-500 mb-3">
+                3 · While you charge
+              </p>
               <div className="grid grid-cols-2 gap-2">
                 {addons.map((a) => {
                   const active = chosen.has(a.id);
@@ -231,7 +236,9 @@ export function PricingExperience() {
             <div className="absolute -top-10 -right-10 w-48 h-48 bg-brand/15 rounded-full blur-[60px]" />
 
             <div className="relative">
-              <p className="text-label-md text-muted-dark mb-1">Your HubCharge stop</p>
+              <p className="text-label-md text-muted-dark mb-1">
+                Your HubCharge® stop
+              </p>
 
               {/* battery */}
               <div className="mt-4 mb-5">
@@ -256,11 +263,25 @@ export function PricingExperience() {
                     transition={{ type: "spring", stiffness: 90, damping: 18 }}
                   />
                 </div>
-                <p className="text-[11px] text-muted-dark mt-1">Estimated added range</p>
+                <p className="text-[11px] text-muted-dark mt-1">
+                  Estimated added range
+                </p>
+              </div>
+
+              {/* extensions */}
+              <div className="mb-5 flex items-center gap-2 rounded-lg bg-white/[0.04] border border-white/10 px-3 py-2">
+                <Clock className="h-4 w-4 text-brand flex-shrink-0" />
+                <p className="text-xs text-muted-dark">
+                  Need longer? Extend in quick taps —{" "}
+                  <span className="text-on-dark font-medium">
+                    up to 4 times
+                  </span>
+                  .
+                </p>
               </div>
 
               {/* included */}
-              <p className="text-label-md text-muted-dark mb-2">All included</p>
+              <p className="text-label-md text-muted-dark mb-2">Your stop</p>
               <ul className="space-y-2 mb-6">
                 <AnimatePresence initial={false}>
                   {included.map((item) => (
@@ -286,8 +307,12 @@ export function PricingExperience() {
             <div className="relative mt-auto rounded-2xl border border-white/10 bg-white/[0.04] p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Zap className="h-5 w-5 text-brand" />
-                <span className="text-lg font-bold text-on-dark">One flat rate</span>
-                <span className="text-sm text-muted-dark">— everything above, in.</span>
+                <span className="text-lg font-bold text-on-dark">
+                  One flat rate
+                </span>
+                <span className="text-sm text-muted-dark">
+                  — known upfront.
+                </span>
               </div>
               <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-4">
                 {gotchas.map((g) => (
@@ -296,7 +321,9 @@ export function PricingExperience() {
                     className="inline-flex items-center gap-1.5 text-xs text-muted-dark"
                   >
                     <X className="h-3.5 w-3.5 text-error/70" />
-                    <span className="line-through decoration-error/40">{g}</span>
+                    <span className="line-through decoration-error/40">
+                      {g}
+                    </span>
                   </span>
                 ))}
               </div>
@@ -304,8 +331,8 @@ export function PricingExperience() {
                 Find your hub
               </CtaButton>
               <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-dark mt-3">
-                <Clock className="h-3 w-3" />
-                Stop doing math at the charger.
+                <Check className="h-3 w-3 text-brand" />
+                Flat, fair, and predictable.
               </p>
             </div>
           </div>

@@ -348,7 +348,7 @@ export function LifestyleFooter() {
             </div>
 
             <p className="text-[#475569] text-xs text-center md:text-right">
-              © {new Date().getFullYear()} HubCharge. All rights reserved.
+              © {new Date().getFullYear()} HubCharge®. All rights reserved.
               <br className="md:hidden" />
               <span className="hidden md:inline"> • </span>
               Made with{" "}

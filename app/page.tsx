@@ -7,6 +7,7 @@ import { LifestyleDestinations } from "@/components/lifestyle-destinations";
 import { PricingExperience } from "@/components/pricing-experience";
 import { TimeClubMembership } from "@/components/time-club-membership";
 import { FindYourHub } from "@/components/find-your-hub";
+import { ChargerAccess } from "@/components/charger-access";
 import { AppDownload } from "@/components/app-download";
 import { ContactSection } from "@/components/contact-section";
 import { LifestyleFooter } from "@/components/lifestyle-footer";
@@ -41,6 +42,9 @@ export default function HomePage() {
 
       {/* 7. LOCATIONS: Find your Hub */}
       <FindYourHub />
+
+      {/* 7b. ACCESS: How to start a charge — browser, no app */}
+      <ChargerAccess />
 
       {/* 8. APP: Stay connected */}
       {/* <AppDownload /> */}

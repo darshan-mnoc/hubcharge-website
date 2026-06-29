@@ -1962,7 +1962,7 @@ export function JourneyBattery() {
                 Coming Back?
               </p>
               <h3 className="text-xl lg:text-2xl font-bold text-slate-900 mb-1.5 tracking-tight">
-                Are you a HubCharge Member?
+                Are you a HubCharge® Member?
               </h3>
               <p className="text-slate-500 text-sm max-w-sm">
                 Members get free charging. Every $ you spend earns rewards.

@@ -262,7 +262,7 @@ export function ProblemSection() {
               <div className="relative flex h-full min-h-[460px] lg:min-h-[560px] flex-col justify-between p-6 lg:p-7">
                 <div>
                   <span className="px-4 py-2 rounded-full text-sm font-semibold bg-[#FF7A00]/25 text-[#FF7A00] backdrop-blur-md border border-[#FF7A00]/40">
-                    HubCharge
+                    HubCharge®
                   </span>
                 </div>
 
@@ -383,7 +383,7 @@ export function ProblemSection() {
             <div className="inline-flex items-center gap-2 badge badge-primary mb-6">
               <Zap className="h-4 w-4" />
               <span className="text-sm font-semibold uppercase tracking-wider">
-                The HubCharge Difference
+                The HubCharge® Difference
               </span>
             </div>
 

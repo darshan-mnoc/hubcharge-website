@@ -155,7 +155,7 @@ export function ChatPopup() {
                       Help Us Grow
                     </h3>
                     <p className="text-white/80 text-xs sm:text-sm">
-                      What do you want near HubCharge?
+                      What do you want near HubCharge®?
                     </p>
                   </div>
                 </div>
@@ -213,7 +213,7 @@ export function ChatPopup() {
                     className="p-4 sm:p-6"
                   >
                     <p className="text-white/50 text-xs sm:text-sm mb-3 sm:mb-4">
-                      Select what you'd like to see near HubCharge stations:
+                      Select what you'd like to see near HubCharge® stations:
                     </p>
 
                     {/* Quick Options */}

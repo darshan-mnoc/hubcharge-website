@@ -25,7 +25,7 @@ import {
 const stations = [
   {
     id: 1,
-    name: "HubCharge Alhambra",
+    name: "HubCharge® Alhambra",
     address: "108 S Monterey St, Unit 102",
     city: "Alhambra",
     state: "CA",
@@ -316,9 +316,9 @@ export function FindYourHub() {
               </div>
 
               {/* Attendant note */}
-              <div className="flex items-start gap-2 mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                <AlertCircle className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-amber-400/80">
+              <div className="flex items-start gap-2.5 mt-4 p-3.5 rounded-xl bg-gray-50 border border-gray-200">
+                <AlertCircle className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-gray-600 leading-relaxed">
                   Attendant availability varies by location and time. Check
                   station details for current availability.
                 </p>
@@ -366,7 +366,7 @@ export function FindYourHub() {
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-[#FF7A00]" />
                     <span className="text-gray-500 text-sm">
-                      HubCharge Station
+                      HubCharge® Station
                     </span>
                   </div>
                   <div className="flex items-center gap-2">

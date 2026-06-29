@@ -138,7 +138,7 @@ export function LifestyleDestinations() {
               {/* Full image panel */}
               <div className="group relative w-full lg:w-80 flex-shrink-0 self-stretch min-h-[280px] lg:min-h-[340px] rounded-3xl overflow-hidden border border-white/10 shadow-card-hover">
                 <Image
-                  src="/images/coffee-delivery-v3.png"
+                  src="/images/lifestyle-food-v2.png"
                   alt="HubCharge attendant delivering coffee to a car window"
                   fill
                   className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.05]"
