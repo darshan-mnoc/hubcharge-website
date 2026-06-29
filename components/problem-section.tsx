@@ -119,7 +119,7 @@ export function ProblemSection() {
           >
             <div className="grid grid-cols-2 gap-4">
               {/* Others */}
-              <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
+              {/* <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
                 <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">
                   Other Networks
                 </p>
@@ -135,10 +135,10 @@ export function ProblemSection() {
                   </span>
                   <span className="text-gray-500 text-xs">actual</span>
                 </div>
-              </div>
+              </div> */}
 
               {/* HubCharge */}
-              <div className="p-4 rounded-xl bg-[#FF7A00]/10 border border-[#FF7A00]/20">
+              {/* <div className="p-4 rounded-xl bg-[#FF7A00]/10 border border-[#FF7A00]/20">
                 <p className="text-[#FF7A00] text-xs uppercase tracking-wider mb-2">
                   HubCharge
                 </p>
@@ -152,7 +152,7 @@ export function ProblemSection() {
                   </span>
                   <span className="text-gray-500 text-xs">actual</span>
                 </div>
-              </div>
+              </div> */}
             </div>
             {/* <p className="text-center text-gray-400 text-sm mt-4">
               What we advertise is what your car actually gets.
@@ -275,9 +275,18 @@ export function ProblemSection() {
                   </div>
                   <ul className="space-y-3">
                     {[
-                      { text: "Flat rate — know exactly what you'll pay", asterisk: false },
-                      { text: "Stay in your car — attendant handles it", asterisk: true },
-                      { text: "Quick top-up — get the miles you need, go", asterisk: false },
+                      {
+                        text: "Flat rate — know exactly what you'll pay",
+                        asterisk: false,
+                      },
+                      {
+                        text: "Stay in your car — attendant handles it",
+                        asterisk: true,
+                      },
+                      {
+                        text: "Quick top-up — get the miles you need, go",
+                        asterisk: false,
+                      },
                     ].map((item, i) => (
                       <motion.li
                         key={i}
@@ -292,7 +301,9 @@ export function ProblemSection() {
                         </div>
                         <span className="text-[15px] leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
                           {item.text}
-                          {item.asterisk && <span className="text-red-400">*</span>}
+                          {item.asterisk && (
+                            <span className="text-red-400">*</span>
+                          )}
                         </span>
                       </motion.li>
                     ))}
@@ -363,154 +374,154 @@ export function ProblemSection() {
         </div>
         <div className="relative section-container py-20 lg:py-28">
           {/* SECTION 2: The HubCharge Difference */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <div className="inline-flex items-center gap-2 badge badge-primary mb-6">
-            <Zap className="h-4 w-4" />
-            <span className="text-sm font-semibold uppercase tracking-wider">
-              The HubCharge Difference
-            </span>
-          </div>
-
-          <h2 className="heading-section text-on-dark mb-6 leading-tight">
-            10 minutes. Up to 100 miles.
-            <br />
-            <span className="text-gradient text-glow">
-              Full-service convenience*
-            </span>
-          </h2>
-
-          <p className="text-lg text-muted-dark max-w-xl mx-auto">
-            Need enough charge to get home or to your destination?
-            <span className="text-on-dark font-medium"> Top up and go.</span>
-          </p>
-        </motion.div>
-
-        {/* How It Works - Simple Steps */}
-        <div className="max-w-5xl mx-auto">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center text-muted-dark text-sm uppercase tracking-widest mb-8"
+            className="text-center mb-12"
           >
-            How it works
-          </motion.p>
+            <div className="inline-flex items-center gap-2 badge badge-primary mb-6">
+              <Zap className="h-4 w-4" />
+              <span className="text-sm font-semibold uppercase tracking-wider">
+                The HubCharge Difference
+              </span>
+            </div>
 
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            {solutionSteps.map((step, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.5 }}
-                className="group relative"
-              >
-                <div className="group/card relative min-h-[420px] lg:min-h-[460px] rounded-2xl overflow-hidden border border-white/10 hover:border-[#FF7A00]/40 hover:-translate-y-1 transition-all duration-300">
-                  <Image
-                    src={step.image}
-                    alt={`HubCharge EV charging service - ${step.title}`}
-                    fill
-                    className="object-cover transition-transform duration-[800ms] group-hover/card:scale-[1.05]"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                  {/* Window gradient — number visible top, content readable bottom */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(to bottom, rgba(10,25,47,0.55) 0%, rgba(10,25,47,0.1) 26%, rgba(10,25,47,0.5) 58%, rgba(10,25,47,0.96) 100%)",
-                    }}
-                  />
+            <h2 className="heading-section text-on-dark mb-6 leading-tight">
+              10 minutes. Up to 100 miles.
+              <br />
+              <span className="text-gradient text-glow">
+                Full-service convenience*
+              </span>
+            </h2>
 
-                  <div className="relative flex h-full min-h-[420px] lg:min-h-[460px] flex-col justify-between p-6">
-                    {/* Top: step number + hover arrow */}
-                    <div className="flex items-start justify-between">
-                      <span className="text-5xl font-black text-white/70 transition-colors group-hover/card:text-[#FF7A00]">
-                        {step.number}
-                      </span>
-                      <ArrowRight className="mt-2 h-5 w-5 text-[#FF7A00] opacity-0 -translate-x-1 transition-all group-hover/card:opacity-100 group-hover/card:translate-x-0" />
-                    </div>
+            <p className="text-lg text-muted-dark max-w-xl mx-auto">
+              Need enough charge to get home or to your destination?
+              <span className="text-on-dark font-medium"> Top up and go.</span>
+            </p>
+          </motion.div>
 
-                    {/* Bottom: title, desc, highlight */}
-                    <div className="space-y-3">
-                      <h3 className="text-xl font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm leading-relaxed text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
-                        {step.desc}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-2 pt-1">
-                        <div className="inline-flex items-center gap-2 rounded-full bg-[#FF7A00]/20 border border-[#FF7A00]/30 px-3 py-1.5 backdrop-blur-sm">
-                          <Sparkles className="h-3 w-3 text-[#FF7A00]" />
-                          <span className="text-xs font-medium text-[#FF7A00]">
-                            {step.highlight}
-                          </span>
+          {/* How It Works - Simple Steps */}
+          <div className="max-w-5xl mx-auto">
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-center text-muted-dark text-sm uppercase tracking-widest mb-8"
+            >
+              How it works
+            </motion.p>
+
+            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+              {solutionSteps.map((step, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15, duration: 0.5 }}
+                  className="group relative"
+                >
+                  <div className="group/card relative min-h-[420px] lg:min-h-[460px] rounded-2xl overflow-hidden border border-white/10 hover:border-[#FF7A00]/40 hover:-translate-y-1 transition-all duration-300">
+                    <Image
+                      src={step.image}
+                      alt={`HubCharge EV charging service - ${step.title}`}
+                      fill
+                      className="object-cover transition-transform duration-[800ms] group-hover/card:scale-[1.05]"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    {/* Window gradient — number visible top, content readable bottom */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(to bottom, rgba(10,25,47,0.55) 0%, rgba(10,25,47,0.1) 26%, rgba(10,25,47,0.5) 58%, rgba(10,25,47,0.96) 100%)",
+                      }}
+                    />
+
+                    <div className="relative flex h-full min-h-[420px] lg:min-h-[460px] flex-col justify-between p-6">
+                      {/* Top: step number + hover arrow */}
+                      <div className="flex items-start justify-between">
+                        <span className="text-5xl font-black text-white/70 transition-colors group-hover/card:text-[#FF7A00]">
+                          {step.number}
+                        </span>
+                        <ArrowRight className="mt-2 h-5 w-5 text-[#FF7A00] opacity-0 -translate-x-1 transition-all group-hover/card:opacity-100 group-hover/card:translate-x-0" />
+                      </div>
+
+                      {/* Bottom: title, desc, highlight */}
+                      <div className="space-y-3">
+                        <h3 className="text-xl font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+                          {step.title}
+                        </h3>
+                        <p className="text-sm leading-relaxed text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
+                          {step.desc}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                          <div className="inline-flex items-center gap-2 rounded-full bg-[#FF7A00]/20 border border-[#FF7A00]/30 px-3 py-1.5 backdrop-blur-sm">
+                            <Sparkles className="h-3 w-3 text-[#FF7A00]" />
+                            <span className="text-xs font-medium text-[#FF7A00]">
+                              {step.highlight}
+                            </span>
+                          </div>
+                          {i === 2 && (
+                            <span className="inline-flex items-center gap-2 rounded-full bg-brand/20 px-3 py-1.5 text-xs font-semibold text-brand border border-brand/30 backdrop-blur-sm">
+                              Coming Soon
+                            </span>
+                          )}
                         </div>
-                        {i === 2 && (
-                          <span className="inline-flex items-center gap-2 rounded-full bg-brand/20 px-3 py-1.5 text-xs font-semibold text-brand border border-brand/30 backdrop-blur-sm">
-                            Coming Soon
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Connector Line */}
-                {i < 2 && (
-                  <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-white/10 to-transparent" />
-                )}
-              </motion.div>
-            ))}
+                  {/* Connector Line */}
+                  {i < 2 && (
+                    <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-white/10 to-transparent" />
+                  )}
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Service Note */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="mt-10 text-center"
+            >
+              <p className="text-muted-dark text-sm">
+                <span className="text-red-500">*</span>Full-service attendant
+                available at select locations.{" "}
+                <a
+                  href="#locations"
+                  className="text-[#FF7A00] hover:text-[#FF9433] underline underline-offset-2"
+                >
+                  Check availability
+                </a>
+              </p>
+            </motion.div>
           </div>
 
-          {/* Service Note */}
+          {/* Transition to Journey */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="mt-10 text-center"
+            className="text-center mt-16"
           >
-            <p className="text-muted-dark text-sm">
-              <span className="text-red-500">*</span>Full-service attendant
-              available at select locations.{" "}
-              <a
-                href="#locations"
-                className="text-[#FF7A00] hover:text-[#FF9433] underline underline-offset-2"
-              >
-                Check availability
-              </a>
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Transition to Journey */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center mt-16"
-        >
-          <motion.a
-            href="#how-it-works"
-            whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center gap-3 link text-lg font-semibold group"
-          >
-            See the full charging experience
-            <motion.span
-              animate={{ y: [0, 4, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+            <motion.a
+              href="#how-it-works"
+              whileHover={{ scale: 1.05 }}
+              className="inline-flex items-center gap-3 link text-lg font-semibold group"
             >
-              <ArrowDown className="h-5 w-5" />
-            </motion.span>
-          </motion.a>
-        </motion.div>
+              See the full charging experience
+              <motion.span
+                animate={{ y: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <ArrowDown className="h-5 w-5" />
+              </motion.span>
+            </motion.a>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -18,7 +18,7 @@ const navLinks = [
   { id: "how-it-works", label: "Experience", icon: Zap },
   { id: "lifestyle", label: "Lifestyle", icon: Utensils },
   { id: "pricing", label: "Pricing", icon: Battery },
-  { id: "membership", label: "Membership", icon: Crown },
+  // { id: "membership", label: "Membership", icon: Crown },
   { id: "locations", label: "Locations", icon: MapPin },
   { id: "contact", label: "Contact", icon: Phone },
 ];

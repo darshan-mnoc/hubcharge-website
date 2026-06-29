@@ -4,7 +4,7 @@ import { HeroLifestyle } from "@/components/hero-lifestyle";
 import { ProblemSection } from "@/components/problem-section";
 import { JourneyBattery } from "@/components/journey-battery";
 import { LifestyleDestinations } from "@/components/lifestyle-destinations";
-import { PricingSection } from "@/components/pricing-section";
+import { PricingExperience } from "@/components/pricing-experience";
 import { TimeClubMembership } from "@/components/time-club-membership";
 import { FindYourHub } from "@/components/find-your-hub";
 import { AppDownload } from "@/components/app-download";
@@ -30,8 +30,8 @@ export default function HomePage() {
       {/* 4. LIFESTYLE: What you can enjoy */}
       <LifestyleDestinations />
 
-      {/* 5. PRICING: Simple pricing model */}
-      <PricingSection />
+      {/* 5. PRICING: "Design your stop" — number-free pricing experience */}
+      <PricingExperience />
 
       {/* For Business & Fleets (dark feature) — hidden for now */}
       {/* <FleetBusiness /> */}
