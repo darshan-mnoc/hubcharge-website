@@ -26,6 +26,7 @@ const stations = [
   {
     id: 1,
     name: "HubCharge® Alhambra",
+    // TODO: replace with the new company address at MBS (pending exact address)
     address: "108 S Monterey St, Unit 102",
     city: "Alhambra",
     state: "CA",
@@ -38,29 +39,74 @@ const stations = [
     hasAttendant: true,
     services: ["delivery", "pickup"],
     status: "open",
+    note: "2 more HubCharge® hubs coming soon here",
     coords: { lat: 34.095, lng: -118.127 },
+  },
+  {
+    id: 2,
+    name: "HubCharge® at Fontana Nissan",
+    // TODO: confirm exact street address (maps directions resolve by name for now)
+    address: "Fontana Nissan",
+    city: "Fontana",
+    state: "CA",
+    zip: "",
+    distance: null,
+    chargers: 1,
+    power: "180kW",
+    hours: "6 AM - 10 PM",
+    phone: "(949) 391-4676",
+    hasAttendant: true,
+    services: ["delivery", "pickup"],
+    status: "open",
+    note: "",
+    coords: { lat: 34.0922, lng: -117.435 },
   },
 ];
 
-const upcomingLocations = ["Los Angeles", "Pasadena", "Irvine", "San Diego"];
+const upcomingLocations = ["Round Rock", "West Covina"];
 
-const nearbyPlaces = {
-  coffee: [
-    { name: "Twinkle Tea", walk: "1 min" },
-    { name: "Starbucks", walk: "3 min" },
-    { name: "Tea Station", walk: "2 min" },
-  ],
-  food: [
-    { name: "Fosselman's Ice Cream", walk: "2 min" },
-    { name: "Grill 'Em All", walk: "3 min" },
-    { name: "Din Tai Fung", walk: "5 min" },
-    { name: "Phoenix Food Boutique", walk: "2 min" },
-  ],
-  retail: [
-    { name: "Target", walk: "5 min" },
-    { name: "Alhambra Place", walk: "3 min" },
-    { name: "Edwards Alhambra Renaissance", walk: "4 min" },
-  ],
+// Nearby places keyed by station id (What's Nearby updates with the selected hub).
+type NearbyPlace = { name: string; walk: string };
+type Nearby = { coffee: NearbyPlace[]; food: NearbyPlace[]; retail: NearbyPlace[] };
+
+const nearbyByStation: Record<number, Nearby> = {
+  // HubCharge® Alhambra
+  1: {
+    coffee: [
+      { name: "Twinkle Tea", walk: "1 min" },
+      { name: "Starbucks", walk: "3 min" },
+      { name: "Tea Station", walk: "2 min" },
+    ],
+    food: [
+      { name: "Fosselman's Ice Cream", walk: "2 min" },
+      { name: "Grill 'Em All", walk: "3 min" },
+      { name: "Din Tai Fung", walk: "5 min" },
+      { name: "Phoenix Food Boutique", walk: "2 min" },
+    ],
+    retail: [
+      { name: "Target", walk: "5 min" },
+      { name: "Alhambra Place", walk: "3 min" },
+      { name: "Edwards Alhambra Renaissance", walk: "4 min" },
+    ],
+  },
+  // HubCharge® at Fontana Nissan — TODO: confirm exact nearby spots
+  2: {
+    coffee: [
+      { name: "Starbucks", walk: "2 min" },
+      { name: "Dutch Bros Coffee", walk: "4 min" },
+      { name: "The Coffee Bean", walk: "5 min" },
+    ],
+    food: [
+      { name: "In-N-Out Burger", walk: "3 min" },
+      { name: "Chipotle", walk: "4 min" },
+      { name: "Panda Express", walk: "2 min" },
+    ],
+    retail: [
+      { name: "Costco", walk: "5 min" },
+      { name: "Target", walk: "4 min" },
+      { name: "Best Buy", walk: "6 min" },
+    ],
+  },
 };
 
 const services = [
@@ -95,6 +141,11 @@ export function FindYourHub() {
     null,
   );
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedId, setSelectedId] = useState(stations[0].id);
+
+  const selected =
+    stations.find((s) => s.id === selectedId) ?? stations[0];
+  const nearby = nearbyByStation[selectedId] ?? nearbyByStation[stations[0].id];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -249,8 +300,13 @@ export function FindYourHub() {
                 {(searchResults || stations).map((station) => (
                   <motion.div
                     key={station.id}
+                    onClick={() => setSelectedId(station.id)}
                     whileHover={{ scale: 1.02 }}
-                    className="card-light p-5 cursor-pointer group"
+                    className={`card-light p-5 cursor-pointer group transition-shadow ${
+                      station.id === selectedId
+                        ? "ring-2 ring-[#FF7A00] border-[#FF7A00]/40"
+                        : ""
+                    }`}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div>
@@ -285,12 +341,19 @@ export function FindYourHub() {
                         {station.hours}
                       </span> */}
                       {station.hasAttendant && (
-                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-500/10 text-green-400 text-xs">
+                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-500/10 text-green-600 text-xs">
                           <CheckCircle2 className="h-3 w-3" />
                           Attendant
                         </span>
                       )}
                     </div>
+
+                    {station.note && (
+                      <div className="flex items-center gap-1.5 mb-3 text-xs font-medium text-[#FF7A00]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#FF7A00]" />
+                        {station.note}
+                      </div>
+                    )}
 
                     <div className="flex items-center gap-3">
                       <motion.a
@@ -334,7 +397,9 @@ export function FindYourHub() {
             className="lg:col-span-3 relative rounded-3xl overflow-hidden border border-gray-200 bg-gray-100 min-h-[500px]"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3302.5!2d-118.127!3d34.095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDA1JzQyLjAiTiAxMTjCsDA3JzM3LjIiVw!5e0!3m2!1sen!2sus!4v1234567890"
+              key={selected.id}
+              title={`Map — ${selected.name}`}
+              src={`https://maps.google.com/maps?q=${selected.coords.lat},${selected.coords.lng}&z=15&output=embed`}
               width="100%"
               height="100%"
               style={{
@@ -375,7 +440,7 @@ export function FindYourHub() {
                   </div>
                 </div>
                 <a
-                  href="https://maps.google.com/?q=108+S+Monterey+St+Alhambra+CA"
+                  href={`https://maps.google.com/?q=${selected.coords.lat},${selected.coords.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-[#FF7A00] text-sm hover:underline"
@@ -395,9 +460,12 @@ export function FindYourHub() {
           viewport={{ once: true }}
           className="mt-12"
         >
-          <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">
-            What's Nearby — Delivered to Your Car
+          <h3 className="text-xl font-bold text-gray-900 mb-1 text-center">
+            What&apos;s Nearby — Delivered to Your Car
           </h3>
+          <p className="text-sm text-gray-500 mb-6 text-center">
+            Near {selected.name} · {selected.city}, {selected.state}
+          </p>
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* Coffee */}
@@ -409,7 +477,7 @@ export function FindYourHub() {
                 <h4 className="font-semibold text-gray-900">Coffee & Tea</h4>
               </div>
               <div className="space-y-3">
-                {nearbyPlaces.coffee.map((place, i) => (
+                {nearby.coffee.map((place, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -20 }}
@@ -437,7 +505,7 @@ export function FindYourHub() {
                 <h4 className="font-semibold text-gray-900">Food & Dining</h4>
               </div>
               <div className="space-y-3">
-                {nearbyPlaces.food.map((place, i) => (
+                {nearby.food.map((place, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -20 }}
@@ -465,7 +533,7 @@ export function FindYourHub() {
                 <h4 className="font-semibold text-gray-900">Shopping & More</h4>
               </div>
               <div className="space-y-3">
-                {nearbyPlaces.retail.map((place, i) => (
+                {nearby.retail.map((place, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -20 }}

@@ -20,6 +20,8 @@ const solutionSteps = [
     desc: "Pull up to any available charger. Our team handles everything from there.",
     highlight: "No apps to download",
     image: "/images/valet-greet-v2.png",
+    // charger sits at the far left of the frame
+    pos: "18% 50%",
   },
   {
     number: "02",
@@ -32,6 +34,7 @@ const solutionSteps = [
     desc: "Payment, plug-in, monitoring — all taken care of. Stay in your car.",
     highlight: "Zero effort required",
     image: "/images/charging-service-v2.png",
+    pos: "45% 50%",
   },
   {
     number: "03",
@@ -44,6 +47,8 @@ const solutionSteps = [
     desc: "Order food, coffee, or essentials. Delivered right to your window.",
     highlight: "Time well spent",
     image: "/images/coffee-delivery-v3.png",
+    // charger sits on the left of the frame
+    pos: "24% 50%",
   },
 ];
 
@@ -425,9 +430,10 @@ export function ProblemSection() {
                   <div className="group/card relative min-h-[420px] lg:min-h-[460px] rounded-2xl overflow-hidden border border-white/10 hover:border-[#FF7A00]/40 hover:-translate-y-1 transition-all duration-300">
                     <Image
                       src={step.image}
-                      alt={`HubCharge EV charging service - ${step.title}`}
+                      alt="HubCharge EV charging service"
                       fill
                       className="object-cover transition-transform duration-[800ms] group-hover/card:scale-[1.05]"
+                      style={{ objectPosition: step.pos }}
                       sizes="(max-width: 768px) 100vw, 33vw"
                     />
                     {/* Window gradient — number visible top, content readable bottom */}

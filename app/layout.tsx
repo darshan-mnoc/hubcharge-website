@@ -17,9 +17,10 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hubcharge.com"),
-  title: "HubCharge | Fastest EV Charging Stations Near You | DC Fast Charger",
+  title:
+    "HubCharge | Full-Service EV Fast Charging Near You | 180kW DC Charger",
   description:
-    "Find the fastest EV charging stations near you. 180kW DC fast charging in 10 minutes for $12.50. Tesla, BMW, Mercedes, Ford, Rivian compatible. Premium attendant service. CCS & NACS connectors. Open 24/7 in California.",
+    "Find fast EV charging near you. 180kW DC fast charging with full-service attendants and food & coffee delivered to your car — no app needed. CCS & NACS for Tesla, BMW, Ford, Rivian & all EVs. Live now in Alhambra & Fontana, California.",
   keywords: [
     "EV charging near me",
     "fast EV charging",
@@ -39,12 +40,16 @@ export const metadata: Metadata = {
     "fast charger near me",
     "public EV charging",
     "premium EV charging",
+    "full-service EV charging",
+    "no app EV charging",
+    "Alhambra EV charging",
+    "Fontana EV charging",
   ],
   authors: [{ name: "HubCharge" }],
   openGraph: {
-    title: "HubCharge | Fastest EV Charging Stations | 10 Min = 75+ Miles",
+    title: "HubCharge | Full-Service EV Fast Charging",
     description:
-      "180kW DC fast charging. 10 minutes. 75+ miles. $12.50 flat rate. Find EV chargers near you. Tesla, BMW, Ford & all EVs.",
+      "180kW DC fast charging with full-service attendants — no app needed. Live in Alhambra & Fontana, CA. Tesla, BMW, Ford, Rivian & all EVs.",
     url: "https://hubcharge.com",
     siteName: "HubCharge",
     type: "website",
@@ -60,9 +65,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "HubCharge | Fastest EV Charging | 10 Min = 75+ Miles",
+    title: "HubCharge | Full-Service EV Fast Charging",
     description:
-      "180kW DC fast charging. $12.50 flat rate. Find fast chargers near you.",
+      "180kW DC fast charging, full-service — no app needed. Alhambra & Fontana, CA.",
     images: ["/images/home.png"],
   },
   robots: {
@@ -83,7 +88,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F97316",
+  themeColor: "#FF7A00",
   width: "device-width",
   initialScale: 1,
 };
@@ -95,51 +100,41 @@ const jsonLd = {
   name: "HubCharge",
   description: "Premium DC fast EV charging stations with attendant service",
   url: "https://hubcharge.com",
-  telephone: "+1-800-HUBCHARGE",
-  priceRange: "$12.50-$24.50",
-  image: "/images/hubcharge-logo.png",
+  telephone: "+1-949-391-4676",
+  priceRange: "$$",
+  image: "https://hubcharge.com/images/hubcharge-logo.png",
   address: {
     "@type": "PostalAddress",
-    addressLocality: "San Francisco",
+    streetAddress: "108 S Monterey St, Unit 102",
+    addressLocality: "Alhambra",
     addressRegion: "CA",
+    postalCode: "91801",
     addressCountry: "US",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 37.7749,
-    longitude: -122.4194,
+    latitude: 34.095,
+    longitude: -118.127,
   },
+  areaServed: [
+    { "@type": "City", name: "Alhambra" },
+    { "@type": "City", name: "Fontana" },
+  ],
   openingHoursSpecification: {
     "@type": "OpeningHoursSpecification",
     dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    opens: "00:00",
-    closes: "23:59",
+    opens: "06:00",
+    closes: "22:00",
   },
-  sameAs: [
-    "https://twitter.com/hubcharge",
-    "https://instagram.com/hubcharge",
-    "https://linkedin.com/company/hubcharge",
-  ],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    reviewCount: "12000",
-  },
-  hasOfferCatalog: {
-    "@type": "OfferCatalog",
-    name: "EV Charging Services",
-    itemListElement: [
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "10-Minute DC Fast Charge",
-          description: "180kW DC fast charging with attendant service",
-        },
-        price: "12.50",
-        priceCurrency: "USD",
-      },
-    ],
+  sameAs: ["https://www.linkedin.com/company/micronocinc"],
+  makesOffer: {
+    "@type": "Offer",
+    itemOffered: {
+      "@type": "Service",
+      name: "Full-service DC fast EV charging",
+      description:
+        "180kW DC fast charging with full-service attendants and lifestyle delivery. CCS & NACS connectors.",
+    },
   },
 };
 
