@@ -6,9 +6,17 @@ __v0_jsx-dev-runtime.ts
 # Common ignores
 node_modules/
 .next/
+out/
+build/
 .env*.local
 .DS_Store
 .vercel
 
+# Large / non-deploy assets (keep these out of git & Vercel uploads)
+*.zip
+backupv2-29march2026.zip
+image-backups/
+
 public/images/grocery-delivery.jpg
+public/images/_old_backup/
 

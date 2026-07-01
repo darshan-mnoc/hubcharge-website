@@ -533,11 +533,11 @@ body {
 
   /* §7c Global scroll-reveal (data-reveal) */
   html.reveal-ready [data-reveal]:not(.reveal-in) {
-    opacity: 0; transform: translateY(28px);
+    opacity: 0; transform: translateY(16px);
     will-change: opacity, transform;
   }
   html.reveal-ready [data-reveal] {
-    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+    transition: opacity .45s cubic-bezier(.16,1,.3,1), transform .45s cubic-bezier(.16,1,.3,1);
   }
   /* Once revealed, drop the layer promotion so it doesn't pin GPU memory. */
   html.reveal-ready [data-reveal].reveal-in { opacity: 1; transform: none; will-change: auto; }

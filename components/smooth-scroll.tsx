@@ -22,12 +22,13 @@ export function SmoothScroll() {
     gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({
-      duration: 1.05,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      // lerp-based follow feels snappier/more responsive than a long duration
+      lerp: 0.12,
+      wheelMultiplier: 1.05,
       smoothWheel: true,
       syncTouch: true,
-      syncTouchLerp: 0.085,
-      touchMultiplier: 1.4,
+      syncTouchLerp: 0.075,
+      touchMultiplier: 1.6,
     });
     lenisInstance = lenis;
 
