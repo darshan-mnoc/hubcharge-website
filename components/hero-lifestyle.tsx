@@ -93,7 +93,7 @@ export function HeroLifestyle() {
           Full Service EV Charging
           {/* Drive In. Charge Up. Get Your Time Back. */}
           <br />
-          <span className="text-gradient text-glow">Buy back your time.</span>
+          <span className="text-gradient text-glow">Reclaim your time.</span>
         </motion.h1>
 
         {/* Subheadline */}
