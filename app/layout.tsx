@@ -1,18 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 import "./globals.css";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Cursor } from "@/components/cursor";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 // Design system typeface — exposed as var(--font-jakarta) (referenced by fontFamily.sans)
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-jakarta",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -144,7 +143,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${inter.variable} ${jakarta.variable}`}>
+    <html lang="en" className={jakarta.variable}>
       <head>
         <link rel="icon" href="/images/hubcharge-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/images/hubcharge-logo.png" />

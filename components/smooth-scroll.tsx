@@ -26,9 +26,9 @@ export function SmoothScroll() {
       lerp: 0.12,
       wheelMultiplier: 1.05,
       smoothWheel: true,
-      syncTouch: true,
-      syncTouchLerp: 0.075,
-      touchMultiplier: 1.6,
+      // Use NATIVE touch scrolling on mobile — JS-driven touch smoothing is what
+      // made first load feel like it hung. Native momentum is smooth & lightweight.
+      syncTouch: false,
     });
     lenisInstance = lenis;
 

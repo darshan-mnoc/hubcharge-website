@@ -22,6 +22,8 @@ interface CtaButtonProps {
   size?: Size;
   fullWidth?: boolean;
   className?: string;
+  /** classes for the magnetic wrapper (e.g. responsive width like "sm:w-auto") */
+  wrapperClassName?: string;
   target?: string;
   rel?: string;
   type?: "button" | "submit" | "reset";
@@ -41,6 +43,7 @@ export function CtaButton({
   size = "md",
   fullWidth = false,
   className = "",
+  wrapperClassName = "",
   target,
   rel,
   type = "button",
@@ -68,7 +71,8 @@ export function CtaButton({
     ref: ref as React.Ref<HTMLDivElement>,
     onMouseMove,
     onMouseLeave,
-    style: { x, y, display: "inline-flex" as const, width: fullWidth ? "100%" : undefined },
+    className: `${fullWidth ? "flex w-full" : "inline-flex"} ${wrapperClassName}`.trim(),
+    style: { x, y },
   };
 
   let el: ReactNode;

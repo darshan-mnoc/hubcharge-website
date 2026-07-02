@@ -111,20 +111,18 @@ export function HeroLifestyle() {
         {/* CTA Buttons */}
         <motion.div
           variants={itemVariants}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+          className="flex flex-col sm:flex-row gap-3 justify-center mb-16 w-full max-w-sm sm:max-w-none mx-auto"
         >
-          <CtaButton href="#story" size="lg">
+          <CtaButton href="#story" size="lg" fullWidth wrapperClassName="sm:w-auto">
             See How It Works
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </CtaButton>
-          <motion.a
+          <a
             href="#locations"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="btn btn-outline btn-lg"
+            className="btn btn-outline px-8 py-4 text-base w-full sm:w-auto"
           >
             Find a Location
-          </motion.a>
+          </a>
         </motion.div>
 
         {/* Stats Bar */}
