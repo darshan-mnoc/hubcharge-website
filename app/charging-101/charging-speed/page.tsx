@@ -16,6 +16,9 @@ export const metadata: Metadata = {
 export default function ChargingSpeedPage() {
   return (
     <PageShell
+      eyebrow="Guides"
+      image="/images/charging-service-v2.webp"
+      imageAlt="An electric car charging at a HubCharge station"
       title="How long does charging take?"
       intro="Honest answer: it depends — but in a predictable way. Understand the charging curve and you'll charge smarter than most EV owners."
     >

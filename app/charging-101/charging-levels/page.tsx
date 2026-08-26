@@ -40,6 +40,9 @@ const levels = [
 export default function ChargingLevelsPage() {
   return (
     <PageShell
+      eyebrow="Guides"
+      image="/images/home.webp"
+      imageAlt="HubCharge DC fast chargers beneath a lit canopy"
       title="Charging levels, explained"
       intro="Level 1, Level 2, DC fast — the names sound technical, but the idea is simple: each level delivers power faster than the last."
     >

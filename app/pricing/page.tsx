@@ -28,6 +28,10 @@ const neverCharged = [
 export default function PricingPage() {
   return (
     <PageShell
+      eyebrow="Pricing"
+      tone="dark"
+      image="/images/coffee-delivery-v3.webp"
+      imageAlt="A driver waiting comfortably in their car while it charges"
       title="One flat rate. No surprises."
       intro="You always know exactly what you'll pay before you plug in — that's the whole point."
     >

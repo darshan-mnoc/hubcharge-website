@@ -13,7 +13,11 @@ const EFFECTIVE_DATE = "August 25, 2026";
 
 export default function TermsPage() {
   return (
-    <PageShell title="Terms of Use" intro={`Effective date: ${EFFECTIVE_DATE}`}>
+    <PageShell
+      eyebrow="Legal"
+      title="Terms of Use"
+      intro={`Effective date: ${EFFECTIVE_DATE}`}
+    >
       <Prose>
         <p>
           These Terms of Use (&ldquo;Terms&rdquo;) govern your use of

@@ -138,6 +138,16 @@ export default async function StationPage({
 
   return (
     <PageShell
+      eyebrow={station.city}
+      image={stationImages[station.slug] ?? "/images/home.webp"}
+      imageAlt={`The HubCharge station in ${station.city}, California`}
+      meta={
+        <>
+          <span>Open daily, {station.hours}</span>
+          <span>{station.connectors.join(" + ")}</span>
+          <span>{station.power}</span>
+        </>
+      }
       title={`DC fast EV charging in ${station.city}, California`}
       intro={station.blurb}
     >

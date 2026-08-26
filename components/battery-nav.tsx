@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -28,6 +28,9 @@ const navLinks = [
 
 export function BatteryNav() {
   const router = useRouter();
+  const pathname = usePathname();
+  // Only the homepage has a dark hero behind the nav to sit transparently on.
+  const overDarkHero = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -74,8 +77,8 @@ export function BatteryNav() {
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-hero/90 backdrop-blur-md border-b border-[#f4f3f2]/[0.06]"
+          scrolled || !overDarkHero
+            ? "bg-ink-900/95 backdrop-blur-md border-b border-white/[0.07]"
             : "bg-transparent"
         }`}
       >

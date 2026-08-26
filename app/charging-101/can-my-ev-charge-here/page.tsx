@@ -40,6 +40,9 @@ const GROUPS = [
 export default function CompatibilityPage() {
   return (
     <PageShell
+      eyebrow="Guides"
+      image="/images/charging-service-v2.webp"
+      imageAlt="A charging cable seated in an electric car's charge port"
       title="Can my EV charge at HubCharge?"
       intro="Almost certainly yes. Every HubCharge charger carries both NACS and CCS cables — the two fast-charging connectors used by nearly every EV sold in the US. Just plug in the cable that matches your car. No adapter needed."
     >

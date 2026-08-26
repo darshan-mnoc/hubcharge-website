@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://hubcharge.com/charging-101/glossary" },
 };
 
+const GROUPS = [
+  { id: "power-and-energy", label: "Power and energy", terms: ["kW (kilowatt)", "kWh (kilowatt-hour)", "SOC (State of Charge)", "Range per hour"] },
+  { id: "connectors", label: "Connectors", terms: ["NACS (SAE J3400)", "CCS (CCS1)", "J1772", "CHAdeMO"] },
+  { id: "charging-behaviour", label: "Charging behaviour", terms: ["DCFC (DC Fast Charging)", "Charging curve", "Preconditioning", "800V architecture"] },
+  { id: "paying-and-access", label: "Paying and access", terms: ["Idle fees", "Plug & Charge"] },
+];
+
 const terms: { term: string; def: string }[] = [
   {
     term: "kW (kilowatt)",
@@ -71,6 +78,13 @@ const terms: { term: string; def: string }[] = [
 export default function GlossaryPage() {
   return (
     <PageShell
+      eyebrow="Guides"
+      toc={[
+        ["Power and energy", "#power-and-energy"],
+        ["Connectors", "#connectors"],
+        ["Charging behaviour", "#charging-behaviour"],
+        ["Paying and access", "#paying-and-access"],
+      ]}
       title="EV charging glossary"
       intro="Every term you'll actually run into, in plain English — no engineering degree required."
     >
@@ -82,14 +96,29 @@ export default function GlossaryPage() {
         ]}
       />
 
-      <dl className="max-w-3xl space-y-4">
-        {terms.map((t) => (
-          <div key={t.term} className="card-light p-5">
-            <dt className="font-bold text-midnight-navy mb-1">{t.term}</dt>
-            <dd className="text-gray-600 text-sm">{t.def}</dd>
-          </div>
+      <div className="max-w-measure">
+        {GROUPS.map((g) => (
+          <section key={g.id} id={g.id} className="mb-14 scroll-mt-28">
+            <h2 className="text-overline text-ink-500">{g.label}</h2>
+            <span aria-hidden className="mt-4 mb-2 block h-px w-8 bg-brass" />
+            <dl>
+              {g.terms.map((name) => {
+                const t = terms.find((x) => x.term === name);
+                if (!t) return null;
+                return (
+                  <div
+                    key={t.term}
+                    className="grid sm:grid-cols-[minmax(0,15ch)_minmax(0,1fr)] gap-x-8 gap-y-1 py-5 border-t border-paper-300 last:border-b"
+                  >
+                    <dt className="text-h4 text-ink-900">{t.term}</dt>
+                    <dd className="text-body-sm text-ink-500">{t.def}</dd>
+                  </div>
+                );
+              })}
+            </dl>
+          </section>
         ))}
-      </dl>
+      </div>
 
       <GuideCta />
     </PageShell>

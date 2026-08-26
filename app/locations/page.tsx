@@ -20,6 +20,10 @@ const stationImages: Record<string, string> = {
 export default function LocationsPage() {
   return (
     <PageShell
+      eyebrow="Locations"
+      tone="dark"
+      image="/images/home.webp"
+      imageAlt="A HubCharge forecourt at dusk"
       title="Find your HubCharge station"
       intro="Full-service DC fast charging in Southern California. Pull up, stay in your car, and let our team handle the rest."
     >

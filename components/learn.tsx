@@ -58,16 +58,20 @@ export function GuideCta({
   sub?: string;
 }) {
   return (
-    <div className="bg-hero rounded-lg p-8 lg:p-10 max-w-4xl text-center mt-14">
-      <h2 className="text-white text-xl lg:text-2xl font-bold mb-3">{headline}</h2>
-      <p className="text-on-dark/80 mb-6 max-w-xl mx-auto">{sub}</p>
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <CtaButton to="/locations" size="lg">
-          Find your hub
-        </CtaButton>
-        <CtaButton to="/faq" size="lg" variant="secondaryOnDark">
-          Questions? Read the FAQ
-        </CtaButton>
+    <div className="bg-ink-900 mt-24 -mx-6 lg:-mx-10 px-6 lg:px-10 py-20">
+      <div className="grid grid-cols-12 gap-x-8 items-end max-w-content mx-auto">
+        <div className="col-span-12 lg:col-span-6">
+          <h2 className="text-h2 text-white max-w-headline">{headline}</h2>
+          <p className="text-body-lg text-on-dark/75 mt-5 max-w-[42ch]">{sub}</p>
+        </div>
+        <div className="col-span-12 lg:col-start-9 lg:col-span-4 mt-8 lg:mt-0 flex flex-col sm:flex-row lg:flex-col gap-3">
+          <CtaButton to="/locations" size="lg" fullWidth>
+            Find your hub
+          </CtaButton>
+          <CtaButton to="/faq" size="lg" variant="secondaryOnDark" fullWidth>
+            Questions? Read the FAQ
+          </CtaButton>
+        </div>
       </div>
     </div>
   );

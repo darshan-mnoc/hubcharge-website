@@ -29,8 +29,8 @@ const steps = [
     n: "03",
     title: "Approve your flat rate from your phone",
     desc: "Tap your phone to the charger or scan the code — the checkout opens right in your browser. Your exact flat price is shown before anything starts.",
-    image: "/images/charging-service.webp",
-    alt: "Starting a charge from the phone browser",
+    image: "/images/charging-service-v2.webp",
+    alt: "An attendant connecting the charging cable to a car",
   },
   {
     n: "04",
@@ -51,6 +51,9 @@ const steps = [
 export default function WhatToExpectPage() {
   return (
     <PageShell
+      eyebrow="First visit"
+      image="/images/valet-greet-v2.webp"
+      imageAlt="A HubCharge attendant greeting a driver at their car window"
       title="Your first visit, step by step"
       intro="Never used a full-service charger before? Almost nobody has — that's the point. Here's exactly how it goes."
     >

@@ -185,6 +185,9 @@ const groups: Group[] = [
 export default function FaqPage() {
   return (
     <PageShell
+      eyebrow="Support"
+      image="/images/valet-greet-v2.webp"
+      imageAlt="A HubCharge attendant at a driver's window"
       title="Frequently asked questions"
       intro="Everything about charging with HubCharge — compatibility, pricing, and how full service works."
     >

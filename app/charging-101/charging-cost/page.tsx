@@ -15,6 +15,9 @@ export const metadata: Metadata = {
 export default function ChargingCostPage() {
   return (
     <PageShell
+      eyebrow="Guides"
+      image="/images/valet-greet-v2.webp"
+      imageAlt="A HubCharge attendant greeting a driver"
       title="What does charging cost?"
       intro="Public charging pricing can be genuinely confusing. Here's how the industry's models work — and how we simplified ours."
     >

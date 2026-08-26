@@ -14,6 +14,9 @@ export const metadata: Metadata = {
 export default function ConnectorsPage() {
   return (
     <PageShell
+      eyebrow="Guides"
+      image="/images/charging-service-v2.webp"
+      imageAlt="A charging cable connected to an electric car"
       title="NACS vs CCS, explained"
       intro="America's EV world runs on two fast-charging plugs. Here's what they are, which cars use which — and why at HubCharge it doesn't matter."
     >
