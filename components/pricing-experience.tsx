@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { CtaButton } from "@/components/ui/cta-button";
 import { fadeUp, fadeUpStagger } from "@/lib/motion";
+import { configuratorCars } from "@/lib/vehicles";
 
 /* "Design your stop" — a number-free pricing experience.
    The user picks how far, their car, and what to enjoy; we preview the
@@ -34,17 +35,9 @@ const distances: {
   { id: "full", label: "Full charge", time: "~30 min", fill: 96, mult: 2.7 },
 ];
 
-// Approximate added range for a ~10-min HubCharge session (estimates).
-const cars = [
-  { id: "tesla", name: "Tesla", r: 95 },
-  { id: "rivian", name: "Rivian", r: 72 },
-  { id: "ford", name: "Ford", r: 76 },
-  { id: "hyundai", name: "Hyundai / Kia", r: 98 },
-  { id: "bmw", name: "BMW", r: 82 },
-  { id: "mercedes", name: "Mercedes", r: 78 },
-  { id: "porsche", name: "Porsche", r: 96 },
-  { id: "other", name: "Other EV", r: 85 },
-];
+// Approximate added range for a ~10-min HubCharge session — sourced from
+// lib/vehicles.ts (single source of truth, conservative 180kW-capped figures).
+const cars = configuratorCars();
 
 const addons = [
   { id: "coffee", label: "Coffee & drinks", icon: Coffee },
@@ -136,12 +129,18 @@ export function PricingExperience() {
               <p className="text-label-md text-gray-500 mb-3">
                 1 · How far do you need?
               </p>
-              <div className="grid grid-cols-3 gap-2">
+              <div
+                className="grid grid-cols-3 gap-2"
+                role="radiogroup"
+                aria-label="How much charge"
+              >
                 {distances.map((d) => {
                   const active = d.id === distance;
                   return (
                     <button
                       key={d.id}
+                      role="radio"
+                      aria-checked={active}
                       onClick={() => setDistance(d.id)}
                       className={`rounded-xl border px-3 py-3 text-center transition-all ${
                         active
@@ -166,12 +165,18 @@ export function PricingExperience() {
             {/* 2. car */}
             <div>
               <p className="text-label-md text-gray-500 mb-3">2 · Your car</p>
-              <div className="flex flex-wrap gap-2">
+              <div
+                className="flex flex-wrap gap-2"
+                role="radiogroup"
+                aria-label="Your car"
+              >
                 {cars.map((c) => {
                   const active = c.id === carId;
                   return (
                     <button
                       key={c.id}
+                      role="radio"
+                      aria-checked={active}
                       onClick={() => setCarId(c.id)}
                       className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
                         active
@@ -197,6 +202,7 @@ export function PricingExperience() {
                   return (
                     <button
                       key={a.id}
+                      aria-pressed={active}
                       onClick={() => toggle(a.id)}
                       className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
                         active
@@ -237,7 +243,7 @@ export function PricingExperience() {
 
             <div className="relative">
               <p className="text-label-md text-muted-dark mb-1">
-                Your HubCharge® stop
+                Your HubCharge™ stop
               </p>
 
               {/* battery */}
@@ -332,7 +338,13 @@ export function PricingExperience() {
               </CtaButton>
               <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-dark mt-3">
                 <Check className="h-3 w-3 text-brand" />
-                Flat, fair, and predictable.
+                Flat, fair, and predictable.{" "}
+                <a
+                  href="/pricing"
+                  className="underline underline-offset-2 hover:text-[#FF7A00]"
+                >
+                  How our pricing works →
+                </a>
               </p>
             </div>
           </div>
