@@ -6,13 +6,28 @@ import { motion } from "framer-motion";
 import { useMagnetic } from "@/hooks/use-magnetic";
 
 type Size = "sm" | "md" | "lg";
+type Variant = "primary" | "secondary" | "secondaryOnDark";
+
 const SIZE: Record<Size, string> = {
   sm: "px-5 py-2.5 text-sm",
   md: "px-7 py-3.5 text-sm",
   lg: "px-8 py-4 text-base",
 };
+
+/** Shape, motion and focus language shared by both variants. */
 const BASE =
-  "group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-lg bg-brand text-white font-semibold cursor-pointer transition-[background-color,box-shadow,transform] duration-200 hover:bg-brand-hover hover:shadow-[0_10px_30px_-8px_rgba(255,122,0,0.55)] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:shadow-[0_0_0_4px_rgba(255,122,0,0.25)]";
+  "group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-lg font-semibold cursor-pointer transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
+
+const VARIANT: Record<Variant, string> = {
+  primary:
+    "bg-brand text-white hover:bg-brand-hover hover:shadow-[0_10px_30px_-8px_rgba(255,122,0,0.55)]",
+  // Ghost button for light sections.
+  secondary:
+    "bg-transparent border border-gray-300 text-gray-700 hover:border-brand hover:text-brand",
+  // Same shape, tuned for the navy (bg-hero) bands.
+  secondaryOnDark:
+    "bg-transparent border border-white/25 text-on-dark hover:border-brand hover:text-brand",
+};
 
 interface CtaButtonProps {
   children: ReactNode;
@@ -20,6 +35,7 @@ interface CtaButtonProps {
   href?: string; // external / hash → anchor
   onClick?: () => void;
   size?: Size;
+  variant?: Variant;
   fullWidth?: boolean;
   className?: string;
   /** classes for the magnetic wrapper (e.g. responsive width like "sm:w-auto") */
@@ -31,9 +47,10 @@ interface CtaButtonProps {
 }
 
 /**
- * Single source of truth for primary CTAs (§6c). Consistent shape, hover
- * sheen-sweep + glow, active press, focus ring, and a subtle magnetic pull
- * (desktop / fine-pointer only). Renders as next/link, anchor, or button.
+ * Single source of truth for CTAs (§6c). Both variants share one shape,
+ * press and focus language; primary adds the sheen sweep and glow. Carries a
+ * subtle magnetic pull (fine-pointer only). Renders as next/link, anchor, or
+ * button. Use variant="secondary" instead of the legacy .btn-outline class.
  */
 export function CtaButton({
   children,
@@ -41,6 +58,7 @@ export function CtaButton({
   href,
   onClick,
   size = "md",
+  variant = "primary",
   fullWidth = false,
   className = "",
   wrapperClassName = "",
@@ -50,19 +68,22 @@ export function CtaButton({
   "aria-label": ariaLabel,
 }: CtaButtonProps) {
   const { ref, x, y, onMouseMove, onMouseLeave } = useMagnetic(0.22);
-  const cls = `${BASE} ${SIZE[size]} ${fullWidth ? "w-full" : ""} ${className}`;
+  const cls = `${BASE} ${VARIANT[variant]} ${SIZE[size]} ${fullWidth ? "w-full" : ""} ${className}`;
 
   const inner = (
     <>
       <span className="relative z-10 inline-flex items-center gap-2">{children}</span>
-      {/* sheen sweep — the universal hover effect */}
-      <span
-        aria-hidden="true"
-        className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
-        style={{
-          background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)",
-        }}
-      />
+      {/* sheen sweep — primary only; on the ghost variant it reads as noise */}
+      {variant === "primary" && (
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
+          style={{
+            background:
+              "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)",
+          }}
+        />
+      )}
     </>
   );
 

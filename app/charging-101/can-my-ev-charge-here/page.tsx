@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, AlertTriangle, Zap } from "lucide-react";
+import { AlertTriangle, Zap } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta } from "@/components/learn";
 import {
@@ -18,11 +18,24 @@ export const metadata: Metadata = {
   },
 };
 
-const portLabel = {
-  nacs: "NACS port",
-  ccs: "CCS port",
-  transitioning: "NACS or CCS (varies by model year)",
-} as const;
+const GROUPS = [
+  {
+    port: "nacs" as const,
+    title: "Plug into the NACS cable",
+    blurb: "These use the NACS connector.",
+  },
+  {
+    port: "transitioning" as const,
+    title: "NACS or CCS — depends on your model year",
+    blurb:
+      "These brands are mid-switch to NACS. Check your car's charge port; whichever it is, the cable is on the charger.",
+  },
+  {
+    port: "ccs" as const,
+    title: "Plug into the CCS cable",
+    blurb: "These use the CCS connector.",
+  },
+];
 
 export default function CompatibilityPage() {
   return (
@@ -59,39 +72,40 @@ export default function CompatibilityPage() {
       <div className="max-w-4xl">
         <h2 className="text-h3 text-midnight-navy mb-2">Check your make</h2>
         <p className="text-gray-500 text-sm mb-6">
-          Last updated: {VEHICLE_DATA_UPDATED}. Approximate added range is for
-          a ~10-minute session.*
+          Every make below charges at HubCharge. Grouped by which cable you
+          plug in. Approximate added range is for a ~10-minute session.*
+          Last updated: {VEHICLE_DATA_UPDATED}.
         </p>
-        <div className="grid sm:grid-cols-2 gap-4 mb-8">
-          {vehicleMakes.map((m) => (
-            <div key={m.id} className="card-light p-5">
-              <div className="flex items-center justify-between gap-3 mb-2">
-                <h3 className="font-bold text-midnight-navy">{m.name}</h3>
-                <span className="shrink-0 inline-flex items-center gap-1 text-green-600 text-xs font-semibold">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  Charges here
-                </span>
+        {GROUPS.map((g) => {
+          const makes = vehicleMakes.filter((m) => m.port === g.port);
+          if (makes.length === 0) return null;
+          return (
+            <section key={g.port} className="mb-10">
+              <h3 className="font-bold text-midnight-navy mb-1">{g.title}</h3>
+              <p className="text-gray-500 text-sm mb-4">{g.blurb}</p>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {makes.map((m) => (
+                  <div key={m.id} className="card-light p-5">
+                    <div className="flex items-baseline justify-between gap-3 mb-2">
+                      <h4 className="font-bold text-midnight-navy">{m.name}</h4>
+                      {m.tenMinMilesApprox && (
+                        <span className="shrink-0 text-brand font-bold text-sm">
+                          ~{m.tenMinMilesApprox[0]}–{m.tenMinMilesApprox[1]} mi
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-gray-600 text-sm">{m.portNote}</p>
+                    {m.note && (
+                      <p className="text-gray-500 text-xs mt-2 border-t border-gray-100 pt-2">
+                        {m.note}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
-              <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold mb-1">
-                {portLabel[m.port]}
-              </p>
-              <p className="text-gray-600 text-sm mb-3">{m.portNote}</p>
-              {m.tenMinMilesApprox && (
-                <p className="text-sm">
-                  <span className="text-brand font-bold">
-                    ~{m.tenMinMilesApprox[0]}–{m.tenMinMilesApprox[1]} miles
-                  </span>{" "}
-                  <span className="text-gray-400">added in ~10 min*</span>
-                </p>
-              )}
-              {m.note && (
-                <p className="text-gray-500 text-xs mt-2 border-t border-gray-100 pt-2">
-                  {m.note}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+            </section>
+          );
+        })}
 
         {/* Honest exception */}
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 mb-8 flex items-start gap-3">

@@ -276,12 +276,9 @@ export default async function StationPage({
               <Navigation className="h-5 w-5" />
               Get Directions
             </CtaButton>
-            <Link
-              href="/what-to-expect"
-              className="btn btn-outline btn-lg justify-center"
-            >
+            <CtaButton to="/what-to-expect" size="lg" variant="secondary">
               First visit? See what to expect
-            </Link>
+            </CtaButton>
           </div>
         </div>
 

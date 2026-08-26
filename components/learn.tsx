@@ -65,9 +65,9 @@ export function GuideCta({
         <CtaButton to="/locations" size="lg">
           Find your hub
         </CtaButton>
-        <Link href="/faq" className="btn btn-outline btn-lg justify-center">
+        <CtaButton to="/faq" size="lg" variant="secondaryOnDark">
           Questions? Read the FAQ
-        </Link>
+        </CtaButton>
       </div>
     </div>
   );

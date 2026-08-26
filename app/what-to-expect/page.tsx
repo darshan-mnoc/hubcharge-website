@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { PageShell } from "@/components/page-shell";
-import { CtaButton } from "@/components/ui/cta-button";
+import { GuideCta } from "@/components/learn";
 
 export const metadata: Metadata = {
   title: "Your First Visit — What to Expect | HubCharge",
@@ -83,26 +82,10 @@ export default function WhatToExpectPage() {
         ))}
       </div>
 
-      <div className="bg-hero rounded-lg p-8 lg:p-10 max-w-4xl text-center">
-        <h2 className="text-white text-xl lg:text-2xl font-bold mb-3">
-          That&rsquo;s it. Really.
-        </h2>
-        <p className="text-on-dark/80 mb-6 max-w-xl mx-auto">
-          No app downloads, no memberships, no guessing what it&rsquo;ll cost.
-          Come see why drivers don&rsquo;t go back to self-serve.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <CtaButton to="/locations" size="lg">
-            Find your nearest hub
-          </CtaButton>
-          <Link
-            href="/faq"
-            className="btn btn-outline btn-lg justify-center"
-          >
-            More questions? Read the FAQ
-          </Link>
-        </div>
-      </div>
+      <GuideCta
+        headline="That’s it. Really."
+        sub="No app downloads, no memberships, no guessing what it’ll cost. Come see why drivers don’t go back to self-serve."
+      />
 
       <p className="text-xs text-gray-400 mt-8 max-w-2xl">
         *Attendant service at select locations and hours — self-serve is always

@@ -37,7 +37,7 @@ export function ChargerAccess() {
       data-reveal
       className="relative section-padding bg-surface-warm overflow-hidden"
     >
-      <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-[#FF7A00]/5 rounded-full blur-[70px]" />
+      <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[70px]" />
 
       <div className="section-container relative">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -110,15 +110,15 @@ export function ChargerAccess() {
               </CtaButton>
               <p className="mt-4 text-sm text-gray-500">
                 First visit?{" "}
-                <a href="/what-to-expect" className="text-[#FF7A00] underline underline-offset-2">
+                <a href="/what-to-expect" className="text-brand underline underline-offset-2">
                   See what to expect
                 </a>
                 ,{" "}
-                <a href="/charging-101/can-my-ev-charge-here" className="text-[#FF7A00] underline underline-offset-2">
+                <a href="/charging-101/can-my-ev-charge-here" className="text-brand underline underline-offset-2">
                   check if your EV is compatible
                 </a>
                 , or{" "}
-                <a href="/faq" className="text-[#FF7A00] underline underline-offset-2">
+                <a href="/faq" className="text-brand underline underline-offset-2">
                   read the FAQ
                 </a>
                 .
@@ -135,11 +135,13 @@ export function ChargerAccess() {
             className="relative flex justify-center"
           >
             {/* glow */}
+            {/* Phone mockup: arbitrary radii intentionally opt out of the 8px
+                card clamp — this depicts a physical device, not a card. */}
             <div className="absolute inset-0 mx-auto w-[300px] bg-brand/15 rounded-[3rem] blur-[70px]" />
 
             <div className="relative w-[260px] sm:w-[290px] lg:w-[310px]">
               {/* phone frame — dark, reads premium on the light section */}
-              <div className="relative rounded-[2.75rem] bg-[#0A192F] p-2.5 shadow-[0_34px_70px_-22px_rgba(10,25,47,0.55)] border border-[#1E293B]">
+              <div className="relative rounded-[2.75rem] bg-hero p-2.5 shadow-[0_34px_70px_-22px_rgba(10,25,47,0.55)] border border-[#1E293B]">
                 <div className="relative rounded-[2.25rem] overflow-hidden bg-black aspect-[9/16]">
                   <Image
                     src="/images/charging-service.webp"

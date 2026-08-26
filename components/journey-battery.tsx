@@ -8,15 +8,11 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
  */
 
 const journeySteps = [
-  { id: 1, title: "ARRIVE", subtitle: "Pick a charger spot" },
-  { id: 2, title: "EASY PAYMENT", subtitle: "Stay in your car" },
-  { id: 3, title: "CHARGE", subtitle: "We plug you in" },
-  {
-    id: 4,
-    title: "SELECT SERVICE / ADD MORE TIME",
-    subtitle: "Add time or order food",
-  },
-  { id: 5, title: "FINISH", subtitle: "We unplug • You're done" },
+  { id: 1, title: "Arrive", subtitle: "Pick a charger spot" },
+  { id: 2, title: "Easy payment", subtitle: "Stay in your car" },
+  { id: 3, title: "Charge", subtitle: "We plug you in" },
+  { id: 4, title: "Add time or services", subtitle: "Extend or order food" },
+  { id: 5, title: "Finish", subtitle: "We unplug • You're done" },
 ];
 
 // ============================================
@@ -1368,7 +1364,7 @@ export function JourneyBattery() {
                 return (
                   <div
                     key={step.id}
-                    className="flex-shrink-0 w-[85vw] snap-center rounded-2xl overflow-hidden border border-slate-200/60"
+                    className="flex-shrink-0 w-[85vw] snap-center rounded-lg overflow-hidden border border-slate-200/60"
                     style={{
                       background:
                         "linear-gradient(180deg, #f8fafc 0%, #ffffff 40%, #ffffff 100%)",
@@ -1418,7 +1414,7 @@ export function JourneyBattery() {
               <div className="flex items-center justify-center">
                 {/* Battery container */}
                 <div
-                  className="relative flex items-center rounded-2xl px-1.5 py-1.5"
+                  className="relative flex items-center rounded-lg px-1.5 py-1.5"
                   style={{
                     background: "linear-gradient(145deg, #1e293b, #0f172a)",
                     boxShadow:
@@ -1428,7 +1424,7 @@ export function JourneyBattery() {
                   {/* Inner glow when charging */}
                   {mobileActiveCard >= 2 && mobileActiveCard < 4 && (
                     <div
-                      className="absolute inset-0 rounded-2xl opacity-30"
+                      className="absolute inset-0 rounded-lg opacity-30"
                       style={{
                         background:
                           "radial-gradient(ellipse at center, rgba(34,197,94,0.4) 0%, transparent 70%)",
@@ -1566,7 +1562,7 @@ export function JourneyBattery() {
             <div className="relative">
               {/* Outer shell — clean premium casing */}
               <div
-                className="relative rounded-3xl overflow-hidden border border-slate-200/80"
+                className="relative rounded-lg overflow-hidden border border-slate-200/80"
                 style={{
                   background: "#ffffff",
                   boxShadow:
@@ -1574,11 +1570,11 @@ export function JourneyBattery() {
                 }}
               >
                 {/* Brand accent hairline at the very top */}
-                <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-[#FF7A00]/70 to-transparent z-20 pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-brand/70 to-transparent z-20 pointer-events-none" />
 
                 {/* Inner inset border */}
                 <div
-                  className="absolute inset-0 rounded-2xl pointer-events-none z-10"
+                  className="absolute inset-0 rounded-lg pointer-events-none z-10"
                   style={{
                     boxShadow:
                       "inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04)",
@@ -1701,7 +1697,7 @@ export function JourneyBattery() {
                       <div className="text-center px-1">
                         <p
                           data-title
-                          className="font-bold tracking-wide uppercase transition-all duration-300 group-hover:text-brand text-sm lg:text-base"
+                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand text-sm lg:text-base"
                           style={{
                             color: isCurrent ? "#FF7A00" : "#1e293b",
                             marginBottom: "2px",
@@ -1768,7 +1764,7 @@ export function JourneyBattery() {
       {/* ---- SUMMARY STATS ---- */}
       <div className="relative max-w-5xl mx-auto px-6 pb-10 lg:pb-12">
         <div
-          className="rounded-2xl p-6 lg:p-8"
+          className="rounded-lg p-6 lg:p-8"
           style={{
             background: "#fff",
             boxShadow:

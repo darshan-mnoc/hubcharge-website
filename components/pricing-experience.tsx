@@ -88,7 +88,7 @@ export function PricingExperience() {
       data-reveal
       className="relative section-padding bg-surface-warm overflow-hidden"
     >
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#FF7A00]/5 rounded-full blur-[70px]" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand/5 rounded-full blur-[70px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -123,7 +123,7 @@ export function PricingExperience() {
         {/* Builder */}
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch">
           {/* LEFT — choices */}
-          <div className="rounded-3xl bg-white border border-gray-100 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_12px_28px_-12px_rgba(16,24,40,0.10)] p-6 lg:p-8 space-y-8">
+          <div className="rounded-lg bg-white border border-gray-100 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_12px_28px_-12px_rgba(16,24,40,0.10)] p-6 lg:p-8 space-y-8">
             {/* 1. distance */}
             <div>
               <p className="text-label-md text-gray-500 mb-3">
@@ -238,7 +238,7 @@ export function PricingExperience() {
           </div>
 
           {/* RIGHT — your stop (dark feature card) */}
-          <div className="relative rounded-3xl bg-hero overflow-hidden p-6 lg:p-8 flex flex-col">
+          <div className="relative rounded-lg bg-hero overflow-hidden p-6 lg:p-8 flex flex-col">
             <div className="absolute -top-10 -right-10 w-48 h-48 bg-brand/15 rounded-full blur-[60px]" />
 
             <div className="relative">
@@ -264,7 +264,7 @@ export function PricingExperience() {
                 </div>
                 <div className="h-3 rounded-full bg-white/10 overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-[#FF7A00] to-[#FFB068]"
+                    className="h-full rounded-full bg-gradient-to-r from-brand to-[#FFB068]"
                     animate={{ width: `${dist.fill}%` }}
                     transition={{ type: "spring", stiffness: 90, damping: 18 }}
                   />
@@ -310,7 +310,7 @@ export function PricingExperience() {
             </div>
 
             {/* payoff — the "A finale" */}
-            <div className="relative mt-auto rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+            <div className="relative mt-auto rounded-lg border border-white/10 bg-white/[0.04] p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Zap className="h-5 w-5 text-brand" />
                 <span className="text-lg font-bold text-on-dark">
@@ -341,7 +341,7 @@ export function PricingExperience() {
                 Flat, fair, and predictable.{" "}
                 <a
                   href="/pricing"
-                  className="underline underline-offset-2 hover:text-[#FF7A00]"
+                  className="underline underline-offset-2 hover:text-brand"
                 >
                   How our pricing works →
                 </a>

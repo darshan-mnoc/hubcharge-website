@@ -184,33 +184,31 @@
     @apply max-w-content mx-auto px-6;
   }
 
-  /* Typography */
+  /* Typography — DEPRECATED ALIASES.
+     The canonical scale is §3 below (.text-display / .text-h1 / .text-h2 /
+     .text-h3). These three names predate it and are kept only so existing
+     homepage markup keeps rendering; they now resolve to the same values as
+     the canonical scale so there is exactly one answer to "what size is an
+     H2 on this site". Prefer the .text-* names in new work. */
   .heading-display {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    @apply font-bold leading-[1.05] tracking-tight;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.125;
+    font-weight: 700;
     letter-spacing: -0.02em;
   }
 
   .heading-section {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    @apply font-bold leading-tight;
-    letter-spacing: -0.02em;
-  }
-
-  .heading-card {
-    @apply text-xl lg:text-2xl font-semibold;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.166;
+    font-weight: 700;
     letter-spacing: -0.01em;
   }
 
-  /* Color-neutral so they read correctly on light AND dark sections.
-     Size comes from the design-system type scale (appended below). Color is
-     set by context: body default on light, text-on-dark / muted-dark on dark. */
-  .text-body {
-    @apply leading-relaxed;
-  }
-
-  .text-body-lg {
-    @apply leading-relaxed;
+  .heading-card {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    line-height: 1.333;
+    font-weight: 600;
+    letter-spacing: -0.005em;
   }
 
   /* Light-section surfaces (for white/warm sections in the 50/50 rhythm) */
@@ -509,6 +507,8 @@ body {
   .text-h1      { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.166; font-weight: 700; letter-spacing: -0.01em; }
   .text-h2      { font-size: clamp(1.75rem, 3vw, 2rem); line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; }
   .text-h3      { font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.333; font-weight: 600; letter-spacing: -0.005em; }
+  /* Colour-neutral by design: set by context (body default on light sections,
+     text-on-dark / text-muted-dark on navy sections). */
   .text-body-lg { font-size: 1.125rem; line-height: 1.555; font-weight: 400; }
   .text-body    { font-size: 1rem; line-height: 1.5; font-weight: 400; }
   .text-label-md { font-size: 0.875rem; line-height: 1.428; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }

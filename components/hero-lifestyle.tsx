@@ -60,7 +60,7 @@ export function HeroLifestyle() {
       <div className="absolute inset-0 grid-pattern opacity-30" />
 
       {/* Static glow orbs (no animation — keeps paint cost low) */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#FF7A00] opacity-[0.12] rounded-full blur-[70px]" />
+      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-brand opacity-[0.12] rounded-full blur-[70px]" />
       <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#FF9433] opacity-[0.08] rounded-full blur-[60px]" />
 
       {/* Content */}
@@ -88,7 +88,7 @@ export function HeroLifestyle() {
           variants={itemVariants}
           className="text-body-lg mb-12 max-w-2xl mx-auto"
         >
-          <span className="text-[#8A9BB5]">
+          <span className="text-muted-dark">
             Our attendant plugs you in — you stay in your car.*
           </span>{" "}
           <span className="text-[#f4f3f2] font-medium">
@@ -105,12 +105,15 @@ export function HeroLifestyle() {
             See How It Works
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </CtaButton>
-          <a
+          <CtaButton
             href="#locations"
-            className="btn btn-outline px-8 py-4 text-base w-full sm:w-auto"
+            size="lg"
+            variant="secondaryOnDark"
+            fullWidth
+            wrapperClassName="sm:w-auto"
           >
             Find a Location
-          </a>
+          </CtaButton>
         </motion.div>
 
         {/* Stats Bar */}
@@ -130,10 +133,10 @@ export function HeroLifestyle() {
               transition={{ delay: 1 + i * 0.15 }}
               className="text-center px-4"
             >
-              <p className="text-2xl lg:text-3xl font-bold text-[#FF7A00] text-glow mb-1">
+              <p className="text-2xl lg:text-3xl font-bold text-brand text-glow mb-1">
                 {stat.value}
               </p>
-              <p className="text-[#8A9BB5] text-sm">{stat.label}</p>
+              <p className="text-muted-dark text-sm">{stat.label}</p>
             </motion.div>
           ))}
           <p className="w-full text-center text-[#475569] text-[11px] mt-1">
@@ -158,12 +161,12 @@ export function HeroLifestyle() {
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          <ChevronDown className="h-5 w-5 text-[#FF7A00]" />
+          <ChevronDown className="h-5 w-5 text-brand" />
         </motion.div>
       </motion.div>
 
       {/* Bottom Energy Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FF7A00] to-transparent opacity-50" />
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-50" />
     </section>
   );
 }

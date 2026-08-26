@@ -136,7 +136,7 @@ export function FindYourHub() {
       <div className="absolute inset-0 grid-pattern opacity-20" />
 
       {/* Gradient Orbs */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FF7A00]/10 rounded-full blur-[70px]" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand/10 rounded-full blur-[70px]" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-green-500/5 rounded-full blur-[60px]" />
 
       <div className="section-container relative">
@@ -181,14 +181,14 @@ export function FindYourHub() {
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
                 placeholder="Enter ZIP code to find stations near you"
-                className="w-full pl-12 pr-36 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#FF7A00]/50 focus:ring-2 focus:ring-[#FF7A00]/20 transition-all"
+                className="w-full pl-12 pr-36 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand/50 focus:ring-2 focus:ring-brand/20 transition-all"
               />
               <motion.button
                 type="submit"
                 disabled={isSearching}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="absolute right-2 px-6 py-2.5 bg-[#FF7A00] hover:bg-[#E66E00] text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
+                className="absolute right-2 px-6 py-2.5 bg-brand hover:bg-brand-hover text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
               >
                 {isSearching ? (
                   <span className="flex items-center gap-2">
@@ -214,7 +214,7 @@ export function FindYourHub() {
           <div className="flex items-center justify-center gap-2 mt-4">
             <button
               onClick={handleUseLocation}
-              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#FF7A00] transition-colors"
+              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand transition-colors"
             >
               <Navigation className="h-3.5 w-3.5" />
               Use current location
@@ -233,7 +233,7 @@ export function FindYourHub() {
           <div className="lg:col-span-2">
             <div className="sticky top-24">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-[#FF7A00]" />
+                <MapPin className="h-5 w-5 text-brand" />
                 {searchResults
                   ? `${searchResults.length} Station${searchResults.length === 1 ? "" : "s"} Found`
                   : "Available Stations"}
@@ -247,7 +247,7 @@ export function FindYourHub() {
                     whileHover={{ scale: 1.02 }}
                     className={`card-light p-5 cursor-pointer group transition-shadow ${
                       station.id === selectedId
-                        ? "ring-2 ring-[#FF7A00] border-[#FF7A00]/40"
+                        ? "ring-2 ring-brand border-brand/40"
                         : ""
                     }`}
                   >
@@ -271,16 +271,16 @@ export function FindYourHub() {
                           {station.city}, {station.state} {station.zip}
                         </p>
                         {distances?.[station.id] != null && (
-                          <p className="text-[#FF7A00] text-xs font-semibold mt-1">
+                          <p className="text-brand text-xs font-semibold mt-1">
                             ~{Math.round(distances[station.id])} mi away
                           </p>
                         )}
                       </div>
-                      <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-[#FF7A00] transition-colors" />
+                      <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-brand transition-colors" />
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#FF7A00]/10 text-[#FF7A00] text-xs">
+                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-brand/10 text-brand text-xs">
                         <Zap className="h-3 w-3" />
                         {station.power}
                       </span>
@@ -297,8 +297,8 @@ export function FindYourHub() {
                     </div>
 
                     {station.note && (
-                      <div className="flex items-center gap-1.5 mb-3 text-xs font-medium text-[#FF7A00]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#FF7A00]" />
+                      <div className="flex items-center gap-1.5 mb-3 text-xs font-medium text-brand">
+                        <span className="w-1.5 h-1.5 rounded-full bg-brand" />
                         {station.note}
                       </div>
                     )}
@@ -310,7 +310,7 @@ export function FindYourHub() {
                         rel="noopener noreferrer"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[#FF7A00] hover:bg-[#E66E00] text-white text-sm font-semibold transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-semibold transition-colors"
                       >
                         <Navigation className="h-4 w-4" />
                         Directions
@@ -318,7 +318,7 @@ export function FindYourHub() {
                       <a
                         href={`tel:+1${station.phone.replace(/\D/g, "")}`}
                         aria-label={`Call ${station.name}`}
-                        className="flex items-center justify-center w-10 h-10 rounded-lg glass-light border border-gray-200 hover:border-[#FF7A00]/50 transition-colors"
+                        className="flex items-center justify-center w-10 h-10 rounded-lg glass-light border border-gray-200 hover:border-brand/50 transition-colors"
                       >
                         <Phone className="h-4 w-4 text-gray-500" />
                       </a>
@@ -326,7 +326,7 @@ export function FindYourHub() {
                     <a
                       href={`/locations/${station.slug}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-[#FF7A00] hover:text-[#E66E00]"
+                      className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-brand hover:text-brand-hover"
                     >
                       Station details
                       <ChevronRight className="h-4 w-4" />
@@ -351,7 +351,7 @@ export function FindYourHub() {
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-3 relative rounded-3xl overflow-hidden border border-gray-200 bg-gray-100 min-h-[500px]"
+            className="lg:col-span-3 relative rounded-lg overflow-hidden border border-gray-200 bg-gray-100 min-h-[500px]"
           >
             <iframe
               key={selected.id}
@@ -373,20 +373,20 @@ export function FindYourHub() {
                 <motion.div
                   animate={{ scale: [1, 2, 1], opacity: [0.6, 0, 0.6] }}
                   transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute inset-0 bg-[#FF7A00] rounded-full"
+                  className="absolute inset-0 bg-brand rounded-full"
                 />
-                <div className="relative w-12 h-12 bg-[#FF7A00] rounded-full flex items-center justify-center shadow-lg glow-orange">
+                <div className="relative w-12 h-12 bg-brand rounded-full flex items-center justify-center shadow-lg glow-orange">
                   <MapPin className="h-6 w-6 text-white" />
                 </div>
               </div>
             </div>
 
             {/* Map Legend */}
-            <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl glass-light border border-gray-200">
+            <div className="absolute bottom-4 left-4 right-4 p-4 rounded-lg glass-light border border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#FF7A00]" />
+                    <div className="w-3 h-3 rounded-full bg-brand" />
                     <span className="text-gray-500 text-sm">
                       HubCharge™ Station
                     </span>
@@ -400,7 +400,7 @@ export function FindYourHub() {
                   href={`https://maps.google.com/?q=${selected.coords.lat},${selected.coords.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-[#FF7A00] text-sm hover:underline"
+                  className="flex items-center gap-1 text-brand text-sm hover:underline"
                 >
                   Open in Maps
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -456,8 +456,8 @@ export function FindYourHub() {
             {/* Food */}
             <motion.div whileHover={{ y: -4 }} className="card-light p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-[#FF7A00]/20 flex items-center justify-center">
-                  <Utensils className="h-5 w-5 text-[#FF7A00]" />
+                <div className="w-10 h-10 rounded-lg bg-brand/20 flex items-center justify-center">
+                  <Utensils className="h-5 w-5 text-brand" />
                 </div>
                 <h4 className="font-semibold text-gray-900">Food & Dining</h4>
               </div>
@@ -473,7 +473,7 @@ export function FindYourHub() {
                     className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 cursor-pointer"
                   >
                     <span className="text-gray-700">{place.name}</span>
-                    <span className="text-[#FF7A00] text-sm font-medium">
+                    <span className="text-brand text-sm font-medium">
                       {place.walk}
                     </span>
                   </motion.div>
@@ -553,14 +553,14 @@ export function FindYourHub() {
                   value={notifyEmail}
                   onChange={(e) => setNotifyEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#FF7A00]/50"
+                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand/50"
                 />
                 <motion.button
                   type="submit"
                   disabled={notifySending}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-6 py-3 bg-[#FF7A00] hover:bg-[#E66E00] disabled:opacity-60 text-white font-semibold rounded-xl transition-colors"
+                  className="px-6 py-3 bg-brand hover:bg-brand-hover disabled:opacity-60 text-white font-semibold rounded-xl transition-colors"
                 >
                   {notifySending ? "Sending…" : "Notify Me"}
                 </motion.button>

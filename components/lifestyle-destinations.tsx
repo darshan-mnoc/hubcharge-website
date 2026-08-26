@@ -89,7 +89,7 @@ export function LifestyleDestinations() {
       <div className="absolute inset-0 grid-pattern opacity-20" />
 
       {/* Gradient Orbs */}
-      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-[#FF7A00]/10 rounded-full blur-[70px]" />
+      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-brand/10 rounded-full blur-[70px]" />
       <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-brand/5 rounded-full blur-[60px]" />
 
       <div className="section-container relative">
@@ -131,12 +131,12 @@ export function LifestyleDestinations() {
         >
           <div className="relative card p-8 lg:p-12 overflow-hidden">
             {/* Animated background elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF7A00]/10 rounded-full blur-[50px]" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 rounded-full blur-[50px]" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand/10 rounded-full blur-[40px]" />
 
             <div className="relative flex flex-col lg:flex-row items-center lg:items-stretch gap-10 lg:gap-16">
               {/* Full image panel */}
-              <div className="group relative w-full lg:w-80 flex-shrink-0 self-stretch min-h-[280px] lg:min-h-[340px] rounded-3xl overflow-hidden border border-white/10 shadow-card-hover">
+              <div className="group relative w-full lg:w-80 flex-shrink-0 self-stretch min-h-[280px] lg:min-h-[340px] rounded-lg overflow-hidden border border-white/10 shadow-card-hover">
                 <Image
                   src="/images/lifestyle-food-v2.webp"
                   alt="HubCharge attendant delivering coffee to a car window"
@@ -160,14 +160,14 @@ export function LifestyleDestinations() {
               >
                 <div className="flex items-center gap-2">
                   <div className="w-20 h-[2px] energy-line" />
-                  <ArrowRight className="h-8 w-8 text-[#FF7A00]" />
+                  <ArrowRight className="h-8 w-8 text-brand" />
                 </div>
               </motion.div>
 
               {/* Services delivered to your car */}
               <div className="flex-1 text-center lg:text-left">
                 <div className="flex items-center gap-2 justify-center lg:justify-start mb-3">
-                  <p className="text-[#FF7A00] text-sm font-semibold uppercase tracking-widest">
+                  <p className="text-brand text-sm font-semibold uppercase tracking-widest">
                     While you charge
                   </p>
                   <motion.span
@@ -181,7 +181,7 @@ export function LifestyleDestinations() {
                 <h3 className="text-3xl lg:text-4xl font-bold text-[#f4f3f2] mb-4">
                   Services delivered to your car
                 </h3>
-                <p className="text-[#8A9BB5] mb-6 max-w-md">
+                <p className="text-muted-dark mb-6 max-w-md">
                   Food, coffee, errands — brought right to your window while
                   your EV charges. No waiting, no walking.
                 </p>
@@ -196,24 +196,24 @@ export function LifestyleDestinations() {
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 }}
                       whileHover={{ scale: 1.03, y: -2 }}
-                      className="group relative glass rounded-xl p-4 border border-[#334155] hover:border-[#FF7A00]/30 cursor-pointer transition-all overflow-hidden"
+                      className="group relative glass rounded-xl p-4 border border-[#334155] hover:border-brand/30 cursor-pointer transition-all overflow-hidden"
                     >
                       {/* Hover glow */}
                       <motion.div
                         initial={{ opacity: 0 }}
                         whileHover={{ opacity: 1 }}
-                        className="absolute inset-0 bg-gradient-to-br from-[#FF7A00]/10 to-transparent"
+                        className="absolute inset-0 bg-gradient-to-br from-brand/10 to-transparent"
                       />
 
                       <div className="relative flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-[#FF7A00]/20 flex items-center justify-center group-hover:bg-[#FF7A00]/30 transition-colors">
-                          <category.icon className="h-5 w-5 text-[#FF7A00]" />
+                        <div className="w-10 h-10 rounded-lg bg-brand/20 flex items-center justify-center group-hover:bg-brand/30 transition-colors">
+                          <category.icon className="h-5 w-5 text-brand" />
                         </div>
                         <div>
                           <p className="text-[#f4f3f2] font-semibold text-sm group-hover:text-[#f4f3f2] transition-colors">
                             {category.label}
                           </p>
-                          <p className="text-[#475569] text-xs group-hover:text-[#8A9BB5] transition-colors">
+                          <p className="text-[#475569] text-xs group-hover:text-muted-dark transition-colors">
                             {category.desc}
                           </p>
                         </div>
@@ -251,7 +251,7 @@ export function LifestyleDestinations() {
         >
           <div className="inline-flex flex-col sm:flex-row items-center gap-4">
             <CtaButton href="#locations" size="lg">
-              Find a Station
+              Find your hub
               <ArrowRight className="h-5 w-5" />
             </CtaButton>
             <span className="text-[#475569] text-sm hidden sm:block">or</span>
@@ -259,7 +259,7 @@ export function LifestyleDestinations() {
               href="#newsletter"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="text-[#FF7A00] hover:text-[#FF9433] text-sm font-medium underline underline-offset-4 transition-colors"
+              className="text-brand hover:text-[#FF9433] text-sm font-medium underline underline-offset-4 transition-colors"
             >
               Get notified when services launch →
             </motion.a>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CheckCircle2, XCircle, Zap, Clock, Smartphone } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CtaButton } from "@/components/ui/cta-button";
@@ -107,9 +106,9 @@ export default function PricingPage() {
           <CtaButton to="/locations" size="lg">
             Find your hub
           </CtaButton>
-          <Link href="/faq" className="btn btn-outline btn-lg justify-center">
+          <CtaButton to="/faq" size="lg" variant="secondary">
             Pricing questions? See the FAQ
-          </Link>
+          </CtaButton>
         </div>
         <p className="text-xs text-gray-400 mt-8">
           *Attendant service at select locations and hours. Added range varies

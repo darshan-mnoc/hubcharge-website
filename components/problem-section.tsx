@@ -87,10 +87,10 @@ export function ProblemSection() {
         >
           <motion.div
             variants={itemVariants}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FF7A00]/10 border border-[#FF7A00]/20 mb-8"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand/10 border border-brand/20 mb-8"
           >
-            <Zap className="h-4 w-4 text-[#FF7A00]" />
-            <span className="text-[#FF7A00] text-sm font-semibold uppercase tracking-wider">
+            <Zap className="h-4 w-4 text-brand" />
+            <span className="text-brand text-sm font-semibold uppercase tracking-wider">
               Rethink Fast Charging
             </span>
           </motion.div>
@@ -142,7 +142,7 @@ export function ProblemSection() {
               viewport={{ once: true }}
               whileHover={{ y: -6 }}
               transition={{ duration: 0.3 }}
-              className="group relative min-h-[460px] lg:min-h-[560px] rounded-3xl overflow-hidden border border-white/10"
+              className="group relative min-h-[460px] lg:min-h-[560px] rounded-lg overflow-hidden border border-white/10"
             >
               <Image
                 src="/images/waiting-v3.webp"
@@ -162,13 +162,13 @@ export function ProblemSection() {
 
               <div className="relative flex h-full min-h-[460px] lg:min-h-[560px] flex-col justify-between p-6 lg:p-7">
                 <div>
-                  <span className="px-4 py-2 rounded-full text-sm font-medium bg-[#0A192F]/50 text-white/90 backdrop-blur-md border border-white/15">
+                  <span className="px-4 py-2 rounded-full text-sm font-medium bg-hero/50 text-white/90 backdrop-blur-md border border-white/15">
                     Traditional Charging
                   </span>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0A192F]/50 border border-white/15 backdrop-blur-sm">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-hero/50 border border-white/15 backdrop-blur-sm">
                     <Clock className="h-3.5 w-3.5 text-amber-300" />
                     <span className="text-amber-300 text-sm font-semibold">
                       30-40 min
@@ -207,7 +207,7 @@ export function ProblemSection() {
               viewport={{ once: true }}
               whileHover={{ y: -6 }}
               transition={{ duration: 0.3 }}
-              className="group relative min-h-[460px] lg:min-h-[560px] rounded-3xl overflow-hidden border border-[#FF7A00]/25"
+              className="group relative min-h-[460px] lg:min-h-[560px] rounded-lg overflow-hidden border border-brand/25"
             >
               <Image
                 src="/images/valet-greet-v2.webp"
@@ -224,19 +224,19 @@ export function ProblemSection() {
                     "linear-gradient(to bottom, rgba(10,25,47,0.78) 0%, rgba(10,25,47,0.18) 24%, rgba(10,25,47,0.28) 50%, rgba(10,25,47,0.82) 76%, rgba(10,25,47,0.97) 100%)",
                 }}
               />
-              <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#FF7A00]/15 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-brand/15 to-transparent pointer-events-none" />
 
               <div className="relative flex h-full min-h-[460px] lg:min-h-[560px] flex-col justify-between p-6 lg:p-7">
                 <div>
-                  <span className="px-4 py-2 rounded-full text-sm font-semibold bg-[#FF7A00]/25 text-[#FF7A00] backdrop-blur-md border border-[#FF7A00]/40">
+                  <span className="px-4 py-2 rounded-full text-sm font-semibold bg-brand/25 text-brand backdrop-blur-md border border-brand/40">
                     HubCharge™
                   </span>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FF7A00]/25 border border-[#FF7A00]/40 backdrop-blur-sm">
-                    <Zap className="h-3.5 w-3.5 text-[#FF7A00]" />
-                    <span className="text-[#FF7A00] text-sm font-semibold">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/25 border border-brand/40 backdrop-blur-sm">
+                    <Zap className="h-3.5 w-3.5 text-brand" />
+                    <span className="text-brand text-sm font-semibold">
                       10 min • add up to 100 mi
                     </span>
                   </div>
@@ -313,7 +313,7 @@ export function ProblemSection() {
               ],
             }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-14 h-14 rounded-full bg-gradient-to-br from-[#FF7A00] to-[#FF9433] flex items-center justify-center"
+            className="w-14 h-14 rounded-full bg-gradient-to-br from-brand to-[#FF9433] flex items-center justify-center"
           >
             <ArrowDown className="h-6 w-6 text-white" />
           </motion.div>
@@ -389,7 +389,7 @@ export function ProblemSection() {
                   transition={{ delay: i * 0.15, duration: 0.5 }}
                   className="group relative"
                 >
-                  <div className="group/card relative min-h-[420px] lg:min-h-[460px] rounded-2xl overflow-hidden border border-white/10 hover:border-[#FF7A00]/40 hover:-translate-y-1 transition-all duration-300">
+                  <div className="group/card relative min-h-[420px] lg:min-h-[460px] rounded-lg overflow-hidden border border-white/10 hover:border-brand/40 hover:-translate-y-1 transition-all duration-300">
                     <Image
                       src={step.image}
                       alt="HubCharge EV charging service"
@@ -410,10 +410,10 @@ export function ProblemSection() {
                     <div className="relative flex h-full min-h-[420px] lg:min-h-[460px] flex-col justify-between p-6">
                       {/* Top: step number + hover arrow */}
                       <div className="flex items-start justify-between">
-                        <span className="text-5xl font-black text-white/70 transition-colors group-hover/card:text-[#FF7A00]">
+                        <span className="text-5xl font-black text-white/70 transition-colors group-hover/card:text-brand">
                           {step.number}
                         </span>
-                        <ArrowRight className="mt-2 h-5 w-5 text-[#FF7A00] opacity-0 -translate-x-1 transition-all group-hover/card:opacity-100 group-hover/card:translate-x-0" />
+                        <ArrowRight className="mt-2 h-5 w-5 text-brand opacity-0 -translate-x-1 transition-all group-hover/card:opacity-100 group-hover/card:translate-x-0" />
                       </div>
 
                       {/* Bottom: title, desc, highlight */}
@@ -425,9 +425,9 @@ export function ProblemSection() {
                           {step.desc}
                         </p>
                         <div className="flex flex-wrap items-center gap-2 pt-1">
-                          <div className="inline-flex items-center gap-2 rounded-full bg-[#FF7A00]/20 border border-[#FF7A00]/30 px-3 py-1.5 backdrop-blur-sm">
-                            <Sparkles className="h-3 w-3 text-[#FF7A00]" />
-                            <span className="text-xs font-medium text-[#FF7A00]">
+                          <div className="inline-flex items-center gap-2 rounded-full bg-brand/20 border border-brand/30 px-3 py-1.5 backdrop-blur-sm">
+                            <Sparkles className="h-3 w-3 text-brand" />
+                            <span className="text-xs font-medium text-brand">
                               {step.highlight}
                             </span>
                           </div>
@@ -461,7 +461,7 @@ export function ProblemSection() {
                 available at select locations.{" "}
                 <a
                   href="#locations"
-                  className="text-[#FF7A00] hover:text-[#FF9433] underline underline-offset-2"
+                  className="text-brand hover:text-[#FF9433] underline underline-offset-2"
                 >
                   Check availability
                 </a>

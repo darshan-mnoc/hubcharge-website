@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
+const LOGIN_URL = "https://hubcharge.micronocinc.com/login.html";
+
 const navLinks = [
   { id: "how-it-works", label: "Experience", icon: Zap },
   { id: "lifestyle", label: "Lifestyle", icon: Utensils },
@@ -69,7 +71,7 @@ export function BatteryNav() {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-[#0A192F]/90 backdrop-blur-md border-b border-[#f4f3f2]/[0.06]"
+            ? "bg-hero/90 backdrop-blur-md border-b border-[#f4f3f2]/[0.06]"
             : "bg-transparent"
         }`}
       >
@@ -111,13 +113,13 @@ export function BatteryNav() {
                   className={`relative px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-200 ${
                     activeLink === link.id
                       ? "text-[#f4f3f2]"
-                      : "text-[#8A9BB5] hover:text-[#f4f3f2]"
+                      : "text-muted-dark hover:text-[#f4f3f2]"
                   }`}
                 >
                   {activeLink === link.id && (
                     <motion.div
                       layoutId="navHighlight"
-                      className="absolute inset-0 bg-[#FF7A00] rounded-full"
+                      className="absolute inset-0 bg-brand rounded-full"
                       transition={{
                         type: "spring",
                         bounce: 0.2,
@@ -134,44 +136,30 @@ export function BatteryNav() {
           {/* CTA Button - Desktop Only */}
           <div className="hidden lg:block">
             <motion.a
-              href="#locations"
+              href={LOGIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{
                 scale: 1.05,
                 boxShadow: "0 0 30px rgba(255, 122, 0, 0.5)",
               }}
               whileTap={{ scale: 0.95 }}
-              onClick={(e) => {
-                e.preventDefault();
-                // handleNavClick("locations");
-                window.open(
-                  "https://hubcharge.micronocinc.com/login.html",
-                  "_blank",
-                );
-              }}
               className="flex items-center gap-2 btn btn-primary"
             >
               <Zap className="h-4 w-4" strokeWidth={2.5} />
-              {/* <span>Start Charging</span> */}
               <span>Login</span>
             </motion.a>
           </div>
 
           {/* Mobile CTA Button - Small, between logo and hamburger */}
           <motion.a
-            href="#locations"
+            href={LOGIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             whileTap={{ scale: 0.95 }}
-            onClick={(e) => {
-              e.preventDefault();
-              // handleNavClick("locations");
-              window.open(
-                "https://hubcharge.micronocinc.com/login.html",
-                "_blank",
-              );
-            }}
-            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-[#FF7A00] text-[#f4f3f2] rounded-full"
+            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-brand text-[#f4f3f2] rounded-full"
           >
             <Zap className="h-3 w-3" strokeWidth={2.5} />
-            {/* <span>Start Charging</span> */}
             <span>Login</span>
           </motion.a>
 
@@ -204,13 +192,13 @@ export function BatteryNav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-[#0A192F] lg:hidden"
+            className="fixed inset-0 z-40 bg-hero lg:hidden"
           >
             <div className="absolute inset-0 grid-pattern opacity-30" />
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.3 }}
-              className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-[#FF7A00] rounded-full blur-[60px]"
+              className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-brand rounded-full blur-[60px]"
             />
 
             <div className="relative pt-28 px-6 pb-10 h-full overflow-y-auto">
@@ -222,11 +210,11 @@ export function BatteryNav() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
                     onClick={() => handleNavClick(link.id)}
-                    className="w-full flex items-center gap-4 p-5 rounded-2xl glass border border-[#f4f3f2]/[0.06] hover:border-[#FF7A00]/30 text-left group"
+                    className="w-full flex items-center gap-4 p-5 rounded-lg glass border border-[#f4f3f2]/[0.06] hover:border-brand/30 text-left group"
                   >
-                    <div className="w-14 h-14 rounded-xl bg-[#FF7A00]/10 group-hover:bg-[#FF7A00]/20 flex items-center justify-center transition-colors">
+                    <div className="w-14 h-14 rounded-xl bg-brand/10 group-hover:bg-brand/20 flex items-center justify-center transition-colors">
                       <link.icon
-                        className="h-6 w-6 text-[#FF7A00]"
+                        className="h-6 w-6 text-brand"
                         strokeWidth={1.5}
                       />
                     </div>
@@ -256,7 +244,7 @@ export function BatteryNav() {
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-[#0A192F]/95 backdrop-blur-md border-t border-[#f4f3f2]/[0.06] safe-area-bottom"
+        className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-hero/95 backdrop-blur-md border-t border-[#f4f3f2]/[0.06] safe-area-bottom"
       >
         <div className="grid grid-cols-5">
           {[
@@ -270,7 +258,7 @@ export function BatteryNav() {
               key={item.id}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleNavClick(item.id)}
-              className="flex flex-col items-center py-3 text-[#8A9BB5] hover:text-[#FF7A00] transition-colors"
+              className="flex flex-col items-center py-3 text-muted-dark hover:text-brand transition-colors"
             >
               <item.icon className="h-5 w-5" strokeWidth={1.5} />
               <span className="text-[10px] mt-1 font-medium">{item.label}</span>

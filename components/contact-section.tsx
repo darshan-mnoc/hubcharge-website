@@ -63,7 +63,7 @@ export function ContactSection() {
 
       {/* Background */}
       <div className="absolute inset-0 grid-pattern opacity-10" />
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FF7A00]/10 rounded-full blur-[70px]" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand/10 rounded-full blur-[70px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -128,7 +128,7 @@ export function ContactSection() {
               <h3 className="text-xl font-bold text-[#f4f3f2] mb-2">
                 Message Sent!
               </h3>
-              <p className="text-[#8A9BB5] text-sm">
+              <p className="text-muted-dark text-sm">
                 We&apos;ll get back to you within 24 hours.
               </p>
             </motion.div>
@@ -136,7 +136,7 @@ export function ContactSection() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="contact-name" className="text-[#8A9BB5] text-sm mb-2 block">
+                  <label htmlFor="contact-name" className="text-muted-dark text-sm mb-2 block">
                     Name
                   </label>
                   <input
@@ -154,7 +154,7 @@ export function ContactSection() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="contact-email" className="text-[#8A9BB5] text-sm mb-2 block">
+                  <label htmlFor="contact-email" className="text-muted-dark text-sm mb-2 block">
                     Email
                   </label>
                   <input
@@ -174,7 +174,7 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label htmlFor="contact-subject" className="text-[#8A9BB5] text-sm mb-2 block">
+                <label htmlFor="contact-subject" className="text-muted-dark text-sm mb-2 block">
                   Subject
                 </label>
                 <input
@@ -192,7 +192,7 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label htmlFor="contact-message" className="text-[#8A9BB5] text-sm mb-2 block">
+                <label htmlFor="contact-message" className="text-muted-dark text-sm mb-2 block">
                   Message
                 </label>
                 <textarea
@@ -246,16 +246,16 @@ export function ContactSection() {
           {/* Phone */}
           <a
             href="tel:+19493914676"
-            className="flex items-center gap-3 text-[#8A9BB5] hover:text-[#FF7A00] transition-colors group"
+            className="flex items-center gap-3 text-muted-dark hover:text-brand transition-colors group"
           >
-            <Phone className="h-4 w-4 text-[#FF7A00]" />
+            <Phone className="h-4 w-4 text-brand" />
             <span className="text-sm font-medium">(949) 391-4676</span>
           </a>
 
           <div className="hidden sm:block w-px h-4 bg-[#334155]" />
 
           {/* Hours */}
-          <div className="flex items-center gap-3 text-[#8A9BB5]">
+          <div className="flex items-center gap-3 text-muted-dark">
             <Clock className="h-4 w-4 text-green-400" />
             <span className="text-sm">
               Mon–Fri, 9 AM – 6 PM PST

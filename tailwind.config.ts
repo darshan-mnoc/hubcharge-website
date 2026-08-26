@@ -31,15 +31,14 @@ const config: Config = {
         },
         error: '#ffb4ab',
       },
-      // Soft shape language — 4px base, clamped to 8px max on cards (rounded-full kept for pills/chips)
+      // Soft shape language — 4px base, 8px max on cards. rounded-full is kept
+      // for pills/chips, and arbitrary values (e.g. the phone mockup's
+      // rounded-[2.75rem]) intentionally opt out for physical-object shapes.
       borderRadius: {
         sm: '0.25rem',
         DEFAULT: '0.25rem',
         md: '0.375rem',
         lg: '0.5rem',
-        xl: '0.5rem',
-        '2xl': '0.5rem',
-        '3xl': '0.5rem',
       },
       boxShadow: {
         card: '0 1px 3px rgba(10,25,47,0.06), 0 4px 16px rgba(10,25,47,0.05)',
