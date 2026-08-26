@@ -34,13 +34,13 @@ function CarSVG({
     <svg viewBox="0 0 200 70" className={className} style={style}>
       <defs>
         <linearGradient id={`carBody-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#334155" />
-          <stop offset="100%" stopColor="#0f172a" />
+          <stop offset="0%" stopColor="#33455F" />
+          <stop offset="100%" stopColor="#243449" />
         </linearGradient>
 
         <linearGradient id={`glass-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#e0f2fe" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.65" />
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.20" />
+          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.10" />
         </linearGradient>
 
         <linearGradient id={`sheen-${id}`} x1="0%" y1="0%" x2="100%" y2="0%">
@@ -50,8 +50,8 @@ function CarSVG({
         </linearGradient>
 
         <radialGradient id={`wheel-${id}`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#475569" />
-          <stop offset="100%" stopColor="#020617" />
+          <stop offset="0%" stopColor="#141F31" />
+          <stop offset="100%" stopColor="#141F31" />
         </radialGradient>
       </defs>
 
@@ -110,7 +110,7 @@ function CarSVG({
       />
 
       {/* front wheel */}
-      <circle cx="60" cy="54" r="11" fill={`url(#wheel-${id})`} />
+      <circle cx="60" cy="54" r="9.7" fill={`url(#wheel-${id})`} stroke="rgba(255,255,255,0.30)" strokeWidth="1.25" />
       <circle cx="60" cy="54" r="11" fill="none" stroke="#020617" strokeWidth="1" />
       <circle cx="60" cy="54" r="6.6" fill="#1e293b" />
       <g stroke="#94a3b8" strokeWidth="0.9" opacity="0.6" strokeLinecap="round">
@@ -122,7 +122,7 @@ function CarSVG({
       <circle cx="60" cy="54" r="1.7" fill="#cbd5e1" />
 
       {/* rear wheel */}
-      <circle cx="140" cy="54" r="11" fill={`url(#wheel-${id})`} />
+      <circle cx="140" cy="54" r="9.7" fill={`url(#wheel-${id})`} stroke="rgba(255,255,255,0.30)" strokeWidth="1.25" />
       <circle cx="140" cy="54" r="11" fill="none" stroke="#020617" strokeWidth="1" />
       <circle cx="140" cy="54" r="6.6" fill="#1e293b" />
       <g stroke="#94a3b8" strokeWidth="0.9" opacity="0.6" strokeLinecap="round">
@@ -145,11 +145,10 @@ function CarSVG({
       />
 
       {/* LED rear light bar */}
-      <rect x="178" y="45" width="6" height="3" rx="1" fill="#fb7185" />
+      <rect x="178" y="45" width="6" height="3" rx="1" fill="rgba(255,255,255,0.55)" />
 
-      {/* charge port glow (brand) */}
-      <circle cx="155" cy="36" r="3" fill="#FF7A00" opacity="0.95" />
-      <circle cx="155" cy="36" r="7" fill="#FF7A00" opacity="0.18" />
+      {/* charge port — a point of light, not a bloom */}
+      <circle cx="155" cy="36" r="2.2" fill="#FF7A00" opacity="0.95" />
     </svg>
   );
 }
@@ -171,11 +170,13 @@ function ValetSVG({
       <rect x="22" y="62" width="7" height="33" rx="3.5" fill="#1e293b" />
       <rect x="31" y="62" width="7" height="33" rx="3.5" fill="#1e293b" />
 
-      {/* Uniform body */}
+      {/* Uniform body — light figure on the navy stage. A single chest
+          stripe is the valet's entire orange budget; the cable owns the rest. */}
       <path
         d="M17,34 Q17,27 30,27 Q43,27 43,34 L45,62 L15,62 Z"
-        fill="#FF7A00"
+        fill="#E9EDF2"
       />
+      <rect x="27" y="30" width="6" height="2" rx="1" fill="#FF7A00" />
       {/* Uniform chest pocket */}
       <rect
         x="24"
@@ -196,7 +197,7 @@ function ValetSVG({
             width="8"
             height="22"
             rx="4"
-            fill="#FF7A00"
+            fill="#E9EDF2"
             transform="rotate(-12, 13, 35)"
           />
           <rect
@@ -205,7 +206,7 @@ function ValetSVG({
             width="8"
             height="22"
             rx="4"
-            fill="#FF7A00"
+            fill="#E9EDF2"
             transform="rotate(12, 47, 35)"
           />
           {/* Terminal body */}
@@ -362,27 +363,12 @@ function ValetSVG({
       )}
 
       {/* Head */}
-      <circle cx="30" cy="17" r="12" fill="#fde3c8" />
+      <circle cx="30" cy="15" r="8.5" fill="#C9CED6" />
 
-      {/* Cap */}
-      <path d="M19,14 Q19,5 30,5 Q41,5 41,14" fill="#1e293b" />
-      <rect x="17" y="13" width="26" height="3" rx="1.5" fill="#0f172a" />
-      <rect x="14" y="15" width="6" height="2" rx="1" fill="#0f172a" />
-
-      {/* Eyes */}
-      <circle cx="26" cy="17" r="1.8" fill="#1e293b" />
-      <circle cx="34" cy="17" r="1.8" fill="#1e293b" />
-      <circle cx="26.7" cy="16.3" r="0.6" fill="#fff" />
-      <circle cx="34.7" cy="16.3" r="0.6" fill="#fff" />
-
-      {/* Smile */}
-      <path
-        d="M27,22 Q30,25 33,22"
-        stroke="#c8956a"
-        strokeWidth="1.5"
-        fill="none"
-        strokeLinecap="round"
-      />
+      {/* Cap. Deliberately no face: two dots and a smile at this size is a
+          children's book. A featureless head reads as a pictogram. */}
+      <path d="M22,12 Q22,5 30,5 Q38,5 38,12" fill="#1e293b" />
+      <rect x="20" y="11" width="20" height="2.5" rx="1.25" fill="#0f172a" />
     </svg>
   );
 }
@@ -577,16 +563,7 @@ function FloatingCard({
   style?: React.CSSProperties;
 }) {
   return (
-    <div
-      className={`rounded-xl px-3 py-2 ${className}`}
-      style={{
-        background: "rgba(255,255,255,0.95)",
-        backdropFilter: "blur(12px)",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)",
-        border: "1px solid rgba(255,255,255,0.8)",
-        ...style,
-      }}
-    >
+    <div className={`px-0 py-0 ${className}`} style={style}>
       {children}
     </div>
   );
@@ -624,31 +601,12 @@ function Scene1({
             transform: `translateY(${showBadge ? 0 : -10}px)`,
           }}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center shadow-sm">
-              <svg
-                className="w-3 h-3 text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path
-                  d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-gray-800 leading-tight">
-                Pick your spot
-              </p>
-              <p className="text-[8px] text-gray-500 leading-tight font-medium">
-                NACS or CCS
-              </p>
-            </div>
-          </div>
+          <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
+            Pick your spot
+          </p>
+          <p className="text-[10px] text-white/40 mt-0.5">
+            NACS or CCS
+          </p>
         </FloatingCard>
       )}
 
@@ -668,7 +626,7 @@ function Scene1({
           className="absolute left-12 bottom-10"
           style={{ opacity: 0.5 - progress * 0.8 }}
         >
-          <MotionSVG className="w-5 text-slate-400" />
+          <MotionSVG className="w-5 text-white/40" />
         </div>
       )}
     </div>
@@ -703,31 +661,12 @@ function Scene2({
             transform: `translateY(${showBadge ? 0 : -10}px)`,
           }}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm">
-              <svg
-                className="w-3 h-3 text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path
-                  d="M20 6L9 17l-5-5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-gray-800 leading-tight">
-                Stay in your car<span className="text-red-500">*</span>
-              </p>
-              <p className="text-[8px] text-gray-500 leading-tight font-medium">
-                We come to you
-              </p>
-            </div>
-          </div>
+          <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
+            Stay in your car<span className="text-red-500">*</span>
+          </p>
+          <p className="text-[10px] text-white/40 mt-0.5">
+            We come to you
+          </p>
         </FloatingCard>
       )}
 
@@ -794,28 +733,9 @@ function Scene3({
             transform: `translateY(${showBadge ? 0 : -10}px)`,
           }}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center shadow-sm">
-              <svg
-                className="w-3 h-3 text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path
-                  d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-gray-800 leading-tight">
-                Charge 10 minutes
-              </p>
-            </div>
-          </div>
+          <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
+            Charge 10 minutes
+          </p>
         </FloatingCard>
       )}
       {/* Floating badge */}
@@ -914,28 +834,12 @@ function Scene4({
             transform: `translateY(${showBadge ? 0 : -10}px)`,
           }}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center shadow-sm">
-              <svg
-                className="w-3.5 h-3.5 text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-gray-800 leading-tight">
-                Select your services
-              </p>
-              <p className="text-[8px] text-gray-500 leading-tight font-medium">
-                or add more charging time
-              </p>
-            </div>
-          </div>
+          <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
+            Select your services
+          </p>
+          <p className="text-[10px] text-white/40 mt-0.5">
+            or add more charging time
+          </p>
         </FloatingCard>
       )}
       {/* {showNotif && (
@@ -1089,7 +993,7 @@ function Scene5({
           className="absolute left-12 bottom-10"
           style={{ opacity: progress * 0.5 }}
         >
-          <MotionSVG className="w-5 text-slate-400" />
+          <MotionSVG className="w-5 text-white/40" />
         </div>
       )}
 
@@ -1122,18 +1026,16 @@ function StepPill({
 }) {
   return (
     <div
-      className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[9px] font-bold transition-all duration-300"
+      className="text-index transition-colors duration-300"
       style={{
-        background: isCurrent
-          ? "linear-gradient(135deg,#FF7A00,#FF9433)"
+        color: isCurrent
+          ? "#FFFFFF"
           : isActive
-            ? "#1e293b"
-            : "#e2e8f0",
-        color: isActive ? "#fff" : "#94a3b8",
-        boxShadow: isCurrent ? "0 2px 8px rgba(249,115,22,0.4)" : "none",
+            ? "rgba(255,255,255,0.5)"
+            : "rgba(255,255,255,0.22)",
       }}
     >
-      {number}
+      {String(number).padStart(2, "0")}
     </div>
   );
 }
@@ -1207,9 +1109,10 @@ export function JourneyBattery() {
       const isCurrent = currentStep === i;
 
       if (panel) {
-        panel.style.backgroundColor = isActive
-          ? `rgba(255, 245, 234, ${0.6 + stepProgress * 0.3})`
-          : "rgba(248, 250, 252, 0.7)";
+        // No fill-as-state: tinting panels cream is what made this read as
+        // clip-art. Active/inactive is expressed as scene opacity instead.
+        panel.style.backgroundColor = "transparent";
+        panel.style.opacity = isActive ? "1" : "0.34";
         const overlay = panel.querySelector("[data-overlay]") as HTMLElement;
         if (overlay) overlay.style.opacity = isActive ? "0" : "0.3";
         const dot = panel.querySelector("[data-dot]") as HTMLElement;
@@ -1230,21 +1133,21 @@ export function JourneyBattery() {
         // Pill - consistent size, just color changes
         const pill = label.querySelector("[data-pill]") as HTMLElement;
         if (pill) {
-          pill.style.background = isCurrent
-            ? "linear-gradient(135deg,#FF7A00,#FF9433)"
+          pill.style.color = isCurrent
+            ? "#FFFFFF"
             : isActive
-              ? "#1e293b"
-              : "#e2e8f0";
-          pill.style.color = isActive ? "#fff" : "#94a3b8";
-          pill.style.boxShadow = isCurrent
-            ? "0 4px 12px rgba(249,115,22,0.4)"
-            : "none";
+              ? "rgba(255,255,255,0.5)"
+              : "rgba(255,255,255,0.22)";
+          pill.style.background = "transparent";
+          pill.style.boxShadow = "none";
         }
 
         // Title - consistent size, just color changes
         const title = label.querySelector("[data-title]") as HTMLElement;
         if (title) {
-          title.style.color = isCurrent ? "#FF7A00" : "#1e293b";
+          title.style.color = isCurrent
+            ? "#FFFFFF"
+            : "rgba(255,255,255,0.55)";
         }
 
         // Subtitle - just opacity change
@@ -1344,23 +1247,19 @@ export function JourneyBattery() {
     <section
       ref={sectionRef}
       id="how-it-works"
-      className="relative bg-gradient-soft"
+      className="relative bg-ink-900"
     >
       {/* ---- TOP SECTION ---- */}
       <div className="relative py-8 lg:py-12">
         <div className="max-w-5xl mx-auto px-6">
           {/* Header - Mobile only (desktop header is inside pinned container) */}
-          <div className="journey-header text-center mb-4 md:hidden">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20 mb-3">
-              <span className="w-2 h-2 rounded-full bg-brand" />
-              <span className="text-sm font-semibold uppercase tracking-wider text-brand-ink">
-                The Experience
-              </span>
-            </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-1">
+          <div className="journey-header mb-6 md:hidden">
+            <p className="text-overline text-white/55">The experience</p>
+            <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
+            <h2 className="text-h2 text-white mb-2">
               Your charging journey
             </h2>
-            <p className="text-slate-500 text-sm">Swipe to explore each step</p>
+            <p className="text-body-sm text-on-dark/60">Swipe to explore each step</p>
           </div>
 
           {/* ---- MOBILE HORIZONTAL CAROUSEL ---- */}
@@ -1397,7 +1296,7 @@ export function JourneyBattery() {
                     </div>
 
                     {/* Step content */}
-                    <div className="p-4 bg-white border-t border-slate-100">
+                    <div className="p-4 bg-ink-800 border-t border-white/[0.07]">
                       <div className="flex items-center gap-3">
                         <div
                           className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
@@ -1546,14 +1445,14 @@ export function JourneyBattery() {
                         ? "Charging..."
                         : `Step ${mobileActiveCard + 1}`}
                   </p>
-                  <p className="text-[10px] text-slate-500">
+                  <p className="text-[10px] text-white/50">
                     {mobileActiveCard + 1} of 5
                   </p>
                 </div>
               </div>
 
               {/* Tap hint */}
-              <p className="text-center text-[10px] text-slate-400 mt-3 flex items-center justify-center gap-2">
+              <p className="text-center text-[10px] text-white/40 mt-3 flex items-center justify-center gap-2">
                 <span className="w-4 h-px bg-slate-300" />
                 Tap battery or swipe
                 <span className="w-4 h-px bg-slate-300" />
@@ -1564,41 +1463,20 @@ export function JourneyBattery() {
           {/* ---- DESKTOP BATTERY WIDGET ---- */}
           <div ref={batteryRef} className="hidden md:block">
             {/* Header - Inside pinned container for desktop */}
-            <div className="text-center mb-20">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20 mb-4">
-                <span className="w-2 h-2 rounded-full bg-brand" />
-                <span className="text-sm font-semibold uppercase tracking-wider text-brand-ink">
-                  The Experience
-                </span>
-              </div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-2">
+            <div className="mb-20">
+              <p className="text-overline text-white/55">The experience</p>
+              <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
+              <h2 className="text-h2 text-white mb-3 max-w-headline">
                 Your charging journey
               </h2>
-              <p className="text-slate-500 max-w-md mx-auto text-base">
+              <p className="text-body-lg text-on-dark/70 max-w-[36ch]">
                 Charging made simple, fast, and effortless.
               </p>
             </div>
             <div className="relative">
-              {/* Outer shell — clean premium casing */}
-              <div
-                className="relative rounded-lg overflow-hidden border border-slate-200/80"
-                style={{
-                  background: "#ffffff",
-                  boxShadow:
-                    "0 1px 2px rgba(16,24,40,0.04), 0 24px 48px -16px rgba(16,24,40,0.16)",
-                }}
-              >
-                {/* Brand accent hairline at the very top */}
-                <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-brand/70 to-transparent z-20 pointer-events-none" />
-
-                {/* Inner inset border */}
-                <div
-                  className="absolute inset-0 rounded-lg pointer-events-none z-10"
-                  style={{
-                    boxShadow:
-                      "inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04)",
-                  }}
-                />
+              {/* Stage. A white card floating on navy read as a sticker; the
+                  scene now sits directly on the section with one ground line. */}
+              <div className="relative overflow-hidden border-y border-white/[0.07]">
 
                 {/* Scene panels */}
                 <div
@@ -1619,7 +1497,7 @@ export function JourneyBattery() {
                       <div
                         key={step.id}
                         className={`relative transition-colors duration-300 ${
-                          i < 4 ? "border-r border-slate-100" : ""
+                          i < 4 ? "border-r border-white/[0.07]" : ""
                         }`}
                       >
                         <Scene
@@ -1631,7 +1509,7 @@ export function JourneyBattery() {
                         {/* Inactive overlay */}
                         <div
                           data-overlay
-                          className="absolute inset-0 bg-slate-50/50 pointer-events-none transition-opacity duration-300"
+                          className="absolute inset-0 bg-ink-900/40 pointer-events-none transition-opacity duration-300"
                           style={{ opacity: isActive ? 0 : 0.3 }}
                         />
 
@@ -1654,7 +1532,7 @@ export function JourneyBattery() {
                 {/* Progress track */}
                 <div
                   ref={progressBarsRef}
-                  className="h-[3px] flex"
+                  className="h-[1.5px] flex"
                   style={{ background: "rgba(0,0,0,0.04)" }}
                 >
                   {/* eslint-disable-next-line react-hooks/refs -- same deliberate render-time ref read as above */}
@@ -1664,7 +1542,7 @@ export function JourneyBattery() {
                         className="h-full transition-none"
                         style={{
                           background:
-                            "linear-gradient(90deg, #FF7A00, #fbbf24)",
+                            "#FF7A00",
                           width:
                             activeStep === i
                               ? `${getStepProgress(i) * 100}%`
@@ -1688,37 +1566,30 @@ export function JourneyBattery() {
                     <button
                       key={step.id}
                       onClick={() => handleStepClick(i)}
-                      className="flex flex-col items-center gap-2.5 transition-all duration-300 cursor-pointer group py-2"
+                      className="flex flex-col items-start gap-2 transition-all duration-300 cursor-pointer group py-2 text-left"
                       style={{ opacity: isActive ? 1 : 0.4 }}
                     >
                       {/* Pill */}
                       <div
                         data-pill
-                        className="inline-flex items-center justify-center rounded-full font-bold transition-all duration-300 group-hover:scale-110"
+                        className="text-index transition-colors duration-300"
                         style={{
-                          width: "28px",
-                          height: "28px",
-                          fontSize: "11px",
-                          background: isCurrent
-                            ? "linear-gradient(135deg,#FF7A00,#FF9433)"
+                          color: isCurrent
+                            ? "#FFFFFF"
                             : isActive
-                              ? "#1e293b"
-                              : "#e2e8f0",
-                          color: isActive ? "#fff" : "#94a3b8",
-                          boxShadow: isCurrent
-                            ? "0 4px 12px rgba(249,115,22,0.4)"
-                            : "none",
+                              ? "rgba(255,255,255,0.5)"
+                              : "rgba(255,255,255,0.22)",
                         }}
                       >
-                        {step.id}
+                        {String(step.id).padStart(2, "0")}
                       </div>
 
-                      <div className="text-center px-1">
+                      <div className="px-1">
                         <p
                           data-title
                           className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand-ink text-sm lg:text-base"
                           style={{
-                            color: isCurrent ? "#FF7A00" : "#1e293b",
+                            color: isCurrent ? "#FFFFFF" : "rgba(255,255,255,0.55)",
                             marginBottom: "2px",
                           }}
                         >
@@ -1726,7 +1597,7 @@ export function JourneyBattery() {
                         </p>
                         {/* <p
                           data-subtitle
-                          className="text-slate-400 leading-snug transition-all duration-300 text-xs lg:text-sm"
+                          className="text-white/50 leading-snug transition-all duration-300 text-xs lg:text-sm"
                           style={{
                             opacity: isActive ? 0.8 : 0,
                           }}
@@ -1739,42 +1610,6 @@ export function JourneyBattery() {
                 })}
               </div>
 
-              {/* Scroll/Click indicator */}
-              <div className="flex items-center justify-center gap-3 mt-6 text-slate-400">
-                <div className="flex items-center gap-1.5">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59"
-                    />
-                  </svg>
-                  <span className="text-xs font-medium">Click cards</span>
-                </div>
-                <span className="text-slate-300">or</span>
-                <div className="flex items-center gap-1.5">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-                    />
-                  </svg>
-                  <span className="text-xs font-medium">Scroll</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1792,7 +1627,7 @@ export function JourneyBattery() {
         >
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="text-center lg:text-left">
-              <h3 className="text-xl lg:text-2xl font-bold text-slate-900 mb-1 tracking-tight">
+              <h3 className="text-h3 text-white mb-1">
                 Your car is your space
               </h3>
               <p className="text-slate-500 text-sm">
