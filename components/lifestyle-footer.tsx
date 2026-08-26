@@ -15,31 +15,33 @@ import {
   Heart,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { CtaButton } from "@/components/ui/cta-button";
+import { subscribeNewsletter } from "@/lib/actions";
 
 const footerLinks = {
   experience: [
-    { label: "Find a Hub", href: "#locations" },
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Membership", href: "#membership" },
-    { label: "Lifestyle", href: "#lifestyle" },
+    { label: "Find a Hub", href: "/locations" },
+    { label: "Alhambra Station", href: "/locations/alhambra" },
+    { label: "Fontana Station", href: "/locations/fontana" },
+    { label: "What to Expect", href: "/what-to-expect" },
+    { label: "Pricing", href: "/pricing" },
   ],
-  company: [
-    { label: "About Us", href: "#about" },
-    { label: "Careers", href: "#careers" },
-    { label: "Press", href: "#press" },
-    { label: "Blog", href: "#blog" },
+  learn: [
+    { label: "Charging 101", href: "/charging-101" },
+    { label: "Can My EV Charge Here?", href: "/charging-101/can-my-ev-charge-here" },
+    { label: "NACS vs CCS", href: "/charging-101/connectors" },
+    { label: "How Long Does It Take?", href: "/charging-101/charging-speed" },
+    { label: "Glossary", href: "/charging-101/glossary" },
   ],
   support: [
-    { label: "Help Center", href: "#help" },
-    { label: "Contact Us", href: "#contact" },
-    { label: "FAQs", href: "#faqs" },
-    { label: "Accessibility", href: "#accessibility" },
+    { label: "FAQs", href: "/faq" },
+    { label: "Contact Us", href: "/#contact" },
+    { label: "Accessibility", href: "/accessibility" },
   ],
   legal: [
-    { label: "Privacy Policy", href: "#privacy" },
-    { label: "Terms of Service", href: "#terms" },
-    { label: "Cookie Policy", href: "#cookies" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Use", href: "/terms" },
   ],
 };
 
@@ -60,11 +62,21 @@ export function LifestyleFooter() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const isCtaInView = useInView(ctaRef, { once: true, margin: "-100px" });
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email || subscribing) return;
+    setSubscribing(true);
+    setSubscribeError(null);
+    const result = await subscribeNewsletter({ email, company: "" });
+    setSubscribing(false);
+    if (result.ok) {
       setSubscribed(true);
       setEmail("");
+    } else {
+      setSubscribeError(result.error ?? "Something went wrong — please try again.");
     }
   };
 
@@ -97,7 +109,7 @@ export function LifestyleFooter() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-xl text-[#8A9BB5] mb-10 max-w-2xl mx-auto"
           >
-            Join thousands who've transformed charging from a chore into an
+            Turn charging from a chore into an
             experience. Your first 10 minutes are waiting.
           </motion.p>
 
@@ -111,14 +123,6 @@ export function LifestyleFooter() {
               <Zap className="h-5 w-5" />
               Find Your Hub
             </CtaButton>
-            {/* <motion.a
-              href="#app"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg rounded-full border-2 border-white/20 text-[#f4f3f2] hover:bg-[#f4f3f2]/10 transition-colors"
-            >
-              Download the App
-            </motion.a> */}
           </motion.div>
         </div>
       </div>
@@ -130,12 +134,13 @@ export function LifestyleFooter() {
             {/* Brand Column */}
             <div className="col-span-2">
               <motion.a
-                href="#"
+                href="/"
+                aria-label="HubCharge home"
                 whileHover={{ scale: 1.02 }}
                 className="inline-block mb-6"
               >
                 <Image
-                  src="/images/hubcharge-logo.png"
+                  src="/images/hubcharge-logo.webp"
                   alt="HubCharge"
                   width={140}
                   height={36}
@@ -150,7 +155,7 @@ export function LifestyleFooter() {
               {/* Newsletter */}
               <div className="mb-6">
                 <p className="text-[#f4f3f2] font-medium text-sm mb-3">
-                  Get time-saving tips & offers
+                  <span id="newsletter" className="scroll-mt-28">Get time-saving tips &amp; offers</span>
                 </p>
                 <AnimatePresence mode="wait">
                   {subscribed ? (
@@ -181,6 +186,7 @@ export function LifestyleFooter() {
                     >
                       <input
                         type="email"
+                        aria-label="Email address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
@@ -201,6 +207,11 @@ export function LifestyleFooter() {
                     </motion.form>
                   )}
                 </AnimatePresence>
+                {subscribeError && (
+                  <p role="alert" className="text-xs text-[#ffb4ab] mt-2">
+                    {subscribeError}
+                  </p>
+                )}
               </div>
 
               {/* Social Links */}
@@ -244,11 +255,11 @@ export function LifestyleFooter() {
               </ul>
             </div>
 
-            {/* Company */}
+            {/* Learn */}
             <div>
-              <h4 className="text-[#f4f3f2] font-semibold mb-4">Company</h4>
+              <h4 className="text-[#f4f3f2] font-semibold mb-4">Learn</h4>
               <ul className="space-y-3">
-                {footerLinks.company.map((link, i) => (
+                {footerLinks.learn.map((link, i) => (
                   <motion.li
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
@@ -319,9 +330,20 @@ export function LifestyleFooter() {
                 <li>
                   <span className="flex items-start gap-2 text-[#475569] text-sm">
                     <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                    9383 Charles Smith Avenue
-                    <br />
-                    Rancho Cucamonga, CA 91730
+                    <span>
+                      <span className="block text-xs uppercase tracking-wider text-[#8A9BB5]">
+                        Corporate office
+                      </span>
+                      9383 Charles Smith Avenue
+                      <br />
+                      Rancho Cucamonga, CA 91730
+                      <span className="mt-1 block text-xs text-[#8A9BB5]">
+                        Stations: Alhambra &amp; Fontana, CA —{" "}
+                        <Link href="/locations" className="underline hover:text-[#FF7A00]">
+                          see locations
+                        </Link>
+                      </span>
+                    </span>
                   </span>
                 </li>
               </ul>
@@ -348,7 +370,7 @@ export function LifestyleFooter() {
             </div>
 
             <p className="text-[#475569] text-xs text-center md:text-right">
-              © {new Date().getFullYear()} HubCharge®. All rights reserved.
+              © {new Date().getFullYear()} HubCharge™. All rights reserved.
               <br className="md:hidden" />
               <span className="hidden md:inline"> • </span>
               Made with{" "}

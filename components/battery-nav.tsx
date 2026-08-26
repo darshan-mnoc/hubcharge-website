@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap,
   Utensils,
   MapPin,
-  Crown,
   Phone,
   Menu,
   X,
@@ -24,6 +24,7 @@ const navLinks = [
 ];
 
 export function BatteryNav() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string | null>(null);
@@ -36,8 +37,13 @@ export function BatteryNav() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    if (mobileOpen) window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
     };
   }, [mobileOpen]);
 
@@ -49,6 +55,9 @@ export function BatteryNav() {
       const elementPosition =
         element.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({ top: elementPosition - offset, behavior: "smooth" });
+    } else {
+      // Section lives on the homepage — navigate there from sub-pages
+      router.push(`/#${id}`);
     }
   };
 
@@ -67,17 +76,19 @@ export function BatteryNav() {
         <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo */}
           <motion.a
-            href="#"
+            href="/"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
+              if (window.location.pathname === "/") {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
             }}
             className="relative z-10"
           >
             <Image
-              src="/images/hubcharge-logo.png"
+              src="/images/hubcharge-logo.webp"
               alt="HubCharge"
               width={140}
               height={36}
@@ -168,6 +179,9 @@ export function BatteryNav() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
             className="lg:hidden p-3 rounded-xl text-[#f4f3f2]/80 hover:text-[#f4f3f2] hover:bg-[#f4f3f2]/[0.06]"
           >
             {mobileOpen ? (
@@ -183,6 +197,10 @@ export function BatteryNav() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site menu"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

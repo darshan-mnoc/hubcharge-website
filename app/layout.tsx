@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import "./globals.css";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -17,9 +20,9 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://hubcharge.com"),
   title:
-    "HubCharge | Full-Service EV Fast Charging Near You | 180kW DC Charger",
+    "HubCharge | Full-Service EV Fast Charging Near You | DC Fast Charger",
   description:
-    "Find fast EV charging near you. 180kW DC fast charging with full-service attendants and food & coffee delivered to your car — no app needed. CCS & NACS for Tesla, BMW, Ford, Rivian & all EVs. Live now in Alhambra & Fontana, California.",
+    "Find fast EV charging near you. DC fast charging up to 180kW with full-service attendants and food & coffee delivered to your car — no app needed. CCS & NACS for Tesla, BMW, Ford, Rivian & all EVs. Live now in Alhambra & Fontana, California.",
   keywords: [
     "EV charging near me",
     "fast EV charging",
@@ -48,14 +51,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "HubCharge | Full-Service EV Fast Charging",
     description:
-      "180kW DC fast charging with full-service attendants — no app needed. Live in Alhambra & Fontana, CA. Tesla, BMW, Ford, Rivian & all EVs.",
+      "DC fast charging up to 180kW with full-service attendants — no app needed. Live in Alhambra & Fontana, CA. Tesla, BMW, Ford, Rivian & all EVs.",
     url: "https://hubcharge.com",
     siteName: "HubCharge",
     type: "website",
     locale: "en_US",
     images: [
       {
-        url: "/images/home.png",
+        url: "/og.jpg",
         width: 1200,
         height: 630,
         alt: "HubCharge DC Fast Charging Station",
@@ -66,8 +69,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "HubCharge | Full-Service EV Fast Charging",
     description:
-      "180kW DC fast charging, full-service — no app needed. Alhambra & Fontana, CA.",
-    images: ["/images/home.png"],
+      "DC fast charging up to 180kW, full-service — no app needed. Alhambra & Fontana, CA.",
+    images: ["/og.jpg"],
   },
   robots: {
     index: true,
@@ -92,49 +95,33 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-// Structured data for local business (Google Maps visibility)
+// Brand-level structured data (site-wide). Each station page emits its own
+// AutomotiveBusiness with the station's address — see app/locations/[slug].
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "Organization",
   name: "HubCharge",
-  description: "Premium DC fast EV charging stations with attendant service",
+  legalName: "Micronoc Inc.",
+  description:
+    "Full-service DC fast EV charging stations with attendant service in California.",
   url: "https://hubcharge.com",
+  logo: "https://hubcharge.com/images/hubcharge-logo.webp",
+  image: "https://hubcharge.com/og.jpg",
   telephone: "+1-949-391-4676",
-  priceRange: "$$",
-  image: "https://hubcharge.com/images/hubcharge-logo.png",
+  email: "info@micronocinc.com",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "108 S Monterey St, Unit 102",
-    addressLocality: "Alhambra",
+    streetAddress: "9383 Charles Smith Avenue",
+    addressLocality: "Rancho Cucamonga",
     addressRegion: "CA",
-    postalCode: "91801",
+    postalCode: "91730",
     addressCountry: "US",
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: 34.095,
-    longitude: -118.127,
   },
   areaServed: [
     { "@type": "City", name: "Alhambra" },
     { "@type": "City", name: "Fontana" },
   ],
-  openingHoursSpecification: {
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    opens: "06:00",
-    closes: "22:00",
-  },
   sameAs: ["https://www.linkedin.com/company/micronocinc"],
-  makesOffer: {
-    "@type": "Offer",
-    itemOffered: {
-      "@type": "Service",
-      name: "Full-service DC fast EV charging",
-      description:
-        "180kW DC fast charging with full-service attendants and lifestyle delivery. CCS & NACS connectors.",
-    },
-  },
 };
 
 export default function RootLayout({
@@ -145,8 +132,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={jakarta.variable}>
       <head>
-        <link rel="icon" href="/images/hubcharge-logo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/images/hubcharge-logo.png" />
         <meta name="geo.region" content="US-CA" />
         <meta name="geo.placename" content="California" />
         <script
@@ -159,6 +144,8 @@ export default function RootLayout({
         <ScrollReveal />
         <Cursor />
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

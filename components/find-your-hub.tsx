@@ -10,9 +10,6 @@ import {
   Zap,
   Phone,
   ExternalLink,
-  Truck,
-  Package,
-  Car,
   CheckCircle2,
   AlertCircle,
   ChevronRight,
@@ -20,118 +17,13 @@ import {
   Utensils,
   ShoppingBag,
 } from "lucide-react";
-
-// Mock station data - in production this would come from an API
-const stations = [
-  {
-    id: 1,
-    name: "HubCharge® Alhambra",
-    // TODO: replace with the new company address at MBS (pending exact address)
-    address: "108 S Monterey St, Unit 102",
-    city: "Alhambra",
-    state: "CA",
-    zip: "91801",
-    distance: null,
-    chargers: 2,
-    power: "180kW",
-    hours: "6 AM - 10 PM",
-    phone: "(949) 391-4676",
-    hasAttendant: true,
-    services: ["delivery", "pickup"],
-    status: "open",
-    note: "2 more HubCharge® hubs coming soon here",
-    coords: { lat: 34.095, lng: -118.127 },
-  },
-  {
-    id: 2,
-    name: "HubCharge® at Fontana Nissan",
-    // TODO: confirm exact street address (maps directions resolve by name for now)
-    address: "Fontana Nissan",
-    city: "Fontana",
-    state: "CA",
-    zip: "",
-    distance: null,
-    chargers: 1,
-    power: "180kW",
-    hours: "6 AM - 10 PM",
-    phone: "(949) 391-4676",
-    hasAttendant: true,
-    services: ["delivery", "pickup"],
-    status: "open",
-    note: "",
-    coords: { lat: 34.0922, lng: -117.435 },
-  },
-];
-
-const upcomingLocations = ["Round Rock", "West Covina"];
-
-// Nearby places keyed by station id (What's Nearby updates with the selected hub).
-type NearbyPlace = { name: string; walk: string };
-type Nearby = { coffee: NearbyPlace[]; food: NearbyPlace[]; retail: NearbyPlace[] };
-
-const nearbyByStation: Record<number, Nearby> = {
-  // HubCharge® Alhambra
-  1: {
-    coffee: [
-      { name: "Twinkle Tea", walk: "1 min" },
-      { name: "Starbucks", walk: "3 min" },
-      { name: "Tea Station", walk: "2 min" },
-    ],
-    food: [
-      { name: "Fosselman's Ice Cream", walk: "2 min" },
-      { name: "Grill 'Em All", walk: "3 min" },
-      { name: "Din Tai Fung", walk: "5 min" },
-      { name: "Phoenix Food Boutique", walk: "2 min" },
-    ],
-    retail: [
-      { name: "Target", walk: "5 min" },
-      { name: "Alhambra Place", walk: "3 min" },
-      { name: "Edwards Alhambra Renaissance", walk: "4 min" },
-    ],
-  },
-  // HubCharge® at Fontana Nissan — TODO: confirm exact nearby spots
-  2: {
-    coffee: [
-      { name: "Starbucks", walk: "2 min" },
-      { name: "Dutch Bros Coffee", walk: "4 min" },
-      { name: "The Coffee Bean", walk: "5 min" },
-    ],
-    food: [
-      { name: "In-N-Out Burger", walk: "3 min" },
-      { name: "Chipotle", walk: "4 min" },
-      { name: "Panda Express", walk: "2 min" },
-    ],
-    retail: [
-      { name: "Costco", walk: "5 min" },
-      { name: "Target", walk: "4 min" },
-      { name: "Best Buy", walk: "6 min" },
-    ],
-  },
-};
-
-const services = [
-  {
-    icon: Truck,
-    title: "Delivery",
-    desc: "Food, coffee, and essentials delivered to your car window",
-    color: "text-[#FF7A00]",
-    bgColor: "bg-[#FF7A00]/20",
-  },
-  {
-    icon: Package,
-    title: "Pickup",
-    desc: "Order ahead from nearby stores — we'll have it ready",
-    color: "text-blue-400",
-    bgColor: "bg-blue-500/20",
-  },
-  {
-    icon: Car,
-    title: "Drop-off",
-    desc: "Car services like detailing while you charge",
-    color: "text-green-400",
-    bgColor: "bg-green-500/20",
-  },
-];
+import { notifyMe } from "@/lib/actions";
+import { haversineMiles, zipToCoords } from "@/lib/geo";
+import {
+  stations,
+  upcomingLocations,
+  nearbyByStation,
+} from "@/lib/stations";
 
 export function FindYourHub() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -147,17 +39,90 @@ export function FindYourHub() {
     stations.find((s) => s.id === selectedId) ?? stations[0];
   const nearby = nearbyByStation[selectedId] ?? nearbyByStation[stations[0].id];
 
-  const handleSearch = (e: React.FormEvent) => {
+  const [distances, setDistances] = useState<Record<number, number> | null>(
+    null,
+  );
+  const [searchNote, setSearchNote] = useState<string | null>(null);
+  const [notifyEmail, setNotifyEmail] = useState("");
+  const [notifySending, setNotifySending] = useState(false);
+  const [notifyDone, setNotifyDone] = useState(false);
+  const [notifyError, setNotifyError] = useState<string | null>(null);
+
+  const handleNotify = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!zipCode.trim()) return;
+    if (notifySending) return;
+    setNotifySending(true);
+    setNotifyError(null);
+    const result = await notifyMe({
+      email: notifyEmail,
+      location: upcomingLocations.join(", "),
+      company: "",
+    });
+    setNotifySending(false);
+    if (result.ok) {
+      setNotifyDone(true);
+      setNotifyEmail("");
+    } else {
+      setNotifyError(result.error ?? "Something went wrong — please try again.");
+    }
+  };
+
+  const applyOrigin = (lat: number, lng: number) => {
+    const dist: Record<number, number> = {};
+    for (const st of stations) {
+      dist[st.id] = haversineMiles(lat, lng, st.coords.lat, st.coords.lng);
+    }
+    setDistances(dist);
+    const sorted = [...stations].sort((a, b) => dist[a.id] - dist[b.id]);
+    setSearchResults(sorted);
+    setSelectedId(sorted[0].id);
+  };
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const zip = zipCode.trim();
+    if (!zip) return;
 
     setIsSearching(true);
-    // Simulate API call
-    setTimeout(() => {
-      // For demo, always return Alhambra station
+    setSearchNote(null);
+    const coords = await zipToCoords(zip);
+    setIsSearching(false);
+    if (coords) {
+      applyOrigin(coords.lat, coords.lng);
+    } else {
+      // Unknown ZIP or lookup unavailable — show every station instead
+      setDistances(null);
       setSearchResults(stations);
-      setIsSearching(false);
-    }, 800);
+      setSearchNote(
+        "We couldn't look up that ZIP code — showing all stations.",
+      );
+    }
+  };
+
+  const handleUseLocation = () => {
+    if (!("geolocation" in navigator)) {
+      setSearchNote("Location isn't available in this browser — showing all stations.");
+      setSearchResults(stations);
+      return;
+    }
+    setIsSearching(true);
+    setSearchNote(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setIsSearching(false);
+        setZipCode("");
+        applyOrigin(pos.coords.latitude, pos.coords.longitude);
+      },
+      () => {
+        setIsSearching(false);
+        setDistances(null);
+        setSearchResults(stations);
+        setSearchNote(
+          "We couldn't access your location — showing all stations.",
+        );
+      },
+      { timeout: 8000, maximumAge: 60000 },
+    );
   };
 
   return (
@@ -194,7 +159,7 @@ export function FindYourHub() {
             <span className="text-gradient text-glow">HubCharge station</span>
           </h2>
           <p className="text-body-lg max-w-xl mx-auto">
-            Enter your ZIP code to find ultra-fast EV charging near you. 180kW
+            Enter your ZIP code to find ultra-fast EV charging near you. DC fast
             chargers with attendant service and lifestyle amenities.
           </p>
         </motion.div>
@@ -248,41 +213,19 @@ export function FindYourHub() {
           {/* Quick location link */}
           <div className="flex items-center justify-center gap-2 mt-4">
             <button
-              onClick={() => {
-                setZipCode("91801");
-                setSearchResults(stations);
-              }}
+              onClick={handleUseLocation}
               className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#FF7A00] transition-colors"
             >
               <Navigation className="h-3.5 w-3.5" />
               Use current location
             </button>
           </div>
+          {searchNote && (
+            <div className="flex items-center justify-center mt-2">
+              <p className="text-xs text-gray-400">{searchNote}</p>
+            </div>
+          )}
         </motion.div>
-
-        {/* Services Bar */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-4 mb-12"
-        >
-          {services.map((service, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -4 }}
-              className="flex items-center gap-4 p-4 rounded-2xl glass-light border border-gray-200"
-            >
-              <div className={`w-12 h-12 rounded-xl ${service.bgColor} flex items-center justify-center`}>
-                <service.icon className={`h-6 w-6 ${service.color}`} />
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900">{service.title}</h4>
-                <p className="text-gray-500 text-sm">{service.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div> */}
 
         {/* Search Results / Station List */}
         <div className="grid lg:grid-cols-5 gap-8">
@@ -292,7 +235,7 @@ export function FindYourHub() {
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-[#FF7A00]" />
                 {searchResults
-                  ? `${searchResults.length} Station Found`
+                  ? `${searchResults.length} Station${searchResults.length === 1 ? "" : "s"} Found`
                   : "Available Stations"}
               </h3>
 
@@ -327,6 +270,11 @@ export function FindYourHub() {
                         <p className="text-gray-400 text-sm">
                           {station.city}, {station.state} {station.zip}
                         </p>
+                        {distances?.[station.id] != null && (
+                          <p className="text-[#FF7A00] text-xs font-semibold mt-1">
+                            ~{Math.round(distances[station.id])} mi away
+                          </p>
+                        )}
                       </div>
                       <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-[#FF7A00] transition-colors" />
                     </div>
@@ -368,12 +316,21 @@ export function FindYourHub() {
                         Directions
                       </motion.a>
                       <a
-                        href={`tel:${station.phone}`}
+                        href={`tel:+1${station.phone.replace(/\D/g, "")}`}
+                        aria-label={`Call ${station.name}`}
                         className="flex items-center justify-center w-10 h-10 rounded-lg glass-light border border-gray-200 hover:border-[#FF7A00]/50 transition-colors"
                       >
                         <Phone className="h-4 w-4 text-gray-500" />
                       </a>
                     </div>
+                    <a
+                      href={`/locations/${station.slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-[#FF7A00] hover:text-[#E66E00]"
+                    >
+                      Station details
+                      <ChevronRight className="h-4 w-4" />
+                    </a>
                   </motion.div>
                 ))}
               </div>
@@ -431,7 +388,7 @@ export function FindYourHub() {
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-[#FF7A00]" />
                     <span className="text-gray-500 text-sm">
-                      HubCharge® Station
+                      HubCharge™ Station
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -566,7 +523,7 @@ export function FindYourHub() {
               More Locations Coming Soon
             </h3>
             <p className="text-gray-500 mb-6 max-w-lg mx-auto">
-              We're expanding across California. Enter your email to be notified
+              We&apos;re expanding across California. Enter your email to be notified
               when we open near you.
             </p>
             <div className="flex flex-wrap justify-center gap-3 mb-6">
@@ -579,21 +536,41 @@ export function FindYourHub() {
                 </span>
               ))}
             </div>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#FF7A00]/50"
-              />
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-6 py-3 bg-[#FF7A00] hover:bg-[#E66E00] text-white font-semibold rounded-xl transition-colors"
+            {notifyDone ? (
+              <p className="text-green-600 font-medium">
+                You&apos;re on the list — we&apos;ll let you know when new hubs
+                open.
+              </p>
+            ) : (
+              <form
+                onSubmit={handleNotify}
+                className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
               >
-                Notify Me
-              </motion.button>
-            </form>
+                <input
+                  type="email"
+                  required
+                  aria-label="Email address for new-location updates"
+                  value={notifyEmail}
+                  onChange={(e) => setNotifyEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#FF7A00]/50"
+                />
+                <motion.button
+                  type="submit"
+                  disabled={notifySending}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-3 bg-[#FF7A00] hover:bg-[#E66E00] disabled:opacity-60 text-white font-semibold rounded-xl transition-colors"
+                >
+                  {notifySending ? "Sending…" : "Notify Me"}
+                </motion.button>
+              </form>
+            )}
+            {notifyError && (
+              <p role="alert" className="text-sm text-red-500 mt-2">
+                {notifyError}
+              </p>
+            )}
           </div>
         </motion.div>
       </div>
