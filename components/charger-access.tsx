@@ -15,7 +15,7 @@ const steps = [
   {
     icon: Globe,
     title: "Opens in your browser",
-    desc: "HubCharge® loads instantly — no app to download. Start as a guest, or sign in to see history of your sessions and easy quick access for nex time",
+    desc: "HubCharge™ loads instantly — no app to download. Start as a guest, or sign in to see your session history and get quick access next time",
   },
   {
     icon: Zap,
@@ -61,7 +61,7 @@ export function ChargerAccess() {
               variants={fadeUp}
               className="text-body-lg text-gray-600 mb-8 max-w-md"
             >
-              Skip the download. HubCharge® runs right in your phone&apos;s
+              Skip the download. HubCharge™ runs right in your phone&apos;s
               browser — tap, scan, and you&apos;re charging in seconds.
             </motion.p>
 
@@ -108,6 +108,21 @@ export function ChargerAccess() {
                 Find a charger near you
                 <ArrowRight className="h-5 w-5" />
               </CtaButton>
+              <p className="mt-4 text-sm text-gray-500">
+                First visit?{" "}
+                <a href="/what-to-expect" className="text-[#FF7A00] underline underline-offset-2">
+                  See what to expect
+                </a>
+                ,{" "}
+                <a href="/charging-101/can-my-ev-charge-here" className="text-[#FF7A00] underline underline-offset-2">
+                  check if your EV is compatible
+                </a>
+                , or{" "}
+                <a href="/faq" className="text-[#FF7A00] underline underline-offset-2">
+                  read the FAQ
+                </a>
+                .
+              </p>
             </motion.div>
           </motion.div>
 
@@ -127,7 +142,7 @@ export function ChargerAccess() {
               <div className="relative rounded-[2.75rem] bg-[#0A192F] p-2.5 shadow-[0_34px_70px_-22px_rgba(10,25,47,0.55)] border border-[#1E293B]">
                 <div className="relative rounded-[2.25rem] overflow-hidden bg-black aspect-[9/16]">
                   <Image
-                    src="/images/charging-service.jpeg"
+                    src="/images/charging-service.webp"
                     alt="HubCharge web charging interface — choose connector, add card, swipe to start"
                     fill
                     className="object-cover object-top"
