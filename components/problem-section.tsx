@@ -86,21 +86,19 @@ export function ProblemSection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={containerVariants}
-          className="text-center mb-14"
+          className="mb-14"
         >
           <motion.div
             variants={itemVariants}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand/10 border border-brand/20 mb-8"
+            className="mb-8"
           >
-            <Zap className="h-4 w-4 text-ink-700" />
-            <span className="text-overline text-ink-500">
-              Rethink Fast Charging
-            </span>
+            <p className="text-overline text-ink-500">Rethink fast charging</p>
+            <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
           </motion.div>
 
           <motion.h2
             variants={itemVariants}
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-[1.15]"
+            className="text-h2 text-ink-900 mb-6 max-w-headline"
           >
             <span className="text-ink-400">
               Is &ldquo;fast charging&rdquo; really fast?
@@ -110,10 +108,10 @@ export function ProblemSection() {
 
           <motion.p
             variants={itemVariants}
-            className="text-lg text-gray-600 max-w-2xl mx-auto"
+            className="text-body-lg text-ink-500 max-w-[46ch]"
           >
             Chargers advertise big numbers your car can&apos;t actually use.{" "}
-            <span className="text-gray-800">
+            <span className="text-ink-900">
               We advertise what we deliver — and deliver what you need.
             </span>
           </motion.p>
@@ -230,14 +228,14 @@ export function ProblemSection() {
 
               <div className="relative flex h-full min-h-[460px] lg:min-h-[560px] flex-col justify-between p-6 lg:p-7">
                 <div>
-                  <span className="px-4 py-2 rounded-full text-sm font-semibold bg-brand/25 text-brand backdrop-blur-md border border-brand/40">
+                  <span className="px-3 py-1.5 rounded-full text-overline text-white bg-white/15 backdrop-blur-md border border-white/25">
                     HubCharge™
                   </span>
                 </div>
 
                 <div className="space-y-4">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/25 border border-brand/40 backdrop-blur-sm">
-                    <Zap className="h-3.5 w-3.5 text-ink-700" />
+                    <Zap className="h-3.5 w-3.5 text-brand" />
                     <span className="text-brand text-sm font-semibold">
                       10 min • add up to 100 mi
                     </span>
@@ -288,7 +286,7 @@ export function ProblemSection() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="text-center mt-8"
+            className="mt-8"
           >
             {/* <p className="text-[#475569] text-sm">
               Built for drivers who need a quick charge — not a full battery.
@@ -347,13 +345,13 @@ export function ProblemSection() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="mb-12"
           >
-            <div className="inline-flex items-center gap-2 mb-6">
-              <Zap className="h-4 w-4" />
-              <span className="text-sm font-semibold uppercase tracking-wider">
-                The HubCharge™ Difference
-              </span>
+            <div className="mb-6">
+              <p className="text-overline text-white/55">
+                The HubCharge™ difference
+              </p>
+              <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
             </div>
 
             <h2 className="text-h2 text-white mb-6 max-w-headline">
@@ -361,7 +359,7 @@ export function ProblemSection() {
               Full-service convenience*
             </h2>
 
-            <p className="text-lg text-muted-dark max-w-xl mx-auto">
+            <p className="text-lg text-muted-dark max-w-xl">
               Need enough charge to get home or to your destination?
               <span className="text-on-dark font-medium"> Top up and go.</span>
             </p>
@@ -373,7 +371,7 @@ export function ProblemSection() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="text-center text-muted-dark text-sm uppercase tracking-widest mb-8"
+              className="text-overline text-on-dark/55 mb-8"
             >
               How it works
             </motion.p>
@@ -453,7 +451,7 @@ export function ProblemSection() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="mt-10 text-center"
+              className="mt-10"
             >
               <p className="text-muted-dark text-sm">
                 <span className="text-red-500">*</span>Full-service attendant
@@ -473,7 +471,7 @@ export function ProblemSection() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-center mt-16"
+            className="mt-16"
           >
             <motion.a
               href="#how-it-works"

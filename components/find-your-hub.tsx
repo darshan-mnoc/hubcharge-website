@@ -142,7 +142,7 @@ export function FindYourHub() {
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="mb-12"
         >
           <div className="inline-flex items-center gap-2 mb-8">
             <MapPin className="h-4 w-4" />
@@ -155,7 +155,7 @@ export function FindYourHub() {
             <br />
             HubCharge station
           </h2>
-          <p className="text-body-lg max-w-xl mx-auto">
+          <p className="text-body-lg max-w-xl">
             Enter your ZIP code to find ultra-fast EV charging near you. DC fast
             chargers with attendant service and lifestyle amenities.
           </p>
@@ -416,10 +416,10 @@ export function FindYourHub() {
           viewport={{ once: true }}
           className="mt-12"
         >
-          <h3 className="text-xl font-bold text-gray-900 mb-1 text-center">
+          <h3 className="text-h3 text-ink-900 mb-1">
             What&apos;s Nearby — Delivered to Your Car
           </h3>
-          <p className="text-sm text-gray-500 mb-6 text-center">
+          <p className="text-body-sm text-ink-500 mb-6">
             Near {selected.name} · {selected.city}, {selected.state}
           </p>
 

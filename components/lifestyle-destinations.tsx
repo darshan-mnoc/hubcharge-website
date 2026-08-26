@@ -95,7 +95,7 @@ export function LifestyleDestinations() {
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="mb-16"
         >
           <div className="inline-flex items-center gap-2 mb-8">
             <Car className="h-4 w-4" />
@@ -109,7 +109,7 @@ export function LifestyleDestinations() {
             <br />
             get things done.
           </h2>
-          <p className="text-body-lg text-muted-dark max-w-3xl mx-auto">
+          <p className="text-body-lg text-muted-dark max-w-3xl">
             Why waste time waiting? Order food, grab coffee, or run errands —
             all delivered to your car window while your EV charges.
             <span className="text-[#f4f3f2]/80 font-medium">
@@ -222,7 +222,7 @@ export function LifestyleDestinations() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
-              className="mt-8 pt-6 border-t border-[#334155] text-center"
+              className="mt-8 pt-6 border-t border-white/10"
             >
               <div className="flex items-center justify-center gap-2 text-muted-dark text-sm">
                 <Clock className="h-4 w-4" />
@@ -239,7 +239,7 @@ export function LifestyleDestinations() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center"
+          className=""
         >
           <div className="inline-flex flex-col sm:flex-row items-center gap-4">
             <CtaButton href="#locations" size="lg">

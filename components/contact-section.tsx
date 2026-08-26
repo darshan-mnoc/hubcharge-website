@@ -68,7 +68,7 @@ export function ContactSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="mb-12"
         >
           <div className="inline-flex items-center gap-2 mb-6">
             <Headphones className="h-4 w-4" />
@@ -81,7 +81,7 @@ export function ContactSection() {
             Questions?{" "}
             We&apos;re here.
           </h2>
-          <p className="text-body-lg text-muted-dark max-w-lg mx-auto">
+          <p className="text-body-lg text-muted-dark max-w-lg">
             Our team is ready to help with charging, membership, or services.
           </p>
         </motion.div>

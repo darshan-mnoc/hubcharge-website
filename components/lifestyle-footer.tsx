@@ -89,7 +89,7 @@ export function LifestyleFooter() {
         ref={ctaRef}
         className="relative py-20 overflow-hidden border-b border-[#334155]"
       >
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
+        <div className="relative section-container">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             animate={isCtaInView ? { opacity: 1, y: 0 } : {}}

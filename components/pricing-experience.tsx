@@ -96,7 +96,7 @@ export function PricingExperience() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
           variants={fadeUpStagger}
-          className="text-center mb-12"
+          className="mb-12"
         >
           <motion.p
             variants={fadeUp}
@@ -109,7 +109,7 @@ export function PricingExperience() {
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="text-body-lg text-gray-600 max-w-xl mx-auto"
+            className="text-body-lg text-gray-600 max-w-xl"
           >
             Design your stop below. Whatever you pick, you&apos;ll{" "}
             <span className="font-semibold text-gray-800">
