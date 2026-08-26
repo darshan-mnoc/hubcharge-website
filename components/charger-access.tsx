@@ -37,7 +37,6 @@ export function ChargerAccess() {
       data-reveal
       className="relative section-padding bg-surface-warm overflow-hidden"
     >
-      <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[70px]" />
 
       <div className="section-container relative">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -50,7 +49,7 @@ export function ChargerAccess() {
           >
             <motion.p
               variants={fadeUp}
-              className="text-brand-ink text-sm font-semibold uppercase tracking-widest mb-4"
+              className="text-overline text-ink-500 mb-4"
             >
               Get Charging
             </motion.p>
@@ -71,7 +70,7 @@ export function ChargerAccess() {
                 <li key={s.title} className="flex items-start gap-4">
                   <div className="relative flex-shrink-0">
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
-                      <s.icon className="h-5 w-5 text-brand-ink" />
+                      <s.icon className="h-5 w-5 text-ink-700" />
                     </div>
                     <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-white">
                       {i + 1}
@@ -97,7 +96,7 @@ export function ChargerAccess() {
                   key={r}
                   className="inline-flex items-center gap-2 text-sm text-gray-700"
                 >
-                  <Check className="h-4 w-4 text-brand-ink" />
+                  <Check className="h-4 w-4 text-ink-700" />
                   {r}
                 </span>
               ))}
@@ -137,7 +136,6 @@ export function ChargerAccess() {
             {/* glow */}
             {/* Phone mockup: arbitrary radii intentionally opt out of the 8px
                 card clamp — this depicts a physical device, not a card. */}
-            <div className="absolute inset-0 mx-auto w-[300px] bg-brand/15 rounded-[3rem] blur-[70px]" />
 
             <div className="relative w-[260px] sm:w-[290px] lg:w-[310px]">
               {/* phone frame — dark, reads premium on the light section */}
@@ -155,7 +153,7 @@ export function ChargerAccess() {
 
               {/* floating "in your browser" badge — sits over the empty lower screen, not the UI */}
               <div className="absolute -left-3 bottom-6 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_8px_24px_-8px_rgba(16,24,40,0.25)] border border-gray-100">
-                <Globe className="h-4 w-4 text-brand-ink" />
+                <Globe className="h-4 w-4 text-ink-700" />
                 <span className="text-xs font-semibold text-gray-800">
                   In your browser
                 </span>

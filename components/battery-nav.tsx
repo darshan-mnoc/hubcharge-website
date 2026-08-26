@@ -104,37 +104,24 @@ export function BatteryNav() {
           </motion.a>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center">
-            <div className="relative flex items-center glass rounded-full px-1 py-1 border border-[#f4f3f2]/10">
-              {navLinks.map((link) => (
-                <motion.button
-                  key={link.id}
-                  onClick={() => handleNavClick(link.id)}
-                  onMouseEnter={() => setActiveLink(link.id)}
-                  onMouseLeave={() => setActiveLink(null)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`relative px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-200 ${
-                    activeLink === link.id
-                      ? "text-[#f4f3f2]"
-                      : "text-muted-dark hover:text-[#f4f3f2]"
+          <div className="hidden lg:flex items-center gap-x-8">
+            {navLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => handleNavClick(link.id)}
+                onMouseEnter={() => setActiveLink(link.id)}
+                onMouseLeave={() => setActiveLink(null)}
+                className="relative py-1 text-caption font-medium text-on-dark/70 hover:text-white transition-colors"
+              >
+                {link.label}
+                <span
+                  aria-hidden
+                  className={`absolute -bottom-1 left-0 h-[1.5px] bg-brand transition-all duration-200 ${
+                    activeLink === link.id ? "w-full" : "w-0"
                   }`}
-                >
-                  {activeLink === link.id && (
-                    <motion.div
-                      layoutId="navHighlight"
-                      className="absolute inset-0 bg-brand rounded-full"
-                      transition={{
-                        type: "spring",
-                        bounce: 0.2,
-                        duration: 0.4,
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10">{link.label}</span>
-                </motion.button>
-              ))}
-            </div>
+                />
+              </button>
+            ))}
           </div>
 
           {/* CTA Button - Desktop Only */}
@@ -200,12 +187,6 @@ export function BatteryNav() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 bg-hero lg:hidden"
           >
-            <div className="absolute inset-0 grid-pattern opacity-30" />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.3 }}
-              className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-brand rounded-full blur-[60px]"
-            />
 
             <div className="relative pt-28 px-6 pb-10 h-full overflow-y-auto">
               <nav aria-label="Mobile" className="space-y-3 mb-10">

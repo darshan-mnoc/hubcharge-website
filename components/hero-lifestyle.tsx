@@ -62,11 +62,7 @@ export function HeroLifestyle() {
       </motion.div>
 
       {/* Grid Pattern */}
-      <div className="absolute inset-0 grid-pattern opacity-30" />
 
-      {/* Static glow orbs (no animation — keeps paint cost low) */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-brand opacity-[0.12] rounded-full blur-[70px]" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#FF9433] opacity-[0.08] rounded-full blur-[60px]" />
 
       {/* Content */}
       <motion.div
@@ -82,10 +78,8 @@ export function HeroLifestyle() {
           variants={itemVariants}
           className="text-display text-white mb-5 max-w-headline"
         >
-          Full Service EV Charging
-          {/* Drive In. Charge Up. Get Your Time Back. */}
-          <br />
-          <span className="text-gradient text-glow">Reclaim your time.</span>
+          <span className="text-on-dark/60">Full service EV charging.</span>{" "}
+          Reclaim your time.
         </motion.h1>
 
         {/* Subheadline */}
@@ -138,7 +132,7 @@ export function HeroLifestyle() {
               transition={{ delay: 1 + i * 0.15 }}
               className="text-center px-4"
             >
-              <p className="text-2xl lg:text-3xl font-bold text-brand text-glow mb-1">
+              <p className="text-stat text-white mb-1">
                 {stat.value}
               </p>
               <p className="text-muted-dark text-sm">{stat.label}</p>
@@ -152,26 +146,7 @@ export function HeroLifestyle() {
         </motion.div>
       </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-2  -translate-x-1/2 flex flex-col items-center gap-3"
-      >
-        <span className="text-muted-dark text-xs uppercase tracking-[0.2em]">
-          Scroll
-        </span>
-        <motion.div
-          animate={reduced ? undefined : { y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          <ChevronDown className="h-5 w-5 text-brand" />
-        </motion.div>
-      </motion.div>
 
-      {/* Bottom Energy Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent opacity-50" />
     </section>
   );
 }

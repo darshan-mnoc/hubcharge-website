@@ -59,7 +59,7 @@ export default function ChargingLevelsPage() {
               l.highlight ? "ring-1 ring-brand/30 bg-brand/[0.03]" : ""
             }`}
           >
-            <l.icon className="h-7 w-7 text-brand-ink mb-4" />
+            <l.icon className="h-7 w-7 text-ink-700 mb-4" />
             <h2 className="font-bold text-midnight-navy text-lg mb-1">
               {l.name}
             </h2>

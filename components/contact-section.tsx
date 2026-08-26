@@ -61,9 +61,6 @@ export function ContactSection() {
         />
       </div>
 
-      {/* Background */}
-      <div className="absolute inset-0 grid-pattern opacity-10" />
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand/10 rounded-full blur-[70px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -73,7 +70,7 @@ export function ContactSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 badge badge-primary mb-6">
+          <div className="inline-flex items-center gap-2 mb-6">
             <Headphones className="h-4 w-4" />
             <span className="text-sm font-semibold uppercase tracking-wider">
               Support
@@ -82,7 +79,7 @@ export function ContactSection() {
 
           <h2 className="text-h2 text-white mb-4 max-w-headline">
             Questions?{" "}
-            <span className="text-gradient text-glow">We&apos;re here.</span>
+            We&apos;re here.
           </h2>
           <p className="text-body-lg text-muted-dark max-w-lg mx-auto">
             Our team is ready to help with charging, membership, or services.
@@ -248,7 +245,7 @@ export function ContactSection() {
             href="tel:+19493914676"
             className="flex items-center gap-3 text-muted-dark hover:text-brand transition-colors group"
           >
-            <Phone className="h-4 w-4 text-brand" />
+            <Phone className="h-4 w-4 text-ink-700" />
             <span className="text-sm font-medium">(949) 391-4676</span>
           </a>
 

@@ -89,13 +89,6 @@ export function LifestyleFooter() {
         ref={ctaRef}
         className="relative py-20 overflow-hidden border-b border-[#334155]"
       >
-        {/* Gradient orbs */}
-        <motion.div
-          animate={reduced ? undefined : { scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
-          transition={{ duration: 8, repeat: Infinity }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand rounded-full blur-[70px]"
-        />
-
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}

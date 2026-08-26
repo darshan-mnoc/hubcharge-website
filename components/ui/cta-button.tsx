@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { motion } from "framer-motion";
-import { useMagnetic } from "@/hooks/use-magnetic";
 
 type Size = "sm" | "md" | "lg";
 type Variant = "primary" | "secondary" | "secondaryOnDark";
@@ -16,14 +14,14 @@ const SIZE: Record<Size, string> = {
 
 /** Shape, motion and focus language shared by both variants. */
 const BASE =
-  "group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-lg font-semibold cursor-pointer transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold cursor-pointer transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
 // Focus ring colour is per-variant so the indicator keeps >=3:1 against the
 // surface it actually sits on (WCAG 1.4.11). brand-ink on white is 5.3:1;
 // brand on navy is 6.7:1.
 const VARIANT: Record<Variant, string> = {
   primary:
-    "bg-brand text-white hover:bg-brand-hover hover:shadow-[0_10px_30px_-8px_rgba(255,122,0,0.55)] focus-visible:ring-brand-ink focus-visible:ring-offset-white",
+    "bg-brand text-white hover:bg-brand-hover focus-visible:ring-brand-ink focus-visible:ring-offset-white",
   // Ghost button for light sections.
   secondary:
     "bg-transparent border border-gray-300 text-gray-700 hover:border-brand-ink hover:text-brand-ink focus-visible:ring-brand-ink focus-visible:ring-offset-white",
@@ -41,7 +39,7 @@ interface CtaButtonProps {
   variant?: Variant;
   fullWidth?: boolean;
   className?: string;
-  /** classes for the magnetic wrapper (e.g. responsive width like "sm:w-auto") */
+  /** extra classes merged onto the element (e.g. responsive width "sm:w-auto") */
   wrapperClassName?: string;
   target?: string;
   rel?: string;
@@ -50,10 +48,11 @@ interface CtaButtonProps {
 }
 
 /**
- * Single source of truth for CTAs (§6c). Both variants share one shape,
- * press and focus language; primary adds the sheen sweep and glow. Carries a
- * subtle magnetic pull (fine-pointer only). Renders as next/link, anchor, or
- * button. Use variant="secondary" instead of the legacy .btn-outline class.
+ * Single source of truth for CTAs. All variants share one shape, press and
+ * focus language; the difference is fill vs outline, nothing more. The
+ * magnetic pull, sheen sweep and coloured glow were removed deliberately —
+ * they read as agency-portfolio effects, not as a service brand.
+ * Renders as next/link, anchor, or button.
  */
 export function CtaButton({
   children,
@@ -70,34 +69,11 @@ export function CtaButton({
   type = "button",
   "aria-label": ariaLabel,
 }: CtaButtonProps) {
-  const { ref, x, y, onMouseMove, onMouseLeave } = useMagnetic(0.22);
-  const cls = `${BASE} ${VARIANT[variant]} ${SIZE[size]} ${fullWidth ? "w-full" : ""} ${className}`;
+  const cls = `${BASE} ${VARIANT[variant]} ${SIZE[size]} ${fullWidth ? "w-full" : ""} ${className} ${wrapperClassName}`.trim();
 
   const inner = (
-    <>
-      <span className="relative z-10 inline-flex items-center gap-2">{children}</span>
-      {/* sheen sweep — primary only; on the ghost variant it reads as noise */}
-      {variant === "primary" && (
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"
-          style={{
-            background:
-              "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)",
-          }}
-        />
-      )}
-    </>
+    <span className="inline-flex items-center gap-2">{children}</span>
   );
-
-  // Magnetic wrapper: measures bounds + translates content slightly toward cursor.
-  const wrapperProps = {
-    ref: ref as React.Ref<HTMLDivElement>,
-    onMouseMove,
-    onMouseLeave,
-    className: `${fullWidth ? "flex w-full" : "inline-flex"} ${wrapperClassName}`.trim(),
-    style: { x, y },
-  };
 
   let el: ReactNode;
   if (to) {
@@ -120,5 +96,5 @@ export function CtaButton({
     );
   }
 
-  return <motion.div {...wrapperProps}>{el}</motion.div>;
+  return el;
 }

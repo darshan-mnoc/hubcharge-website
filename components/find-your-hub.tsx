@@ -134,12 +134,7 @@ export function FindYourHub() {
       data-reveal
       className="relative section-padding bg-surface overflow-hidden"
     >
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 grid-pattern opacity-20" />
 
-      {/* Gradient Orbs */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand/10 rounded-full blur-[70px]" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-green-500/5 rounded-full blur-[60px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -149,7 +144,7 @@ export function FindYourHub() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 badge badge-primary mb-8">
+          <div className="inline-flex items-center gap-2 mb-8">
             <MapPin className="h-4 w-4" />
             <span className="text-sm font-semibold uppercase tracking-wider">
               Locations
@@ -158,7 +153,7 @@ export function FindYourHub() {
           <h2 className="text-h2 text-ink-900 mb-4 max-w-headline">
             Find your nearest
             <br />
-            <span className="text-gradient text-glow">HubCharge station</span>
+            HubCharge station
           </h2>
           <p className="text-body-lg max-w-xl mx-auto">
             Enter your ZIP code to find ultra-fast EV charging near you. DC fast
@@ -239,7 +234,7 @@ export function FindYourHub() {
           <div className="lg:col-span-2">
             <div className="sticky top-24">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-brand-ink" />
+                <MapPin className="h-5 w-5 text-ink-700" />
                 {searchResults
                   ? `${searchResults.length} Station${searchResults.length === 1 ? "" : "s"} Found`
                   : "Available Stations"}
@@ -265,7 +260,7 @@ export function FindYourHub() {
                           </h4>
                           {station.status === "open" && (
                             <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-xs">
-                              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
                               Open
                             </span>
                           )}
@@ -377,11 +372,9 @@ export function FindYourHub() {
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="relative">
                 <motion.div
-                  animate={reduced ? undefined : { scale: [1, 2, 1], opacity: [0.6, 0, 0.6] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute inset-0 bg-brand rounded-full"
+                                    className="absolute inset-0 bg-brand rounded-full"
                 />
-                <div className="relative w-12 h-12 bg-brand rounded-full flex items-center justify-center shadow-lg glow-orange">
+                <div className="relative w-12 h-12 bg-brand rounded-full flex items-center justify-center shadow-lg">
                   <MapPin className="h-6 w-6 text-white" />
                 </div>
               </div>
@@ -463,7 +456,7 @@ export function FindYourHub() {
             <motion.div whileHover={{ y: -4 }} className="card-light p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-brand/20 flex items-center justify-center">
-                  <Utensils className="h-5 w-5 text-brand-ink" />
+                  <Utensils className="h-5 w-5 text-ink-700" />
                 </div>
                 <h4 className="font-semibold text-gray-900">Food & Dining</h4>
               </div>

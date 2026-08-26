@@ -74,7 +74,7 @@ export default function Charging101Page() {
               g.highlight ? "ring-1 ring-brand/30 bg-brand/[0.03]" : ""
             }`}
           >
-            <g.icon className="h-7 w-7 text-brand-ink mb-4" />
+            <g.icon className="h-7 w-7 text-ink-700 mb-4" />
             <h2 className="font-bold text-midnight-navy mb-2 group-hover:text-brand-ink transition-colors">
               {g.title}
             </h2>

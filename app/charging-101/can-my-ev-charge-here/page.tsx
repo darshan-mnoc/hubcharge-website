@@ -53,7 +53,7 @@ export default function CompatibilityPage() {
 
       {/* Headline claim */}
       <div className="card-light p-6 max-w-4xl mb-10 flex items-start gap-4">
-        <Zap className="h-6 w-6 text-brand-ink shrink-0 mt-0.5" />
+        <Zap className="h-6 w-6 text-ink-700 shrink-0 mt-0.5" />
         <div>
           <p className="font-bold text-midnight-navy mb-1">
             Two connectors. No adapters. Nearly every EV.

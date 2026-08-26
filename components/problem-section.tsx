@@ -79,8 +79,6 @@ export function ProblemSection() {
       data-reveal
       className="relative bg-surface overflow-hidden"
     >
-      {/* White top: gradient orbs */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#FF9433]/5 rounded-full blur-[70px]" />
 
       <div className="section-container relative pt-24 lg:pt-32 pb-16">
         {/* SECTION 1: Rethink Fast Charging */}
@@ -94,8 +92,8 @@ export function ProblemSection() {
             variants={itemVariants}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand/10 border border-brand/20 mb-8"
           >
-            <Zap className="h-4 w-4 text-brand-ink" />
-            <span className="text-brand-ink text-sm font-semibold uppercase tracking-wider">
+            <Zap className="h-4 w-4 text-ink-700" />
+            <span className="text-overline text-ink-500">
               Rethink Fast Charging
             </span>
           </motion.div>
@@ -104,11 +102,10 @@ export function ProblemSection() {
             variants={itemVariants}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-[1.15]"
           >
-            Is &ldquo;fast charging&rdquo; really fast?
-            <br />
-            <span className="text-gradient text-glow">
-              What if 10-30 minutes was enough?
-            </span>
+            <span className="text-ink-400">
+              Is &ldquo;fast charging&rdquo; really fast?
+            </span>{" "}
+            What if 10&ndash;30 minutes was enough?
           </motion.h2>
 
           <motion.p
@@ -240,7 +237,7 @@ export function ProblemSection() {
 
                 <div className="space-y-4">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/25 border border-brand/40 backdrop-blur-sm">
-                    <Zap className="h-3.5 w-3.5 text-brand" />
+                    <Zap className="h-3.5 w-3.5 text-ink-700" />
                     <span className="text-brand text-sm font-semibold">
                       10 min • add up to 100 mi
                     </span>
@@ -352,7 +349,7 @@ export function ProblemSection() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <div className="inline-flex items-center gap-2 badge badge-primary mb-6">
+            <div className="inline-flex items-center gap-2 mb-6">
               <Zap className="h-4 w-4" />
               <span className="text-sm font-semibold uppercase tracking-wider">
                 The HubCharge™ Difference
@@ -360,11 +357,8 @@ export function ProblemSection() {
             </div>
 
             <h2 className="text-h2 text-white mb-6 max-w-headline">
-              10 minutes. Up to 100 miles.
-              <br />
-              <span className="text-gradient text-glow">
-                Full-service convenience*
-              </span>
+              <span className="text-on-dark/60">10 minutes. Up to 100 miles.</span>{" "}
+              Full-service convenience*
             </h2>
 
             <p className="text-lg text-muted-dark max-w-xl mx-auto">
@@ -431,7 +425,7 @@ export function ProblemSection() {
                         </p>
                         <div className="flex flex-wrap items-center gap-2 pt-1">
                           <div className="inline-flex items-center gap-2 rounded-full bg-brand/20 border border-brand/30 px-3 py-1.5 backdrop-blur-sm">
-                            <Sparkles className="h-3 w-3 text-brand" />
+                            <Sparkles className="h-3 w-3 text-ink-700" />
                             <span className="text-xs font-medium text-brand">
                               {step.highlight}
                             </span>
@@ -488,9 +482,7 @@ export function ProblemSection() {
             >
               See the full charging experience
               <motion.span
-                animate={reduced ? undefined : { y: [0, 4, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
+                              >
                 <ArrowDown className="h-5 w-5" />
               </motion.span>
             </motion.a>

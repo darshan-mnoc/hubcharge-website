@@ -1352,7 +1352,7 @@ export function JourneyBattery() {
           {/* Header - Mobile only (desktop header is inside pinned container) */}
           <div className="journey-header text-center mb-4 md:hidden">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20 mb-3">
-              <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-brand" />
               <span className="text-sm font-semibold uppercase tracking-wider text-brand-ink">
                 The Experience
               </span>
@@ -1566,7 +1566,7 @@ export function JourneyBattery() {
             {/* Header - Inside pinned container for desktop */}
             <div className="text-center mb-20">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20 mb-4">
-                <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-brand" />
                 <span className="text-sm font-semibold uppercase tracking-wider text-brand-ink">
                   The Experience
                 </span>

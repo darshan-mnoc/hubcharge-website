@@ -107,7 +107,7 @@ export function ChatPopup() {
         className={`fixed bottom-20 right-6 lg:bottom-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
           isOpen
             ? "bg-[#1a1a1a] border border-white/20"
-            : "bg-gradient-to-br from-brand to-amber-500"
+            : "bg-ink-900 border border-white/15"
         }`}
       >
         <AnimatePresence mode="wait">

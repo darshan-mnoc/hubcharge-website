@@ -198,7 +198,7 @@ export default async function StationPage({
                 Hours
               </p>
               <p className="text-gray-700 text-sm flex items-center gap-2">
-                <Clock className="h-4 w-4 text-brand-ink" /> Open daily,{" "}
+                <Clock className="h-4 w-4 text-ink-700" /> Open daily,{" "}
                 {station.hours}
               </p>
             </div>
@@ -207,7 +207,7 @@ export default async function StationPage({
                 Charging
               </p>
               <p className="text-gray-700 text-sm flex items-center gap-2">
-                <Zap className="h-4 w-4 text-brand-ink" />
+                <Zap className="h-4 w-4 text-ink-700" />
                 {station.chargers} DC fast charger
                 {station.chargers > 1 ? "s" : ""} · {station.power}
               </p>
@@ -230,7 +230,7 @@ export default async function StationPage({
                 href={`tel:${station.phoneE164}`}
                 className="text-gray-700 text-sm flex items-center gap-2 hover:text-brand-ink"
               >
-                <Phone className="h-4 w-4 text-brand-ink" /> {station.phone}
+                <Phone className="h-4 w-4 text-ink-700" /> {station.phone}
               </a>
             </div>
           </div>
@@ -253,7 +253,7 @@ export default async function StationPage({
                   key={line}
                   className="flex items-start gap-2 text-on-dark text-sm"
                 >
-                  <CheckCircle2 className="h-4 w-4 text-brand mt-0.5 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-ink-700 mt-0.5 shrink-0" />
                   {line}
                 </li>
               ))}
@@ -309,7 +309,7 @@ export default async function StationPage({
                 ).map(([label, Icon, places]) => (
                   <div key={label}>
                     <p className="flex items-center gap-2 text-gray-500 text-xs uppercase tracking-wider font-semibold mb-1.5">
-                      <Icon className="h-3.5 w-3.5 text-brand-ink" /> {label}
+                      <Icon className="h-3.5 w-3.5 text-ink-700" /> {label}
                     </p>
                     <ul className="text-gray-600 space-y-1">
                       {places.map((pl) => (
@@ -327,7 +327,7 @@ export default async function StationPage({
 
           <div className="card-light p-6">
             <p className="flex items-center gap-2 font-bold text-midnight-navy mb-2">
-              <Smartphone className="h-4 w-4 text-brand-ink" /> No app needed
+              <Smartphone className="h-4 w-4 text-ink-700" /> No app needed
             </p>
             <p className="text-gray-500 text-sm">
               Tap your phone or scan the code at the charger — HubCharge runs

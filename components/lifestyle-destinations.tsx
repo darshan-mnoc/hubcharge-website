@@ -87,12 +87,7 @@ export function LifestyleDestinations() {
         />
       </div>
 
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 grid-pattern opacity-20" />
 
-      {/* Gradient Orbs */}
-      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-brand/10 rounded-full blur-[70px]" />
-      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-brand/5 rounded-full blur-[60px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -102,7 +97,7 @@ export function LifestyleDestinations() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 badge badge-primary mb-8">
+          <div className="inline-flex items-center gap-2 mb-8">
             <Car className="h-4 w-4" />
             <span className="text-sm font-semibold uppercase tracking-wider">
               More Than Charging
@@ -112,7 +107,7 @@ export function LifestyleDestinations() {
           <h2 className="text-h2 text-white mb-6 max-w-headline">
             Charge your car, and
             <br />
-            <span className="text-gradient text-glow">get things done.</span>
+            get things done.
           </h2>
           <p className="text-body-lg text-muted-dark max-w-3xl mx-auto">
             Why waste time waiting? Order food, grab coffee, or run errands —
@@ -132,9 +127,6 @@ export function LifestyleDestinations() {
           className="mb-16"
         >
           <div className="relative card p-8 lg:p-12 overflow-hidden">
-            {/* Animated background elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 rounded-full blur-[50px]" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand/10 rounded-full blur-[40px]" />
 
             <div className="relative flex flex-col lg:flex-row items-center lg:items-stretch gap-10 lg:gap-16">
               {/* Full image panel */}
@@ -161,21 +153,19 @@ export function LifestyleDestinations() {
                 className="hidden lg:flex items-center justify-center"
               >
                 <div className="flex items-center gap-2">
-                  <div className="w-20 h-[2px] energy-line" />
-                  <ArrowRight className="h-8 w-8 text-brand" />
+                  <div className="w-8 h-px bg-brass" />
+                  <ArrowRight className="h-8 w-8 text-ink-700" />
                 </div>
               </motion.div>
 
               {/* Services delivered to your car */}
               <div className="flex-1 text-center lg:text-left">
                 <div className="flex items-center gap-2 justify-center lg:justify-start mb-3">
-                  <p className="text-brand text-sm font-semibold uppercase tracking-widest">
+                  <p className="text-overline text-on-dark/70">
                     While you charge
                   </p>
                   <motion.span
-                    animate={reduced ? undefined : { opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-xs font-semibold border border-brand/25"
+                                        className="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-xs font-semibold border border-brand/25"
                   >
                     Coming Soon
                   </motion.span>
@@ -209,7 +199,7 @@ export function LifestyleDestinations() {
 
                       <div className="relative flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-brand/20 flex items-center justify-center group-hover:bg-brand/30 transition-colors">
-                          <category.icon className="h-5 w-5 text-brand" />
+                          <category.icon className="h-5 w-5 text-ink-700" />
                         </div>
                         <div>
                           <p className="text-[#f4f3f2] font-semibold text-sm group-hover:text-[#f4f3f2] transition-colors">

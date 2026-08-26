@@ -7,7 +7,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { Cursor } from "@/components/cursor";
 
 // Body / UI typeface — var(--font-jakarta), referenced by fontFamily.sans.
 // 800 dropped: nothing in the new scale is that heavy.
@@ -156,7 +155,6 @@ export default function RootLayout({
         </a>
         <SmoothScroll />
         <ScrollReveal />
-        <Cursor />
         {children}
         <Analytics />
         <SpeedInsights />
