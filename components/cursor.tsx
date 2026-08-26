@@ -23,6 +23,8 @@ export function Cursor() {
     const fine = window.matchMedia("(pointer: fine)").matches;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!fine || reduce) return;
+    // Intentional one-time post-mount enable, gated on matchMedia
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEnabled(true);
     document.documentElement.classList.add("has-custom-cursor");
 

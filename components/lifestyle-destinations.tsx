@@ -21,28 +21,28 @@ const features = [
     icon: Coffee,
     title: "Coffee & Drinks",
     desc: "Fresh coffee, boba, smoothies delivered hot to your window.",
-    image: "/images/lifestyle-coffee-v2.png",
+    image: "/images/lifestyle-coffee-v2.webp",
     color: "from-amber-500",
   },
   {
     icon: Utensils,
     title: "Food & Meals",
     desc: "Breakfast, lunch, dinner — from local restaurants to your car.",
-    image: "/images/lifestyle-food-v2.png",
+    image: "/images/lifestyle-food-v2.webp",
     color: "from-brand",
   },
   {
     icon: ShoppingBag,
     title: "Groceries & Errands",
     desc: "Quick essentials, pharmacy runs, anything you need picked up.",
-    image: "/images/lifestyle-groceries-v2.png",
+    image: "/images/lifestyle-groceries-v2.webp",
     color: "from-blue-500",
   },
   {
     icon: Sparkles,
     title: "Services",
     desc: "Car detailing, dry cleaning pickup — make your 10 minutes count.",
-    image: "/images/lifestyle-services-v2.png",
+    image: "/images/lifestyle-services-v2.webp",
     color: "from-purple-500",
   },
 ];
@@ -69,7 +69,7 @@ export function LifestyleDestinations() {
       {/* Background photo + navy overlay (§5a) */}
       <div className="absolute inset-0">
         <Image
-          src="/images/lifestyle-coffee-v2.png"
+          src="/images/lifestyle-coffee-v2.webp"
           alt=""
           aria-hidden
           fill
@@ -138,7 +138,7 @@ export function LifestyleDestinations() {
               {/* Full image panel */}
               <div className="group relative w-full lg:w-80 flex-shrink-0 self-stretch min-h-[280px] lg:min-h-[340px] rounded-3xl overflow-hidden border border-white/10 shadow-card-hover">
                 <Image
-                  src="/images/lifestyle-food-v2.png"
+                  src="/images/lifestyle-food-v2.webp"
                   alt="HubCharge attendant delivering coffee to a car window"
                   fill
                   className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.05]"
@@ -255,13 +255,14 @@ export function LifestyleDestinations() {
               <ArrowRight className="h-5 w-5" />
             </CtaButton>
             <span className="text-[#475569] text-sm hidden sm:block">or</span>
-            <motion.button
+            <motion.a
+              href="#newsletter"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="text-[#FF7A00] hover:text-[#FF9433] text-sm font-medium underline underline-offset-4 transition-colors"
             >
               Get notified when services launch →
-            </motion.button>
+            </motion.a>
           </div>
         </motion.div>
       </div>

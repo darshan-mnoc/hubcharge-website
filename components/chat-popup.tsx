@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MessageCircle,
@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   Sparkles,
 } from "lucide-react";
+import { submitFeedback } from "@/lib/actions";
 
 const quickOptions = [
   { icon: Coffee, label: "Coffee shops", value: "coffee" },
@@ -32,10 +33,31 @@ export function ChatPopup() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() || selectedOptions.length > 0) {
-      console.log("Feedback submitted:", { message, selectedOptions });
+    if (sending) return;
+    if (!message.trim() && selectedOptions.length === 0) return;
+    setSending(true);
+    setError(null);
+    const result = await submitFeedback({
+      options: selectedOptions,
+      message,
+      company: "",
+    });
+    setSending(false);
+    if (result.ok) {
       setSubmitted(true);
       setTimeout(() => {
         setIsOpen(false);
@@ -43,6 +65,8 @@ export function ChatPopup() {
         setMessage("");
         setSelectedOptions([]);
       }, 2500);
+    } else {
+      setError(result.error ?? "Something went wrong — please try again.");
     }
   };
 
@@ -51,6 +75,9 @@ export function ChatPopup() {
       {/* Chat Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Close feedback" : "Share feedback"}
+        aria-expanded={isOpen}
+        aria-controls="feedback-popup"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         animate={{
@@ -114,6 +141,10 @@ export function ChatPopup() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id="feedback-popup"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Share feedback"
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -138,6 +169,7 @@ export function ChatPopup() {
                 {/* Close button - mobile */}
                 <button
                   onClick={() => setIsOpen(false)}
+                  aria-label="Close feedback"
                   className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors sm:hidden"
                 >
                   <X className="h-4 w-4 text-white" />
@@ -155,7 +187,7 @@ export function ChatPopup() {
                       Help Us Grow
                     </h3>
                     <p className="text-white/80 text-xs sm:text-sm">
-                      What do you want near HubCharge®?
+                      What do you want near HubCharge™?
                     </p>
                   </div>
                 </div>
@@ -213,7 +245,7 @@ export function ChatPopup() {
                     className="p-4 sm:p-6"
                   >
                     <p className="text-white/50 text-xs sm:text-sm mb-3 sm:mb-4">
-                      Select what you'd like to see near HubCharge® stations:
+                      Select what you&apos;d like to see near HubCharge™ stations:
                     </p>
 
                     {/* Quick Options */}
@@ -228,6 +260,7 @@ export function ChatPopup() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.05 }}
                             whileTap={{ scale: 0.98 }}
+                            aria-pressed={isSelected}
                             onClick={() => toggleOption(option.value)}
                             className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-xl border-2 transition-all duration-200 ${
                               isSelected
@@ -262,14 +295,21 @@ export function ChatPopup() {
                     </div>
 
                     {/* Submit */}
+                    {error && (
+                      <p role="alert" className="text-xs text-[#ffb4ab] mb-2">
+                        {error}
+                      </p>
+                    )}
                     <motion.button
                       type="submit"
-                      disabled={!message.trim() && selectedOptions.length === 0}
+                      disabled={
+                        sending || (!message.trim() && selectedOptions.length === 0)
+                      }
                       whileTap={{ scale: 0.98 }}
                       className="w-full btn btn-primary rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base py-2.5 sm:py-3"
                     >
                       <Send className="h-4 w-4 sm:h-5 sm:w-5" />
-                      Send Feedback
+                      {sending ? "Sending…" : "Send Feedback"}
                     </motion.button>
 
                     <p className="text-center text-[10px] sm:text-xs text-white/30 mt-3 sm:mt-4">

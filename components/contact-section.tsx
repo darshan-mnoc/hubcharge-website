@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { Phone, Clock, Headphones, Send } from "lucide-react";
 import Image from "next/image";
 import { CtaButton } from "@/components/ui/cta-button";
+import { submitContact } from "@/lib/actions";
 
 export function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -16,10 +17,22 @@ export function ContactSection() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [company, setCompany] = useState(""); // honeypot
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (sending) return;
+    setSending(true);
+    setError(null);
+    const result = await submitContact({ ...formData, company });
+    setSending(false);
+    if (result.ok) {
+      setSubmitted(true);
+    } else {
+      setError(result.error ?? "Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -32,7 +45,7 @@ export function ContactSection() {
       {/* Background photo + navy overlay (§5a) */}
       <div className="absolute inset-0">
         <Image
-          src="/images/charging-service-v2.png"
+          src="/images/charging-service-v2.webp"
           alt=""
           aria-hidden
           fill
@@ -69,7 +82,7 @@ export function ContactSection() {
 
           <h2 className="heading-section text-[#f4f3f2] mb-4">
             Questions?{" "}
-            <span className="text-gradient text-glow">We're here.</span>
+            <span className="text-gradient text-glow">We&apos;re here.</span>
           </h2>
           <p className="text-body-lg text-muted-dark max-w-lg mx-auto">
             Our team is ready to help with charging, membership, or services.
@@ -116,17 +129,20 @@ export function ContactSection() {
                 Message Sent!
               </h3>
               <p className="text-[#8A9BB5] text-sm">
-                We'll get back to you within 24 hours.
+                We&apos;ll get back to you within 24 hours.
               </p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[#8A9BB5] text-sm mb-2 block">
+                  <label htmlFor="contact-name" className="text-[#8A9BB5] text-sm mb-2 block">
                     Name
                   </label>
                   <input
+                    id="contact-name"
+                    name="name"
+                    autoComplete="name"
                     type="text"
                     required
                     value={formData.name}
@@ -138,10 +154,13 @@ export function ContactSection() {
                   />
                 </div>
                 <div>
-                  <label className="text-[#8A9BB5] text-sm mb-2 block">
+                  <label htmlFor="contact-email" className="text-[#8A9BB5] text-sm mb-2 block">
                     Email
                   </label>
                   <input
+                    id="contact-email"
+                    name="email"
+                    autoComplete="email"
                     type="email"
                     required
                     value={formData.email}
@@ -155,10 +174,12 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label className="text-[#8A9BB5] text-sm mb-2 block">
+                <label htmlFor="contact-subject" className="text-[#8A9BB5] text-sm mb-2 block">
                   Subject
                 </label>
                 <input
+                  id="contact-subject"
+                  name="subject"
                   type="text"
                   required
                   value={formData.subject}
@@ -171,10 +192,12 @@ export function ContactSection() {
               </div>
 
               <div>
-                <label className="text-[#8A9BB5] text-sm mb-2 block">
+                <label htmlFor="contact-message" className="text-[#8A9BB5] text-sm mb-2 block">
                   Message
                 </label>
                 <textarea
+                  id="contact-message"
+                  name="message"
                   required
                   value={formData.message}
                   onChange={(e) =>
@@ -186,9 +209,27 @@ export function ContactSection() {
                 />
               </div>
 
+              {/* Honeypot — hidden from humans, bots fill it */}
+              <input
+                type="text"
+                name="company"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="hidden"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+              />
+
+              {error && (
+                <p role="alert" className="text-sm text-[#ffb4ab]">
+                  {error}
+                </p>
+              )}
+
               <CtaButton type="submit" size="lg" fullWidth>
                 <Send className="h-5 w-5" />
-                Send Message
+                {sending ? "Sending…" : "Send Message"}
               </CtaButton>
             </form>
           )}
