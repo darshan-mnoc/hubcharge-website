@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView, easeOut } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import {
   ArrowDown,
   Zap,
@@ -20,6 +21,7 @@ const solutionSteps = [
     desc: "Pull up to any available charger. Our team handles everything from there.",
     highlight: "No apps to download",
     image: "/images/valet-greet-v2.webp",
+    imageAlt: "A HubCharge attendant greeting a driver at their car window",
     // charger sits at the far left of the frame
     pos: "18% 50%",
   },
@@ -34,6 +36,7 @@ const solutionSteps = [
     desc: "Payment, plug-in, monitoring — all taken care of. Stay in your car.",
     highlight: "Zero effort required",
     image: "/images/charging-service-v2.webp",
+    imageAlt: "An attendant plugging a charging cable into an electric car",
     pos: "45% 50%",
   },
   {
@@ -47,6 +50,7 @@ const solutionSteps = [
     desc: "Order food, coffee, or essentials. Delivered right to your window.",
     highlight: "Time well spent",
     image: "/images/coffee-delivery-v3.webp",
+    imageAlt: "Coffee being delivered to a driver's car window while it charges",
     // charger sits on the left of the frame
     pos: "24% 50%",
   },
@@ -64,6 +68,7 @@ const itemVariants = {
 };
 
 export function ProblemSection() {
+  const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
@@ -89,8 +94,8 @@ export function ProblemSection() {
             variants={itemVariants}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand/10 border border-brand/20 mb-8"
           >
-            <Zap className="h-4 w-4 text-brand" />
-            <span className="text-brand text-sm font-semibold uppercase tracking-wider">
+            <Zap className="h-4 w-4 text-brand-ink" />
+            <span className="text-brand-ink text-sm font-semibold uppercase tracking-wider">
               Rethink Fast Charging
             </span>
           </motion.div>
@@ -392,7 +397,7 @@ export function ProblemSection() {
                   <div className="group/card relative min-h-[420px] lg:min-h-[460px] rounded-lg overflow-hidden border border-white/10 hover:border-brand/40 hover:-translate-y-1 transition-all duration-300">
                     <Image
                       src={step.image}
-                      alt="HubCharge EV charging service"
+                      alt={step.imageAlt}
                       fill
                       className="object-cover transition-transform duration-[800ms] group-hover/card:scale-[1.05]"
                       style={{ objectPosition: step.pos }}
@@ -483,7 +488,7 @@ export function ProblemSection() {
             >
               See the full charging experience
               <motion.span
-                animate={{ y: [0, 4, 0] }}
+                animate={reduced ? undefined : { y: [0, 4, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
                 <ArrowDown className="h-5 w-5" />

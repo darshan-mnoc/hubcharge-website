@@ -33,7 +33,7 @@ export default function PricingPage() {
     >
       <div className="grid md:grid-cols-2 gap-8 mb-14 max-w-4xl">
         <div className="card-light p-8">
-          <p className="flex items-center gap-2 text-brand text-xs font-bold uppercase tracking-widest mb-4">
+          <p className="flex items-center gap-2 text-brand-ink text-xs font-bold uppercase tracking-widest mb-4">
             <CheckCircle2 className="h-4 w-4" /> Included in your flat rate
           </p>
           <ul className="space-y-3">
@@ -46,12 +46,12 @@ export default function PricingPage() {
           </ul>
         </div>
         <div className="card-light p-8">
-          <p className="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">
+          <p className="flex items-center gap-2 text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">
             <XCircle className="h-4 w-4" /> What you&apos;ll never see
           </p>
           <ul className="space-y-3">
             {neverCharged.map((line) => (
-              <li key={line} className="flex items-start gap-3 text-gray-400 text-sm line-through decoration-gray-300">
+              <li key={line} className="flex items-start gap-3 text-gray-500 text-sm line-through decoration-gray-300">
                 <XCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 {line}
               </li>
@@ -110,7 +110,7 @@ export default function PricingPage() {
             Pricing questions? See the FAQ
           </CtaButton>
         </div>
-        <p className="text-xs text-gray-400 mt-8">
+        <p className="text-xs text-gray-500 mt-8">
           *Attendant service at select locations and hours. Added range varies
           by vehicle, battery state of charge, and temperature. Your total
           price is always disclosed before your session starts.

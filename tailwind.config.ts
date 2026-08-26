@@ -16,7 +16,12 @@ const config: Config = {
       },
       colors: {
         // ── Design system tokens (brand-agnostic) ─────────────────────
-        brand: { DEFAULT: '#FF7A00', hover: '#E66E00' }, // bg-brand / bg-brand-hover
+        // brand      = the identity orange. Use for fills, icons, and text on DARK
+        //              sections (6.7:1 on #0A192F).
+        // brand.ink   = text-only shade for LIGHT backgrounds. #FF7A00 is 2.6:1 on
+        //              white, which fails WCAG AA; this is 5.3:1. Use text-brand-ink
+        //              for links/labels on white or surface-warm.
+        brand: { DEFAULT: '#FF7A00', hover: '#E66E00', ink: '#B34D00' },
         'electric-blue': '#00D1FF',
         'midnight-navy': '#0A192F',
         slate: { 900: '#0F172A', 800: '#1E293B', 700: '#334155' },

@@ -74,12 +74,12 @@ export default function Charging101Page() {
               g.highlight ? "ring-1 ring-brand/30 bg-brand/[0.03]" : ""
             }`}
           >
-            <g.icon className="h-7 w-7 text-brand mb-4" />
-            <h2 className="font-bold text-midnight-navy mb-2 group-hover:text-brand transition-colors">
+            <g.icon className="h-7 w-7 text-brand-ink mb-4" />
+            <h2 className="font-bold text-midnight-navy mb-2 group-hover:text-brand-ink transition-colors">
               {g.title}
             </h2>
             <p className="text-gray-500 text-sm mb-4">{g.desc}</p>
-            <span className="inline-flex items-center gap-1.5 text-brand font-semibold text-sm">
+            <span className="inline-flex items-center gap-1.5 text-brand-ink font-semibold text-sm">
               Read the guide
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>

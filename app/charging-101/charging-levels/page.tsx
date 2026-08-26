@@ -59,12 +59,12 @@ export default function ChargingLevelsPage() {
               l.highlight ? "ring-1 ring-brand/30 bg-brand/[0.03]" : ""
             }`}
           >
-            <l.icon className="h-7 w-7 text-brand mb-4" />
+            <l.icon className="h-7 w-7 text-brand-ink mb-4" />
             <h2 className="font-bold text-midnight-navy text-lg mb-1">
               {l.name}
             </h2>
-            <p className="text-gray-400 text-xs mb-2">{l.spec}</p>
-            <p className="text-brand font-semibold text-sm mb-3">{l.adds}</p>
+            <p className="text-gray-500 text-xs mb-2">{l.spec}</p>
+            <p className="text-brand-ink font-semibold text-sm mb-3">{l.adds}</p>
             <p className="text-gray-600 text-sm">{l.body}</p>
           </div>
         ))}
@@ -80,7 +80,7 @@ export default function ChargingLevelsPage() {
           day — with an attendant handling the process at participating
           locations.
         </p>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-500">
           Figures are typical ranges; actual speed varies by vehicle, battery
           state of charge, and temperature.
         </p>

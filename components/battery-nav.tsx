@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap,
@@ -29,7 +30,10 @@ export function BatteryNav() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const [activeLink, setActiveLink] = useState<string | null>(null);
+
+  useFocusTrap(mobileMenuRef, mobileOpen);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -185,7 +189,9 @@ export function BatteryNav() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            ref={mobileMenuRef}
             id="mobile-menu"
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-label="Site menu"
@@ -202,7 +208,7 @@ export function BatteryNav() {
             />
 
             <div className="relative pt-28 px-6 pb-10 h-full overflow-y-auto">
-              <div className="space-y-3 mb-10">
+              <nav aria-label="Mobile" className="space-y-3 mb-10">
                 {navLinks.map((link, i) => (
                   <motion.button
                     key={link.id}
@@ -223,7 +229,7 @@ export function BatteryNav() {
                     </span>
                   </motion.button>
                 ))}
-              </div>
+              </nav>
 
               <motion.button
                 initial={{ opacity: 0, y: 20 }}
@@ -241,10 +247,11 @@ export function BatteryNav() {
       </AnimatePresence>
 
       {/* Mobile Bottom Tab Bar */}
-      <motion.div
+      <motion.nav
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-hero/95 backdrop-blur-md border-t border-[#f4f3f2]/[0.06] safe-area-bottom"
+        aria-label="Quick links"
       >
         <div className="grid grid-cols-5">
           {[
@@ -265,7 +272,7 @@ export function BatteryNav() {
             </motion.button>
           ))}
         </div>
-      </motion.div>
+      </motion.nav>
     </>
   );
 }

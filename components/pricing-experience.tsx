@@ -101,7 +101,7 @@ export function PricingExperience() {
         >
           <motion.p
             variants={fadeUp}
-            className="text-brand text-sm font-semibold uppercase tracking-widest mb-4"
+            className="text-brand-ink text-sm font-semibold uppercase tracking-widest mb-4"
           >
             Pricing, reimagined
           </motion.p>
@@ -149,11 +149,11 @@ export function PricingExperience() {
                       }`}
                     >
                       <span
-                        className={`block text-sm font-semibold ${active ? "text-brand" : "text-gray-800"}`}
+                        className={`block text-sm font-semibold ${active ? "text-brand-ink" : "text-gray-800"}`}
                       >
                         {d.label}
                       </span>
-                      <span className="block text-xs text-gray-400 mt-0.5">
+                      <span className="block text-xs text-gray-500 mt-0.5">
                         {d.time}
                       </span>
                     </button>
@@ -211,7 +211,7 @@ export function PricingExperience() {
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? "bg-brand/15 text-brand" : "bg-gray-100 text-gray-400"}`}
+                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? "bg-brand/15 text-brand-ink" : "bg-gray-100 text-gray-500"}`}
                       >
                         <a.icon className="h-4 w-4" />
                       </span>
@@ -222,7 +222,7 @@ export function PricingExperience() {
                       </span>
                       <span className="ml-auto">
                         {active ? (
-                          <Check className="h-4 w-4 text-brand" />
+                          <Check className="h-4 w-4 text-brand-ink" />
                         ) : (
                           <span className="h-4 w-4 rounded-full border border-gray-300 block" />
                         )}
@@ -231,7 +231,7 @@ export function PricingExperience() {
                   );
                 })}
               </div>
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="text-xs text-gray-500 mt-2">
                 Lifestyle services launching at select hubs.
               </p>
             </div>
@@ -248,6 +248,11 @@ export function PricingExperience() {
 
               {/* battery */}
               <div className="mt-4 mb-5">
+                {/* Announces the recalculated result to screen readers when a
+                    distance / car / add-on selection changes (WCAG 4.1.3). */}
+                <p aria-live="polite" className="sr-only">
+                  {`About ${miles} miles added to your ${car.name} in ${dist.time}.`}
+                </p>
                 <div className="flex items-center gap-2 mb-2 text-on-dark">
                   <BatteryCharging className="h-5 w-5 text-brand" />
                   <motion.span

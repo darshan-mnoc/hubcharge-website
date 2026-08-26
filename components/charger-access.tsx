@@ -50,7 +50,7 @@ export function ChargerAccess() {
           >
             <motion.p
               variants={fadeUp}
-              className="text-brand text-sm font-semibold uppercase tracking-widest mb-4"
+              className="text-brand-ink text-sm font-semibold uppercase tracking-widest mb-4"
             >
               Get Charging
             </motion.p>
@@ -71,7 +71,7 @@ export function ChargerAccess() {
                 <li key={s.title} className="flex items-start gap-4">
                   <div className="relative flex-shrink-0">
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
-                      <s.icon className="h-5 w-5 text-brand" />
+                      <s.icon className="h-5 w-5 text-brand-ink" />
                     </div>
                     <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-white">
                       {i + 1}
@@ -97,7 +97,7 @@ export function ChargerAccess() {
                   key={r}
                   className="inline-flex items-center gap-2 text-sm text-gray-700"
                 >
-                  <Check className="h-4 w-4 text-brand" />
+                  <Check className="h-4 w-4 text-brand-ink" />
                   {r}
                 </span>
               ))}
@@ -110,15 +110,15 @@ export function ChargerAccess() {
               </CtaButton>
               <p className="mt-4 text-sm text-gray-500">
                 First visit?{" "}
-                <a href="/what-to-expect" className="text-brand underline underline-offset-2">
+                <a href="/what-to-expect" className="text-brand-ink underline underline-offset-2">
                   See what to expect
                 </a>
                 ,{" "}
-                <a href="/charging-101/can-my-ev-charge-here" className="text-brand underline underline-offset-2">
+                <a href="/charging-101/can-my-ev-charge-here" className="text-brand-ink underline underline-offset-2">
                   check if your EV is compatible
                 </a>
                 , or{" "}
-                <a href="/faq" className="text-brand underline underline-offset-2">
+                <a href="/faq" className="text-brand-ink underline underline-offset-2">
                   read the FAQ
                 </a>
                 .
@@ -155,7 +155,7 @@ export function ChargerAccess() {
 
               {/* floating "in your browser" badge — sits over the empty lower screen, not the UI */}
               <div className="absolute -left-3 bottom-6 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_8px_24px_-8px_rgba(16,24,40,0.25)] border border-gray-100">
-                <Globe className="h-4 w-4 text-brand" />
+                <Globe className="h-4 w-4 text-brand-ink" />
                 <span className="text-xs font-semibold text-gray-800">
                   In your browser
                 </span>

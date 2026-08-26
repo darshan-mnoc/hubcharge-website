@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import {
   MapPin,
   Search,
@@ -26,6 +27,7 @@ import {
 } from "@/lib/stations";
 
 export function FindYourHub() {
+  const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const [zipCode, setZipCode] = useState("");
@@ -174,14 +176,18 @@ export function FindYourHub() {
           <form onSubmit={handleSearch} className="relative">
             <div className="relative flex items-center">
               <div className="absolute left-4 pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-gray-500" />
               </div>
               <input
                 type="text"
+                id="zip-search"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                aria-label="ZIP code"
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
                 placeholder="Enter ZIP code to find stations near you"
-                className="w-full pl-12 pr-36 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand/50 focus:ring-2 focus:ring-brand/20 transition-all"
+                className="w-full pl-12 pr-36 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-brand/50 focus:ring-2 focus:ring-brand/20 transition-all"
               />
               <motion.button
                 type="submit"
@@ -214,7 +220,7 @@ export function FindYourHub() {
           <div className="flex items-center justify-center gap-2 mt-4">
             <button
               onClick={handleUseLocation}
-              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand transition-colors"
+              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-ink transition-colors"
             >
               <Navigation className="h-3.5 w-3.5" />
               Use current location
@@ -222,7 +228,7 @@ export function FindYourHub() {
           </div>
           {searchNote && (
             <div className="flex items-center justify-center mt-2">
-              <p className="text-xs text-gray-400">{searchNote}</p>
+              <p className="text-xs text-gray-500">{searchNote}</p>
             </div>
           )}
         </motion.div>
@@ -233,7 +239,7 @@ export function FindYourHub() {
           <div className="lg:col-span-2">
             <div className="sticky top-24">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-brand" />
+                <MapPin className="h-5 w-5 text-brand-ink" />
                 {searchResults
                   ? `${searchResults.length} Station${searchResults.length === 1 ? "" : "s"} Found`
                   : "Available Stations"}
@@ -267,20 +273,20 @@ export function FindYourHub() {
                         <p className="text-gray-500 text-sm">
                           {station.address}
                         </p>
-                        <p className="text-gray-400 text-sm">
+                        <p className="text-gray-500 text-sm">
                           {station.city}, {station.state} {station.zip}
                         </p>
                         {distances?.[station.id] != null && (
-                          <p className="text-brand text-xs font-semibold mt-1">
+                          <p className="text-brand-ink text-xs font-semibold mt-1">
                             ~{Math.round(distances[station.id])} mi away
                           </p>
                         )}
                       </div>
-                      <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-brand transition-colors" />
+                      <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-brand-ink transition-colors" />
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-brand/10 text-brand text-xs">
+                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-brand/10 text-brand-ink text-xs">
                         <Zap className="h-3 w-3" />
                         {station.power}
                       </span>
@@ -297,7 +303,7 @@ export function FindYourHub() {
                     </div>
 
                     {station.note && (
-                      <div className="flex items-center gap-1.5 mb-3 text-xs font-medium text-brand">
+                      <div className="flex items-center gap-1.5 mb-3 text-xs font-medium text-brand-ink">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand" />
                         {station.note}
                       </div>
@@ -326,7 +332,7 @@ export function FindYourHub() {
                     <a
                       href={`/locations/${station.slug}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-brand hover:text-brand-hover"
+                      className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-brand-ink hover:text-brand-hover"
                     >
                       Station details
                       <ChevronRight className="h-4 w-4" />
@@ -337,7 +343,7 @@ export function FindYourHub() {
 
               {/* Attendant note */}
               <div className="flex items-start gap-2.5 mt-4 p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                <AlertCircle className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                <AlertCircle className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-gray-600 leading-relaxed">
                   Attendant availability varies by location and time. Check
                   station details for current availability.
@@ -371,7 +377,7 @@ export function FindYourHub() {
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="relative">
                 <motion.div
-                  animate={{ scale: [1, 2, 1], opacity: [0.6, 0, 0.6] }}
+                  animate={reduced ? undefined : { scale: [1, 2, 1], opacity: [0.6, 0, 0.6] }}
                   transition={{ duration: 2, repeat: Infinity }}
                   className="absolute inset-0 bg-brand rounded-full"
                 />
@@ -400,7 +406,7 @@ export function FindYourHub() {
                   href={`https://maps.google.com/?q=${selected.coords.lat},${selected.coords.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-brand text-sm hover:underline"
+                  className="flex items-center gap-1 text-brand-ink text-sm hover:underline"
                 >
                   Open in Maps
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -457,7 +463,7 @@ export function FindYourHub() {
             <motion.div whileHover={{ y: -4 }} className="card-light p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-brand/20 flex items-center justify-center">
-                  <Utensils className="h-5 w-5 text-brand" />
+                  <Utensils className="h-5 w-5 text-brand-ink" />
                 </div>
                 <h4 className="font-semibold text-gray-900">Food & Dining</h4>
               </div>
@@ -473,7 +479,7 @@ export function FindYourHub() {
                     className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 cursor-pointer"
                   >
                     <span className="text-gray-700">{place.name}</span>
-                    <span className="text-brand text-sm font-medium">
+                    <span className="text-brand-ink text-sm font-medium">
                       {place.walk}
                     </span>
                   </motion.div>
@@ -553,7 +559,7 @@ export function FindYourHub() {
                   value={notifyEmail}
                   onChange={(e) => setNotifyEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand/50"
+                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-brand/50"
                 />
                 <motion.button
                   type="submit"

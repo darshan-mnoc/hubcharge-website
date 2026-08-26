@@ -27,11 +27,37 @@ export default function AccessibilityPage() {
 
         <h2>What we do on this website</h2>
         <ul>
-          <li>Support keyboard navigation with visible focus indicators.</li>
-          <li>Respect your system&rsquo;s reduced-motion preference — animations and smooth scrolling are disabled when it is set.</li>
-          <li>Provide text alternatives for meaningful images.</li>
-          <li>Maintain minimum touch-target sizes on mobile.</li>
+          <li>
+            A &ldquo;skip to main content&rdquo; link, so keyboard users can
+            bypass the navigation on every page.
+          </li>
+          <li>
+            Full keyboard navigation with visible focus indicators, and focus
+            kept inside menus and dialogs while they are open.
+          </li>
+          <li>
+            Respect for your system&rsquo;s reduced-motion preference —
+            animations, parallax, and scroll-driven effects stand down when
+            it is set.
+          </li>
+          <li>Text alternatives for meaningful images.</li>
+          <li>
+            Text and interface colours checked against the WCAG AA contrast
+            minimums.
+          </li>
+          <li>Minimum touch-target sizes on mobile.</li>
         </ul>
+
+        <h2>Where we know we fall short</h2>
+        <p>
+          We would rather name the gaps than claim we have none. The
+          interactive charging-journey graphic on our home page is decorative
+          and is not yet fully described for screen readers; the same
+          information is available in plain text on our{" "}
+          <a href="/what-to-expect">What to Expect</a> page. If you hit
+          anything else, please tell us — we will fix it and we will tell you
+          when we have.
+        </p>
 
         <h2>At our stations</h2>
         <p>

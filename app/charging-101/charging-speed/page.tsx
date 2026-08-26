@@ -91,7 +91,7 @@ export default function ChargingSpeedPage() {
           </Link>
           .
         </p>
-        <p className="text-sm text-gray-400">{RANGE_FOOTNOTE}</p>
+        <p className="text-sm text-gray-500">{RANGE_FOOTNOTE}</p>
       </Prose>
 
       <GuideCta headline="Ten good minutes beats an hour of waiting." />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MessageCircle,
@@ -13,6 +13,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { submitFeedback } from "@/lib/actions";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 const quickOptions = [
   { icon: Coffee, label: "Coffee shops", value: "coffee" },
@@ -22,7 +24,9 @@ const quickOptions = [
 ];
 
 export function ChatPopup() {
+  const reduced = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -36,6 +40,8 @@ export function ChatPopup() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useFocusTrap(popupRef, isOpen);
+
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -48,7 +54,10 @@ export function ChatPopup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (sending) return;
-    if (!message.trim() && selectedOptions.length === 0) return;
+    if (!message.trim() && selectedOptions.length === 0) {
+      setError("Pick an option or write a note first.");
+      return;
+    }
     setSending(true);
     setError(null);
     const result = await submitFeedback({
@@ -81,7 +90,9 @@ export function ChatPopup() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         animate={{
-          boxShadow: isOpen
+          boxShadow: reduced
+            ? "0 0 0 rgba(244, 130, 69, 0)"
+            : isOpen
             ? "0 0 0 rgba(244, 130, 69, 0)"
             : [
                 "0 0 20px rgba(244, 130, 69, 0.3)",
@@ -141,7 +152,9 @@ export function ChatPopup() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={popupRef}
             id="feedback-popup"
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-label="Share feedback"
@@ -176,7 +189,7 @@ export function ChatPopup() {
                 </button>
                 <div className="flex items-center gap-3">
                   <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
+                    animate={reduced ? undefined : { scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center shrink-0"
                   >
@@ -283,10 +296,14 @@ export function ChatPopup() {
 
                     {/* Custom Message */}
                     <div className="mb-4">
-                      <label className="text-xs sm:text-sm text-white/40 mb-2 block">
+                      <label
+                        htmlFor="feedback-message"
+                        className="text-xs sm:text-sm text-white/60 mb-2 block"
+                      >
                         Or tell us something specific:
                       </label>
                       <textarea
+                        id="feedback-message"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="I'd love to see..."
@@ -302,9 +319,7 @@ export function ChatPopup() {
                     )}
                     <motion.button
                       type="submit"
-                      disabled={
-                        sending || (!message.trim() && selectedOptions.length === 0)
-                      }
+                      disabled={sending}
                       whileTap={{ scale: 0.98 }}
                       className="w-full btn btn-primary rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base py-2.5 sm:py-3"
                     >

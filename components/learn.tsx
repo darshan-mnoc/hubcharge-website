@@ -25,7 +25,7 @@ export function GuideBreadcrumb({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
       />
       <nav aria-label="Breadcrumb" className="mb-8 -mt-6">
-        <ol className="flex flex-wrap items-center gap-2 text-sm text-gray-400">
+        <ol className="flex flex-wrap items-center gap-2 text-sm text-gray-500">
           {trail.map(([name, href], i) => {
             const last = i === trail.length - 1;
             return (
@@ -36,7 +36,7 @@ export function GuideBreadcrumb({
                     {name}
                   </span>
                 ) : (
-                  <Link href={href} className="hover:text-brand">
+                  <Link href={href} className="hover:text-brand-ink">
                     {name}
                   </Link>
                 )}

@@ -19,7 +19,7 @@ const JourneyBattery = dynamic(
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main id="main" className="min-h-screen bg-white">
       {/* Navigation */}
       <BatteryNav />
 

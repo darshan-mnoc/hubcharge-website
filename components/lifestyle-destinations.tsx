@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import {
   Utensils,
   Coffee,
@@ -56,6 +57,7 @@ const serviceCategories = [
 ];
 
 export function LifestyleDestinations() {
+  const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
@@ -171,7 +173,7 @@ export function LifestyleDestinations() {
                     While you charge
                   </p>
                   <motion.span
-                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    animate={reduced ? undefined : { opacity: [0.5, 1, 0.5] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-xs font-semibold border border-brand/25"
                   >
@@ -213,7 +215,7 @@ export function LifestyleDestinations() {
                           <p className="text-[#f4f3f2] font-semibold text-sm group-hover:text-[#f4f3f2] transition-colors">
                             {category.label}
                           </p>
-                          <p className="text-[#475569] text-xs group-hover:text-muted-dark transition-colors">
+                          <p className="text-muted-dark text-xs group-hover:text-muted-dark transition-colors">
                             {category.desc}
                           </p>
                         </div>
@@ -232,7 +234,7 @@ export function LifestyleDestinations() {
               transition={{ delay: 0.5 }}
               className="mt-8 pt-6 border-t border-[#334155] text-center"
             >
-              <div className="flex items-center justify-center gap-2 text-[#475569] text-sm">
+              <div className="flex items-center justify-center gap-2 text-muted-dark text-sm">
                 <Clock className="h-4 w-4" />
                 <span>
                   Full lifestyle services launching soon at select locations
@@ -254,7 +256,7 @@ export function LifestyleDestinations() {
               Find your hub
               <ArrowRight className="h-5 w-5" />
             </CtaButton>
-            <span className="text-[#475569] text-sm hidden sm:block">or</span>
+            <span className="text-muted-dark text-sm hidden sm:block">or</span>
             <motion.a
               href="#newsletter"
               whileHover={{ scale: 1.02 }}

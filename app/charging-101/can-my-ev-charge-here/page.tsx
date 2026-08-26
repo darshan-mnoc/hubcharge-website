@@ -53,7 +53,7 @@ export default function CompatibilityPage() {
 
       {/* Headline claim */}
       <div className="card-light p-6 max-w-4xl mb-10 flex items-start gap-4">
-        <Zap className="h-6 w-6 text-brand shrink-0 mt-0.5" />
+        <Zap className="h-6 w-6 text-brand-ink shrink-0 mt-0.5" />
         <div>
           <p className="font-bold text-midnight-navy mb-1">
             Two connectors. No adapters. Nearly every EV.
@@ -89,7 +89,7 @@ export default function CompatibilityPage() {
                     <div className="flex items-baseline justify-between gap-3 mb-2">
                       <h4 className="font-bold text-midnight-navy">{m.name}</h4>
                       {m.tenMinMilesApprox && (
-                        <span className="shrink-0 text-brand font-bold text-sm">
+                        <span className="shrink-0 text-brand-ink font-bold text-sm">
                           ~{m.tenMinMilesApprox[0]}–{m.tenMinMilesApprox[1]} mi
                         </span>
                       )}
@@ -124,10 +124,10 @@ export default function CompatibilityPage() {
           </div>
         </div>
 
-        <p className="text-xs text-gray-400 mb-2">*{RANGE_FOOTNOTE}</p>
+        <p className="text-xs text-gray-500 mb-2">*{RANGE_FOOTNOTE}</p>
         <p className="text-sm text-gray-600">
           Want the deeper story on the two connectors?{" "}
-          <Link href="/charging-101/connectors" className="text-brand underline">
+          <Link href="/charging-101/connectors" className="text-brand-ink underline">
             NACS vs CCS, explained →
           </Link>
         </p>

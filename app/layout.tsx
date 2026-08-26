@@ -140,6 +140,9 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
+        <a href="#main" className="skip-link">
+          Skip to main content
+        </a>
         <SmoothScroll />
         <ScrollReveal />
         <Cursor />

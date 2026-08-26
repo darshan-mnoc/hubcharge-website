@@ -44,7 +44,7 @@ export default function LocationsPage() {
               </span>
             </div>
             <div className="p-6">
-              <h2 className="text-xl font-bold text-midnight-navy mb-2 group-hover:text-brand transition-colors">
+              <h2 className="text-xl font-bold text-midnight-navy mb-2 group-hover:text-brand-ink transition-colors">
                 {station.name}
               </h2>
               <p className="text-gray-500 text-sm mb-4">
@@ -54,21 +54,21 @@ export default function LocationsPage() {
               </p>
               <ul className="space-y-2 text-sm text-gray-600 mb-5">
                 <li className="flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-brand" />
+                  <Zap className="h-4 w-4 text-brand-ink" />
                   {station.chargers} DC fast charger
                   {station.chargers > 1 ? "s" : ""} · {station.power} ·{" "}
                   {station.connectors.join(" + ")}
                 </li>
                 <li className="flex items-center gap-2">
-                  <UserRound className="h-4 w-4 text-brand" />
+                  <UserRound className="h-4 w-4 text-brand-ink" />
                   Attendant service available*
                 </li>
                 <li className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-brand" />
+                  <Clock className="h-4 w-4 text-brand-ink" />
                   Open daily, {station.hours}
                 </li>
               </ul>
-              <span className="inline-flex items-center gap-1.5 text-brand font-semibold text-sm">
+              <span className="inline-flex items-center gap-1.5 text-brand-ink font-semibold text-sm">
                 Station details
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
@@ -78,7 +78,7 @@ export default function LocationsPage() {
       </div>
 
       <div className="card-light p-8 text-center">
-        <MapPin className="h-8 w-8 text-brand mx-auto mb-3" />
+        <MapPin className="h-8 w-8 text-brand-ink mx-auto mb-3" />
         <h2 className="text-h3 text-midnight-navy mb-2">
           More locations coming soon
         </h2>
@@ -87,13 +87,13 @@ export default function LocationsPage() {
         </p>
         <Link
           href="/#locations"
-          className="text-brand font-semibold text-sm underline underline-offset-4"
+          className="text-brand-ink font-semibold text-sm underline underline-offset-4"
         >
           Get notified when new hubs open →
         </Link>
       </div>
 
-      <p className="text-xs text-gray-400 mt-8 max-w-2xl">
+      <p className="text-xs text-gray-500 mt-8 max-w-2xl">
         *Attendant availability varies by location and time. Actual charging
         speed and added range vary by vehicle, battery state of charge, and
         temperature.

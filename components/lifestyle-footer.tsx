@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import {
   Zap,
   MapPin,
@@ -57,6 +58,7 @@ const socialLinks = [
 ];
 
 export function LifestyleFooter() {
+  const reduced = useReducedMotion();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -89,7 +91,7 @@ export function LifestyleFooter() {
       >
         {/* Gradient orbs */}
         <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
+          animate={reduced ? undefined : { scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
           transition={{ duration: 8, repeat: Infinity }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand rounded-full blur-[70px]"
         />
@@ -147,7 +149,7 @@ export function LifestyleFooter() {
                   className="h-8 w-auto"
                 />
               </motion.a>
-              <p className="text-[#475569] text-sm mb-6 max-w-xs">
+              <p className="text-muted-dark text-sm mb-6 max-w-xs">
                 Transforming EV charging into lifestyle moments. Because your
                 time deserves more than waiting.
               </p>
@@ -190,7 +192,7 @@ export function LifestyleFooter() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="flex-1 bg-[#f4f3f2]/10 rounded-full px-4 py-2.5 text-[#f4f3f2] text-sm placeholder:text-[#475569] border border-[#334155] focus:border-brand/50 focus:outline-none"
+                        className="flex-1 bg-[#f4f3f2]/10 rounded-full px-4 py-2.5 text-[#f4f3f2] text-sm placeholder:text-muted-dark border border-[#334155] focus:border-brand/50 focus:outline-none"
                         required
                       />
                       <motion.button
@@ -223,7 +225,7 @@ export function LifestyleFooter() {
                     aria-label={social.label}
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-10 h-10 rounded-full bg-[#f4f3f2]/10 border border-[#334155] flex items-center justify-center text-[#475569] hover:text-brand hover:border-brand/30 transition-colors"
+                    className="w-10 h-10 rounded-full bg-[#f4f3f2]/10 border border-[#334155] flex items-center justify-center text-muted-dark hover:text-brand hover:border-brand/30 transition-colors"
                   >
                     <social.icon className="h-4 w-4" />
                   </motion.a>
@@ -246,7 +248,7 @@ export function LifestyleFooter() {
                     <motion.a
                       href={link.href}
                       whileHover={{ x: 4 }}
-                      className="text-[#475569] hover:text-brand text-sm transition-colors inline-block"
+                      className="text-muted-dark hover:text-brand text-sm transition-colors inline-block"
                     >
                       {link.label}
                     </motion.a>
@@ -270,7 +272,7 @@ export function LifestyleFooter() {
                     <motion.a
                       href={link.href}
                       whileHover={{ x: 4 }}
-                      className="text-[#475569] hover:text-brand text-sm transition-colors inline-block"
+                      className="text-muted-dark hover:text-brand text-sm transition-colors inline-block"
                     >
                       {link.label}
                     </motion.a>
@@ -294,7 +296,7 @@ export function LifestyleFooter() {
                     <motion.a
                       href={link.href}
                       whileHover={{ x: 4 }}
-                      className="text-[#475569] hover:text-brand text-sm transition-colors inline-block"
+                      className="text-muted-dark hover:text-brand text-sm transition-colors inline-block"
                     >
                       {link.label}
                     </motion.a>
@@ -311,7 +313,7 @@ export function LifestyleFooter() {
                   <motion.a
                     href="mailto:info@micronocinc.com"
                     whileHover={{ x: 4 }}
-                    className="flex items-center gap-2 text-[#475569] hover:text-brand text-sm transition-colors"
+                    className="flex items-center gap-2 text-muted-dark hover:text-brand text-sm transition-colors"
                   >
                     <Mail className="h-4 w-4" />
                     <span className="break-all">{`info@micronocinc.com`}</span>
@@ -321,14 +323,14 @@ export function LifestyleFooter() {
                   <motion.a
                     href="tel:+19493914676"
                     whileHover={{ x: 4 }}
-                    className="flex items-center gap-2 text-[#475569] hover:text-brand text-sm transition-colors"
+                    className="flex items-center gap-2 text-muted-dark hover:text-brand text-sm transition-colors"
                   >
                     <Phone className="h-4 w-4" />
                     (949) 391-4676
                   </motion.a>
                 </li>
                 <li>
-                  <span className="flex items-start gap-2 text-[#475569] text-sm">
+                  <span className="flex items-start gap-2 text-muted-dark text-sm">
                     <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
                     <span>
                       <span className="block text-xs uppercase tracking-wider text-muted-dark">
@@ -362,14 +364,14 @@ export function LifestyleFooter() {
                   key={i}
                   href={link.href}
                   whileHover={{ y: -2 }}
-                  className="text-[#475569] hover:text-muted-dark text-xs transition-colors"
+                  className="text-muted-dark hover:text-muted-dark text-xs transition-colors"
                 >
                   {link.label}
                 </motion.a>
               ))}
             </div>
 
-            <p className="text-[#475569] text-xs text-center md:text-right">
+            <p className="text-muted-dark text-xs text-center md:text-right">
               © {new Date().getFullYear()} HubCharge™. All rights reserved.
               <br className="md:hidden" />
               <span className="hidden md:inline"> • </span>

@@ -30,7 +30,7 @@ const groups: Group[] = [
             make in{" "}
             <Link
               href="/charging-101/can-my-ev-charge-here"
-              className="text-brand underline"
+              className="text-brand-ink underline"
             >
               our compatibility guide
             </Link>
@@ -48,7 +48,7 @@ const groups: Group[] = [
             minutes and can add up to 100 miles, depending on your car. See{" "}
             <Link
               href="/charging-101/charging-speed"
-              className="text-brand underline"
+              className="text-brand-ink underline"
             >
               how charging speed really works
             </Link>
@@ -86,7 +86,7 @@ const groups: Group[] = [
             hard to predict. Your exact price is shown on your phone before you
             plug in, and it never changes mid-session. Want more range? Extend
             in quick taps, up to 4 times. See{" "}
-            <Link href="/pricing" className="text-brand underline">
+            <Link href="/pricing" className="text-brand-ink underline">
               our pricing page
             </Link>{" "}
             for the full model.
@@ -124,15 +124,15 @@ const groups: Group[] = [
         a: (
           <>
             We&apos;re live in{" "}
-            <Link href="/locations/alhambra" className="text-brand underline">
+            <Link href="/locations/alhambra" className="text-brand-ink underline">
               Alhambra
             </Link>{" "}
             and{" "}
-            <Link href="/locations/fontana" className="text-brand underline">
+            <Link href="/locations/fontana" className="text-brand-ink underline">
               Fontana
             </Link>
             , California, with more locations on the way. See all on the{" "}
-            <Link href="/locations" className="text-brand underline">
+            <Link href="/locations" className="text-brand-ink underline">
               locations page
             </Link>
             .
@@ -151,7 +151,7 @@ const groups: Group[] = [
             charging process while you stay in your car, which many drivers
             find more accessible than self-service charging. If you need
             assistance, call (949) 391-4676. More on our{" "}
-            <Link href="/accessibility" className="text-brand underline">
+            <Link href="/accessibility" className="text-brand-ink underline">
               accessibility page
             </Link>
             .
@@ -163,15 +163,15 @@ const groups: Group[] = [
         a: (
           <>
             Call{" "}
-            <a href="tel:+19493914676" className="text-brand underline">
+            <a href="tel:+19493914676" className="text-brand-ink underline">
               (949) 391-4676
             </a>{" "}
             (Mon–Fri, 9 AM – 6 PM PST), email{" "}
-            <a href="mailto:info@micronocinc.com" className="text-brand underline">
+            <a href="mailto:info@micronocinc.com" className="text-brand-ink underline">
               info@micronocinc.com
             </a>
             , or use the{" "}
-            <Link href="/#contact" className="text-brand underline">
+            <Link href="/#contact" className="text-brand-ink underline">
               contact form
             </Link>
             .
@@ -202,7 +202,7 @@ export default function FaqPage() {
                     {item.q}
                     <span
                       aria-hidden
-                      className="text-brand transition-transform group-open:rotate-45 text-xl leading-none"
+                      className="text-brand-ink transition-transform group-open:rotate-45 text-xl leading-none"
                     >
                       +
                     </span>
@@ -216,7 +216,7 @@ export default function FaqPage() {
           </section>
         ))}
 
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-500">
           Charging speed and added range vary by vehicle, battery state of
           charge, and temperature. Attendant service at select locations and
           hours.

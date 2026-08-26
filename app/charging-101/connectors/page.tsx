@@ -51,7 +51,7 @@ export default function ConnectorsPage() {
               />
             </div>
             <h2 className="font-bold text-midnight-navy text-lg">{c.name}</h2>
-            <p className="text-gray-400 text-xs mb-3">{c.sub}</p>
+            <p className="text-gray-500 text-xs mb-3">{c.sub}</p>
             <p className="text-gray-600 text-sm text-left">{c.body}</p>
           </div>
         ))}

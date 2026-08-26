@@ -17,7 +17,7 @@ export function PageShell({
   children: ReactNode;
 }) {
   return (
-    <main className="min-h-screen bg-surface">
+    <main id="main" className="min-h-screen bg-surface">
       <BatteryNav />
       <header className="bg-hero pt-32 pb-14 lg:pt-40 lg:pb-20">
         <div className="section-container">
@@ -38,7 +38,7 @@ export function PageShell({
 /** Prose wrapper for long-form legal/help text on light background. */
 export function Prose({ children }: { children: ReactNode }) {
   return (
-    <div className="max-w-3xl space-y-6 text-gray-700 leading-relaxed [&_h2]:text-h3 [&_h2]:text-midnight-navy [&_h2]:mt-10 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:text-midnight-navy [&_h3]:mt-6 [&_h3]:mb-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1.5 [&_a]:text-brand [&_a]:underline">
+    <div className="max-w-3xl space-y-6 text-gray-700 leading-relaxed [&_h2]:text-h3 [&_h2]:text-midnight-navy [&_h2]:mt-10 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:text-midnight-navy [&_h3]:mt-6 [&_h3]:mb-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1.5 [&_a]:text-brand-ink [&_a]:underline">
       {children}
     </div>
   );

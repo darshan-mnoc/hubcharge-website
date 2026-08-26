@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, useCallback, memo } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
  * HUBCHARGE JOURNEY - Premium UX Redesign
@@ -1142,6 +1143,7 @@ function StepPill({
 // ============================================
 
 export function JourneyBattery() {
+  const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const batteryRef = useRef<HTMLDivElement>(null);
   const panelsRef = useRef<HTMLDivElement>(null);
@@ -1276,6 +1278,20 @@ export function JourneyBattery() {
   }, []);
 
   useEffect(() => {
+    // Reduced motion: no pinning, no scrub, no header reveal. The section
+    // scrolls normally and every step renders in its completed state, so the
+    // content is fully available without any scroll-driven movement.
+    if (reduced) {
+      scrollProgressRef.current = 1;
+      lastStepRef.current = 4;
+      // Settling the scene into its finished state is the whole point of this
+      // branch — there is no scroll driver to do it for us.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveStep(4);
+      updatePanels(1);
+      return;
+    }
+
     const ctx = gsap.context(() => {
       const st = ScrollTrigger.create({
         trigger: batteryRef.current,
@@ -1311,7 +1327,7 @@ export function JourneyBattery() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [updatePanels]);
+  }, [updatePanels, reduced]);
 
   const getStepProgress = useCallback((i: number) => {
     const progress = scrollProgressRef.current;
@@ -1337,7 +1353,7 @@ export function JourneyBattery() {
           <div className="journey-header text-center mb-4 md:hidden">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20 mb-3">
               <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
-              <span className="text-sm font-semibold uppercase tracking-wider text-brand">
+              <span className="text-sm font-semibold uppercase tracking-wider text-brand-ink">
                 The Experience
               </span>
             </div>
@@ -1445,6 +1461,9 @@ export function JourneyBattery() {
                       return (
                         <button
                           key={i}
+                          type="button"
+                          aria-label={`Go to step ${i + 1}: ${journeySteps[i].title}`}
+                          aria-current={isActive ? "step" : undefined}
                           onClick={() => {
                             const carousel = mobileCarouselRef.current;
                             if (carousel) {
@@ -1548,7 +1567,7 @@ export function JourneyBattery() {
             <div className="text-center mb-20">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand/10 border border-brand/20 mb-4">
                 <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
-                <span className="text-sm font-semibold uppercase tracking-wider text-brand">
+                <span className="text-sm font-semibold uppercase tracking-wider text-brand-ink">
                   The Experience
                 </span>
               </div>
@@ -1697,7 +1716,7 @@ export function JourneyBattery() {
                       <div className="text-center px-1">
                         <p
                           data-title
-                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand text-sm lg:text-base"
+                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand-ink text-sm lg:text-base"
                           style={{
                             color: isCurrent ? "#FF7A00" : "#1e293b",
                             marginBottom: "2px",

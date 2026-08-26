@@ -22,7 +22,12 @@ export function Cursor() {
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!fine || reduce) return;
+    // Hiding the native cursor removes any OS pointer accommodation the user
+    // has configured. There's no media query for "large/high-contrast cursor",
+    // so we stand down on the closest available signals rather than override
+    // an accessibility setting we can't see.
+    const moreContrast = window.matchMedia("(prefers-contrast: more)").matches;
+    if (!fine || reduce || moreContrast) return;
     // Intentional one-time post-mount enable, gated on matchMedia
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEnabled(true);

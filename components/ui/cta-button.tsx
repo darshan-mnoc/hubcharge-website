@@ -16,17 +16,20 @@ const SIZE: Record<Size, string> = {
 
 /** Shape, motion and focus language shared by both variants. */
 const BASE =
-  "group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-lg font-semibold cursor-pointer transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
+  "group relative overflow-hidden inline-flex items-center justify-center gap-2 rounded-lg font-semibold cursor-pointer transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
+// Focus ring colour is per-variant so the indicator keeps >=3:1 against the
+// surface it actually sits on (WCAG 1.4.11). brand-ink on white is 5.3:1;
+// brand on navy is 6.7:1.
 const VARIANT: Record<Variant, string> = {
   primary:
-    "bg-brand text-white hover:bg-brand-hover hover:shadow-[0_10px_30px_-8px_rgba(255,122,0,0.55)]",
+    "bg-brand text-white hover:bg-brand-hover hover:shadow-[0_10px_30px_-8px_rgba(255,122,0,0.55)] focus-visible:ring-brand-ink focus-visible:ring-offset-white",
   // Ghost button for light sections.
   secondary:
-    "bg-transparent border border-gray-300 text-gray-700 hover:border-brand hover:text-brand",
+    "bg-transparent border border-gray-300 text-gray-700 hover:border-brand-ink hover:text-brand-ink focus-visible:ring-brand-ink focus-visible:ring-offset-white",
   // Same shape, tuned for the navy (bg-hero) bands.
   secondaryOnDark:
-    "bg-transparent border border-white/25 text-on-dark hover:border-brand hover:text-brand",
+    "bg-transparent border border-white/25 text-on-dark hover:border-brand hover:text-brand focus-visible:ring-brand focus-visible:ring-offset-hero",
 };
 
 interface CtaButtonProps {

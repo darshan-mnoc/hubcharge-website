@@ -152,13 +152,13 @@ export default async function StationPage({
 
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="mb-8 -mt-6">
-        <ol className="flex items-center gap-2 text-sm text-gray-400">
+        <ol className="flex items-center gap-2 text-sm text-gray-500">
           <li>
-            <Link href="/" className="hover:text-brand">Home</Link>
+            <Link href="/" className="hover:text-brand-ink">Home</Link>
           </li>
           <li aria-hidden>/</li>
           <li>
-            <Link href="/locations" className="hover:text-brand">Locations</Link>
+            <Link href="/locations" className="hover:text-brand-ink">Locations</Link>
           </li>
           <li aria-hidden>/</li>
           <li className="text-gray-600 font-medium" aria-current="page">
@@ -184,7 +184,7 @@ export default async function StationPage({
           <h2 className="text-h3 text-midnight-navy mb-4">{station.name}</h2>
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
             <div className="card-light p-4">
-              <p className="text-label-md text-gray-400 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-label-md text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Address
               </p>
               <p className="text-gray-700 text-sm">
@@ -194,20 +194,20 @@ export default async function StationPage({
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-label-md text-gray-400 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-label-md text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Hours
               </p>
               <p className="text-gray-700 text-sm flex items-center gap-2">
-                <Clock className="h-4 w-4 text-brand" /> Open daily,{" "}
+                <Clock className="h-4 w-4 text-brand-ink" /> Open daily,{" "}
                 {station.hours}
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-label-md text-gray-400 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-label-md text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Charging
               </p>
               <p className="text-gray-700 text-sm flex items-center gap-2">
-                <Zap className="h-4 w-4 text-brand" />
+                <Zap className="h-4 w-4 text-brand-ink" />
                 {station.chargers} DC fast charger
                 {station.chargers > 1 ? "s" : ""} · {station.power}
               </p>
@@ -216,21 +216,21 @@ export default async function StationPage({
                 Tesla, BMW, Ford, Rivian, Hyundai, Kia &amp; more.{" "}
                 <Link
                   href="/charging-101/can-my-ev-charge-here"
-                  className="text-brand underline"
+                  className="text-brand-ink underline"
                 >
                   Check your EV
                 </Link>
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-label-md text-gray-400 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-label-md text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Contact
               </p>
               <a
                 href={`tel:${station.phoneE164}`}
-                className="text-gray-700 text-sm flex items-center gap-2 hover:text-brand"
+                className="text-gray-700 text-sm flex items-center gap-2 hover:text-brand-ink"
               >
-                <Phone className="h-4 w-4 text-brand" /> {station.phone}
+                <Phone className="h-4 w-4 text-brand-ink" /> {station.phone}
               </a>
             </div>
           </div>
@@ -261,7 +261,7 @@ export default async function StationPage({
           </div>
 
           {station.note && (
-            <p className="text-sm text-brand font-medium mb-8">
+            <p className="text-sm text-brand-ink font-medium mb-8">
               {station.note}
             </p>
           )}
@@ -308,14 +308,14 @@ export default async function StationPage({
                   ] as const
                 ).map(([label, Icon, places]) => (
                   <div key={label}>
-                    <p className="flex items-center gap-2 text-gray-400 text-xs uppercase tracking-wider font-semibold mb-1.5">
-                      <Icon className="h-3.5 w-3.5 text-brand" /> {label}
+                    <p className="flex items-center gap-2 text-gray-500 text-xs uppercase tracking-wider font-semibold mb-1.5">
+                      <Icon className="h-3.5 w-3.5 text-brand-ink" /> {label}
                     </p>
                     <ul className="text-gray-600 space-y-1">
                       {places.map((pl) => (
                         <li key={pl.name} className="flex justify-between">
                           <span>{pl.name}</span>
-                          <span className="text-gray-400">{pl.walk} walk</span>
+                          <span className="text-gray-500">{pl.walk} walk</span>
                         </li>
                       ))}
                     </ul>
@@ -327,12 +327,12 @@ export default async function StationPage({
 
           <div className="card-light p-6">
             <p className="flex items-center gap-2 font-bold text-midnight-navy mb-2">
-              <Smartphone className="h-4 w-4 text-brand" /> No app needed
+              <Smartphone className="h-4 w-4 text-brand-ink" /> No app needed
             </p>
             <p className="text-gray-500 text-sm">
               Tap your phone or scan the code at the charger — HubCharge runs
               right in your browser.{" "}
-              <Link href="/faq" className="text-brand underline">
+              <Link href="/faq" className="text-brand-ink underline">
                 See how it works
               </Link>
             </p>
@@ -340,7 +340,7 @@ export default async function StationPage({
         </div>
       </div>
 
-      <p className="text-xs text-gray-400 max-w-2xl">
+      <p className="text-xs text-gray-500 max-w-2xl">
         *Attendant availability varies by location and time. Actual charging
         speed and added range vary by vehicle, battery state of charge, and
         temperature.

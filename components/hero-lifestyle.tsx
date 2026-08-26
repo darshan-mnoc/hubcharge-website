@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { CtaButton } from "@/components/ui/cta-button";
@@ -27,6 +28,7 @@ const itemVariants = {
 };
 
 export function HeroLifestyle() {
+  const reduced = useReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -43,7 +45,10 @@ export function HeroLifestyle() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-hero"
     >
       {/* Background with parallax */}
-      <motion.div style={{ y }} className="absolute inset-0">
+      <motion.div
+        style={reduced ? undefined : { y }}
+        className="absolute inset-0"
+      >
         <Image
           src="/images/home.webp"
           alt="HubCharge premium EV charging station"
@@ -65,7 +70,7 @@ export function HeroLifestyle() {
 
       {/* Content */}
       <motion.div
-        style={{ opacity }}
+        style={reduced ? undefined : { opacity }}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -139,7 +144,7 @@ export function HeroLifestyle() {
               <p className="text-muted-dark text-sm">{stat.label}</p>
             </motion.div>
           ))}
-          <p className="w-full text-center text-[#475569] text-[11px] mt-1">
+          <p className="w-full text-center text-muted-dark text-[11px] mt-1">
             *Attendant service at select locations and hours. Charging speed and
             added range vary by vehicle, battery state of charge, and
             temperature.
@@ -154,11 +159,11 @@ export function HeroLifestyle() {
         transition={{ delay: 1.5 }}
         className="absolute bottom-2  -translate-x-1/2 flex flex-col items-center gap-3"
       >
-        <span className="text-[#475569] text-xs uppercase tracking-[0.2em]">
+        <span className="text-muted-dark text-xs uppercase tracking-[0.2em]">
           Scroll
         </span>
         <motion.div
-          animate={{ y: [0, 8, 0] }}
+          animate={reduced ? undefined : { y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
           <ChevronDown className="h-5 w-5 text-brand" />
