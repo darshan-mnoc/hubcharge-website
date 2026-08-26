@@ -1,17 +1,21 @@
+import dynamic from "next/dynamic";
+
 import { BatteryNav } from "@/components/battery-nav";
 import { HeroLifestyle } from "@/components/hero-lifestyle";
-// import { FleetBusiness } from "@/components/fleet-business";
 import { ProblemSection } from "@/components/problem-section";
-import { JourneyBattery } from "@/components/journey-battery";
 import { LifestyleDestinations } from "@/components/lifestyle-destinations";
 import { PricingExperience } from "@/components/pricing-experience";
-import { TimeClubMembership } from "@/components/time-club-membership";
 import { FindYourHub } from "@/components/find-your-hub";
 import { ChargerAccess } from "@/components/charger-access";
-import { AppDownload } from "@/components/app-download";
 import { ContactSection } from "@/components/contact-section";
 import { LifestyleFooter } from "@/components/lifestyle-footer";
 import { ChatPopup } from "@/components/chat-popup";
+
+// The journey scene is ~2,000 lines of SVG + GSAP — split it out of the main bundle.
+const JourneyBattery = dynamic(
+  () => import("@/components/journey-battery").then((m) => m.JourneyBattery),
+  { loading: () => <div className="min-h-[60vh]" aria-hidden /> },
+);
 
 export default function HomePage() {
   return (
@@ -34,20 +38,11 @@ export default function HomePage() {
       {/* 5. PRICING: "Design your stop" — number-free pricing experience */}
       <PricingExperience />
 
-      {/* For Business & Fleets (dark feature) — hidden for now */}
-      {/* <FleetBusiness /> */}
-
-      {/* 6. MEMBERSHIP: Get more value */}
-      {/* <TimeClubMembership /> */}
-
       {/* 7. LOCATIONS: Find your Hub */}
       <FindYourHub />
 
       {/* 7b. ACCESS: How to start a charge — browser, no app */}
       <ChargerAccess />
-
-      {/* 8. APP: Stay connected */}
-      {/* <AppDownload /> */}
 
       {/* 9. CONTACT: Get in touch */}
       <ContactSection />

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, ChevronDown, Zap } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { CtaButton } from "@/components/ui/cta-button";
 
@@ -45,7 +45,7 @@ export function HeroLifestyle() {
       {/* Background with parallax */}
       <motion.div style={{ y }} className="absolute inset-0">
         <Image
-          src="/images/home.png"
+          src="/images/home.webp"
           alt="HubCharge premium EV charging station"
           fill
           priority
@@ -72,19 +72,6 @@ export function HeroLifestyle() {
         className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-20"
       >
         {/* Badge */}
-        {/* <motion.div
-          variants={itemVariants}
-          className="inline-flex items-center gap-3 badge badge-primary mb-8"
-        >
-          <motion.div
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <Zap className="h-4 w-4 text-[#FF9433]" />
-          </motion.div>
-          <span className="text-sm font-medium">Full Service EV Charging</span>
-        </motion.div> */}
-
         {/* Main Headline */}
         <motion.h1
           variants={itemVariants}
@@ -101,10 +88,11 @@ export function HeroLifestyle() {
           variants={itemVariants}
           className="text-body-lg mb-12 max-w-2xl mx-auto"
         >
-          {/* Our attendant handles everything — plug in, charge, unplug. */}
+          <span className="text-[#8A9BB5]">
+            Our attendant plugs you in — you stay in your car.*
+          </span>{" "}
           <span className="text-[#f4f3f2] font-medium">
-            {" "}
-            {/* You never leave your car. */}
+            No app needed. It all runs in your browser.
           </span>
         </motion.p>
 
@@ -132,8 +120,8 @@ export function HeroLifestyle() {
         >
           {[
             { value: "160kW+", label: "DC Fast Chargers" },
-            { value: "10 min", label: "Adds up to 100+ Miles" },
-            // { value: "24/7", label: "Attendant Service" },
+            { value: "10 min", label: "Adds up to 100 miles*" },
+            { value: "NACS + CCS", label: "Tesla, BMW, Ford & all EVs" },
           ].map((stat, i) => (
             <motion.div
               key={i}
@@ -148,6 +136,11 @@ export function HeroLifestyle() {
               <p className="text-[#8A9BB5] text-sm">{stat.label}</p>
             </motion.div>
           ))}
+          <p className="w-full text-center text-[#475569] text-[11px] mt-1">
+            *Attendant service at select locations and hours. Charging speed and
+            added range vary by vehicle, battery state of charge, and
+            temperature.
+          </p>
         </motion.div>
       </motion.div>
 

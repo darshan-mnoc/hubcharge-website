@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, memo } from "react";
+import { useEffect, useId, useRef, useState, useCallback, memo } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 /**
@@ -30,8 +30,8 @@ function CarSVG({
   className?: string;
   style?: React.CSSProperties;
 }) {
-  // Use unique ID for gradients to avoid conflicts with multiple SVG instances
-  const id = useRef(Math.random().toString(36).substring(7)).current;
+  // Unique, SSR-stable ID for gradients (multiple SVG instances on the page)
+  const id = useId().replace(/[^a-zA-Z0-9-]/g, "");
 
   return (
     <svg viewBox="0 0 200 70" className={className} style={style}>
@@ -456,66 +456,6 @@ function ChargerSVG({
     </svg>
   );
 }
-
-// function CableSVG({
-//   className = "",
-//   style = {},
-//   active = false,
-// }: {
-//   className?: string;
-//   style?: React.CSSProperties;
-//   active?: boolean;
-// }) {
-//   return (
-//     <svg viewBox="0 0 70 25" className={className} style={style}>
-//       {/* Cable - curves from left (charger) down and right to car */}
-//       <path
-//         d="M2,4 Q15,22 35,18 Q55,14 68,10"
-//         stroke="#475569"
-//         strokeWidth="3"
-//         fill="none"
-//         strokeLinecap="round"
-//       />
-//       <path
-//         d="M2,4 Q15,22 35,18 Q55,14 68,10"
-//         stroke="#64748b"
-//         strokeWidth="1.5"
-//         fill="none"
-//         strokeLinecap="round"
-//       />
-
-//       {/* Energy flow */}
-//       {active && (
-//         <>
-//           <path
-//             d="M2,4 Q15,22 35,18 Q55,14 68,10"
-//             stroke="#4ade80"
-//             strokeWidth="2"
-//             fill="none"
-//             strokeLinecap="round"
-//             strokeDasharray="4 8"
-//             opacity="0.9"
-//           >
-//             <animate
-//               attributeName="stroke-dashoffset"
-//               from="0"
-//               to="-24"
-//               dur="0.5s"
-//               repeatCount="indefinite"
-//             />
-//           </path>
-//           <circle r="2" fill="#4ade80" opacity="0.9">
-//             <animateMotion
-//               dur="0.6s"
-//               repeatCount="indefinite"
-//               path="M2,4 Q15,22 35,18 Q55,14 68,10"
-//             />
-//           </circle>
-//         </>
-//       )}
-//     </svg>
-//   );
-// }
 
 function CableSVG({
   className = "",
@@ -1650,6 +1590,11 @@ export function JourneyBattery() {
                   ref={panelsRef}
                   className="grid grid-cols-5 h-[190px] lg:h-[210px]"
                 >
+                  {/* Deliberate render-time ref read: GSAP scrub drives
+                      scrollProgressRef per frame; React re-renders only on
+                      integer step changes. State here would re-render every
+                      scroll frame. */}
+                  {/* eslint-disable-next-line react-hooks/refs */}
                   {journeySteps.map((step, i) => {
                     const isActive = activeStep >= i;
                     const isCurrent = activeStep === i;
@@ -1697,6 +1642,7 @@ export function JourneyBattery() {
                   className="h-[3px] flex"
                   style={{ background: "rgba(0,0,0,0.04)" }}
                 >
+                  {/* eslint-disable-next-line react-hooks/refs -- same deliberate render-time ref read as above */}
                   {journeySteps.map((_, i) => (
                     <div key={i} className="flex-1 overflow-hidden">
                       <div
@@ -1718,36 +1664,6 @@ export function JourneyBattery() {
               </div>
 
               {/* Step labels */}
-              {/* <div ref={labelsRef} className="grid grid-cols-5 mt-5">
-                {journeySteps.map((step, i) => (
-                  <div
-                    key={step.id}
-                    className="flex flex-col items-center gap-1.5 transition-opacity duration-300"
-                    style={{ opacity: activeStep >= i ? 1 : 0.35 }}
-                  >
-                    <StepPill
-                      number={step.id}
-                      isActive={activeStep >= i}
-                      isCurrent={activeStep === i}
-                    />
-                    <div className="text-center">
-                      <p
-                        data-title
-                        className={`text-xs font-bold tracking-widest uppercase mb-0.5 transition-colors ${
-                          activeStep === i
-                            ? "text-brand"
-                            : "text-slate-700"
-                        }`}
-                      >
-                        {step.title}
-                      </p>
-                      <p className="text-[10px] text-slate-400 leading-snug">
-                        {step.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div> */}
               <div ref={labelsRef} className="grid grid-cols-5 mt-6">
                 {journeySteps.map((step, i) => {
                   const isActive = activeStep >= i;
@@ -1926,68 +1842,6 @@ export function JourneyBattery() {
         </div>
       </div>
 
-      {/* ---- MEMBERSHIP TEASER ---- */}
-      <div className="relative max-w-5xl mx-auto px-6 pb-16 lg:pb-20">
-        <div
-          className="relative rounded-2xl p-6 lg:p-8 overflow-hidden"
-          style={{
-            background:
-              "linear-gradient(135deg, #fff7ed 0%, #fef3c7 50%, #fff7ed 100%)",
-            boxShadow:
-              "0 0 0 1px rgba(251,146,60,0.15), 0 8px 32px -4px rgba(249,115,22,0.10)",
-          }}
-        >
-          {/* Decorative ring */}
-          <div
-            className="absolute -top-12 -right-12 w-48 h-48 rounded-full pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(251,146,60,0.12) 0%, transparent 70%)",
-            }}
-          />
-          <div
-            className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(251,191,36,0.10) 0%, transparent 70%)",
-            }}
-          />
-
-          <div className="relative flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div className="text-center lg:text-left">
-              <p
-                className="text-xs font-bold uppercase tracking-widest mb-2"
-                style={{ color: "#FF7A00" }}
-              >
-                Coming Back?
-              </p>
-              <h3 className="text-xl lg:text-2xl font-bold text-slate-900 mb-1.5 tracking-tight">
-                Are you a HubCharge® Member?
-              </h3>
-              <p className="text-slate-500 text-sm max-w-sm">
-                Members get free charging. Every $ you spend earns rewards.
-              </p>
-            </div>
-
-            <a href="#membership" className="btn btn-primary shrink-0">
-              Learn About Membership
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, easeOut } from "framer-motion";
 import {
   ArrowDown,
   Zap,
@@ -19,7 +19,7 @@ const solutionSteps = [
     title: "Arrive & Relax",
     desc: "Pull up to any available charger. Our team handles everything from there.",
     highlight: "No apps to download",
-    image: "/images/valet-greet-v2.png",
+    image: "/images/valet-greet-v2.webp",
     // charger sits at the far left of the frame
     pos: "18% 50%",
   },
@@ -33,7 +33,7 @@ const solutionSteps = [
     ),
     desc: "Payment, plug-in, monitoring — all taken care of. Stay in your car.",
     highlight: "Zero effort required",
-    image: "/images/charging-service-v2.png",
+    image: "/images/charging-service-v2.webp",
     pos: "45% 50%",
   },
   {
@@ -46,7 +46,7 @@ const solutionSteps = [
     ),
     desc: "Order food, coffee, or essentials. Delivered right to your window.",
     highlight: "Time well spent",
-    image: "/images/coffee-delivery-v3.png",
+    image: "/images/coffee-delivery-v3.webp",
     // charger sits on the left of the frame
     pos: "24% 50%",
   },
@@ -57,7 +57,6 @@ const containerVariants = {
   visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
 };
 
-import { easeOut } from "framer-motion";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -100,7 +99,7 @@ export function ProblemSection() {
             variants={itemVariants}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-[1.15]"
           >
-            Is "fast charging" really fast?
+            Is &ldquo;fast charging&rdquo; really fast?
             <br />
             <span className="text-gradient text-glow">
               What if 10-30 minutes was enough?
@@ -111,7 +110,7 @@ export function ProblemSection() {
             variants={itemVariants}
             className="text-lg text-gray-600 max-w-2xl mx-auto"
           >
-            Chargers advertise big numbers your car can't actually use.{" "}
+            Chargers advertise big numbers your car can&apos;t actually use.{" "}
             <span className="text-gray-800">
               We advertise what we deliver — and deliver what you need.
             </span>
@@ -123,45 +122,8 @@ export function ProblemSection() {
             className="mt-10 max-w-2xl mx-auto"
           >
             <div className="grid grid-cols-2 gap-4">
-              {/* Others */}
-              {/* <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
-                <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">
-                  Other Networks
-                </p>
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-gray-400 text-sm line-through">
-                    250-350 kW
-                  </span>
-                  <span className="text-gray-500 text-xs">advertised</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-gray-800 text-lg font-semibold">
-                    150-200 kW
-                  </span>
-                  <span className="text-gray-500 text-xs">actual</span>
-                </div>
-              </div> */}
 
-              {/* HubCharge */}
-              {/* <div className="p-4 rounded-xl bg-[#FF7A00]/10 border border-[#FF7A00]/20">
-                <p className="text-[#FF7A00] text-xs uppercase tracking-wider mb-2">
-                  HubCharge
-                </p>
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-gray-600 text-sm">180 kW+</span>
-                  <span className="text-gray-500 text-xs">advertised</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-[#FF7A00] text-lg font-semibold">
-                    125-180 kW
-                  </span>
-                  <span className="text-gray-500 text-xs">actual</span>
-                </div>
-              </div> */}
             </div>
-            {/* <p className="text-center text-gray-400 text-sm mt-4">
-              What we advertise is what your car actually gets.
-            </p> */}
           </motion.div>
         </motion.div>
 
@@ -183,7 +145,7 @@ export function ProblemSection() {
               className="group relative min-h-[460px] lg:min-h-[560px] rounded-3xl overflow-hidden border border-white/10"
             >
               <Image
-                src="/images/waiting-v3.png"
+                src="/images/waiting-v3.webp"
                 alt="Traditional EV charging - waiting outside"
                 fill
                 className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.04]"
@@ -248,7 +210,7 @@ export function ProblemSection() {
               className="group relative min-h-[460px] lg:min-h-[560px] rounded-3xl overflow-hidden border border-[#FF7A00]/25"
             >
               <Image
-                src="/images/valet-greet-v2.png"
+                src="/images/valet-greet-v2.webp"
                 alt="HubCharge full-service EV charging"
                 fill
                 className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.04]"
@@ -267,7 +229,7 @@ export function ProblemSection() {
               <div className="relative flex h-full min-h-[460px] lg:min-h-[560px] flex-col justify-between p-6 lg:p-7">
                 <div>
                   <span className="px-4 py-2 rounded-full text-sm font-semibold bg-[#FF7A00]/25 text-[#FF7A00] backdrop-blur-md border border-[#FF7A00]/40">
-                    HubCharge®
+                    HubCharge™
                   </span>
                 </div>
 
@@ -340,7 +302,7 @@ export function ProblemSection() {
           className="flex flex-col items-center gap-3 mb-16"
         >
           <p className="text-gray-500 text-sm uppercase tracking-widest">
-            There's a better way
+            There&apos;s a better way
           </p>
           <motion.div
             animate={{
@@ -362,7 +324,7 @@ export function ProblemSection() {
       <div className="relative overflow-hidden bg-hero">
         <div className="absolute inset-0">
           <Image
-            src="/images/charging-service-v2.png"
+            src="/images/charging-service-v2.webp"
             alt=""
             aria-hidden
             fill
@@ -388,7 +350,7 @@ export function ProblemSection() {
             <div className="inline-flex items-center gap-2 badge badge-primary mb-6">
               <Zap className="h-4 w-4" />
               <span className="text-sm font-semibold uppercase tracking-wider">
-                The HubCharge® Difference
+                The HubCharge™ Difference
               </span>
             </div>
 
