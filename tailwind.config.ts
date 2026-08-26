@@ -13,6 +13,9 @@ const config: Config = {
       fontFamily: {
         // Design system: single typeface (Plus Jakarta Sans via next/font → --font-jakarta)
         sans: ['var(--font-jakarta)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Display face. Used ONLY at >=20px and never above weight 500 —
+        // a bold serif at 60px reads "clearance sale", 400 reads "editorial".
+        serif: ['var(--font-fraunces)', 'ui-serif', 'Georgia', 'serif'],
       },
       colors: {
         // ── Design system tokens (brand-agnostic) ─────────────────────
@@ -35,6 +38,28 @@ const config: Config = {
           100: '#f1f5f9', 50: '#f8fafc',
         },
         error: '#ffb4ab',
+
+        // ── Navy ladder — structure and hierarchy. Carries ~90% of the
+        //    non-photo surface so orange doesn't have to.
+        //    ink.500 on white = 6.46:1 (better than the gray-500 it replaces).
+        //    ink.300/400 are rules and decoration only, never body text.
+        ink: {
+          900: '#0A192F', 800: '#10233D', 700: '#1B3252', 600: '#2C4468',
+          500: '#48607F', 400: '#7B8CA3', 300: '#B4BFCC', 200: '#DCE2E9',
+          100: '#EDF0F4',
+        },
+
+        // ── Warm paper ground. Warmer than pure white — this is what stops
+        //    the generic-SaaS read and signals hospitality.
+        paper: {
+          DEFAULT: '#FBFAF8', 100: '#F7F6F4', 200: '#EFEDE8',
+          300: '#E4E0D8', 400: '#CFC8BB',
+        },
+
+        // ── One quiet tertiary (hotel-hardware warmth). Budget: <=2 per page,
+        //    for the rule under a section eyebrow and divider hairlines.
+        //    brass.ink is the text-safe shade (6.14:1 on white).
+        brass: { DEFAULT: '#A8875C', ink: '#7A5C33' },
       },
       // Soft shape language — 4px base, 8px max on cards. rounded-full is kept
       // for pills/chips, and arbitrary values (e.g. the phone mockup's
@@ -49,7 +74,12 @@ const config: Config = {
         card: '0 1px 3px rgba(10,25,47,0.06), 0 4px 16px rgba(10,25,47,0.05)',
         'card-hover': '0 4px 24px rgba(10,25,47,0.10), 0 1px 4px rgba(10,25,47,0.06)',
       },
-      maxWidth: { content: '1280px' },
+      maxWidth: {
+        content: '1280px',
+        headline: '18ch', // headlines must be measure-constrained or they rag
+        measure: '62ch',
+        prose: '68ch',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

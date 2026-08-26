@@ -359,7 +359,7 @@ export function ProblemSection() {
               </span>
             </div>
 
-            <h2 className="heading-section text-on-dark mb-6 leading-tight">
+            <h2 className="text-h2 text-white mb-6 max-w-headline">
               10 minutes. Up to 100 miles.
               <br />
               <span className="text-gradient text-glow">

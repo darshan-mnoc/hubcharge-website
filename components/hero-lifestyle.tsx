@@ -80,7 +80,7 @@ export function HeroLifestyle() {
         {/* Main Headline */}
         <motion.h1
           variants={itemVariants}
-          className="heading-display text-[#f4f3f2] mb-4"
+          className="text-display text-white mb-5 max-w-headline"
         >
           Full Service EV Charging
           {/* Drive In. Charge Up. Get Your Time Back. */}

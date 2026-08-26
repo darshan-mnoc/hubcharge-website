@@ -76,10 +76,12 @@
     font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   }
 
-  /* Design-system heading defaults (dark navy on light) */
+  /* Design-system heading defaults (dark navy on light).
+     Weight and line-height deliberately inherit — the type scale utilities
+     own them. Hardcoding 700 here silently overrode the serif display face. */
   h1, h2, h3, h4 {
-    font-weight: 700;
-    line-height: 1.1;
+    font-weight: inherit;
+    line-height: inherit;
     color: #0a192f;
   }
 
@@ -182,33 +184,6 @@
 
   .section-container {
     @apply max-w-content mx-auto px-6;
-  }
-
-  /* Typography — DEPRECATED ALIASES.
-     The canonical scale is §3 below (.text-display / .text-h1 / .text-h2 /
-     .text-h3). These three names predate it and are kept only so existing
-     homepage markup keeps rendering; they now resolve to the same values as
-     the canonical scale so there is exactly one answer to "what size is an
-     H2 on this site". Prefer the .text-* names in new work. */
-  .heading-display {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    line-height: 1.125;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  .heading-section {
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.166;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-
-  .heading-card {
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
-    line-height: 1.333;
-    font-weight: 600;
-    letter-spacing: -0.005em;
   }
 
   /* Light-section surfaces (for white/warm sections in the 50/50 rhythm) */
@@ -479,13 +454,6 @@
     @apply px-4;
   }
 
-  .heading-display {
-    font-size: clamp(2rem, 8vw, 3rem);
-  }
-
-  .heading-section {
-    font-size: clamp(1.5rem, 6vw, 2.5rem);
-  }
 }
 
 /* Prevent horizontal overflow */
@@ -520,17 +488,79 @@ body {
     transform: translateY(0);
   }
 
-  /* §3 Typography scale — fluid via clamp() */
-  .text-display { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.125; font-weight: 700; letter-spacing: -0.02em; }
-  .text-h1      { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.166; font-weight: 700; letter-spacing: -0.01em; }
-  .text-h2      { font-size: clamp(1.75rem, 3vw, 2rem); line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; }
-  .text-h3      { font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.333; font-weight: 600; letter-spacing: -0.005em; }
-  /* Colour-neutral by design: set by context (body default on light sections,
-     text-on-dark / text-muted-dark on navy sections). */
-  .text-body-lg { font-size: 1.125rem; line-height: 1.555; font-weight: 400; }
-  .text-body    { font-size: 1rem; line-height: 1.5; font-weight: 400; }
-  .text-label-md { font-size: 0.875rem; line-height: 1.428; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-  .text-caption { font-size: 0.75rem; line-height: 1.333; font-weight: 500; }
+  /* ── §3 Type scale ────────────────────────────────────────────────
+     Serif (Fraunces) owns display sizes; sans (Jakarta) owns structure and
+     body. Hard rule: serif never below 20px, never above weight 500. */
+
+  /* Serif display */
+  .text-display {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 120, "SOFT" 0, "WONK" 0;
+    font-size: clamp(3rem, 6.2vw, 5.25rem);
+    font-weight: 400; line-height: 1.04; letter-spacing: -0.021em;
+    text-wrap: balance;
+  }
+  .text-h1 {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 72, "SOFT" 0, "WONK" 0;
+    font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+    font-weight: 400; line-height: 1.08; letter-spacing: -0.016em;
+    text-wrap: balance;
+  }
+  .text-h2 {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 48, "SOFT" 0, "WONK" 0;
+    font-size: clamp(2rem, 3.4vw, 2.875rem);
+    font-weight: 400; line-height: 1.12; letter-spacing: -0.013em;
+    text-wrap: balance;
+  }
+
+  /* Sans structure */
+  .text-h3 {
+    font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(1.25rem, 1.6vw, 1.375rem);
+    font-weight: 600; line-height: 1.3; letter-spacing: -0.011em;
+  }
+  .text-h4 {
+    font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.0625rem; font-weight: 600; line-height: 1.4;
+    letter-spacing: -0.006em;
+  }
+
+  /* Body — colour-neutral by design; context sets it (ink on light,
+     on-dark / muted-dark on navy). */
+  .text-body-lg { font-size: clamp(1.0625rem, 1.05vw, 1.1875rem); font-weight: 400; line-height: 1.6; text-wrap: pretty; }
+  .text-body    { font-size: 1rem; font-weight: 400; line-height: 1.65; text-wrap: pretty; }
+  .text-body-sm { font-size: 0.9375rem; font-weight: 400; line-height: 1.6; }
+
+  /* Micro. The old .text-label-md was 14px and competed with H2s. */
+  .text-overline {
+    font-size: 0.6875rem; font-weight: 600; line-height: 1.3;
+    letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .text-caption { font-size: 0.8125rem; font-weight: 500; line-height: 1.45; }
+
+  /* Specials */
+  .text-stat {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 72, "SOFT" 0, "WONK" 0;
+    font-size: clamp(2.5rem, 3.8vw, 3.5rem);
+    font-weight: 400; line-height: 1; letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .text-index {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 24, "SOFT" 0, "WONK" 0;
+    font-size: 1.25rem; font-weight: 400; line-height: 1;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .text-quote {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 40, "SOFT" 0, "WONK" 0;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 400; font-style: italic; line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
 
   /* §4 Section spacing */
   .py-section    { padding-top: 80px; padding-bottom: 80px; }

@@ -155,7 +155,7 @@ export function FindYourHub() {
               Locations
             </span>
           </div>
-          <h2 className="heading-section text-gray-900 mb-4">
+          <h2 className="text-h2 text-ink-900 mb-4 max-w-headline">
             Find your nearest
             <br />
             <span className="text-gradient text-glow">HubCharge station</span>

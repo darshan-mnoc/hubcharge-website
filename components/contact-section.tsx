@@ -80,7 +80,7 @@ export function ContactSection() {
             </span>
           </div>
 
-          <h2 className="heading-section text-[#f4f3f2] mb-4">
+          <h2 className="text-h2 text-white mb-4 max-w-headline">
             Questions?{" "}
             <span className="text-gradient text-glow">We&apos;re here.</span>
           </h2>

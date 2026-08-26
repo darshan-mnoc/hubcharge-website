@@ -109,7 +109,7 @@ export function LifestyleDestinations() {
             </span>
           </div>
 
-          <h2 className="heading-section text-[#f4f3f2] mb-6">
+          <h2 className="text-h2 text-white mb-6 max-w-headline">
             Charge your car, and
             <br />
             <span className="text-gradient text-glow">get things done.</span>

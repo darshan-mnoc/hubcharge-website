@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -9,11 +9,22 @@ import { SmoothScroll } from "@/components/smooth-scroll";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Cursor } from "@/components/cursor";
 
-// Design system typeface — exposed as var(--font-jakarta) (referenced by fontFamily.sans)
+// Body / UI typeface — var(--font-jakarta), referenced by fontFamily.sans.
+// 800 dropped: nothing in the new scale is that heavy.
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-jakarta",
+  display: "swap",
+});
+
+// Display typeface — var(--font-fraunces), referenced by fontFamily.serif.
+// Variable font: pass `axes` only. Passing `weight` alongside it is a build error.
+// The optical-size axis is why this holds at both 84px display and 20px numerals.
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  axes: ["SOFT", "WONK", "opsz"],
+  variable: "--font-fraunces",
   display: "swap",
 });
 
@@ -130,7 +141,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={jakarta.variable}>
+    <html lang="en" className={`${jakarta.variable} ${fraunces.variable}`}>
       <head>
         <meta name="geo.region" content="US-CA" />
         <meta name="geo.placename" content="California" />
