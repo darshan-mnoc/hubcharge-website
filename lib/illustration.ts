@@ -67,6 +67,20 @@ export const ILLO = {
   liveGlow: "#FFB068",
   /** Hardware at rest — deliberately quiet, so `live` is the event. */
   idle: "#3A4A63",
+
+  /* ── The charger.
+     Its body used to be #16233D against a #0A192F stage — barely three
+     percent apart in luminance, so the whole unit dissolved into the
+     background and read as a dark smudge with a stripe on it. These sit in
+     the same value range as the car, which is the thing it has to stand
+     beside. */
+  unitTop: "#42566F",
+  unitMid: "#2C3E57",
+  unitLow: "#1B2739",
+  /** The screen well — darker than the body so the glass reads as inset. */
+  glass: "#0B1524",
+  /** Brushed edge catching the canopy light. */
+  edge: "#5E738D",
 } as const;
 
 /** Cable casing, outer to inner. Identical in every scene that draws one. */

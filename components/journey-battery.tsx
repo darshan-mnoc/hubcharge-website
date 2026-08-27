@@ -293,18 +293,28 @@ function ValetSVG({
 /**
  * The charging pedestal.
  *
- * The status light used to be `active ? green : orange` — orange when idle,
- * green when charging — and because each scene passed `active` differently,
- * the light read orange, orange, green, green, orange across the five steps.
- * A reader can only conclude the colour means nothing.
+ * Two rewrites got this wrong before landing here.
  *
- * Now there is one rule: dim when nothing is happening, brand orange when
- * power is moving. Same rule on the LED, the screen, the holster and the
- * cable. Learn it once, and every panel is readable at a glance.
+ * The first was colour semantics: the status light was `active ? green :
+ * orange`, and because every scene passed `active` differently it read
+ * orange, orange, green, green, orange across five steps — a code a reader
+ * can only conclude means nothing. One rule now: dim at rest, brand orange
+ * when power moves.
  *
- * `done` is the finished state — hardware at rest with the session complete,
- * which is what step 05 needs and previously faked by fading the whole thing
- * to 50% opacity.
+ * The second was that the unit had no presence. Its body was #16233D on a
+ * #0A192F stage — 1.12:1, barely distinguishable — so a carefully drawn
+ * screen, LED strip and holster all dissolved into the background and the
+ * whole thing read as a dark stick with a stripe. The body now sits in the
+ * car's value range (1.6-2.3:1), which is the object it has to stand beside.
+ *
+ * The form follows current DC hardware rather than a 2015 pedestal: a broad
+ * monolith with a soft crown, a screen that dominates the upper face, a light
+ * blade under it, and a cable holster recessed into the body. At 36px wide
+ * only four things survive — silhouette, screen, blade, holster — so those
+ * are the only things drawn with any weight.
+ *
+ * The screen is stateful, which is the "smart" part: a battery at rest, a
+ * filling arc while charging, a check when the session completes.
  */
 function ChargerSVG({
   className = "",
@@ -317,76 +327,123 @@ function ChargerSVG({
   active?: boolean;
   done?: boolean;
 }) {
+  const id = useId();
   const lit = active || done;
   return (
-    <svg viewBox="0 0 40 80" className={className} style={style}>
-      <ellipse cx="20" cy="78" rx="12" ry="2.2" fill={ILLO.shadow} opacity="0.3" />
+    <svg viewBox="0 0 48 88" className={className} style={style}>
+      <defs>
+        <linearGradient id={`unit-${id}`} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={ILLO.unitTop} />
+          <stop offset="42%" stopColor={ILLO.unitMid} />
+          <stop offset="100%" stopColor={ILLO.unitLow} />
+        </linearGradient>
+        <linearGradient id={`screen-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#16233B" />
+          <stop offset="100%" stopColor={ILLO.glass} />
+        </linearGradient>
+        <radialGradient id={`bloom-${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={ILLO.live} stopOpacity="0.5" />
+          <stop offset="100%" stopColor={ILLO.live} stopOpacity="0" />
+        </radialGradient>
+      </defs>
 
-      {/* base plinth */}
-      <rect x="6.5" y="64" width="27" height="13" rx="4" fill={ILLO.shadow} />
-      <rect x="6.5" y="64" width="27" height="3" rx="1.5" fill={ILLO.bodyLight} opacity="0.5" />
+      {/* ground contact */}
+      <ellipse cx="24" cy="85.5" rx="16" ry="2.6" fill={ILLO.shadow} opacity="0.38" />
 
-      {/* main body */}
-      <rect x="9.5" y="6" width="21" height="62" rx="7" fill={ILLO.bodyDark} />
-      <rect x="9.5" y="6" width="21" height="62" rx="7" fill="none" stroke={ILLO.shadow} strokeWidth="0.6" />
-      <rect x="11" y="9" width="2.6" height="55" rx="1.3" fill={ILLO.bodyLight} opacity="0.5" />
-      <rect x="27" y="9" width="2.6" height="55" rx="1.3" fill={ILLO.shadow} opacity="0.6" />
+      {/* plinth — wider than the body, so the unit sits rather than floats */}
+      <path d="M7,74 H41 A3,3 0 0 1 41,84 H7 A3,3 0 0 1 7,74 Z" fill={ILLO.unitLow} />
+      <rect x="7" y="74" width="34" height="2.4" rx="1.2" fill={ILLO.edge} opacity="0.35" />
 
-      {/* front face panel */}
-      <rect x="12.5" y="10" width="15" height="45" rx="5" fill={ILLO.recess} />
-
-      {/* screen */}
-      <rect x="14" y="13.5" width="12" height="15" rx="2.5" fill={ILLO.shadow} stroke={ILLO.body} strokeWidth="0.5" />
-      <rect
-        x="15.8" y="16" width="8" height="4.6" rx="1"
-        fill="none" stroke={lit ? ILLO.live : ILLO.idle} strokeWidth="0.8"
+      {/* body — a broad monolith with a soft crown */}
+      <path
+        d="M11,13 Q11,4 24,4 Q37,4 37,13 L37,75 H11 Z"
+        fill={`url(#unit-${id})`}
       />
-      <rect x="24" y="17.3" width="1" height="2" rx="0.5" fill={lit ? ILLO.live : ILLO.idle} />
+      {/* A brushed edge, traced on the silhouette itself. Drawn as a separate
+          arc it floated clear of the crown and read as a hook hanging off the
+          unit. */}
+      <path
+        d="M11,13 Q11,4 24,4 Q37,4 37,13 L37,75 H11 Z"
+        fill="none"
+        stroke={ILLO.edge}
+        strokeWidth="0.9"
+        strokeOpacity="0.4"
+        strokeLinejoin="round"
+      />
+      <rect x="12.4" y="14" width="1.4" height="60" rx="0.7" fill={ILLO.edge} opacity="0.28" />
+      <rect x="34.4" y="14" width="1.6" height="60" rx="0.8" fill={ILLO.shadow} opacity="0.45" />
+
+      {/* screen — the dominant face, inset behind glass */}
+      <rect x="14" y="11" width="20" height="26" rx="3.4" fill={ILLO.shadow} />
+      <rect x="14.9" y="11.9" width="18.2" height="24.2" rx="2.9" fill={`url(#screen-${id})`} />
+
+      {lit && (
+        <ellipse cx="24" cy="24" rx="13" ry="15" fill={`url(#bloom-${id})`} opacity={done ? 0.5 : 0.75} />
+      )}
+
+      {done ? (
+        /* session complete */
+        <path
+          d="M19.5,24.2 L22.7,27.6 L28.6,20.6"
+          fill="none"
+          stroke={ILLO.live}
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : active ? (
+        /* filling arc — reads as progress even at 36px */
+        <>
+          <circle cx="24" cy="24" r="7.6" fill="none" stroke={ILLO.idle} strokeWidth="2.2" opacity="0.55" />
+          <circle
+            cx="24" cy="24" r="7.6" fill="none"
+            stroke={ILLO.live} strokeWidth="2.2" strokeLinecap="round"
+            strokeDasharray="47.8" strokeDashoffset="34"
+            transform="rotate(-90 24 24)"
+          >
+            <animate attributeName="stroke-dashoffset" values="40;6;40" dur="3s" repeatCount="indefinite" />
+          </circle>
+          <path d="M24,19.6 L21.4,24.4 L24,24.4 L23.2,28.4 L26.4,23.4 L23.9,23.4 Z" fill={ILLO.liveGlow} />
+        </>
+      ) : (
+        /* at rest — a battery, waiting */
+        <>
+          <rect x="18.4" y="20.6" width="10.4" height="6.4" rx="1.5" fill="none" stroke={ILLO.idle} strokeWidth="1.5" />
+          <rect x="29.4" y="22.4" width="1.5" height="2.8" rx="0.7" fill={ILLO.idle} />
+          <rect x="20" y="22.2" width="3.2" height="3.2" rx="0.6" fill={ILLO.idle} opacity="0.8" />
+        </>
+      )}
+
+      {/* light blade — the single strongest "is it alive" cue */}
+      <rect x="15" y="41" width="18" height="3" rx="1.5" fill={ILLO.shadow} />
       <rect
-        x="16.5" y="16.7" width={done ? "6.6" : active ? "6.6" : "2"} height="3.2" rx="0.5"
+        x="15.7" y="41.6" width="16.6" height="1.8" rx="0.9"
         fill={lit ? ILLO.live : ILLO.idle}
+        opacity={lit ? 1 : 0.5}
       >
         {active && !done && (
-          <animate attributeName="width" values="1.5;6.6;1.5" dur="2.6s" repeatCount="indefinite" />
-        )}
-      </rect>
-      <rect
-        x="15.8" y="22.4" width={lit ? "8" : "5"} height="1.5" rx="0.75"
-        fill={lit ? ILLO.liveGlow : ILLO.idle} opacity={lit ? 0.9 : 0.5}
-      >
-        {active && !done && (
-          <animate attributeName="width" values="2;8;2" dur="2.6s" repeatCount="indefinite" />
-        )}
-      </rect>
-      <rect x="15.8" y="25" width="5.5" height="1.2" rx="0.6" fill={ILLO.idle} opacity="0.5" />
-
-      {/* status LED — dim at rest, orange when power moves. No second accent. */}
-      <rect x="18.4" y="33" width="3.2" height="13" rx="1.6" fill={ILLO.shadow} />
-      <rect
-        x="18.8" y="33.4" width="2.4" height="12.2" rx="1.2"
-        fill={lit ? ILLO.live : ILLO.idle}
-      >
-        {active && !done && (
-          <animate attributeName="opacity" values="0.55;1;0.55" dur="1s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite" />
         )}
       </rect>
 
-      {/* brand wordmark */}
-      <rect x="14.5" y="49.5" width="11" height="2" rx="1" fill={ILLO.live} opacity="0.85" />
-      <rect x="14.5" y="52.4" width="7" height="1.2" rx="0.6" fill={ILLO.live} opacity="0.35" />
+      {/* wordmark */}
+      <rect x="16.5" y="48" width="15" height="2" rx="1" fill={ILLO.edge} opacity="0.5" />
+      <rect x="16.5" y="51.4" width="9" height="1.4" rx="0.7" fill={ILLO.edge} opacity="0.25" />
 
-      {/* connector holster */}
-      <circle cx="20" cy="60" r="5.6" fill={ILLO.shadow} />
-      <circle cx="20" cy="60" r="3.7" fill={lit ? ILLO.liveDim : ILLO.idle}>
+      {/* cable holster, recessed into the body */}
+      <circle cx="24" cy="63" r="7.4" fill={ILLO.shadow} />
+      <circle cx="24" cy="63" r="5.6" fill={ILLO.glass} />
+      <circle cx="24" cy="63" r="3.4" fill={lit ? ILLO.liveDim : ILLO.idle}>
         {active && !done && (
-          <animate attributeName="fill" values={`${ILLO.liveDim};${ILLO.live};${ILLO.liveDim}`} dur="1.1s" repeatCount="indefinite" />
+          <animate
+            attributeName="fill"
+            values={`${ILLO.liveDim};${ILLO.live};${ILLO.liveDim}`}
+            dur="1.8s"
+            repeatCount="indefinite"
+          />
         )}
       </circle>
-      <circle cx="20" cy="60" r="1.6" fill={lit ? ILLO.liveGlow : ILLO.seam} />
-
-      {/* top cap */}
-      <rect x="11.5" y="4.5" width="17" height="5" rx="2.5" fill={ILLO.recess} />
-      <rect x="14" y="3" width="12" height="3.6" rx="1.8" fill={ILLO.body} />
+      <circle cx="24" cy="63" r="1.4" fill={lit ? ILLO.liveGlow : ILLO.seam} />
     </svg>
   );
 }
@@ -562,7 +619,7 @@ function Scene1({
 
       {/* Charger */}
       <div className={chargerPosition} style={{ opacity: isActive ? 1 : 0.3 }}>
-        <ChargerSVG className="w-7 h-14" active={progress > 0.7} />
+        <ChargerSVG className="w-9 h-[4.15rem]" active={progress > 0.7} />
       </div>
 
       {/* Car */}
@@ -625,7 +682,7 @@ function Scene2({
         className="absolute left-2 bottom-6"
         style={{ opacity: isActive ? 1 : 0.3 }}
       >
-        <ChargerSVG className="w-7 h-14" active={false} />
+        <ChargerSVG className="w-9 h-[4.15rem]" active={false} />
       </div>
 
       {/* Attendant with terminal */}
@@ -717,7 +774,7 @@ function Scene3({
         className="absolute left-2 bottom-6"
         style={{ opacity: isActive ? 1 : 0.3 }}
       >
-        <ChargerSVG className="w-7 h-14" active={progress > 0.15} />
+        <ChargerSVG className="w-9 h-[4.15rem]" active={progress > 0.15} />
       </div>
 
       {/* Attendant walking with cable */}
@@ -818,7 +875,7 @@ function Scene4({
         className="absolute left-2 bottom-6"
         style={{ opacity: isActive ? 1 : 0.3 }}
       >
-        <ChargerSVG className="w-7 h-14" active={isActive} />
+        <ChargerSVG className="w-9 h-[4.15rem]" active={isActive} />
       </div>
 
       {/* Cable stays connected */}
@@ -878,7 +935,7 @@ function Scene5({
 
       {/* Charger — done, not dimmed */}
       <div className="absolute left-2 bottom-6">
-        <ChargerSVG className="w-7 h-14" done={isActive} />
+        <ChargerSVG className="w-9 h-[4.15rem]" done={isActive} />
       </div>
 
       {/* Cable back on the hook */}
@@ -1199,7 +1256,7 @@ export function JourneyBattery() {
                     className="flex-shrink-0 w-[85vw] snap-center rounded-lg overflow-hidden border border-white/10 bg-ink-800"
                   >
                     {/* Scene visualization */}
-                    <div className="relative h-[170px] overflow-hidden">
+                    <div className="relative h-[186px] overflow-hidden">
                       {/* Scene container with padding to shift content right */}
                       <div className="absolute inset-0 pl-8">
                         <Scene progress={1} isActive={true} isMobile={true} />
@@ -1384,7 +1441,7 @@ export function JourneyBattery() {
                 {/* Scene panels */}
                 <div
                   ref={panelsRef}
-                  className="grid grid-cols-5 h-[190px] lg:h-[210px]"
+                  className="grid grid-cols-5 h-[204px] lg:h-[224px]"
                 >
                   {/* Deliberate render-time ref read: GSAP scrub drives
                       scrollProgressRef per frame; React re-renders only on
