@@ -115,17 +115,21 @@ export function HeroLifestyle() {
         // page, including the nav above it and the spec bar below.
         className="relative z-10 w-full section-container pt-40 pb-12 lg:pb-16"
       >
-        {/* Descriptor as an eyebrow rather than half a two-tone headline.
-            Split across one line the muted clause was the longer of the two,
-            so the headline read as a grey block with a bright phrase in it —
-            the emphasis inverted. This also matches PageShell, which every
-            sub-page already uses: eyebrow, heading, intro. */}
-        <motion.p variants={item} className="text-overline text-on-dark/65 mb-5">
-          Full-service EV charging
-        </motion.p>
+        {/* Both halves at display size, separated by colour rather than
+            scale. Brass is the system's one warm tertiary — 5.3:1 on this
+            navy, so it carries a headline comfortably — and warm gold against
+            navy is the hospitality read the brand is after. Orange was the
+            other candidate and would have been louder than the payoff line it
+            is meant to set up; the palette note is explicit that ink carries
+            the surface so orange doesn't have to.
 
-        <motion.h1 variants={item} className="text-display text-white max-w-[11ch]">
-          Reclaim your time.
+            Descriptor first, payoff second: the bright line lands last. */}
+        <motion.h1
+          variants={item}
+          className="text-display max-w-[14ch] text-balance"
+        >
+          <span className="text-brass">Full-service EV charging.</span>{" "}
+          <span className="text-white">Reclaim your time.</span>
         </motion.h1>
 
         <motion.p

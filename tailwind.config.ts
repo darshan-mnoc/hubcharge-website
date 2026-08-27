@@ -60,9 +60,13 @@ const config: Config = {
           300: '#E4E0D8', 400: '#CFC8BB',
         },
 
-        // ── One quiet tertiary (hotel-hardware warmth). Budget: <=2 per page,
-        //    for the rule under a section eyebrow and divider hairlines.
-        //    brass.ink is the text-safe shade (6.14:1 on white).
+        // ── One quiet tertiary (hotel-hardware warmth).
+        //    Budget: <=2 ornamental moments per page — a rule under a section
+        //    eyebrow, a divider hairline, or (as in the hero) one line of
+        //    display type. Footnote asterisks don't count against it; they're
+        //    disclosure markers, not decoration.
+        //    #A8875C is 5.27:1 on ink-900, so it carries a headline on the
+        //    dark bands. brass.ink is the text-safe shade on white (6.14:1).
         brass: { DEFAULT: '#A8875C', ink: '#7A5C33' },
 
         // ── One success green, two shades. Previously "available / open /

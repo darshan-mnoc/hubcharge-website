@@ -149,7 +149,7 @@ export function LifestyleDestinations() {
                 className="hidden lg:flex items-center justify-center"
               >
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-px bg-brass" />
+                  <div className="w-8 h-px bg-ink-400" />
                   <ArrowRight className="h-8 w-8 text-brand" />
                 </div>
               </motion.div>
