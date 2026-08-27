@@ -110,11 +110,14 @@ export default function PricingPage() {
         </div>
       </div>
 
-      <div className="bg-hero rounded-lg p-8 lg:p-10 max-w-4xl mb-14">
-        <h2 className="text-white text-xl lg:text-2xl font-bold mb-6">
-          How it works
-        </h2>
-        <div className="grid sm:grid-cols-3 gap-6">
+      {/* Numbered, on paper. This was a navy card sitting directly above the
+          navy estimator — same #0A192F under two token names, 56px apart — so
+          the two read as one slab and neither got any emphasis. The estimator
+          keeps the dark treatment because it is the thing worth looking at. */}
+      <div className="max-w-4xl mb-16">
+        <p className="text-overline text-ink-500">How it works</p>
+        <span aria-hidden className="mt-3 mb-6 block h-px w-8 bg-brass" />
+        <ol className="grid sm:grid-cols-3 gap-x-8 gap-y-6">
           {[
             {
               icon: Smartphone,
@@ -131,14 +134,17 @@ export default function PricingPage() {
               title: "Extend if you like",
               desc: "Want more range? Add time in quick taps — up to 4 extensions per stop.",
             },
-          ].map((step) => (
-            <div key={step.title}>
-              <step.icon className="h-6 w-6 text-brand mb-3" />
-              <h3 className="text-white font-semibold mb-1.5">{step.title}</h3>
-              <p className="text-on-dark/80 text-sm">{step.desc}</p>
-            </div>
+          ].map((step, i) => (
+            <li key={step.title} className="border-t border-paper-300 pt-5">
+              <span className="flex items-center gap-2.5 text-index text-ink-400">
+                {String(i + 1).padStart(2, "0")}
+                <step.icon aria-hidden className="h-4 w-4 text-brand-ink" />
+              </span>
+              <h3 className="text-h4 text-ink-900 mt-3 mb-1.5">{step.title}</h3>
+              <p className="text-body-sm text-ink-500">{step.desc}</p>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
 
       <div className="mb-20">

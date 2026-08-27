@@ -3,16 +3,9 @@
 import { useRef } from "react";
 import { motion, useInView, easeOut } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import {
-  ArrowDown,
-  Zap,
-  Clock,
-  ArrowRight,
-  Sparkles,
-  Check,
-  X,
-} from "lucide-react";
+import { ArrowDown, ArrowRight, Sparkles, Check, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const solutionSteps = [
   {
@@ -30,7 +23,7 @@ const solutionSteps = [
     title: (
       <>
         We Handle Charging
-        <span className="text-red-500">*</span>
+        <span className="text-brass-ink">*</span>
       </>
     ),
     desc: "Payment, plug-in, monitoring — all taken care of. Stay in your car.",
@@ -44,7 +37,7 @@ const solutionSteps = [
     title: (
       <>
         Get Things Done
-        <span className="text-red-500">*</span>
+        <span className="text-brass-ink">*</span>
       </>
     ),
     desc: "Order food, coffee, or essentials. Delivered right to your window.",
@@ -66,6 +59,33 @@ const itemVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
 };
+
+/* Four moments in one stop. Every cell in the HubCharge column is a claim
+   made elsewhere on this site and checkable against it — the ten-minute band
+   comes from the same curve integration the estimator uses, and the flat rate
+   is the one on the charger screen. Nothing here is an adjective. */
+const LEDGER = [
+  {
+    k: "You plug in",
+    them: "You do it yourself, in whatever weather the forecast gave you.",
+    us: "An attendant does it. You stay in the driver's seat.*",
+  },
+  {
+    k: "You pay",
+    them: "Per kWh, at a rate that can move by time of day — so the total only exists once you're finished.",
+    us: "One flat rate for the session, shown on your phone for approval before the cable moves.",
+  },
+  {
+    k: "You wait",
+    them: "30–40 minutes, because the pitch is a full battery.",
+    us: "10 minutes puts roughly 90–135 miles into most popular EVs. Extend in taps if you want more.",
+  },
+  {
+    k: "You leave",
+    them: "You watch the clock to get back before idle fees start.",
+    us: "We unplug. There is no idle fee to race.",
+  },
+];
 
 export function ProblemSection() {
   const reduced = useReducedMotion();
@@ -116,204 +136,107 @@ export function ProblemSection() {
             </span>
           </motion.p>
 
-          {/* Power Reality Check */}
-          <motion.div
-            variants={itemVariants}
-            className="mt-10 max-w-2xl mx-auto"
-          >
-          </motion.div>
         </motion.div>
 
-        {/* Visual Comparison */}
+        {/* The ledger.
+
+            This was two photographs with adjectives written over them, and
+            adjectives are what every charging network's homepage already says.
+            A photograph can show you a person waiting; it cannot show you that
+            you don't know the bill yet. So the argument is made in rows, and
+            every cell on our side is a figure that appears elsewhere on this
+            site and can be checked against it. */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={containerVariants}
           className="mb-20"
         >
-          <div className="grid md:grid-cols-2 gap-5 lg:gap-8">
-            {/* Traditional Experience — full-bleed photo card */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -6 }}
-              transition={{ duration: 0.3 }}
-              className="group relative min-h-[460px] lg:min-h-[560px] rounded-lg overflow-hidden border border-white/10"
-            >
-              <Image
-                src="/images/waiting-v3.webp"
-                alt="Traditional EV charging - waiting outside"
-                fill
-                className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.04]"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              {/* Window gradient — readable top (badge) + bottom (list), photo in the middle */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, rgba(10,25,47,0.82) 0%, rgba(10,25,47,0.25) 24%, rgba(10,25,47,0.32) 50%, rgba(10,25,47,0.82) 76%, rgba(10,25,47,0.97) 100%)",
-                }}
-              />
+          <motion.div variants={itemVariants} className="mb-8">
+            <p className="text-overline text-ink-500">The same stop, twice</p>
+            <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
+          </motion.div>
 
-              <div className="relative flex h-full min-h-[460px] lg:min-h-[560px] flex-col justify-between p-6 lg:p-7">
-                <div>
-                  <span className="px-4 py-2 rounded-full text-sm font-medium bg-hero/50 text-white/90 backdrop-blur-md border border-white/15">
-                    Traditional Charging
-                  </span>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-hero/50 border border-white/15 backdrop-blur-sm">
-                    <Clock className="h-3.5 w-3.5 text-amber-300" />
-                    <span className="text-amber-300 text-sm font-semibold">
-                      30-40 min
-                    </span>
-                  </div>
-                  <ul className="space-y-3">
-                    {[
-                      "Variable kWh pricing — final cost unclear",
-                      "Self-service — handle everything yourself",
-                    ].map((item, i) => (
-                      <motion.li
-                        key={i}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 + i * 0.1 }}
-                        className="flex items-start gap-3 text-white/85"
-                      >
-                        <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <X className="h-3 w-3 text-red-300" />
-                        </div>
-                        <span className="text-[15px] leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
-                          {item}
-                        </span>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </div>
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_22rem] gap-10 lg:gap-14 items-start">
+            <div>
+              {/* Column heads. Hidden on phones, where the table stacks and
+                  each cell carries its own inline label instead — three
+                  columns in 390px gives ~90px a cell and eight-line wraps. */}
+              <div className="hidden md:grid grid-cols-[minmax(0,10rem)_1fr_1fr] gap-x-8 pb-3">
+                <span />
+                <span className="text-overline text-ink-400">Most networks</span>
+                <span className="text-overline text-brand-ink">HubCharge</span>
               </div>
-            </motion.div>
 
-            {/* HubCharge Experience — full-bleed photo card */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -6 }}
-              transition={{ duration: 0.3 }}
-              className="group relative min-h-[460px] lg:min-h-[560px] rounded-lg overflow-hidden border border-brand/25"
-            >
-              <Image
-                src="/images/valet-greet-v2.webp"
-                alt="HubCharge full-service EV charging"
-                fill
-                className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.04]"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              {/* Window gradient + subtle brand glow */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, rgba(10,25,47,0.78) 0%, rgba(10,25,47,0.18) 24%, rgba(10,25,47,0.28) 50%, rgba(10,25,47,0.82) 76%, rgba(10,25,47,0.97) 100%)",
-                }}
-              />
-              <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-brand/15 to-transparent pointer-events-none" />
-
-              <div className="relative flex h-full min-h-[460px] lg:min-h-[560px] flex-col justify-between p-6 lg:p-7">
-                <div>
-                  <span className="px-3 py-1.5 rounded-full text-overline text-white bg-white/15 backdrop-blur-md border border-white/25">
-                    HubCharge™
-                  </span>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/25 border border-brand/40 backdrop-blur-sm">
-                    <Zap className="h-3.5 w-3.5 text-brand" />
-                    <span className="text-brand text-sm font-semibold">
-                      10 min • add up to 100 mi
-                    </span>
-                  </div>
-                  <ul className="space-y-3">
-                    {[
-                      {
-                        text: "Flat rate — know exactly what you'll pay",
-                        asterisk: false,
-                      },
-                      {
-                        text: "Stay in your car — attendant handles it",
-                        asterisk: true,
-                      },
-                      {
-                        text: "Quick top-up — get the miles you need, go",
-                        asterisk: false,
-                      },
-                    ].map((item, i) => (
-                      <motion.li
-                        key={i}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 + i * 0.1 }}
-                        className="flex items-start gap-3 text-white/90"
-                      >
-                        <div className="w-5 h-5 rounded-full bg-green-500/25 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="h-3 w-3 text-green-300" />
-                        </div>
-                        <span className="text-[15px] leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
-                          {item.text}
-                          {item.asterisk && (
-                            <span className="text-red-400">*</span>
-                          )}
+              <dl>
+                {LEDGER.map((row) => (
+                  <motion.div
+                    key={row.k}
+                    variants={itemVariants}
+                    className="grid gap-y-3 md:grid-cols-[minmax(0,10rem)_1fr_1fr] md:gap-x-8 md:gap-y-0 py-5 border-t border-paper-300 last:border-b items-start"
+                  >
+                    <dt className="text-h4 text-ink-900">{row.k}</dt>
+                    <dd className="text-body-sm text-ink-500 flex gap-2">
+                      <X aria-hidden className="h-3.5 w-3.5 mt-1 shrink-0 text-ink-300" />
+                      <span>
+                        <span className="md:hidden text-overline text-ink-400 block mb-0.5">
+                          Most networks
                         </span>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </div>
+                        {row.them}
+                      </span>
+                    </dd>
+                    <dd className="text-body-sm text-ink-900 flex gap-2">
+                      <Check aria-hidden className="h-3.5 w-3.5 mt-1 shrink-0 text-brand-ink" />
+                      <span>
+                        <span className="md:hidden text-overline text-brand-ink block mb-0.5">
+                          HubCharge
+                        </span>
+                        {row.us}
+                      </span>
+                    </dd>
+                  </motion.div>
+                ))}
+              </dl>
+
+              <motion.p variants={itemVariants} className="text-caption text-ink-400 mt-5 max-w-[62ch]">
+                <span className="text-brass-ink">*</span> Attendant service at
+                select locations and hours. Range added in ten minutes varies by
+                car, starting battery and temperature —{" "}
+                <Link href="/pricing#plan" className="text-brand-ink underline underline-offset-2">
+                  check yours
+                </Link>
+                .
+              </motion.p>
+            </div>
+
+            {/* One photograph, beside the argument rather than under it. */}
+            <motion.figure variants={itemVariants} className="relative">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
+                <Image
+                  src="/images/valet-greet-v2.webp"
+                  alt="A HubCharge attendant at the driver's window while the car charges behind them"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 22rem"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to top, rgba(10,25,47,0.88) 0%, rgba(10,25,47,0.15) 45%, rgba(10,25,47,0) 70%)",
+                  }}
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 p-5">
+                  <p className="text-overline text-white/70">While you sit there</p>
+                  <p className="text-h4 text-white mt-1.5">
+                    Ten minutes, and someone else handles the cable.
+                  </p>
+                </figcaption>
               </div>
-            </motion.div>
+            </motion.figure>
           </div>
-
-          {/* Bottom tagline */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="mt-8"
-          >
-            {/* <p className="text-[#475569] text-sm">
-              Built for drivers who need a quick charge — not a full battery.
-            </p> */}
-          </motion.div>
-        </motion.div>
-
-        {/* Arrow Divider */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="flex flex-col items-center gap-3 mb-16"
-        >
-          <p className="text-ink-500 text-sm uppercase tracking-widest">
-            There&apos;s a better way
-          </p>
-          <motion.div
-            animate={{
-              boxShadow: [
-                "0 0 20px rgba(255, 122, 0, 0.3)",
-                "0 0 40px rgba(255, 122, 0, 0.6)",
-                "0 0 20px rgba(255, 122, 0, 0.3)",
-              ],
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-14 h-14 rounded-full bg-gradient-to-br from-brand to-[#FF9433] flex items-center justify-center"
-          >
-            <ArrowDown className="h-6 w-6 text-white" />
-          </motion.div>
         </motion.div>
       </div>
 
@@ -451,11 +374,11 @@ export function ProblemSection() {
               className="mt-10"
             >
               <p className="text-muted-dark text-sm">
-                <span className="text-red-500">*</span>Full-service attendant
+                <span className="text-brass-ink">*</span>Full-service attendant
                 available at select locations.{" "}
                 <a
                   href="#locations"
-                  className="text-brand hover:text-[#FF9433] underline underline-offset-2"
+                  className="text-brand hover:text-brand-hover underline underline-offset-2"
                 >
                   Check availability
                 </a>
@@ -476,10 +399,7 @@ export function ProblemSection() {
               className="inline-flex items-center gap-3 text-brand hover:text-brand-hover transition-colors text-lg font-semibold group"
             >
               See the full charging experience
-              <motion.span
-                              >
-                <ArrowDown className="h-5 w-5" />
-              </motion.span>
+              <ArrowDown className="h-5 w-5 transition-transform group-hover:translate-y-0.5" />
             </motion.a>
           </motion.div>
         </div>

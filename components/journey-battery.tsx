@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, useCallback, memo } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { ILLO, CABLE_CASING } from "@/lib/illustration";
 
 /**
  * HUBCHARGE JOURNEY - Premium UX Redesign
@@ -35,27 +36,27 @@ function CarSVG({
       <defs>
         {/* Body: three stops so the flank reads rounded rather than flat. */}
         <linearGradient id={`carBody-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#41556F" />
-          <stop offset="45%" stopColor="#2E4159" />
-          <stop offset="100%" stopColor="#1B2739" />
+          <stop offset="0%" stopColor={ILLO.carTop} />
+          <stop offset="45%" stopColor={ILLO.carMid} />
+          <stop offset="100%" stopColor={ILLO.carLow} />
         </linearGradient>
 
         {/* Greenhouse: darker at the base, as glass reads against a body. */}
         <linearGradient id={`glass-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#8FA8C4" stopOpacity="0.45" />
-          <stop offset="60%" stopColor="#33455F" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#16233B" stopOpacity="0.7" />
+          <stop offset="0%" stopColor={ILLO.glassTop} stopOpacity="0.45" />
+          <stop offset="60%" stopColor={ILLO.glassMid} stopOpacity="0.55" />
+          <stop offset="100%" stopColor={ILLO.glassLow} stopOpacity="0.7" />
         </linearGradient>
 
         {/* Ground reflection under the car. */}
         <linearGradient id={`reflect-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#41556F" stopOpacity="0.30" />
-          <stop offset="100%" stopColor="#41556F" stopOpacity="0" />
+          <stop offset="0%" stopColor={ILLO.carTop} stopOpacity="0.30" />
+          <stop offset="100%" stopColor={ILLO.carTop} stopOpacity="0" />
         </linearGradient>
 
         <radialGradient id={`contact-${id}`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#020617" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#020617" stopOpacity="0" />
+          <stop offset="0%" stopColor={ILLO.shadow} stopOpacity="0.5" />
+          <stop offset="100%" stopColor={ILLO.shadow} stopOpacity="0" />
         </radialGradient>
       </defs>
 
@@ -74,7 +75,7 @@ function CarSVG({
       {/* Lower body / rocker — darkest plane, grounds the car. */}
       <path
         d="M22 52 L178 52 L180 55 C181 57 178 58 169 58 L31 58 C21 58 19 56 20 54Z"
-        fill="#111C2C"
+        fill={ILLO.carRocker}
       />
 
       {/* Main body. Longer dash-to-axle, faster rear taper — a modern
@@ -119,7 +120,7 @@ function CarSVG({
         fill={`url(#glass-${id})`}
       />
       {/* B-pillar */}
-      <path d="M99 14.6 L102 14.7 L102 28.5 L99 28.5 Z" fill="#16233B" opacity="0.85" />
+      <path d="M99 14.6 L102 14.7 L102 28.5 L99 28.5 Z" fill={ILLO.glassLow} opacity="0.85" />
 
       {/* Wheel arches, drawn as arches rather than full rings. */}
       {[60, 141].map((cx) => (
@@ -127,10 +128,10 @@ function CarSVG({
           <path
             d={`M${cx - 13} 55 A13 13 0 0 1 ${cx + 13} 55`}
             fill="none"
-            stroke="#111C2C"
+            stroke={ILLO.carRocker}
             strokeWidth="3.2"
           />
-          <circle cx={cx} cy={53.5} r="9.6" fill="#0E1725" />
+          <circle cx={cx} cy={53.5} r="9.6" fill={ILLO.tyre} />
           <circle
             cx={cx}
             cy={53.5}
@@ -140,14 +141,14 @@ function CarSVG({
             strokeWidth="0.9"
           />
           {/* Rim face */}
-          <circle cx={cx} cy={53.5} r="6" fill="#243449" />
+          <circle cx={cx} cy={53.5} r="6" fill={ILLO.rim} />
           <g stroke="rgba(203,213,225,0.55)" strokeWidth="0.85" strokeLinecap="round">
             <line x1={cx} y1={48} x2={cx} y2={59} />
             <line x1={cx - 5.5} y1={53.5} x2={cx + 5.5} y2={53.5} />
             <line x1={cx - 3.9} y1={49.6} x2={cx + 3.9} y2={57.4} />
             <line x1={cx - 3.9} y1={57.4} x2={cx + 3.9} y2={49.6} />
           </g>
-          <circle cx={cx} cy={53.5} r="1.5" fill="#94A3B8" />
+          <circle cx={cx} cy={53.5} r="1.5" fill={ILLO.hub} />
         </g>
       ))}
 
@@ -156,11 +157,27 @@ function CarSVG({
       <path d="M177 43.6 L183 44.4 L183 46.8 L177 46.6 Z" fill="rgba(255,255,255,0.5)" />
 
       {/* Charge port — a point of light */}
-      <circle cx="158" cy="37" r="2" fill="#FF7A00" opacity="0.95" />
+      <circle cx="158" cy="37" r="2" fill={ILLO.live} opacity="0.95" />
     </svg>
   );
 }
 
+/**
+ * The attendant.
+ *
+ * The first version drew a featureless grey disc for a head, with a comment
+ * defending it as "a pictogram". At the size this renders it just looked like
+ * a person with no face, which is unsettling rather than neutral — and the
+ * whole proposition here is that a human being handles your cable. Hiding
+ * their face undercut the one thing the illustration exists to say.
+ *
+ * So: brow, eyes, nose and mouth, drawn at weights that survive being scaled
+ * to ~40px wide. The viewBox is taller than before so the head has room.
+ *
+ * Sleeves are uniform-coloured in every variant. Previously they flipped to
+ * orange in two of the three, which broke the scene's one colour rule — that
+ * orange means energy — by putting it on a person's arms.
+ */
 function ValetSVG({
   className = "",
   style = {},
@@ -171,348 +188,289 @@ function ValetSVG({
   holding?: "terminal" | "food" | "cable";
 }) {
   return (
-    <svg viewBox="0 0 60 100" className={className} style={style}>
-      <ellipse cx="30" cy="97" rx="11" ry="2" fill="#0f172a" opacity="0.07" />
+    <svg viewBox="0 0 60 104" className={className} style={style}>
+      <ellipse cx="30" cy="100" rx="11" ry="2.2" fill={ILLO.shadow} opacity="0.28" />
 
       {/* Legs */}
-      <rect x="22" y="62" width="7" height="33" rx="3.5" fill="#1e293b" />
-      <rect x="31" y="62" width="7" height="33" rx="3.5" fill="#1e293b" />
+      <rect x="22" y="64" width="7" height="34" rx="3.5" fill={ILLO.garment} />
+      <rect x="31" y="64" width="7" height="34" rx="3.5" fill={ILLO.garment} />
+      <rect x="21.5" y="95" width="8" height="4" rx="1.6" fill={ILLO.shadow} />
+      <rect x="30.5" y="95" width="8" height="4" rx="1.6" fill={ILLO.shadow} />
 
-      {/* Uniform body — light figure on the navy stage. A single chest
-          stripe is the valet's entire orange budget; the cable owns the rest. */}
-      <path
-        d="M17,34 Q17,27 30,27 Q43,27 43,34 L45,62 L15,62 Z"
-        fill="#E9EDF2"
-      />
-      <rect x="27" y="30" width="6" height="2" rx="1" fill="#FF7A00" />
-      {/* Uniform chest pocket */}
-      <rect
-        x="24"
-        y="36"
-        width="8"
-        height="9"
-        rx="1.5"
-        fill="#fff"
-        opacity="0.15"
-      />
+      {/* Torso. One orange element on the whole figure — the chest stripe —
+          so the accent stays legible as "this is HubCharge staff". */}
+      <path d="M17,36 Q17,29 30,29 Q43,29 43,36 L45,64 L15,64 Z" fill={ILLO.uniform} />
+      <path d="M30,29 L30,64 L45,64 L43,36 Q43,29 30,29 Z" fill={ILLO.uniformShade} opacity="0.45" />
+      <rect x="26.5" y="32" width="7" height="2" rx="1" fill={ILLO.live} />
+      <rect x="24" y="38" width="7" height="8" rx="1.5" fill={ILLO.stage} opacity="0.1" />
+
+      {/* Shoulder seams — the value break needs an edge to sit against */}
+      <path d="M17.5,38 Q22,35.5 24,40" fill="none" stroke={ILLO.uniformShade} strokeWidth="0.8" opacity="0.8" />
+      <path d="M42.5,38 Q38,35.5 36,40" fill="none" stroke={ILLO.uniformShade} strokeWidth="0.8" opacity="0.8" />
+
+      {/* Collar */}
+      <path d="M25.5,29.5 L30,35 L34.5,29.5" fill="none" stroke={ILLO.uniformShade} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
 
       {/* Arms and held item */}
       {holding === "terminal" ? (
         <>
-          <rect
-            x="9"
-            y="35"
-            width="8"
-            height="22"
-            rx="4"
-            fill="#E9EDF2"
-            transform="rotate(-12, 13, 35)"
-          />
-          <rect
-            x="43"
-            y="35"
-            width="8"
-            height="22"
-            rx="4"
-            fill="#E9EDF2"
-            transform="rotate(12, 47, 35)"
-          />
-          {/* Terminal body */}
-          <rect x="17" y="50" width="26" height="34" rx="4" fill="#f8fafc" />
-          <rect
-            x="17"
-            y="50"
-            width="26"
-            height="34"
-            rx="4"
-            stroke="#e2e8f0"
-            strokeWidth="1"
-            fill="none"
-          />
-          {/* Screen */}
-          <rect x="20" y="53" width="20" height="16" rx="2" fill="#0f172a" />
-          {/* QR grid */}
-          <rect
-            x="22"
-            y="55"
-            width="5"
-            height="5"
-            rx="0.5"
-            fill="#f8fafc"
-            opacity="0.9"
-          />
-          <rect
-            x="29"
-            y="55"
-            width="5"
-            height="5"
-            rx="0.5"
-            fill="#f8fafc"
-            opacity="0.9"
-          />
-          <rect
-            x="22"
-            y="62"
-            width="5"
-            height="5"
-            rx="0.5"
-            fill="#f8fafc"
-            opacity="0.9"
-          />
-          <rect
-            x="29"
-            y="62"
-            width="2"
-            height="2"
-            rx="0.3"
-            fill="#f8fafc"
-            opacity="0.7"
-          />
-          <rect
-            x="32"
-            y="62"
-            width="2"
-            height="2"
-            rx="0.3"
-            fill="#f8fafc"
-            opacity="0.7"
-          />
-          {/* Accept button */}
-          <rect x="22" y="72" width="16" height="7" rx="3.5" fill="#22c55e" />
-          <circle cx="30" cy="75.5" r="1.5" fill="#fff" />
+          <path d="M17.5,38 Q13,44 16,53 L21,56 L24,52 Q20,45 22,40 Z" fill={ILLO.uniformShade} />
+          <path d="M42.5,38 Q47,44 44,53 L39,56 L36,52 Q40,45 38,40 Z" fill={ILLO.uniformShade} />
+          <circle cx="21" cy="57" r="2.9" fill={ILLO.skin} />
+          <circle cx="39" cy="57" r="2.9" fill={ILLO.skin} />
+          {/* Payment terminal */}
+          <rect x="20" y="52" width="17" height="12" rx="2.4" fill={ILLO.bodyLight} />
+          <rect x="21.5" y="53.5" width="14" height="9" rx="1.6" fill={ILLO.recess} />
+          <rect x="23" y="55.5" width="8" height="1.4" rx="0.7" fill={ILLO.live} opacity="0.9" />
+          <rect x="23" y="58.5" width="5.5" height="1.2" rx="0.6" fill={ILLO.seam} opacity="0.7" />
         </>
       ) : holding === "cable" ? (
         <>
-          {/* Arms reaching forward with cable plug */}
-          <rect
-            x="8"
-            y="35"
-            width="8"
-            height="26"
-            rx="4"
-            fill="#FF7A00"
-            transform="rotate(-25, 12, 35)"
-          />
-          <rect
-            x="44"
-            y="35"
-            width="8"
-            height="26"
-            rx="4"
-            fill="#FF7A00"
-            transform="rotate(25, 48, 35)"
-          />
-          {/* Cable plug in hands */}
-          <rect x="38" y="52" width="14" height="10" rx="3" fill="#475569" />
-          <rect x="40" y="54" width="10" height="6" rx="2" fill="#22c55e" />
-          <circle cx="45" cy="57" r="2" fill="#4ade80" />
-          {/* Cable trailing behind */}
-          <path
-            d="M38,57 Q25,65 10,60"
-            stroke="#475569"
-            strokeWidth="3"
-            fill="none"
-            strokeLinecap="round"
-          />
+          {/* Left arm tucked, right arm extended with the connector */}
+          <path d="M17.5,38 Q13,45 15,54 L19,56 L22,52 Q19,46 22,40 Z" fill={ILLO.uniformShade} />
+          <path d="M42.5,38 Q48,42 51,50 L48,54 L44,51 Q42,45 38,41 Z" fill={ILLO.uniformShade} />
+          <circle cx="19.5" cy="57" r="2.9" fill={ILLO.skin} />
+          <circle cx="47.5" cy="54.5" r="2.9" fill={ILLO.skin} />
+          {/* Connector in hand — live, because it is about to deliver power */}
+          <rect x="44" y="50" width="12" height="8.5" rx="2.6" fill={ILLO.bodyDark} />
+          <rect x="45.8" y="52" width="8.4" height="5" rx="1.8" fill={ILLO.live} />
+          <circle cx="50" cy="54.5" r="1.5" fill={ILLO.liveGlow} />
         </>
       ) : (
         <>
-          <rect
-            x="7"
-            y="35"
-            width="8"
-            height="24"
-            rx="4"
-            fill="#FF7A00"
-            transform="rotate(-18, 11, 35)"
-          />
-          <rect
-            x="45"
-            y="35"
-            width="8"
-            height="24"
-            rx="4"
-            fill="#FF7A00"
-            transform="rotate(18, 49, 35)"
-          />
-          {/* Bag */}
-          <path
-            d="M15,52 L17,86 Q17,92 30,92 Q43,92 43,86 L45,52 Z"
-            fill="#fed7aa"
-          />
-          <path
-            d="M15,52 L17,86 Q17,92 30,92 Q43,92 43,86 L45,52 Z"
-            stroke="#fdba74"
-            strokeWidth="1"
-            fill="none"
-          />
-          {/* Bag handle */}
-          <path
-            d="M21,52 L21,43 Q21,35 30,35 Q39,35 39,43 L39,52"
-            stroke="#fdba74"
-            strokeWidth="3.5"
-            fill="none"
-            strokeLinecap="round"
-          />
-          {/* H logo on bag */}
-          <circle cx="30" cy="70" r="9" fill="#FF7A00" opacity="0.15" />
-          <text
-            x="30"
-            y="74"
-            textAnchor="middle"
-            fontSize="11"
-            fill="#FF7A00"
-            fontWeight="800"
-            fontFamily="sans-serif"
-          >
-            H
-          </text>
+          <path d="M17.5,38 Q13,45 16,54 L20,57 L23,53 Q20,46 22,40 Z" fill={ILLO.uniformShade} />
+          <path d="M42.5,38 Q47,45 44,54 L40,57 L37,53 Q40,46 38,40 Z" fill={ILLO.uniformShade} />
+          <circle cx="21.5" cy="58" r="2.9" fill={ILLO.skin} />
+          <circle cx="38.5" cy="58" r="2.9" fill={ILLO.skin} />
+          {/* Delivery bag, carried in front of both hands */}
+          <path d="M25,55 L25,51.5 Q30,48.5 35,51.5 L35,55" fill="none" stroke={ILLO.uniformShade} strokeWidth="1.8" strokeLinecap="round" />
+          <rect x="22" y="55" width="16" height="13" rx="1.8" fill={ILLO.uniform} />
+          <rect x="22" y="55" width="16" height="13" rx="1.8" fill="none" stroke={ILLO.uniformShade} strokeWidth="0.7" />
+          <circle cx="30" cy="61.5" r="4" fill={ILLO.live} opacity="0.16" />
+          <text x="30" y="64" textAnchor="middle" fontSize="6.5" fontWeight="700" fill={ILLO.liveDim}>H</text>
         </>
       )}
 
-      {/* Head */}
-      <circle cx="30" cy="15" r="8.5" fill="#C9CED6" />
+      {/* Neck */}
+      <rect x="26.5" y="22" width="7" height="9" rx="2.6" fill={ILLO.skinShade} />
 
-      {/* Cap. Deliberately no face: two dots and a smile at this size is a
-          children's book. A featureless head reads as a pictogram. */}
-      <path d="M22,12 Q22,5 30,5 Q38,5 38,12" fill="#1e293b" />
-      <rect x="20" y="11" width="20" height="2.5" rx="1.25" fill="#0f172a" />
+      {/* Head. Features are the point of this rewrite — a jaw that tapers,
+          a brow that sits above the eyes, and enough contrast in `feature`
+          to survive downscaling. */}
+      <path
+        d="M19,15 Q19,4 30,4 Q41,4 41,15 Q41,22.5 36.5,26 Q33.5,28.5 30,28.5 Q26.5,28.5 23.5,26 Q19,22.5 19,15 Z"
+        fill={ILLO.skin}
+      />
+      <path
+        d="M30,4 Q41,4 41,15 Q41,22.5 36.5,26 Q33.5,28.5 30,28.5 Z"
+        fill={ILLO.skinShade}
+        opacity="0.32"
+      />
+      {/* Ears */}
+      <circle cx="18.9" cy="17" r="2.1" fill={ILLO.skinShade} />
+      <circle cx="41.1" cy="17" r="2.1" fill={ILLO.skinShade} />
+      {/* Brows — heavy, because at this scale they carry the expression */}
+      <path d="M23.2,14 Q25.8,12.5 28.4,13.8" stroke={ILLO.feature} strokeWidth="1.9" fill="none" strokeLinecap="round" />
+      <path d="M31.6,13.8 Q34.2,12.5 36.8,14" stroke={ILLO.feature} strokeWidth="1.9" fill="none" strokeLinecap="round" />
+      {/* Eyes */}
+      <ellipse cx="25.6" cy="17.8" rx="2" ry="2.2" fill={ILLO.feature} />
+      <ellipse cx="34.4" cy="17.8" rx="2" ry="2.2" fill={ILLO.feature} />
+      <circle cx="26.3" cy="17.1" r="0.75" fill="#fff" opacity="0.9" />
+      <circle cx="35.1" cy="17.1" r="0.75" fill="#fff" opacity="0.9" />
+      {/* Nose + a plain, friendly mouth */}
+      <path d="M30,19.4 L30,22" stroke={ILLO.skinShade} strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M26.8,24.2 Q30,26.6 33.2,24.2" stroke={ILLO.feature} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+
+      {/* Cap */}
+      <path d="M19,14 Q19,2.5 30,2.5 Q41,2.5 41,14 Z" fill={ILLO.garment} />
+      <rect x="18.2" y="12.4" width="23.6" height="2.9" rx="1.45" fill={ILLO.shadow} />
+      <rect x="26.8" y="5.5" width="6.4" height="2.1" rx="1" fill={ILLO.live} opacity="0.95" />
     </svg>
   );
 }
 
+
+/**
+ * The charging pedestal.
+ *
+ * The status light used to be `active ? green : orange` — orange when idle,
+ * green when charging — and because each scene passed `active` differently,
+ * the light read orange, orange, green, green, orange across the five steps.
+ * A reader can only conclude the colour means nothing.
+ *
+ * Now there is one rule: dim when nothing is happening, brand orange when
+ * power is moving. Same rule on the LED, the screen, the holster and the
+ * cable. Learn it once, and every panel is readable at a glance.
+ *
+ * `done` is the finished state — hardware at rest with the session complete,
+ * which is what step 05 needs and previously faked by fading the whole thing
+ * to 50% opacity.
+ */
 function ChargerSVG({
   className = "",
   style = {},
   active = false,
+  done = false,
 }: {
   className?: string;
   style?: React.CSSProperties;
   active?: boolean;
+  done?: boolean;
 }) {
+  const lit = active || done;
   return (
     <svg viewBox="0 0 40 80" className={className} style={style}>
-      {/* ground shadow */}
-      <ellipse cx="20" cy="78" rx="12" ry="2.2" fill="#0f172a" opacity="0.13" />
+      <ellipse cx="20" cy="78" rx="12" ry="2.2" fill={ILLO.shadow} opacity="0.3" />
 
       {/* base plinth */}
-      <rect x="6.5" y="64" width="27" height="13" rx="4" fill="#0f172a" />
-      <rect x="6.5" y="64" width="27" height="3" rx="1.5" fill="#334155" opacity="0.6" />
+      <rect x="6.5" y="64" width="27" height="13" rx="4" fill={ILLO.shadow} />
+      <rect x="6.5" y="64" width="27" height="3" rx="1.5" fill={ILLO.bodyLight} opacity="0.5" />
 
       {/* main body */}
-      <rect x="9.5" y="6" width="21" height="62" rx="7" fill="#16233b" />
-      <rect x="9.5" y="6" width="21" height="62" rx="7" fill="none" stroke="#0b1220" strokeWidth="0.6" />
-      {/* roundness shading */}
-      <rect x="11" y="9" width="2.6" height="55" rx="1.3" fill="#3b4d6b" opacity="0.5" />
-      <rect x="27" y="9" width="2.6" height="55" rx="1.3" fill="#0b1220" opacity="0.7" />
+      <rect x="9.5" y="6" width="21" height="62" rx="7" fill={ILLO.bodyDark} />
+      <rect x="9.5" y="6" width="21" height="62" rx="7" fill="none" stroke={ILLO.shadow} strokeWidth="0.6" />
+      <rect x="11" y="9" width="2.6" height="55" rx="1.3" fill={ILLO.bodyLight} opacity="0.5" />
+      <rect x="27" y="9" width="2.6" height="55" rx="1.3" fill={ILLO.shadow} opacity="0.6" />
 
       {/* front face panel */}
-      <rect x="12.5" y="10" width="15" height="45" rx="5" fill="#0c1626" />
+      <rect x="12.5" y="10" width="15" height="45" rx="5" fill={ILLO.recess} />
 
-      {/* live screen */}
-      <rect x="14" y="13.5" width="12" height="15" rx="2.5" fill="#06121f" stroke="#1e293b" strokeWidth="0.5" />
-      {/* battery icon */}
-      <rect x="15.8" y="16" width="8" height="4.6" rx="1" fill="none" stroke={active ? "#4ade80" : "#3a4a63"} strokeWidth="0.8" />
-      <rect x="24" y="17.3" width="1" height="2" rx="0.5" fill={active ? "#4ade80" : "#3a4a63"} />
-      {/* battery fill (counts up while charging) */}
-      <rect x="16.5" y="16.7" width={active ? "6.6" : "2"} height="3.2" rx="0.5" fill={active ? "#22c55e" : "#26354c"}>
-        {active && <animate attributeName="width" values="1.5;6.6;1.5" dur="2.6s" repeatCount="indefinite" />}
+      {/* screen */}
+      <rect x="14" y="13.5" width="12" height="15" rx="2.5" fill={ILLO.shadow} stroke={ILLO.body} strokeWidth="0.5" />
+      <rect
+        x="15.8" y="16" width="8" height="4.6" rx="1"
+        fill="none" stroke={lit ? ILLO.live : ILLO.idle} strokeWidth="0.8"
+      />
+      <rect x="24" y="17.3" width="1" height="2" rx="0.5" fill={lit ? ILLO.live : ILLO.idle} />
+      <rect
+        x="16.5" y="16.7" width={done ? "6.6" : active ? "6.6" : "2"} height="3.2" rx="0.5"
+        fill={lit ? ILLO.live : ILLO.idle}
+      >
+        {active && !done && (
+          <animate attributeName="width" values="1.5;6.6;1.5" dur="2.6s" repeatCount="indefinite" />
+        )}
       </rect>
-      {/* readout bars */}
-      <rect x="15.8" y="22.4" width={active ? "8" : "5"} height="1.5" rx="0.75" fill={active ? "#FF7A00" : "#26354c"}>
-        {active && <animate attributeName="width" values="2;8;2" dur="2.6s" repeatCount="indefinite" />}
+      <rect
+        x="15.8" y="22.4" width={lit ? "8" : "5"} height="1.5" rx="0.75"
+        fill={lit ? ILLO.liveGlow : ILLO.idle} opacity={lit ? 0.9 : 0.5}
+      >
+        {active && !done && (
+          <animate attributeName="width" values="2;8;2" dur="2.6s" repeatCount="indefinite" />
+        )}
       </rect>
-      <rect x="15.8" y="25" width="5.5" height="1.2" rx="0.6" fill="#1c2a40" />
+      <rect x="15.8" y="25" width="5.5" height="1.2" rx="0.6" fill={ILLO.idle} opacity="0.5" />
 
-      {/* status LED strip */}
-      <rect x="18.4" y="33" width="3.2" height="13" rx="1.6" fill="#0b1220" />
-      <rect x="18.8" y="33.4" width="2.4" height="12.2" rx="1.2" fill={active ? "#34d399" : "#FF7A00"}>
-        <animate attributeName="opacity" values={active ? "0.55;1;0.55" : "0.5;0.9;0.5"} dur={active ? "1s" : "2.4s"} repeatCount="indefinite" />
+      {/* status LED — dim at rest, orange when power moves. No second accent. */}
+      <rect x="18.4" y="33" width="3.2" height="13" rx="1.6" fill={ILLO.shadow} />
+      <rect
+        x="18.8" y="33.4" width="2.4" height="12.2" rx="1.2"
+        fill={lit ? ILLO.live : ILLO.idle}
+      >
+        {active && !done && (
+          <animate attributeName="opacity" values="0.55;1;0.55" dur="1s" repeatCount="indefinite" />
+        )}
       </rect>
 
-      {/* brand wordmark hint */}
-      <rect x="14.5" y="49.5" width="11" height="2" rx="1" fill="#FF7A00" opacity="0.85" />
-      <rect x="14.5" y="52.4" width="7" height="1.2" rx="0.6" fill="#FF7A00" opacity="0.35" />
+      {/* brand wordmark */}
+      <rect x="14.5" y="49.5" width="11" height="2" rx="1" fill={ILLO.live} opacity="0.85" />
+      <rect x="14.5" y="52.4" width="7" height="1.2" rx="0.6" fill={ILLO.live} opacity="0.35" />
 
       {/* connector holster */}
-      <circle cx="20" cy="60" r="5.6" fill="#0b1220" />
-      <circle cx="20" cy="60" r="3.7" fill={active ? "#16a34a" : "#2a3a52"}>
-        {active && <animate attributeName="fill" values="#16a34a;#4ade80;#16a34a" dur="1.1s" repeatCount="indefinite" />}
+      <circle cx="20" cy="60" r="5.6" fill={ILLO.shadow} />
+      <circle cx="20" cy="60" r="3.7" fill={lit ? ILLO.liveDim : ILLO.idle}>
+        {active && !done && (
+          <animate attributeName="fill" values={`${ILLO.liveDim};${ILLO.live};${ILLO.liveDim}`} dur="1.1s" repeatCount="indefinite" />
+        )}
       </circle>
-      <circle cx="20" cy="60" r="1.6" fill={active ? "#bbf7d0" : "#64748b"} />
+      <circle cx="20" cy="60" r="1.6" fill={lit ? ILLO.liveGlow : ILLO.seam} />
 
       {/* top cap */}
-      <rect x="11.5" y="4.5" width="17" height="5" rx="2.5" fill="#0c1626" />
-      <rect x="14" y="3" width="12" height="3.6" rx="1.8" fill="#1c2a40" />
+      <rect x="11.5" y="4.5" width="17" height="5" rx="2.5" fill={ILLO.recess} />
+      <rect x="14" y="3" width="12" height="3.6" rx="1.8" fill={ILLO.body} />
     </svg>
   );
 }
 
+
+/**
+ * The cable.
+ *
+ * Casing is ink, energy is orange, and both scenes that draw one get the
+ * identical treatment — previously the energy layer mixed orange with amber
+ * `#fbbf24` and a cream `#ffe2bd`, which put three warm colours on a part
+ * that should read as one material carrying one thing.
+ */
 function CableSVG({
   className = "",
-  style = {},
   active = false,
   isMobile = false,
 }: {
   className?: string;
-  style?: React.CSSProperties;
   active?: boolean;
   isMobile?: boolean;
 }) {
-  // const path = "M2,4 C10,20 30,26 50,20 C60,16 64,15 68,18";
   const path = isMobile
     ? "M2,5 C10,20 30,26 50,20 C60,18 65,18 70,30"
     : "M2,5 C10,20 30,26 45,20 C50,18 52,18 55,23";
   const endX = isMobile ? 70 : 55;
   const endY = isMobile ? 30 : 23;
-  // staggered begins create a continuous stream of energy
   const particles = [0, 0.3, 0.6, 0.9, 1.2];
 
   return (
-    <svg viewBox="0 0 70 28" className={className} style={style} overflow="visible">
-      {/* cable casing */}
-      <path d={path} stroke="#0f172a" strokeWidth="5" fill="none" strokeLinecap="round" />
-      <path d={path} stroke="#334155" strokeWidth="3.4" fill="none" strokeLinecap="round" />
-      <path d={path} stroke="#64748b" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.55" />
+    <svg
+      viewBox={isMobile ? "0 0 75 35" : "0 0 60 30"}
+      className={className}
+      fill="none"
+    >
+      {CABLE_CASING.map((c, i) => (
+        <path
+          key={i}
+          d={path}
+          stroke={c.stroke}
+          strokeWidth={c.width}
+          strokeLinecap="round"
+          opacity={"opacity" in c ? c.opacity : 1}
+        />
+      ))}
 
       {active && (
         <>
-          {/* glowing energy core travelling down the cable */}
-          <path d={path} stroke="#FF7A00" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeDasharray="6 9" opacity="0.85">
-            <animate attributeName="stroke-dashoffset" from="0" to="-30" dur="0.6s" repeatCount="indefinite" />
+          <path
+            d={path}
+            stroke={ILLO.live}
+            strokeWidth="1.6"
+            strokeDasharray="6 9"
+            strokeLinecap="round"
+            opacity="0.85"
+          >
+            <animate attributeName="stroke-dashoffset" values="0;-30" dur="0.6s" repeatCount="indefinite" />
           </path>
-          <path d={path} stroke="#fbbf24" strokeWidth="1" fill="none" strokeLinecap="round" strokeDasharray="3 12" opacity="0.9">
-            <animate attributeName="stroke-dashoffset" from="0" to="-30" dur="0.6s" repeatCount="indefinite" />
-          </path>
-
-          {/* flowing energy particles (soft glow + bright core) */}
-          {particles.map((begin, i) => (
+          {particles.map((d, i) => (
             <g key={i}>
-              <circle r="2.6" fill="#FF7A00" opacity="0.22">
-                <animateMotion dur="1.5s" begin={`${begin}s`} repeatCount="indefinite" path={path} />
+              <circle r="2.6" fill={ILLO.live} opacity="0.22">
+                <animateMotion dur="1.5s" begin={`${d}s`} repeatCount="indefinite" path={path} />
               </circle>
-              <circle r="1.2" fill="#ffe2bd">
-                <animateMotion dur="1.5s" begin={`${begin}s`} repeatCount="indefinite" path={path} />
+              <circle r="1.2" fill={ILLO.liveGlow}>
+                <animateMotion dur="1.5s" begin={`${d}s`} repeatCount="indefinite" path={path} />
               </circle>
             </g>
           ))}
-
-          {/* connection spark where the plug meets the car */}
-          <circle cx={endX} cy={endY} r="3.4" fill="#FF7A00" opacity="0.3">
-            <animate attributeName="r" values="2.4;4.4;2.4" dur="1s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.15;0.4;0.15" dur="1s" repeatCount="indefinite" />
+          <circle cx={endX} cy={endY} r="3.2" fill={ILLO.live} opacity="0.3">
+            <animate attributeName="r" values="2.4;4;2.4" dur="1.2s" repeatCount="indefinite" />
           </circle>
         </>
       )}
 
-      {/* plug head at the car end */}
-      <g transform={`translate(${endX - 4}, ${endY - 3})`}>
-        <rect x="0" y="0" width="7" height="6" rx="2" fill="#0f172a" />
-        <rect x="5.5" y="1.6" width="2.5" height="2.8" rx="0.8" fill={active ? "#FF7A00" : "#475569"} />
-      </g>
+      {/* Plug head */}
+      <rect x={endX - 4} y={endY - 3} width="8" height="6" rx="2" fill={ILLO.shadow} />
+      <rect
+        x={endX - 2.5} y={endY - 1.6} width="5" height="3.2" rx="1.2"
+        fill={active ? ILLO.live : ILLO.idle}
+      />
     </svg>
   );
 }
+
 
 function MotionSVG({
   className = "",
@@ -561,22 +519,6 @@ function MotionSVG({
 // FLOATING CARD — elevated glass style
 // ============================================
 
-function FloatingCard({
-  children,
-  className = "",
-  style = {},
-}: {
-  children: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-}) {
-  return (
-    <div className={`px-0 py-0 ${className}`} style={style}>
-      {children}
-    </div>
-  );
-}
-
 // ============================================
 // SCENE PANELS — unchanged logic, polished markup
 // ============================================
@@ -602,7 +544,7 @@ function Scene1({
     <div className="relative w-full h-full">
       {/* Floating card - Pick your spot */}
       {showBadge && (
-        <FloatingCard
+        <div
           className="absolute top-6 right-2 transition-all duration-500 z-30"
           style={{
             opacity: showBadge ? 1 : 0,
@@ -615,7 +557,7 @@ function Scene1({
           <p className="text-[10px] text-white/55 mt-0.5">
             NACS or CCS
           </p>
-        </FloatingCard>
+        </div>
       )}
 
       {/* Charger */}
@@ -662,7 +604,7 @@ function Scene2({
     <div className="relative w-full h-full">
       {/* Floating card - Stay in your car */}
       {showBadge && (
-        <FloatingCard
+        <div
           className="absolute top-6 right-2 transition-all duration-500 z-30"
           style={{
             opacity: showBadge ? 1 : 0,
@@ -670,12 +612,12 @@ function Scene2({
           }}
         >
           <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
-            Stay in your car<span className="text-red-500">*</span>
+            Stay in your car<span className="text-brass">*</span>
           </p>
           <p className="text-[10px] text-white/55 mt-0.5">
             We come to you
           </p>
-        </FloatingCard>
+        </div>
       )}
 
       {/* Charger */}
@@ -694,7 +636,7 @@ function Scene2({
           transform: `translateX(${isActive ? Math.min(progress * 15, 10) : -10}px)`,
         }}
       >
-        <ValetSVG className="w-8 h-12" holding="terminal" />
+        <ValetSVG className="w-11 h-[4.1rem]" holding="terminal" />
       </div>
 
       {/* Car */}
@@ -734,7 +676,7 @@ function Scene3({
     <div className="relative w-full h-full">
       {/* Floating card - Pick your spot */}
       {showBadge && (
-        <FloatingCard
+        <div
           className="absolute top-6 right-2 transition-all duration-500 z-30"
           style={{
             opacity: showBadge ? 1 : 0,
@@ -744,11 +686,11 @@ function Scene3({
           <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
             Charge 10 minutes
           </p>
-        </FloatingCard>
+        </div>
       )}
       {/* Floating badge */}
       {/* {showBadge && (
-        <FloatingCard
+        <div
           className="absolute top-8 right-2 transition-all duration-500 z-30"
           style={{
             opacity: showBadge ? 1 : 0,
@@ -757,17 +699,17 @@ function Scene3({
         >
           <div className="flex items-center gap-1.5">
             <svg
-              className="w-3 h-3 text-emerald-500"
+              className="w-3 h-3 text-brand"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
             </svg>
-            <span className="text-[10px] font-semibold text-emerald-600 tracking-tight">
+            <span className="text-[10px] font-semibold text-brand-ink tracking-tight">
               Ultra-fast
             </span>
           </div>
-        </FloatingCard>
+        </div>
       )} */}
 
       {/* Charger */}
@@ -775,7 +717,7 @@ function Scene3({
         className="absolute left-2 bottom-6"
         style={{ opacity: isActive ? 1 : 0.3 }}
       >
-        <ChargerSVG className="w-7 h-14" active={showCable} />
+        <ChargerSVG className="w-7 h-14" active={progress > 0.15} />
       </div>
 
       {/* Attendant walking with cable */}
@@ -786,7 +728,7 @@ function Scene3({
           left: `calc(17% + ${valetPosition}px)`,
         }}
       >
-        <ValetSVG className="w-8 h-12" holding="cable" />
+        <ValetSVG className="w-11 h-[4.1rem]" holding="cable" />
       </div>
 
       {/* Cable connecting charger to car */}
@@ -805,7 +747,7 @@ function Scene3({
       <div className={carPosition} style={{ opacity: isActive ? 1 : 0.3 }}>
         <CarSVG className="w-28 lg:w-32" />
         {showCable && (
-          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-16 h-3 bg-emerald-400 rounded-full blur-md opacity-35" />
+          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-16 h-3 bg-brand rounded-full blur-md opacity-35" />
         )}
       </div>
     </div>
@@ -835,7 +777,7 @@ function Scene4({
     <div className="relative w-full h-full">
       {/* Notification card */}
       {showBadge && (
-        <FloatingCard
+        <div
           className="absolute top-6 right-2 transition-all duration-500 z-30"
           style={{
             opacity: showBadge ? 1 : 0,
@@ -848,10 +790,10 @@ function Scene4({
           <p className="text-[10px] text-white/55 mt-0.5">
             or add more charging time
           </p>
-        </FloatingCard>
+        </div>
       )}
       {/* {showNotif && (
-        <FloatingCard
+        <div
           className="absolute top-20 right-2 transition-all duration-500 z-30"
           style={{
             opacity: showNotif ? 1 : 0,
@@ -868,7 +810,7 @@ function Scene4({
               </p>
             </div>
           </div>
-        </FloatingCard>
+        </div>
       )} */}
 
       {/* Charger */}
@@ -895,7 +837,7 @@ function Scene4({
       <div className={carPosition} style={{ opacity: isActive ? 1 : 0.3 }}>
         <CarSVG className="w-28 lg:w-32" />
         {isActive && (
-          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-16 h-3 bg-emerald-400 rounded-full blur-md opacity-30" />
+          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-16 h-3 bg-brand rounded-full blur-md opacity-30" />
         )}
       </div>
 
@@ -906,7 +848,7 @@ function Scene4({
           opacity: isActive && progress > 0.3 ? 1 : 0,
         }}
       >
-        <ValetSVG className="w-8 h-12" holding="food" />
+        <ValetSVG className="w-11 h-[4.1rem]" holding="food" />
       </div>
     </div>
   );
@@ -921,87 +863,73 @@ function Scene5({
   isActive: boolean;
   isMobile: boolean;
 }) {
-  const showBadge = isActive && progress;
   const carPosition = isMobile
-    ? "absolute left-[40%] -translate-x-1/2 bottom-3"
-    : "absolute left-[65%] -translate-x-1/2 bottom-4";
+    ? "absolute left-[46%] -translate-x-1/2 bottom-3"
+    : "absolute left-[68%] -translate-x-1/2 bottom-4";
 
   return (
     <div className="relative w-full h-full">
-      {/* Ready badge */}
-      {/* {showBadge && (
-        <FloatingCard
-          className="absolute top-8 right-2 transition-all duration-500 z-30"
-          style={{
-            opacity: showBadge ? 1 : 0,
-            transform: `translateY(${showBadge ? 0 : -10}px)`,
-          }}
-        >
-          <div className="flex items-center gap-1.5">
-            <svg
-              className="w-3 h-3 text-emerald-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-            >
-              <path
-                d="M20 6L9 17l-5-5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="text-[10px] font-semibold text-emerald-600 tracking-tight">
-              Ready to go!
-            </span>
-          </div>
-        </FloatingCard>
-      )} */}
+      {/* The finish.
 
-      {/* {showBadge && (
-        <FloatingCard
-          className="absolute top-20 right-2 transition-all duration-500 z-30"
-          style={{
-            opacity: showBadge ? 1 : 0,
-            transform: `translateY(${showBadge ? 0 : -10}px)`,
-          }}
-        >
-          <div className="flex items-center gap-1.5">
-            <svg
-              className="w-3 h-3 text-emerald-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-            >
-              <path
-                d="M20 6L9 17l-5-5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="text-[10px] font-semibold text-emerald-600 tracking-tight">
-              100 miles added
-            </span>
-          </div>
-        </FloatingCard>
-      )} */}
+          This panel used to fade its charger to 50% and draw no cable, which
+          is why it read as an empty frame rather than an ending. It now shows
+          a completed session: the pedestal lit and at rest, the cable coiled
+          back into the holster, and the car pulling away. */}
 
-      {/* Charger */}
-      <div
-        className="absolute left-2 bottom-6"
-        style={{ opacity: isActive ? 0.5 : 0.3 }}
-      >
-        <ChargerSVG className="w-7 h-14" active={false} />
+      {/* Charger — done, not dimmed */}
+      <div className="absolute left-2 bottom-6">
+        <ChargerSVG className="w-7 h-14" done={isActive} />
       </div>
 
-      {/* Motion lines */}
+      {/* Cable back on the hook */}
+      <div
+        className="absolute left-[1.35rem] bottom-[1.6rem] w-4 transition-opacity duration-500"
+        style={{ opacity: isActive ? 1 : 0.4 }}
+      >
+        <svg viewBox="0 0 16 22" fill="none" aria-hidden>
+          <path
+            d="M8,2 C13,5 13,10 8,12 C3,14 3,18 8,20"
+            stroke={ILLO.body}
+            strokeWidth="2.6"
+            strokeLinecap="round"
+          />
+          <path
+            d="M8,2 C13,5 13,10 8,12 C3,14 3,18 8,20"
+            stroke={ILLO.seam}
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            opacity="0.5"
+          />
+        </svg>
+      </div>
+
+      {/* Session complete — the one orange mark, so "done" is legible */}
+      {isActive && (
+        <div
+          className="absolute left-1 bottom-[3.9rem] transition-opacity duration-500"
+          style={{ opacity: Math.min(1, progress * 2) }}
+        >
+          <svg viewBox="0 0 20 20" className="w-4 h-4" aria-hidden>
+            <circle cx="10" cy="10" r="9" fill={ILLO.live} />
+            <path
+              d="M6 10.4 L8.8 13 L14 7.6"
+              fill="none"
+              stroke={ILLO.stage}
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      )}
+
+      {/* Motion lines — the car is leaving */}
       {isActive && progress > 0.3 && (
         <div
-          className="absolute left-12 bottom-10"
-          style={{ opacity: progress * 0.5 }}
+          className="absolute left-[30%] bottom-10"
+          style={{ opacity: progress * 0.6 }}
         >
-          <MotionSVG className="w-5 text-white/55" />
+          <MotionSVG className="w-6 text-white/55" />
         </div>
       )}
 
@@ -1013,6 +941,7 @@ function Scene5({
   );
 }
 
+
 const MemoScene1 = memo(Scene1);
 const MemoScene2 = memo(Scene2);
 const MemoScene3 = memo(Scene3);
@@ -1022,31 +951,6 @@ const MemoScene5 = memo(Scene5);
 // ============================================
 // STEP ICON — numbered pill
 // ============================================
-
-function StepPill({
-  number,
-  isActive,
-  isCurrent,
-}: {
-  number: number;
-  isActive: boolean;
-  isCurrent: boolean;
-}) {
-  return (
-    <div
-      className="text-index transition-colors duration-300"
-      style={{
-        color: isCurrent
-          ? "#FFFFFF"
-          : isActive
-            ? "rgba(255,255,255,0.5)"
-            : "rgba(255,255,255,0.22)",
-      }}
-    >
-      {String(number).padStart(2, "0")}
-    </div>
-  );
-}
 
 // ============================================
 // MAIN COMPONENT — logic untouched
@@ -1233,16 +1137,10 @@ export function JourneyBattery() {
       // Store the ScrollTrigger instance
       scrollTriggerRef.current = st;
 
-      gsap.fromTo(
-        ".journey-header",
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-        },
-      );
+      // NB: a `.journey-header` reveal used to live here. It was registered
+      // inside the min-width:1024px matchMedia, but the only element carrying
+      // that class is inside a lg:hidden block — so it animated a node that is
+      // never visible when the animation is active, and never ran when it was.
     }, sectionRef);
 
       return () => ctx.revert();
@@ -1319,9 +1217,6 @@ export function JourneyBattery() {
                           <p className="text-caption text-on-dark/55 mt-0.5">
                             {step.subtitle}
                           </p>
-                          {/* <p className="text-sm text-slate-500">
-                            {step.subtitle}
-                          </p> */}
                         </div>
                       </div>
                     </div>
@@ -1337,7 +1232,7 @@ export function JourneyBattery() {
                 <div
                   className="relative flex items-center rounded-lg px-1.5 py-1.5"
                   style={{
-                    background: "linear-gradient(145deg, #1e293b, #0f172a)",
+                    background: `linear-gradient(145deg, ${ILLO.body}, ${ILLO.stage})`,
                     boxShadow:
                       "0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)",
                   }}
@@ -1388,8 +1283,8 @@ export function JourneyBattery() {
                             background: isFilled
                               ? isCharging ||
                                 (mobileActiveCard >= 4 && isCompleted)
-                                ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
-                                : "linear-gradient(180deg, #FF9433 0%, #FF7A00 100%)"
+                                ? `linear-gradient(180deg, ${ILLO.liveGlow} 0%, ${ILLO.live} 100%)`
+                                : `linear-gradient(180deg, ${ILLO.liveGlow} 0%, ${ILLO.live} 100%)`
                               : "rgba(71,85,105,0.4)",
                             boxShadow: isFilled
                               ? isCharging
@@ -1429,7 +1324,7 @@ export function JourneyBattery() {
                     className="w-1.5 h-3 rounded-r-sm ml-1"
                     style={{
                       background:
-                        "linear-gradient(180deg, #64748b 0%, #475569 100%)",
+                        `linear-gradient(180deg, ${ILLO.seam} 0%, ${ILLO.idle} 100%)`,
                     }}
                   />
                 </div>
@@ -1441,10 +1336,10 @@ export function JourneyBattery() {
                     style={{
                       color:
                         mobileActiveCard >= 4
-                          ? "#22c55e"
+                          ? ILLO.live
                           : mobileActiveCard >= 2
-                            ? "#4ade80"
-                            : "#94a3b8",
+                            ? ILLO.liveGlow
+                            : ILLO.seam,
                     }}
                   >
                     {mobileActiveCard >= 4
@@ -1461,9 +1356,9 @@ export function JourneyBattery() {
 
               {/* Tap hint */}
               <p className="text-center text-[10px] text-white/55 mt-3 flex items-center justify-center gap-2">
-                <span className="w-4 h-px bg-slate-300" />
+                <span className="w-4 h-px bg-ink-300" />
                 Tap battery or swipe
-                <span className="w-4 h-px bg-slate-300" />
+                <span className="w-4 h-px bg-ink-300" />
               </p>
             </div>
           </div>
@@ -1550,7 +1445,7 @@ export function JourneyBattery() {
                         className="h-full transition-none"
                         style={{
                           background:
-                            "#FF7A00",
+                            ILLO.live,
                           width:
                             activeStep === i
                               ? `${getStepProgress(i) * 100}%`

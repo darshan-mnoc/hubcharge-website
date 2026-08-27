@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BatteryCharging, ChevronDown, Info } from "lucide-react";
-import { evModels, getModel, type EvModel } from "@/lib/ev-models";
+import { BatteryCharging, Info } from "lucide-react";
+import { getModel, type EvModel } from "@/lib/ev-models";
+import { ModelPicker } from "@/components/model-picker";
+import { CurveSpark } from "@/components/curve-spark";
 import {
   simulateSession,
   minutesBetweenSoc,
@@ -20,6 +22,33 @@ const STAYS = [
 ] as const;
 
 const START_SOCS = [10, 20, 40, 60] as const;
+
+/** A numbered control group. Four unlabelled stacks read as one long list;
+ *  numbering them says there are exactly four decisions and you're on the second. */
+function Step({
+  n,
+  label,
+  children,
+}: {
+  n: number;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="grid grid-cols-[1.5rem_1fr] gap-x-3">
+      <span
+        aria-hidden
+        className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full border border-white/20 text-[11px] text-on-dark/70"
+      >
+        {n}
+      </span>
+      <div className="min-w-0">
+        <p className="text-caption text-on-dark/60 mb-2">{label}</p>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 /**
  * Per-station charging estimate.
@@ -49,17 +78,6 @@ export function PlanYourStop({ station }: { station: Station }) {
     [model, station.maxKw, temp]
   );
 
-  // Grouped for the picker so ~31 models stay navigable.
-  const grouped = useMemo(() => {
-    const byMake = new Map<string, EvModel[]>();
-    evModels.forEach((m) => {
-      const list = byMake.get(m.makeId) ?? [];
-      list.push(m);
-      byMake.set(m.makeId, list);
-    });
-    return [...byMake.entries()];
-  }, []);
-
   return (
     <section id="plan" className="bg-ink-900 rounded-lg p-5 sm:p-8 scroll-mt-28">
       <p className="text-overline text-white/55">Plan your stop</p>
@@ -71,42 +89,20 @@ export function PlanYourStop({ station }: { station: Station }) {
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12 items-start">
         <div className="space-y-5 min-w-0">
           {/* Model */}
-          <div>
-            <label
-              htmlFor="pys-model"
-              className="block text-caption text-on-dark/60 mb-2"
-            >
-              Your car
-            </label>
-            <div className="relative">
-              <select
+          <Step n={1} label="Your car">
+            <div className="max-w-sm">
+              <ModelPicker
                 id="pys-model"
                 value={modelId}
-                onChange={(e) => setModelId(e.target.value)}
-                className="w-full appearance-none rounded-lg border border-white/20 bg-ink-800 pl-4 pr-10 py-3 text-body-sm text-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/25"
-              >
-                {grouped.map(([makeId, models]) => (
-                  <optgroup key={makeId} label={models[0].name.split(" ")[0]}>
-                    {models.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.name}
-                      </option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-              <ChevronDown
-                aria-hidden
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50"
+                onChange={setModelId}
+                label=""
+                tone="dark"
               />
             </div>
-          </div>
+          </Step>
 
           {/* Starting charge */}
-          <div>
-            <p className="text-caption text-on-dark/60 mb-2">
-              Battery when you arrive
-            </p>
+          <Step n={2} label="Battery when you arrive">
             <div
               role="radiogroup"
               aria-label="Battery when you arrive"
@@ -131,11 +127,10 @@ export function PlanYourStop({ station }: { station: Station }) {
                 );
               })}
             </div>
-          </div>
+          </Step>
 
           {/* Stay length */}
-          <div>
-            <p className="text-caption text-on-dark/60 mb-2">How long you stay</p>
+          <Step n={3} label="How long you stay">
             <div
               role="radiogroup"
               aria-label="How long you stay"
@@ -161,11 +156,10 @@ export function PlanYourStop({ station }: { station: Station }) {
                 );
               })}
             </div>
-          </div>
+          </Step>
 
           {/* Weather */}
-          <div>
-            <p className="text-caption text-on-dark/60 mb-2">Weather</p>
+          <Step n={4} label="Weather">
             <div role="radiogroup" aria-label="Weather" className="flex flex-wrap gap-2">
               {Object.values(TEMPERATURE_FACTORS).map((t) => {
                 const active = t.id === temp;
@@ -186,7 +180,7 @@ export function PlanYourStop({ station }: { station: Station }) {
                 );
               })}
             </div>
-          </div>
+          </Step>
         </div>
 
         {/* Result */}
@@ -209,9 +203,12 @@ export function PlanYourStop({ station }: { station: Station }) {
               className="text-stat text-white whitespace-nowrap"
             >
               {result.milesLow}–{result.milesHigh}
-              <span className="text-h3 text-white/70 ml-1.5">mi</span>
+              <span className="text-h2 text-on-dark/60 ml-2">mi</span>
             </motion.p>
           </AnimatePresence>
+
+          {/* The shape behind the number — same curve the estimate integrates. */}
+          <CurveSpark model={model} className="mt-4 h-9 w-full max-w-[17ch] lg:ml-auto opacity-70" />
 
           <dl className="mt-5 space-y-1.5 text-caption">
             <div className="flex gap-2 lg:justify-end">
@@ -229,7 +226,7 @@ export function PlanYourStop({ station }: { station: Station }) {
           </dl>
 
           {result.vehicleLimited && (
-            <p className="mt-4 flex gap-1.5 lg:justify-end text-[11px] text-brass">
+            <p className="mt-4 flex gap-1.5 lg:justify-end text-caption text-brass">
               <Info aria-hidden className="h-3 w-3 mt-0.5 shrink-0" />
               <span className="lg:text-right">
                 This car peaks at {model.peakKw}kW — it, not our charger, sets
@@ -241,12 +238,12 @@ export function PlanYourStop({ station }: { station: Station }) {
       </div>
 
       {model.note && (
-        <p className="mt-7 flex gap-2 text-[11px] text-on-dark/60 max-w-[80ch]">
+        <p className="mt-7 flex gap-2 text-caption text-on-dark/60 max-w-[80ch]">
           <Info aria-hidden className="h-3.5 w-3.5 mt-0.5 shrink-0 text-brass" />
           {model.note}
         </p>
       )}
-      <p className="text-[11px] text-white/55 mt-3 max-w-[80ch]">{ESTIMATE_BASIS}</p>
+      <p className="text-caption text-on-dark/60 mt-3 max-w-[80ch]">{ESTIMATE_BASIS}</p>
     </section>
   );
 }
