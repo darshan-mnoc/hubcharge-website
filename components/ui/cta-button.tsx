@@ -22,9 +22,11 @@ const BASE =
 const VARIANT: Record<Variant, string> = {
   primary:
     "bg-brand text-white hover:bg-brand-hover focus-visible:ring-brand-ink focus-visible:ring-offset-white",
-  // Ghost button for light sections.
+  // Ghost button for light sections. The border is the only thing marking the
+  // control, so it needs 3:1 against white (WCAG 1.4.11) — ink-400 is 3.35:1,
+  // where the paper hairlines used elsewhere would be 1.8:1.
   secondary:
-    "bg-transparent border border-gray-300 text-gray-700 hover:border-brand-ink hover:text-brand-ink focus-visible:ring-brand-ink focus-visible:ring-offset-white",
+    "bg-transparent border border-ink-400 text-ink-700 hover:border-brand-ink hover:text-brand-ink focus-visible:ring-brand-ink focus-visible:ring-offset-white",
   // Same shape, tuned for the navy (bg-hero) bands.
   secondaryOnDark:
     "bg-transparent border border-white/25 text-on-dark hover:border-brand hover:text-brand focus-visible:ring-brand focus-visible:ring-offset-hero",

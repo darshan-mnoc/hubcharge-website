@@ -45,7 +45,11 @@ const config: Config = {
         //    ink.300/400 are rules and decoration only, never body text.
         ink: {
           900: '#0A192F', 800: '#10233D', 700: '#1B3252', 600: '#2C4468',
-          500: '#48607F', 400: '#7B8CA3', 300: '#B4BFCC', 200: '#DCE2E9',
+          // 400 is the quiet-caption step and is only ever used as text on a
+          // light ground. It was #7B8CA3 — 3.4:1 on white, which fails AA for
+          // body text at any size. #647287 keeps the same hue and role at
+          // 4.9:1 on white and 4.5:1 on the warm paper grounds.
+          500: '#48607F', 400: '#647287', 300: '#B4BFCC', 200: '#DCE2E9',
           100: '#EDF0F4',
         },
 

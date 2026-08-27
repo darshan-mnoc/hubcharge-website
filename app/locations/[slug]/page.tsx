@@ -263,7 +263,7 @@ export default async function StationPage({
 
         {/* Right: map + nearby */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-lg overflow-hidden border border-gray-200 h-72">
+          <div className="rounded-lg overflow-hidden border border-paper-300 h-72">
             <iframe
               title={`Map of ${station.name}`}
               src={mapEmbedUrl(station)}

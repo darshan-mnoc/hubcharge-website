@@ -298,7 +298,7 @@ export function ProblemSection() {
           viewport={{ once: true }}
           className="flex flex-col items-center gap-3 mb-16"
         >
-          <p className="text-gray-500 text-sm uppercase tracking-widest">
+          <p className="text-ink-500 text-sm uppercase tracking-widest">
             There&apos;s a better way
           </p>
           <motion.div
@@ -473,7 +473,7 @@ export function ProblemSection() {
             <motion.a
               href="#how-it-works"
               whileHover={{ scale: 1.05 }}
-              className="inline-flex items-center gap-3 link text-lg font-semibold group"
+              className="inline-flex items-center gap-3 text-brand hover:text-brand-hover transition-colors text-lg font-semibold group"
             >
               See the full charging experience
               <motion.span

@@ -185,7 +185,7 @@ export function FindYourHub() {
           <form onSubmit={handleSearch} className="relative">
             <div className="relative flex items-center">
               <div className="absolute left-4 pointer-events-none">
-                <Search className="h-5 w-5 text-gray-500" />
+                <Search className="h-5 w-5 text-ink-500" />
               </div>
               <input
                 type="text"
@@ -196,7 +196,7 @@ export function FindYourHub() {
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
                 placeholder="Enter your ZIP code"
-                className="w-full pl-11 pr-32 sm:pr-36 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-brand/50 focus:ring-2 focus:ring-brand/20 transition-all"
+                className="w-full pl-11 pr-32 sm:pr-36 py-4 bg-paper-100 border border-paper-300 rounded-lg text-ink-900 placeholder:text-ink-500 focus:outline-none focus:border-brand/50 focus:ring-2 focus:ring-brand/20 transition-all"
               />
               <motion.button
                 type="submit"
@@ -229,7 +229,7 @@ export function FindYourHub() {
           <div className="flex items-center justify-center gap-2 mt-4">
             <button
               onClick={handleUseLocation}
-              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-ink transition-colors"
+              className="flex items-center gap-1.5 text-sm text-ink-500 hover:text-brand-ink transition-colors"
             >
               <Navigation className="h-3.5 w-3.5" />
               Use current location
@@ -237,7 +237,7 @@ export function FindYourHub() {
           </div>
           {searchNote && (
             <div className="flex items-center justify-center mt-2">
-              <p className="text-xs text-gray-500">{searchNote}</p>
+              <p className="text-xs text-ink-500">{searchNote}</p>
             </div>
           )}
         </motion.div>
@@ -247,7 +247,7 @@ export function FindYourHub() {
           {/* Station List */}
           <div className="lg:col-span-2">
             <div className="sticky top-24">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-ink-900 mb-4 flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-ink-700" />
                 {searchResults
                   ? `${searchResults.length} Station${searchResults.length === 1 ? "" : "s"} Found`
@@ -269,7 +269,7 @@ export function FindYourHub() {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-bold text-gray-900">
+                          <h4 className="font-bold text-ink-900">
                             {station.name}
                           </h4>
                           {(() => {
@@ -290,10 +290,10 @@ export function FindYourHub() {
                             );
                           })()}
                         </div>
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-ink-500 text-sm">
                           {station.address}
                         </p>
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-ink-500 text-sm">
                           {station.city}, {station.state} {station.zip}
                         </p>
                         {distances?.[station.id] != null && (
@@ -302,7 +302,7 @@ export function FindYourHub() {
                           </p>
                         )}
                       </div>
-                      <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-brand-ink transition-colors" />
+                      <ChevronRight className="h-5 w-5 text-ink-300 group-hover:text-brand-ink transition-colors" />
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-3">
@@ -310,7 +310,7 @@ export function FindYourHub() {
                         <Zap className="h-3 w-3" />
                         {station.power}
                       </span>
-                      {/* <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-gray-50 text-gray-500 text-xs">
+                      {/* <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-paper-100 text-ink-500 text-xs">
                         <Clock className="h-3 w-3" />
                         {station.hours}
                       </span> */}
@@ -344,9 +344,9 @@ export function FindYourHub() {
                       <a
                         href={`tel:+1${station.phone.replace(/\D/g, "")}`}
                         aria-label={`Call ${station.name}`}
-                        className="flex items-center justify-center w-10 h-10 rounded-lg glass-light border border-gray-200 hover:border-brand/50 transition-colors"
+                        className="flex items-center justify-center w-10 h-10 rounded-lg glass-light border border-paper-300 hover:border-brand/50 transition-colors"
                       >
-                        <Phone className="h-4 w-4 text-gray-500" />
+                        <Phone className="h-4 w-4 text-ink-500" />
                       </a>
                     </div>
                     <a
@@ -362,9 +362,9 @@ export function FindYourHub() {
               </div>
 
               {/* Attendant note */}
-              <div className="flex items-start gap-2.5 mt-4 p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                <AlertCircle className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-gray-600 leading-relaxed">
+              <div className="flex items-start gap-2.5 mt-4 p-3.5 rounded-xl bg-paper-100 border border-paper-300">
+                <AlertCircle className="h-4 w-4 text-ink-500 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-ink-600 leading-relaxed">
                   Attendant availability varies by location and time. Check
                   station details for current availability.
                 </p>
@@ -377,7 +377,7 @@ export function FindYourHub() {
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-3 rounded-lg overflow-hidden border border-gray-200 bg-ink-900 min-h-[500px]"
+            className="lg:col-span-3 rounded-lg overflow-hidden border border-paper-300 bg-ink-900 min-h-[500px]"
           >
             <StationMap
               stations={stations}
@@ -410,7 +410,7 @@ export function FindYourHub() {
                 <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
                   <Coffee className="h-5 w-5 text-amber-400" />
                 </div>
-                <h4 className="font-semibold text-gray-900">Coffee & Tea</h4>
+                <h4 className="font-semibold text-ink-900">Coffee & Tea</h4>
               </div>
               <div className="space-y-3">
                 {nearby.coffee.map((place, i) => (
@@ -426,7 +426,7 @@ export function FindYourHub() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.06 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 hover:border-brand/40 transition-colors"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-paper-300 hover:border-brand/40 transition-colors"
                   >
                     <span className="text-ink-700">{place.name}</span>
                     <span className="text-ink-400 text-sm">{place.walk} walk</span>
@@ -441,7 +441,7 @@ export function FindYourHub() {
                 <div className="w-10 h-10 rounded-lg bg-brand/20 flex items-center justify-center">
                   <Utensils className="h-5 w-5 text-ink-700" />
                 </div>
-                <h4 className="font-semibold text-gray-900">Food & Dining</h4>
+                <h4 className="font-semibold text-ink-900">Food & Dining</h4>
               </div>
               <div className="space-y-3">
                 {nearby.food.map((place, i) => (
@@ -457,7 +457,7 @@ export function FindYourHub() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.06 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 hover:border-brand/40 transition-colors"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-paper-300 hover:border-brand/40 transition-colors"
                   >
                     <span className="text-ink-700">{place.name}</span>
                     <span className="text-ink-400 text-sm">{place.walk} walk</span>
@@ -472,7 +472,7 @@ export function FindYourHub() {
                 <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
                   <ShoppingBag className="h-5 w-5 text-blue-400" />
                 </div>
-                <h4 className="font-semibold text-gray-900">Shopping & More</h4>
+                <h4 className="font-semibold text-ink-900">Shopping & More</h4>
               </div>
               <div className="space-y-3">
                 {nearby.retail.map((place, i) => (
@@ -488,7 +488,7 @@ export function FindYourHub() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.06 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 hover:border-brand/40 transition-colors"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-paper-300 hover:border-brand/40 transition-colors"
                   >
                     <span className="text-ink-700">{place.name}</span>
                     <span className="text-ink-400 text-sm">{place.walk} walk</span>
@@ -529,7 +529,7 @@ export function FindYourHub() {
                     className={`rounded-full border px-4 py-2 text-body-sm transition-colors ${
                       active
                         ? "border-brand bg-brand text-white"
-                        : "border-gray-200 text-ink-600 hover:border-brand/50"
+                        : "border-paper-300 text-ink-600 hover:border-brand/50"
                     }`}
                   >
                     {location}
@@ -543,7 +543,7 @@ export function FindYourHub() {
                 className={`rounded-full border px-4 py-2 text-body-sm transition-colors ${
                   wantedLocations.includes(SOMEWHERE_ELSE)
                     ? "border-brand bg-brand text-white"
-                    : "border-gray-200 text-ink-600 hover:border-brand/50"
+                    : "border-paper-300 text-ink-600 hover:border-brand/50"
                 }`}
               >
                 {SOMEWHERE_ELSE}
@@ -568,7 +568,7 @@ export function FindYourHub() {
                   value={notifyEmail}
                   onChange={(e) => setNotifyEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-brand/50"
+                  className="flex-1 px-4 py-3 bg-paper-100 border border-paper-300 rounded-xl text-ink-900 placeholder:text-ink-500 focus:outline-none focus:border-brand/50"
                 />
                 <motion.button
                   type="submit"

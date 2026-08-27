@@ -54,7 +54,7 @@ export function PageShell({
   const titleCls = dark ? "text-white" : "text-ink-900";
   const introCls = dark ? "text-on-dark/80" : "text-ink-500";
   const eyebrowCls = dark ? "text-white/55" : "text-ink-500";
-  const metaCls = dark ? "text-white/45" : "text-ink-400";
+  const metaCls = dark ? "text-white/55" : "text-ink-400";
 
   const lead = (
     <>

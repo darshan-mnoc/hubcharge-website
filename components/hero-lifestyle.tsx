@@ -136,7 +136,7 @@ export function HeroLifestyle() {
             </div>
           ))}
         </div>
-        <p className="section-container text-[11px] text-white/35 pb-5">
+        <p className="section-container text-[11px] text-white/55 pb-5">
           *Attendant service at select locations and hours. Charging speed and
           added range vary by vehicle, battery state of charge, and temperature.
         </p>

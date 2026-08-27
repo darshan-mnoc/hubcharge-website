@@ -54,12 +54,12 @@ export function ChargerAccess() {
             >
               Get Charging
             </motion.p>
-            <motion.h2 variants={fadeUp} className="text-h2 text-gray-900 mb-4">
+            <motion.h2 variants={fadeUp} className="text-h2 text-ink-900 mb-4">
               No app. Just your browser.
             </motion.h2>
             <motion.p
               variants={fadeUp}
-              className="text-body-lg text-gray-600 mb-8 max-w-md"
+              className="text-body-lg text-ink-600 mb-8 max-w-md"
             >
               Skip the download. HubCharge™ runs right in your phone&apos;s
               browser — tap, scan, and you&apos;re charging in seconds.
@@ -70,7 +70,7 @@ export function ChargerAccess() {
               {steps.map((s, i) => (
                 <li key={s.title} className="flex items-start gap-4">
                   <div className="relative flex-shrink-0">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-gray-200 shadow-sm">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-paper-300 shadow-sm">
                       <s.icon className="h-5 w-5 text-ink-700" />
                     </div>
                     <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-white">
@@ -78,8 +78,8 @@ export function ChargerAccess() {
                     </span>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">{s.title}</p>
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                    <p className="font-semibold text-ink-900">{s.title}</p>
+                    <p className="text-sm text-ink-600 leading-relaxed">
                       {s.desc}
                     </p>
                   </div>
@@ -95,7 +95,7 @@ export function ChargerAccess() {
               {reassurance.map((r) => (
                 <span
                   key={r}
-                  className="inline-flex items-center gap-2 text-sm text-gray-700"
+                  className="inline-flex items-center gap-2 text-sm text-ink-700"
                 >
                   <Check className="h-4 w-4 text-ink-700" />
                   {r}
@@ -108,7 +108,7 @@ export function ChargerAccess() {
                 Find a charger near you
                 <ArrowRight className="h-5 w-5" />
               </CtaButton>
-              <p className="mt-4 text-sm text-gray-500">
+              <p className="mt-4 text-sm text-ink-500">
                 First visit?{" "}
                 <Link href="/what-to-expect" className="text-brand-ink underline underline-offset-2">
                   See what to expect

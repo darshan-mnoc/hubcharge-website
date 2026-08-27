@@ -323,7 +323,7 @@ export function BatteryNav() {
               </nav>
 
               <div className="mb-10">
-                <p className="text-overline text-white/45 mb-3">Popular guides</p>
+                <p className="text-overline text-white/55 mb-3">Popular guides</p>
                 <div className="space-y-1">
                   {navGuides.map((g) => (
                     <Link
@@ -333,7 +333,7 @@ export function BatteryNav() {
                       className="flex items-baseline justify-between gap-4 py-2.5 border-t border-white/[0.07] text-on-dark/80 hover:text-white transition-colors"
                     >
                       <span className="text-body-sm">{g.navTitle ?? g.title}</span>
-                      <span className="text-caption text-white/40 shrink-0">
+                      <span className="text-caption text-white/55 shrink-0">
                         {g.read}
                       </span>
                     </Link>

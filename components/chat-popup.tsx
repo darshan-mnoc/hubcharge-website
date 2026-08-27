@@ -282,7 +282,7 @@ export function ChatPopup() {
                             }`}
                           >
                             <option.icon
-                              className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-orange-400" : "text-white/40"}`}
+                              className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-orange-400" : "text-white/55"}`}
                             />
                             <span
                               className={`text-xs sm:text-sm font-medium ${isSelected ? "text-orange-400" : "text-white/60"}`}
@@ -327,7 +327,7 @@ export function ChatPopup() {
                       {sending ? "Sending…" : "Send Feedback"}
                     </motion.button>
 
-                    <p className="text-center text-[10px] sm:text-xs text-white/30 mt-3 sm:mt-4">
+                    <p className="text-center text-[10px] sm:text-xs text-white/55 mt-3 sm:mt-4">
                       We read every suggestion
                     </p>
                   </motion.form>

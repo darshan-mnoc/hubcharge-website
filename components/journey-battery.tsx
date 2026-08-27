@@ -612,7 +612,7 @@ function Scene1({
           <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
             Pick your spot
           </p>
-          <p className="text-[10px] text-white/40 mt-0.5">
+          <p className="text-[10px] text-white/55 mt-0.5">
             NACS or CCS
           </p>
         </FloatingCard>
@@ -634,7 +634,7 @@ function Scene1({
           className="absolute left-12 bottom-10"
           style={{ opacity: 0.5 - progress * 0.8 }}
         >
-          <MotionSVG className="w-5 text-white/40" />
+          <MotionSVG className="w-5 text-white/55" />
         </div>
       )}
     </div>
@@ -672,7 +672,7 @@ function Scene2({
           <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
             Stay in your car<span className="text-red-500">*</span>
           </p>
-          <p className="text-[10px] text-white/40 mt-0.5">
+          <p className="text-[10px] text-white/55 mt-0.5">
             We come to you
           </p>
         </FloatingCard>
@@ -845,7 +845,7 @@ function Scene4({
           <p className="text-overline text-white/55 text-[10px] tracking-[0.14em]">
             Select your services
           </p>
-          <p className="text-[10px] text-white/40 mt-0.5">
+          <p className="text-[10px] text-white/55 mt-0.5">
             or add more charging time
           </p>
         </FloatingCard>
@@ -863,7 +863,7 @@ function Scene4({
               <span className="text-[9px] text-white font-bold">H</span>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-800 leading-tight">
+              <p className="text-[10px] font-semibold text-ink-800 leading-tight">
                 75+ miles added
               </p>
             </div>
@@ -1001,7 +1001,7 @@ function Scene5({
           className="absolute left-12 bottom-10"
           style={{ opacity: progress * 0.5 }}
         >
-          <MotionSVG className="w-5 text-white/40" />
+          <MotionSVG className="w-5 text-white/55" />
         </div>
       )}
 
@@ -1311,7 +1311,7 @@ export function JourneyBattery() {
                     {/* Step content */}
                     <div className="p-4 bg-ink-800 border-t border-white/[0.07]">
                       <div className="flex items-center gap-3">
-                        <div className="text-index text-white/45 shrink-0">
+                        <div className="text-index text-white/55 shrink-0">
                           {String(step.id).padStart(2, "0")}
                         </div>
                         <div>
@@ -1460,7 +1460,7 @@ export function JourneyBattery() {
               </div>
 
               {/* Tap hint */}
-              <p className="text-center text-[10px] text-white/40 mt-3 flex items-center justify-center gap-2">
+              <p className="text-center text-[10px] text-white/55 mt-3 flex items-center justify-center gap-2">
                 <span className="w-4 h-px bg-slate-300" />
                 Tap battery or swipe
                 <span className="w-4 h-px bg-slate-300" />

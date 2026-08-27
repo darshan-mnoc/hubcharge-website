@@ -60,7 +60,7 @@ export default function CompatibilityPage() {
         {/* Honest exception */}
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 mb-8 flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div className="text-sm text-gray-700">
+          <div className="text-sm text-ink-700">
             <p className="font-semibold mb-1">
               One honest exception: older Nissan Leaf (2011–2025)
             </p>

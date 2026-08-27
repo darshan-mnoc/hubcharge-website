@@ -105,15 +105,15 @@ export function PricingExperience() {
           >
             Pricing, reimagined
           </motion.p>
-          <motion.h2 variants={fadeUp} className="text-h2 text-gray-900 mb-4">
+          <motion.h2 variants={fadeUp} className="text-h2 text-ink-900 mb-4">
             One flat rate. No surprises.
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="text-body-lg text-gray-600 max-w-xl"
+            className="text-body-lg text-ink-600 max-w-xl"
           >
             Design your stop below. Whatever you pick, you&apos;ll{" "}
-            <span className="font-semibold text-gray-800">
+            <span className="font-semibold text-ink-800">
               know your flat rate before you plug in
             </span>
             .
@@ -123,10 +123,10 @@ export function PricingExperience() {
         {/* Builder */}
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
           {/* LEFT — choices */}
-          <div className="rounded-lg bg-white border border-gray-100 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_12px_28px_-12px_rgba(16,24,40,0.10)] p-6 lg:p-8 space-y-8">
+          <div className="rounded-lg bg-white border border-paper-300 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_12px_28px_-12px_rgba(16,24,40,0.10)] p-6 lg:p-8 space-y-8">
             {/* 1. distance */}
             <div>
-              <p className="text-overline text-gray-500 mb-3">
+              <p className="text-overline text-ink-500 mb-3">
                 1 · How far do you need?
               </p>
               <div
@@ -145,15 +145,15 @@ export function PricingExperience() {
                       className={`rounded-xl border px-3 py-3 text-center transition-all ${
                         active
                           ? "border-brand bg-brand/5 ring-1 ring-brand/30"
-                          : "border-gray-200 hover:border-gray-300"
+                          : "border-paper-300 hover:border-paper-400"
                       }`}
                     >
                       <span
-                        className={`block text-sm font-semibold ${active ? "text-brand-ink" : "text-gray-800"}`}
+                        className={`block text-sm font-semibold ${active ? "text-brand-ink" : "text-ink-800"}`}
                       >
                         {d.label}
                       </span>
-                      <span className="block text-xs text-gray-500 mt-0.5">
+                      <span className="block text-xs text-ink-500 mt-0.5">
                         {d.time}
                       </span>
                     </button>
@@ -164,7 +164,7 @@ export function PricingExperience() {
 
             {/* 2. car */}
             <div>
-              <p className="text-overline text-gray-500 mb-3">2 · Your car</p>
+              <p className="text-overline text-ink-500 mb-3">2 · Your car</p>
               <div
                 className="flex flex-wrap gap-2"
                 role="radiogroup"
@@ -181,7 +181,7 @@ export function PricingExperience() {
                       className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
                         active
                           ? "border-brand bg-brand text-white"
-                          : "border-gray-200 text-gray-700 hover:border-gray-300"
+                          : "border-paper-300 text-ink-700 hover:border-paper-400"
                       }`}
                     >
                       {c.name}
@@ -193,7 +193,7 @@ export function PricingExperience() {
 
             {/* 3. addons */}
             <div>
-              <p className="text-overline text-gray-500 mb-3">
+              <p className="text-overline text-ink-500 mb-3">
                 3 · While you charge
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -207,16 +207,16 @@ export function PricingExperience() {
                       className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
                         active
                           ? "border-brand bg-brand/5 ring-1 ring-brand/30"
-                          : "border-gray-200 hover:border-gray-300"
+                          : "border-paper-300 hover:border-paper-400"
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? "bg-brand/15 text-brand-ink" : "bg-gray-100 text-gray-500"}`}
+                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? "bg-brand/15 text-brand-ink" : "bg-paper-200 text-ink-500"}`}
                       >
                         <a.icon className="h-4 w-4" />
                       </span>
                       <span
-                        className={`text-sm font-medium ${active ? "text-gray-900" : "text-gray-600"}`}
+                        className={`text-sm font-medium ${active ? "text-ink-900" : "text-ink-600"}`}
                       >
                         {a.label}
                       </span>
@@ -224,14 +224,14 @@ export function PricingExperience() {
                         {active ? (
                           <Check className="h-4 w-4 text-ink-700" />
                         ) : (
-                          <span className="h-4 w-4 rounded-full border border-gray-300 block" />
+                          <span className="h-4 w-4 rounded-full border border-paper-400 block" />
                         )}
                       </span>
                     </button>
                   );
                 })}
               </div>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-ink-500 mt-2">
                 Lifestyle services launching at select hubs.
               </p>
             </div>

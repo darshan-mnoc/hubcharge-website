@@ -215,15 +215,15 @@ export function PlanYourStop({ station }: { station: Station }) {
 
           <dl className="mt-5 space-y-1.5 text-caption">
             <div className="flex gap-2 lg:justify-end">
-              <dt className="text-on-dark/50">Battery after</dt>
+              <dt className="text-on-dark/60">Battery after</dt>
               <dd className="text-on-dark">{startSoc}% → {result.endSoc}%</dd>
             </div>
             <div className="flex gap-2 lg:justify-end">
-              <dt className="text-on-dark/50">Average power</dt>
+              <dt className="text-on-dark/60">Average power</dt>
               <dd className="text-on-dark">{result.avgKw} kW</dd>
             </div>
             <div className="flex gap-2 lg:justify-end">
-              <dt className="text-on-dark/50">10–80% here</dt>
+              <dt className="text-on-dark/60">10–80% here</dt>
               <dd className="text-on-dark">{tenToEighty} min</dd>
             </div>
           </dl>
@@ -246,7 +246,7 @@ export function PlanYourStop({ station }: { station: Station }) {
           {model.note}
         </p>
       )}
-      <p className="text-[11px] text-white/35 mt-3 max-w-[80ch]">{ESTIMATE_BASIS}</p>
+      <p className="text-[11px] text-white/55 mt-3 max-w-[80ch]">{ESTIMATE_BASIS}</p>
     </section>
   );
 }

@@ -54,9 +54,9 @@ export default function ConnectorsPage() {
                 sizes="200px"
               />
             </div>
-            <h2 className="font-bold text-midnight-navy text-lg">{c.name}</h2>
-            <p className="text-gray-500 text-xs mb-3">{c.sub}</p>
-            <p className="text-gray-600 text-sm text-left">{c.body}</p>
+            <h2 className="font-bold text-ink-900 text-lg">{c.name}</h2>
+            <p className="text-ink-500 text-xs mb-3">{c.sub}</p>
+            <p className="text-ink-600 text-sm text-left">{c.body}</p>
           </div>
         ))}
       </div>

@@ -27,14 +27,14 @@ export function GuideBreadcrumb({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
       />
       <nav aria-label="Breadcrumb" className="mb-8 -mt-6">
-        <ol className="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+        <ol className="flex flex-wrap items-center gap-2 text-sm text-ink-500">
           {trail.map(([name, href], i) => {
             const last = i === trail.length - 1;
             return (
               <li key={href} className="flex items-center gap-2">
                 {i > 0 && <span aria-hidden>/</span>}
                 {last ? (
-                  <span className="text-gray-600 font-medium" aria-current="page">
+                  <span className="text-ink-600 font-medium" aria-current="page">
                     {name}
                   </span>
                 ) : (

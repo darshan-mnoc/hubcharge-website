@@ -49,15 +49,15 @@ export default function LocationsPage() {
               </span>
             </div>
             <div className="p-6">
-              <h2 className="text-xl font-bold text-midnight-navy mb-2 group-hover:text-brand-ink transition-colors">
+              <h2 className="text-xl font-bold text-ink-900 mb-2 group-hover:text-brand-ink transition-colors">
                 {station.name}
               </h2>
-              <p className="text-gray-500 text-sm mb-4">
+              <p className="text-ink-500 text-sm mb-4">
                 {station.address}
                 {station.address !== station.city && `, ${station.city}`},{" "}
                 {station.state} {station.zip}
               </p>
-              <ul className="space-y-2 text-sm text-gray-600 mb-5">
+              <ul className="space-y-2 text-sm text-ink-600 mb-5">
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-ink-700" />
                   {station.chargers} DC fast charger
@@ -84,10 +84,10 @@ export default function LocationsPage() {
 
       <div className="card-light p-8 text-center">
         <MapPin className="h-8 w-8 text-ink-700 mx-auto mb-3" />
-        <h2 className="text-h3 text-midnight-navy mb-2">
+        <h2 className="text-h3 text-ink-900 mb-2">
           More locations coming soon
         </h2>
-        <p className="text-gray-500 mb-4">
+        <p className="text-ink-500 mb-4">
           {upcomingLocations.join(" · ")} — and more on the way.
         </p>
         <Link
@@ -98,7 +98,7 @@ export default function LocationsPage() {
         </Link>
       </div>
 
-      <p className="text-xs text-gray-500 mt-8 max-w-2xl">
+      <p className="text-xs text-ink-500 mt-8 max-w-2xl">
         *Attendant availability varies by location and time. Actual charging
         speed and added range vary by vehicle, battery state of charge, and
         temperature.
