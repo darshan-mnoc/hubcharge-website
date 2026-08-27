@@ -1,35 +1,36 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Lock, ChevronRight, Wifi, Signal, BatteryFull } from "lucide-react";
-import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import Image from "next/image";
+import { Lock, Wifi, Signal, BatteryFull } from "lucide-react";
 
 /**
- * The charging flow, rendered rather than photographed.
+ * The real product screen, in a device frame.
  *
- * The frame used to hold a photograph of a charger captioned as though it were
- * the interface, which meant the mockup and the prose beside it described
- * different things. This is the actual flow: browser chrome with our domain
- * (the whole point — no app), connector, session length, swipe.
+ * I got this wrong once and it's worth recording why. I replaced this
+ * screenshot with a hand-rendered mock on the belief that the frame held a
+ * photograph of a charger — which I inferred from the filename and a stale
+ * note about the alt text, without ever opening the file. It is in fact a
+ * capture of the actual HubCharge web app: charger ID, connector, the rate,
+ * card entry, swipe to start. The original alt text was accurate; my
+ * description of it was not.
  *
- * Deliberately no price on the screen. Our rate is real and shown in the
- * product before you plug in, but the site does not publish it, and a mockup
- * that leaked a number would be the one place it did.
+ * So the screenshot is back, unaltered, and the work is what it should always
+ * have been: the frame around it.
  *
- * Bezel radii are concentric, each inset subtracted from the one outside it:
- * 44px shell, minus the 3px rim gives 41px, minus the 10px bezel gives 31px.
- * Get this wrong and the corners very slightly disagree, which is most of the
- * difference between a device and a rounded rectangle.
+ * The frame is genuine device hardware now — side buttons, a dynamic island,
+ * an inset glass edge and a home indicator — with concentric radii, each inset
+ * subtracted from the one outside it: 44px shell, 41px rim, 31px screen. Above
+ * the screenshot sit a status bar and a browser address bar showing
+ * hubcharge.com, because that lock icon and that domain are the entire
+ * argument of the section beside this: no app, no store, no account.
+ *
+ * Geometry: the capture is 800x1340, i.e. 1.675W tall at full width. The
+ * screen is 9:17.2 and the chrome above it takes about 0.23W, which leaves
+ * 1.68W — so the image sits at its natural aspect with nothing cropped and
+ * almost nothing left over. The home indicator rests on the last few pixels
+ * of the capture's own black.
  */
 export function PhoneChargingUI() {
-  const reduced = useReducedMotion();
-
   return (
-    <div
-      role="img"
-      aria-label="A phone showing the HubCharge session screen open in a browser at hubcharge.com: NACS connector selected, a ten-minute session chosen, and a swipe-to-start control. No app is installed."
-      className="relative w-[260px] sm:w-[290px] lg:w-[310px]"
-    >
+    <div className="relative w-[260px] sm:w-[290px] lg:w-[310px]">
       {/* side hardware — the thing that separates a device from a card */}
       <span
         aria-hidden
@@ -47,19 +48,19 @@ export function PhoneChargingUI() {
       {/* body */}
       <div className="relative rounded-[2.75rem] bg-gradient-to-b from-ink-700 via-ink-900 to-ink-800 p-[3px] shadow-[0_34px_70px_-22px_rgba(10,25,47,0.55)]">
         <div className="rounded-[2.5625rem] bg-ink-900 p-2.5">
-          <div className="relative flex flex-col rounded-[1.9375rem] overflow-hidden bg-paper aspect-[9/17.5]">
+          <div className="relative flex flex-col rounded-[1.9375rem] overflow-hidden bg-black aspect-[9/17.2]">
             {/* screen glass */}
             <span
               aria-hidden
-              className="pointer-events-none absolute inset-0 z-20 rounded-[1.9375rem] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.28),inset_0_1px_14px_rgba(10,25,47,0.18)]"
+              className="pointer-events-none absolute inset-0 z-20 rounded-[1.9375rem] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16),inset_0_1px_14px_rgba(0,0,0,0.5)]"
             />
 
-            {/* status bar */}
-            <div className="relative flex items-center justify-between px-5 pt-2.5 pb-1 text-[10px] font-semibold text-ink-900">
+            {/* status bar — dark, because the app it sits above is dark */}
+            <div className="relative flex items-center justify-between px-5 pt-2.5 pb-1 text-[10px] font-semibold text-white/90">
               <span>9:41</span>
               <span
                 aria-hidden
-                className="absolute left-1/2 top-1.5 -translate-x-1/2 h-[18px] w-[62px] rounded-full bg-ink-900"
+                className="absolute left-1/2 top-1.5 -translate-x-1/2 h-[18px] w-[62px] rounded-full bg-black"
               />
               <span className="flex items-center gap-1">
                 <Signal className="h-2.5 w-2.5" />
@@ -69,102 +70,29 @@ export function PhoneChargingUI() {
             </div>
 
             {/* browser chrome — the argument, in one line */}
-            <div className="px-3 pt-2.5 pb-2">
-              <div className="flex items-center gap-1.5 rounded-full bg-paper-200 px-3 py-1.5">
-                <Lock aria-hidden className="h-2.5 w-2.5 text-ink-400" />
-                <span className="text-[10px] text-ink-600">hubcharge.com</span>
+            <div className="px-3 pt-2 pb-2.5">
+              <div className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5">
+                <Lock aria-hidden className="h-2.5 w-2.5 text-white/50" />
+                <span className="text-[10px] text-white/80">hubcharge.com</span>
               </div>
             </div>
 
-            {/* session screen */}
-            <div className="flex flex-1 flex-col px-4 pt-1 pb-5">
-              <p className="text-[9px] tracking-[0.14em] uppercase text-ink-400">
-                Alhambra
-              </p>
-              <p className="text-[15px] font-semibold text-ink-900 mt-0.5">
-                Charger 03
-              </p>
-
-              <p className="text-[9px] tracking-[0.14em] uppercase text-ink-400 mt-4 mb-1.5">
-                Connector
-              </p>
-              <div className="flex gap-1.5">
-                <span className="flex-1 rounded-lg bg-brand px-2 py-1.5 text-center text-[10px] font-semibold text-ink-900">
-                  NACS
-                </span>
-                <span className="flex-1 rounded-lg border border-paper-300 px-2 py-1.5 text-center text-[10px] text-ink-500">
-                  CCS
-                </span>
-              </div>
-
-              <p className="text-[9px] tracking-[0.14em] uppercase text-ink-400 mt-3.5 mb-1.5">
-                Session
-              </p>
-              <div className="flex gap-1.5">
-                <span className="flex-1 rounded-lg bg-ink-900 px-2 py-1.5 text-center text-[10px] font-semibold text-white">
-                  10 min
-                </span>
-                <span className="flex-1 rounded-lg border border-paper-300 px-2 py-1.5 text-center text-[10px] text-ink-500">
-                  20 min
-                </span>
-                <span className="flex-1 rounded-lg border border-paper-300 px-2 py-1.5 text-center text-[10px] text-ink-500">
-                  30 min
-                </span>
-              </div>
-
-              <p className="text-[9px] text-ink-400 mt-4 leading-snug">
-                Your flat rate appears here for approval before charging starts.
-              </p>
-
-              {/* Unconditional facts about the hardware, not a live status the
-                  mockup would be pretending to know. */}
-              <dl className="mt-4 border-t border-paper-300 pt-3 space-y-2">
-                {[
-                  ["Cables on this charger", "NACS + CCS"],
-                  ["Maximum output", "180 kW"],
-                  ["Extensions", "Up to 4 per stop"],
-                ].map(([k, v]) => (
-                  <div key={k} className="flex items-baseline justify-between gap-2">
-                    <dt className="text-[9px] text-ink-400">{k}</dt>
-                    <dd className="text-[10px] font-semibold text-ink-900">{v}</dd>
-                  </div>
-                ))}
-              </dl>
-
-              {/* swipe to start */}
-              <div className="relative mt-auto h-11 rounded-full bg-ink-900 overflow-hidden">
-                <span className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold text-white/70">
-                  Swipe to start
-                </span>
-                <motion.span
-                  aria-hidden
-                  className="absolute left-1 top-1 flex h-9 w-9 items-center justify-center rounded-full bg-brand shadow-[0_2px_8px_rgba(10,25,47,0.35)]"
-                  animate={reduced ? undefined : { x: [0, 118, 118, 0] }}
-                  transition={
-                    reduced
-                      ? undefined
-                      : {
-                          duration: 3.4,
-                          times: [0, 0.42, 0.72, 0.86],
-                          repeat: Infinity,
-                          repeatDelay: 1.4,
-                          ease: "easeInOut",
-                        }
-                  }
-                >
-                  <ChevronRight className="h-4 w-4 text-white" />
-                </motion.span>
-              </div>
-
-              <p className="text-center text-[9px] text-ink-400 mt-2.5">
-                No app. No account required.
-              </p>
+            {/* the actual product, unretouched */}
+            <div className="relative w-full">
+              <Image
+                src="/images/charging-service.webp"
+                alt="The HubCharge web app open in a phone browser at hubcharge.com: charger ID MBS_1 on a NACS connector, the session rate of $12.50 for the first ten minutes then $3 per additional five, a card entry field, and a swipe-to-start control. A card authorisation of $30.00 is noted when charging begins."
+                width={800}
+                height={1340}
+                className="w-full h-auto"
+                sizes="(max-width: 640px) 260px, (max-width: 1024px) 290px, 310px"
+              />
             </div>
 
             {/* home indicator */}
             <span
               aria-hidden
-              className="absolute bottom-1.5 left-1/2 h-1 w-24 -translate-x-1/2 rounded-full bg-ink-900/25"
+              className="absolute bottom-1.5 left-1/2 h-1 w-24 -translate-x-1/2 rounded-full bg-white/35"
             />
           </div>
         </div>

@@ -72,11 +72,10 @@ export const stations: Station[] = [
     id: 2,
     slug: "fontana",
     name: "HubCharge™ at Fontana Nissan",
-    // TODO: confirm exact street address (maps directions resolve by name for now)
-    address: "Fontana Nissan",
+    address: "16444 S Highland Ave",
     city: "Fontana",
     state: "CA",
-    zip: "",
+    zip: "92336",
     chargers: 1,
     power: "Up to 180kW",
     maxKw: 180,

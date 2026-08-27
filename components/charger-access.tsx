@@ -140,7 +140,7 @@ export function ChargerAccess() {
               <PhoneChargingUI />
 
               {/* floating badge — sits beside the browser bar it refers to */}
-              <div className="absolute -left-5 bottom-28 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-card-hover border border-paper-300">
+              <div className="absolute -left-5 bottom-8 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-card-hover border border-paper-300">
                 <Globe aria-hidden className="h-4 w-4 text-ink-700" />
                 <span className="text-xs font-semibold text-ink-900">
                   In your browser
