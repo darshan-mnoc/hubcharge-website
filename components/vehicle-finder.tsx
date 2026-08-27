@@ -55,10 +55,10 @@ export function VehicleFinder() {
 
   return (
     <div className="max-w-4xl">
-      <div className="relative mb-4">
+      <div className="field-wrap relative mb-4">
         <Search
           aria-hidden
-          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400"
+          className="field-icon pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400 transition-colors"
         />
         <input
           type="search"

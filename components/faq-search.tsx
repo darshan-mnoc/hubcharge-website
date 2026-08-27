@@ -31,10 +31,10 @@ export function FaqSearch({ groups }: { groups: FaqGroup[] }) {
 
   return (
     <div className="max-w-measure">
-      <div className="relative mb-3">
+      <div className="field-wrap relative mb-3">
         <Search
           aria-hidden
-          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400"
+          className="field-icon pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400 transition-colors"
         />
         <input
           type="search"

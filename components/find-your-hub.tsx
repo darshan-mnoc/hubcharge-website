@@ -184,9 +184,9 @@ export function FindYourHub() {
         >
           <form onSubmit={handleSearch} className="relative">
             <div className="flex items-center gap-2">
-              <div className="relative flex-1">
+              <div className="field-wrap relative flex-1">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <Search className="h-5 w-5 text-ink-500" />
+                  <Search className="field-icon h-5 w-5 text-ink-500 transition-colors" />
                 </div>
                 <input
                 type="text"
