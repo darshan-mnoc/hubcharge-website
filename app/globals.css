@@ -260,22 +260,34 @@
      2.4.7 do not trade off. Each surface sets its own ring offset so the
      indicator never sits on a colour it can't be seen against. */
   .field {
-    @apply w-full rounded-lg border-0 transition-colors duration-150;
+    @apply w-full rounded-lg border-0 transition-all duration-150;
     @apply bg-paper-100 text-ink-900 placeholder:text-ink-500;
     box-shadow: inset 0 -1px 0 theme('colors.paper.400');
   }
   .field:hover {
     box-shadow: inset 0 -1px 0 theme('colors.ink.400');
   }
+  /* Focus is an underline, not a perimeter.
+     A 2px ring around a filled field reads as a box drawn on the page — and
+     for text inputs it shows on mouse click too, because the spec makes text
+     fields match :focus-visible whether you clicked or tabbed. So the whole
+     "no outlines" brief comes down to this rule.
+     An underline still satisfies 2.4.7 Focus Visible, which asks for a visible
+     indicator and does not prescribe its shape. The perimeter/area rule is
+     2.4.13 Focus Appearance, which is Level AAA. Two cues carry it: the rule
+     goes 1px paper-400 -> 2px brand-ink (5.2:1 on this fill), and the fill
+     lightens. The transparent outline is there so Windows High Contrast, which
+     discards box-shadow, still paints something. */
   .field:focus-visible {
-    outline: 2px solid theme('colors.brand.ink');
-    outline-offset: 2px;
-    box-shadow: inset 0 -1px 0 theme('colors.brand.ink');
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    background-color: theme('colors.paper.DEFAULT');
+    box-shadow: inset 0 -2px 0 theme('colors.brand.ink');
   }
 
   /* Same field on the navy bands. */
   .field-dark {
-    @apply w-full rounded-lg border-0 transition-colors duration-150;
+    @apply w-full rounded-lg border-0 transition-all duration-150;
     @apply text-white placeholder:text-on-dark/50;
     background-color: rgb(255 255 255 / 0.06);
     box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.22);
@@ -286,11 +298,21 @@
   }
   .field-dark:focus-visible {
     /* brand orange is 6.7:1 on ink-900; brand-ink would be 2.4:1 there. */
-    outline: 2px solid theme('colors.brand.DEFAULT');
-    outline-offset: 2px;
-    box-shadow: inset 0 -1px 0 theme('colors.brand.DEFAULT');
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    background-color: rgb(255 255 255 / 0.1);
+    box-shadow: inset 0 -2px 0 theme('colors.brand.DEFAULT');
   }
 
+  /* Windows High Contrast discards box-shadow and background, so the
+     underline would vanish. Restore a real border there. */
+  @media (forced-colors: active) {
+    .field:focus-visible,
+    .field-dark:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+  }
 
   /* Safe Area */
   .safe-area-bottom {

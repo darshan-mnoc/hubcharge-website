@@ -162,7 +162,7 @@ export function LifestyleDestinations() {
                     While you charge
                   </p>
                   <motion.span
-                                        className="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-xs font-semibold border border-brand/25"
+                                        className="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-xs font-semibold"
                   >
                     Coming Soon
                   </motion.span>

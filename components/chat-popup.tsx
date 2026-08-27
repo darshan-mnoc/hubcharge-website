@@ -275,17 +275,17 @@ export function ChatPopup() {
                             whileTap={{ scale: 0.98 }}
                             aria-pressed={isSelected}
                             onClick={() => toggleOption(option.value)}
-                            className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-lg border-2 transition-all duration-200 ${
+                            className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-lg border transition-colors duration-200 ${
                               isSelected
-                                ? "border-brand bg-brand/20"
+                                ? "border-transparent bg-brand"
                                 : "border-white/10 bg-white/5 hover:border-white/20"
                             }`}
                           >
                             <option.icon
-                              className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-brand" : "text-white/55"}`}
+                              className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-ink-900" : "text-white/55"}`}
                             />
                             <span
-                              className={`text-xs sm:text-sm font-medium ${isSelected ? "text-brand" : "text-white/60"}`}
+                              className={`text-xs sm:text-sm font-medium ${isSelected ? "text-ink-900" : "text-white/60"}`}
                             >
                               {option.label}
                             </span>

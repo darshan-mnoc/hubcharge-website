@@ -183,11 +183,12 @@ export function FindYourHub() {
           className="max-w-2xl mx-auto mb-12"
         >
           <form onSubmit={handleSearch} className="relative">
-            <div className="relative flex items-center">
-              <div className="absolute left-4 pointer-events-none">
-                <Search className="h-5 w-5 text-ink-500" />
-              </div>
-              <input
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <Search className="h-5 w-5 text-ink-500" />
+                </div>
+                <input
                 type="text"
                 id="zip-search"
                 inputMode="numeric"
@@ -196,14 +197,15 @@ export function FindYourHub() {
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
                 placeholder="Enter your ZIP code"
-                className="field pl-11 pr-32 sm:pr-36 py-4"
-              />
+                  className="field pl-11 pr-4 py-4"
+                />
+              </div>
               <motion.button
                 type="submit"
                 disabled={isSearching}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="absolute right-2 px-4 sm:px-6 py-2.5 text-sm bg-brand hover:bg-brand-hover text-ink-900 font-semibold rounded-lg transition-colors disabled:opacity-50"
+                className="shrink-0 px-4 sm:px-6 py-4 text-sm bg-brand hover:bg-brand-hover text-ink-900 font-semibold rounded-lg transition-colors disabled:opacity-50"
               >
                 {isSearching ? (
                   <span className="flex items-center gap-2">
@@ -260,12 +262,17 @@ export function FindYourHub() {
                     key={station.id}
                     onClick={() => setSelectedId(station.id)}
                     whileHover={{ scale: 1.02 }}
-                    className={`card-light p-5 cursor-pointer group transition-shadow ${
-                      station.id === selectedId
-                        ? "ring-2 ring-brand border-brand/40"
-                        : ""
+                    className={`card-light relative overflow-hidden p-5 pl-6 cursor-pointer group transition-colors ${
+                      station.id === selectedId ? "bg-paper-100" : ""
                     }`}
                   >
+                    {/* selection marker — a rule, not a box */}
+                    <span
+                      aria-hidden
+                      className={`absolute inset-y-0 left-0 w-1 transition-colors ${
+                        station.id === selectedId ? "bg-brand" : "bg-transparent"
+                      }`}
+                    />
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <div className="flex items-center gap-2 mb-1">

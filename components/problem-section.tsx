@@ -342,14 +342,14 @@ export function ProblemSection() {
                           {step.desc}
                         </p>
                         <div className="flex flex-wrap items-center gap-2 pt-1">
-                          <div className="inline-flex items-center gap-2 rounded-full bg-brand/20 border border-brand/30 px-3 py-1.5 backdrop-blur-sm">
+                          <div className="inline-flex items-center gap-2 rounded-full bg-brand/20 px-3 py-1.5 backdrop-blur-sm">
                             <Sparkles className="h-3 w-3 text-brand" />
                             <span className="text-xs font-medium text-brand">
                               {step.highlight}
                             </span>
                           </div>
                           {i === 2 && (
-                            <span className="inline-flex items-center gap-2 rounded-full bg-brand/20 px-3 py-1.5 text-xs font-semibold text-brand border border-brand/30 backdrop-blur-sm">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-brand/20 px-3 py-1.5 text-xs font-semibold text-brand backdrop-blur-sm">
                               Coming Soon
                             </span>
                           )}

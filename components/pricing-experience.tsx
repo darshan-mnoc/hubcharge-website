@@ -142,18 +142,18 @@ export function PricingExperience() {
                       role="radio"
                       aria-checked={active}
                       onClick={() => setDistance(d.id)}
-                      className={`rounded-lg border px-3 py-3 text-center transition-all ${
+                      className={`rounded-lg border px-3 py-3 text-center transition-colors ${
                         active
-                          ? "border-brand bg-brand/5 ring-1 ring-brand/30"
+                          ? "border-transparent bg-ink-900"
                           : "border-paper-300 hover:border-paper-400"
                       }`}
                     >
                       <span
-                        className={`block text-sm font-semibold ${active ? "text-brand-ink" : "text-ink-800"}`}
+                        className={`block text-sm font-semibold ${active ? "text-white" : "text-ink-800"}`}
                       >
                         {d.label}
                       </span>
-                      <span className="block text-xs text-ink-500 mt-0.5">
+                      <span className={`block text-xs mt-0.5 ${active ? "text-on-dark/70" : "text-ink-500"}`}>
                         {d.time}
                       </span>
                     </button>
@@ -204,25 +204,25 @@ export function PricingExperience() {
                       key={a.id}
                       aria-pressed={active}
                       onClick={() => toggle(a.id)}
-                      className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-all ${
+                      className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-colors ${
                         active
-                          ? "border-brand bg-brand/5 ring-1 ring-brand/30"
+                          ? "border-transparent bg-ink-900"
                           : "border-paper-300 hover:border-paper-400"
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? "bg-brand/15 text-brand-ink" : "bg-paper-200 text-ink-500"}`}
+                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? "bg-white/10 text-brand" : "bg-paper-200 text-ink-500"}`}
                       >
                         <a.icon className="h-4 w-4" />
                       </span>
                       <span
-                        className={`text-sm font-medium ${active ? "text-ink-900" : "text-ink-600"}`}
+                        className={`text-sm font-medium ${active ? "text-white" : "text-ink-600"}`}
                       >
                         {a.label}
                       </span>
                       <span className="ml-auto">
                         {active ? (
-                          <Check className="h-4 w-4 text-ink-700" />
+                          <Check className="h-4 w-4 text-brand" />
                         ) : (
                           <span className="h-4 w-4 rounded-full border border-paper-400 block" />
                         )}
