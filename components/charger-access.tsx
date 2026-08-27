@@ -53,7 +53,7 @@ export function ChargerAccess() {
             >
               Get Charging
             </motion.p>
-            <motion.h2 variants={fadeUp} className="text-h1 text-gray-900 mb-4">
+            <motion.h2 variants={fadeUp} className="text-h2 text-gray-900 mb-4">
               No app. Just your browser.
             </motion.h2>
             <motion.p

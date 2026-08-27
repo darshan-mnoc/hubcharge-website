@@ -8,7 +8,6 @@ import {
   Coffee,
   ShoppingBag,
   Sparkles,
-  Car,
   ArrowRight,
   Gift,
   Zap,
@@ -97,11 +96,9 @@ export function LifestyleDestinations() {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <div className="inline-flex items-center gap-2 mb-8">
-            <Car className="h-4 w-4" />
-            <span className="text-sm font-semibold uppercase tracking-wider">
-              More Than Charging
-            </span>
+          <div className="mb-8">
+            <p className="text-overline text-white/55">More than charging</p>
+            <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
           </div>
 
           <h2 className="text-h2 text-white mb-6 max-w-headline">
@@ -154,7 +151,7 @@ export function LifestyleDestinations() {
               >
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-px bg-brass" />
-                  <ArrowRight className="h-8 w-8 text-ink-700" />
+                  <ArrowRight className="h-8 w-8 text-brand" />
                 </div>
               </motion.div>
 
@@ -199,7 +196,7 @@ export function LifestyleDestinations() {
 
                       <div className="relative flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-brand/20 flex items-center justify-center group-hover:bg-brand/30 transition-colors">
-                          <category.icon className="h-5 w-5 text-ink-700" />
+                          <category.icon className="h-5 w-5 text-brand" />
                         </div>
                         <div>
                           <p className="text-[#f4f3f2] font-semibold text-sm group-hover:text-[#f4f3f2] transition-colors">

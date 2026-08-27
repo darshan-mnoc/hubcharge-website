@@ -194,7 +194,7 @@ export default async function StationPage({
           <h2 className="text-h3 text-midnight-navy mb-4">{station.name}</h2>
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
             <div className="card-light p-4">
-              <p className="text-label-md text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Address
               </p>
               <p className="text-gray-700 text-sm">
@@ -204,7 +204,7 @@ export default async function StationPage({
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-label-md text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Hours
               </p>
               <p className="text-gray-700 text-sm flex items-center gap-2">
@@ -213,7 +213,7 @@ export default async function StationPage({
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-label-md text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Charging
               </p>
               <p className="text-gray-700 text-sm flex items-center gap-2">
@@ -233,7 +233,7 @@ export default async function StationPage({
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-label-md text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Contact
               </p>
               <a
@@ -263,7 +263,7 @@ export default async function StationPage({
                   key={line}
                   className="flex items-start gap-2 text-on-dark text-sm"
                 >
-                  <CheckCircle2 className="h-4 w-4 text-ink-700 mt-0.5 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-brand mt-0.5 shrink-0" />
                   {line}
                 </li>
               ))}

@@ -132,7 +132,7 @@ export function ProblemSection() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-5xl mx-auto mb-20"
+          className="mb-20"
         >
           <div className="grid md:grid-cols-2 gap-5 lg:gap-8">
             {/* Traditional Experience — full-bleed photo card */}
@@ -354,7 +354,7 @@ export function ProblemSection() {
               <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
             </div>
 
-            <h2 className="text-h2 text-white mb-6 max-w-headline">
+            <h2 className="text-h2 text-white mb-6 max-w-[26ch]">
               <span className="text-on-dark/60">10 minutes. Up to 100 miles.</span>{" "}
               Full-service convenience*
             </h2>
@@ -366,7 +366,7 @@ export function ProblemSection() {
           </motion.div>
 
           {/* How It Works - Simple Steps */}
-          <div className="max-w-5xl mx-auto">
+          <div>
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -423,7 +423,7 @@ export function ProblemSection() {
                         </p>
                         <div className="flex flex-wrap items-center gap-2 pt-1">
                           <div className="inline-flex items-center gap-2 rounded-full bg-brand/20 border border-brand/30 px-3 py-1.5 backdrop-blur-sm">
-                            <Sparkles className="h-3 w-3 text-ink-700" />
+                            <Sparkles className="h-3 w-3 text-brand" />
                             <span className="text-xs font-medium text-brand">
                               {step.highlight}
                             </span>

@@ -86,13 +86,10 @@ export function HeroLifestyle() {
         animate="visible"
         className="relative z-10 section-container pt-40 pb-14 lg:pb-20"
       >
-        <motion.p variants={item} className="text-overline text-white/55">
-          Alhambra &amp; Fontana, California
-        </motion.p>
         <motion.span
           variants={item}
           aria-hidden
-          className="mt-4 mb-7 block h-px w-8 bg-brass"
+          className="mb-7 block h-px w-8 bg-brass"
         />
 
         <motion.h1 variants={item} className="text-display text-white max-w-[15ch]">

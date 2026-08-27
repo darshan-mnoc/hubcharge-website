@@ -1251,7 +1251,7 @@ export function JourneyBattery() {
     >
       {/* ---- TOP SECTION ---- */}
       <div className="relative py-8 lg:py-12">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="section-container">
           {/* Header - Mobile only (desktop header is inside pinned container) */}
           <div className="journey-header mb-6 md:hidden">
             <p className="text-overline text-white/55">The experience</p>
@@ -1279,13 +1279,7 @@ export function JourneyBattery() {
                 return (
                   <div
                     key={step.id}
-                    className="flex-shrink-0 w-[85vw] snap-center rounded-lg overflow-hidden border border-slate-200/60"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, #f8fafc 0%, #ffffff 40%, #ffffff 100%)",
-                      boxShadow:
-                        "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03)",
-                    }}
+                    className="flex-shrink-0 w-[85vw] snap-center rounded-lg overflow-hidden border border-white/10 bg-ink-800"
                   >
                     {/* Scene visualization */}
                     <div className="relative h-[170px] overflow-hidden">
@@ -1298,20 +1292,13 @@ export function JourneyBattery() {
                     {/* Step content */}
                     <div className="p-4 bg-ink-800 border-t border-white/[0.07]">
                       <div className="flex items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #FF7A00, #FF9433)",
-                            color: "#fff",
-                            boxShadow: "0 2px 6px rgba(249,115,22,0.3)",
-                          }}
-                        >
-                          {step.id}
+                        <div className="text-index text-white/45 shrink-0">
+                          {String(step.id).padStart(2, "0")}
                         </div>
                         <div>
-                          <p className="text-base font-bold text-slate-800">
-                            {step.title}
+                          <p className="text-h4 text-white">{step.title}</p>
+                          <p className="text-caption text-on-dark/55 mt-0.5">
+                            {step.subtitle}
                           </p>
                           {/* <p className="text-sm text-slate-500">
                             {step.subtitle}
@@ -1533,7 +1520,7 @@ export function JourneyBattery() {
                 <div
                   ref={progressBarsRef}
                   className="h-[1.5px] flex"
-                  style={{ background: "rgba(0,0,0,0.04)" }}
+                  style={{ background: "rgba(255,255,255,0.08)" }}
                 >
                   {/* eslint-disable-next-line react-hooks/refs -- same deliberate render-time ref read as above */}
                   {journeySteps.map((_, i) => (
@@ -1587,7 +1574,7 @@ export function JourneyBattery() {
                       <div className="px-1">
                         <p
                           data-title
-                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand-ink text-sm lg:text-base"
+                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand text-sm lg:text-base"
                           style={{
                             color: isCurrent ? "#FFFFFF" : "rgba(255,255,255,0.55)",
                             marginBottom: "2px",
@@ -1615,80 +1602,34 @@ export function JourneyBattery() {
         </div>
       </div>
 
-      {/* ---- SUMMARY STATS ---- */}
-      <div className="relative max-w-5xl mx-auto px-6 pb-10 lg:pb-12">
-        <div
-          className="rounded-lg p-6 lg:p-8"
-          style={{
-            background: "#fff",
-            boxShadow:
-              "0 0 0 1px rgba(0,0,0,0.05), 0 8px 32px -4px rgba(0,0,0,0.08)",
-          }}
-        >
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div className="text-center lg:text-left">
-              <h3 className="text-h3 text-white mb-1">
-                Your car is your space
-              </h3>
-              <p className="text-slate-500 text-sm">
-                Like home and office. We bring everything to you.
-              </p>
-            </div>
-
-            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-8 w-full md:w-auto">
-              {/* Stat 1 */}
-              <div className="flex md:flex-col items-center md:items-center justify-between w-full md:w-auto md:text-center">
-                <p className="text-slate-400 text-xs font-medium md:hidden">
-                  100 miles
-                </p>
-                <p
-                  className="text-2xl lg:text-3xl font-black tracking-tight"
-                  style={{ color: "#FF7A00" }}
-                >
-                  10 min
-                </p>
-                <p className="text-slate-400 text-xs font-medium mt-0.5 hidden md:block">
-                  100 miles
-                </p>
-              </div>
-
-              <div className="w-full h-px md:w-px md:h-10 bg-slate-100" />
-
-              {/* Stat 2 */}
-              <div className="flex md:flex-col items-center md:items-center justify-between w-full md:w-auto md:text-center">
-                <p className="text-slate-400 text-xs font-medium md:hidden">
-                  Plug & unplug
-                </p>
-                <p
-                  className="text-2xl lg:text-3xl font-black tracking-tight"
-                  style={{ color: "#0F172A" }}
-                >
-                  Attendant
-                </p>
-                <p className="text-slate-400 text-xs font-medium mt-0.5 hidden md:block">
-                  Plug & unplug
-                </p>
-              </div>
-
-              <div className="w-full h-px md:w-px md:h-10 bg-slate-100" />
-
-              {/* Stat 3 */}
-              <div className="flex md:flex-col items-center md:items-center justify-between w-full md:w-auto md:text-center">
-                <p className="text-slate-400 text-xs font-medium md:hidden">
-                  Delivered
-                </p>
-                <p
-                  className="text-2xl lg:text-3xl font-black tracking-tight"
-                  style={{ color: "#0F172A" }}
-                >
-                  Lifestyle
-                </p>
-                <p className="text-slate-400 text-xs font-medium mt-0.5 hidden md:block">
-                  Delivered
-                </p>
-              </div>
-            </div>
+      {/* ---- SUMMARY STATS ----
+           A white card floating on the navy stage read as a sticker, and the
+           dark-stage conversion left its heading white-on-white. It is now a
+           hairline spec row on the section itself, matching the hero. */}
+      <div className="section-container pb-16 lg:pb-20">
+        <div className="border-t border-white/10 pt-8 grid gap-8 lg:grid-cols-[minmax(0,28ch)_1fr] lg:gap-16">
+          <div>
+            <h3 className="text-h3 text-white mb-1.5">Your car is your space</h3>
+            <p className="text-body-sm text-on-dark/60">
+              Like home and office. We bring everything to you.
+            </p>
           </div>
+
+          <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
+            {[
+              { v: "10 min", l: "Adds up to 100 miles" },
+              { v: "Attendant", l: "Plugs in and unplugs for you" },
+              { v: "Lifestyle", l: "Delivered to your window" },
+            ].map((stat, i) => (
+              <div
+                key={stat.v}
+                className={`py-4 sm:py-0 ${i === 0 ? "sm:pr-6" : "sm:px-6"} ${i === 2 ? "sm:pr-0" : ""}`}
+              >
+                <dt className="text-h3 text-white">{stat.v}</dt>
+                <dd className="text-caption text-on-dark/55 mt-1">{stat.l}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
 

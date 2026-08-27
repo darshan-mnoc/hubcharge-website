@@ -70,11 +70,9 @@ export function ContactSection() {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <div className="inline-flex items-center gap-2 mb-6">
-            <Headphones className="h-4 w-4" />
-            <span className="text-sm font-semibold uppercase tracking-wider">
-              Support
-            </span>
+          <div className="mb-6">
+            <p className="text-overline text-white/55">Support</p>
+            <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
           </div>
 
           <h2 className="text-h2 text-white mb-4 max-w-headline">
@@ -245,7 +243,7 @@ export function ContactSection() {
             href="tel:+19493914676"
             className="flex items-center gap-3 text-muted-dark hover:text-brand transition-colors group"
           >
-            <Phone className="h-4 w-4 text-ink-700" />
+            <Phone className="h-4 w-4 text-brand" />
             <span className="text-sm font-medium">(949) 391-4676</span>
           </a>
 

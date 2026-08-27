@@ -87,7 +87,7 @@ export default function PricingPage() {
             },
           ].map((step) => (
             <div key={step.title}>
-              <step.icon className="h-6 w-6 text-ink-700 mb-3" />
+              <step.icon className="h-6 w-6 text-brand mb-3" />
               <h3 className="text-white font-semibold mb-1.5">{step.title}</h3>
               <p className="text-on-dark/80 text-sm">{step.desc}</p>
             </div>

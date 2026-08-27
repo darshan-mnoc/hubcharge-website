@@ -90,19 +90,23 @@ export function LifestyleFooter() {
         className="relative py-20 overflow-hidden border-b border-[#334155]"
       >
         <div className="relative section-container">
-          <motion.h2
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isCtaInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="text-3xl lg:text-4xl font-bold text-[#f4f3f2] mb-6"
+            className="mb-6"
           >
-            Ready to reclaim your time?
-          </motion.h2>
+            <p className="text-overline text-white/55">Get started</p>
+            <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
+            <h2 className="text-h2 text-white max-w-headline">
+              Ready to reclaim your time?
+            </h2>
+          </motion.div>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={isCtaInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-xl text-muted-dark mb-10 max-w-2xl mx-auto"
+            className="text-body-lg text-on-dark/70 mb-10 max-w-[44ch]"
           >
             Turn charging from a chore into an
             experience. Your first 10 minutes are waiting.
@@ -112,7 +116,7 @@ export function LifestyleFooter() {
             initial={{ opacity: 0, y: 30 }}
             animate={isCtaInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-4"
           >
             <CtaButton to="/locations" size="lg">
               <Zap className="h-5 w-5" />
@@ -124,7 +128,7 @@ export function LifestyleFooter() {
 
       {/* Main Footer */}
       <div className="py-16">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="section-container">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-12">
             {/* Brand Column */}
             <div className="col-span-2">
@@ -309,7 +313,7 @@ export function LifestyleFooter() {
                     className="flex items-center gap-2 text-muted-dark hover:text-brand text-sm transition-colors"
                   >
                     <Mail className="h-4 w-4" />
-                    <span className="break-all">{`info@micronocinc.com`}</span>
+                    <span className="break-words">{`info@micronocinc.com`}</span>
                   </motion.a>
                 </li>
                 <li>
@@ -349,7 +353,7 @@ export function LifestyleFooter() {
 
       {/* Bottom Bar */}
       <div className="border-t border-[#334155] py-6">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="section-container">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
               {footerLinks.legal.map((link, i) => (

@@ -155,7 +155,7 @@ export function FindYourHub() {
             <br />
             HubCharge station
           </h2>
-          <p className="text-body-lg max-w-xl">
+          <p className="text-body-lg text-ink-500 max-w-[46ch]">
             Enter your ZIP code to find ultra-fast EV charging near you. DC fast
             chargers with attendant service and lifestyle amenities.
           </p>
@@ -259,8 +259,8 @@ export function FindYourHub() {
                             {station.name}
                           </h4>
                           {station.status === "open" && (
-                            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-xs">
-                              <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-green-600" />
                               Open
                             </span>
                           )}
@@ -290,7 +290,7 @@ export function FindYourHub() {
                         {station.hours}
                       </span> */}
                       {station.hasAttendant && (
-                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-500/10 text-green-600 text-xs">
+                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-50 text-green-700 text-xs font-medium">
                           <CheckCircle2 className="h-3 w-3" />
                           Attendant
                         </span>

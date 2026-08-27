@@ -104,7 +104,7 @@ export function PricingExperience() {
           >
             Pricing, reimagined
           </motion.p>
-          <motion.h2 variants={fadeUp} className="text-h1 text-gray-900 mb-4">
+          <motion.h2 variants={fadeUp} className="text-h2 text-gray-900 mb-4">
             One flat rate. No surprises.
           </motion.h2>
           <motion.p
@@ -120,12 +120,12 @@ export function PricingExperience() {
         </motion.div>
 
         {/* Builder */}
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
           {/* LEFT — choices */}
           <div className="rounded-lg bg-white border border-gray-100 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_12px_28px_-12px_rgba(16,24,40,0.10)] p-6 lg:p-8 space-y-8">
             {/* 1. distance */}
             <div>
-              <p className="text-label-md text-gray-500 mb-3">
+              <p className="text-overline text-gray-500 mb-3">
                 1 · How far do you need?
               </p>
               <div
@@ -163,7 +163,7 @@ export function PricingExperience() {
 
             {/* 2. car */}
             <div>
-              <p className="text-label-md text-gray-500 mb-3">2 · Your car</p>
+              <p className="text-overline text-gray-500 mb-3">2 · Your car</p>
               <div
                 className="flex flex-wrap gap-2"
                 role="radiogroup"
@@ -192,7 +192,7 @@ export function PricingExperience() {
 
             {/* 3. addons */}
             <div>
-              <p className="text-label-md text-gray-500 mb-3">
+              <p className="text-overline text-gray-500 mb-3">
                 3 · While you charge
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -240,7 +240,7 @@ export function PricingExperience() {
           <div className="relative rounded-lg bg-hero overflow-hidden p-6 lg:p-8 flex flex-col">
 
             <div className="relative">
-              <p className="text-label-md text-muted-dark mb-1">
+              <p className="text-overline text-muted-dark mb-1">
                 Your HubCharge™ stop
               </p>
 
@@ -252,7 +252,7 @@ export function PricingExperience() {
                   {`About ${miles} miles added to your ${car.name} in ${dist.time}.`}
                 </p>
                 <div className="flex items-center gap-2 mb-2 text-on-dark">
-                  <BatteryCharging className="h-5 w-5 text-ink-700" />
+                  <BatteryCharging className="h-5 w-5 text-brand" />
                   <motion.span
                     key={`${carId}-${distance}`}
                     initial={{ opacity: 0, y: 6 }}
@@ -279,7 +279,7 @@ export function PricingExperience() {
 
               {/* extensions */}
               <div className="mb-5 flex items-center gap-2 rounded-lg bg-white/[0.04] border border-white/10 px-3 py-2">
-                <Clock className="h-4 w-4 text-ink-700 flex-shrink-0" />
+                <Clock className="h-4 w-4 text-brand flex-shrink-0" />
                 <p className="text-xs text-muted-dark">
                   Need longer? Extend in quick taps —{" "}
                   <span className="text-on-dark font-medium">
@@ -290,7 +290,7 @@ export function PricingExperience() {
               </div>
 
               {/* included */}
-              <p className="text-label-md text-muted-dark mb-2">Your stop</p>
+              <p className="text-overline text-muted-dark mb-2">Your stop</p>
               <ul className="space-y-2 mb-6">
                 <AnimatePresence initial={false}>
                   {included.map((item) => (
@@ -303,7 +303,7 @@ export function PricingExperience() {
                       className="flex items-center gap-2.5 text-sm text-on-dark"
                     >
                       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/20">
-                        <Check className="h-3 w-3 text-ink-700" />
+                        <Check className="h-3 w-3 text-brand" />
                       </span>
                       {item}
                     </motion.li>
@@ -315,7 +315,7 @@ export function PricingExperience() {
             {/* payoff — the "A finale" */}
             <div className="relative mt-auto rounded-lg border border-white/10 bg-white/[0.04] p-5">
               <div className="flex items-center gap-2 mb-3">
-                <Zap className="h-5 w-5 text-ink-700" />
+                <Zap className="h-5 w-5 text-brand" />
                 <span className="text-lg font-bold text-on-dark">
                   One flat rate
                 </span>
@@ -340,7 +340,7 @@ export function PricingExperience() {
                 Find your hub
               </CtaButton>
               <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-dark mt-3">
-                <Check className="h-3 w-3 text-ink-700" />
+                <Check className="h-3 w-3 text-brand" />
                 Flat, fair, and predictable.{" "}
                 <a
                   href="/pricing"
