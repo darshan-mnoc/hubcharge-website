@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
-import { RANGE_FOOTNOTE } from "@/lib/vehicles";
+import { RANGE_FOOTNOTE } from "@/lib/ev-models";
 
 export const metadata: Metadata = {
   title: "How Long Does EV Charging Take? The Charging Curve | HubCharge",

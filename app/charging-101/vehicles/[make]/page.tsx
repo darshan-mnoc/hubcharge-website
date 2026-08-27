@@ -4,15 +4,16 @@ import { CheckCircle2, AlertTriangle, Zap, Plug } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta } from "@/components/learn";
 import { CtaButton } from "@/components/ui/cta-button";
-import { vehicleMakes, RANGE_FOOTNOTE, VEHICLE_DATA_UPDATED } from "@/lib/vehicles";
+import { evMakes, RANGE_FOOTNOTE, EV_DATA_UPDATED } from "@/lib/ev-models";
+import { makeTenMinuteBand } from "@/lib/charging-math";
 import { stations } from "@/lib/stations";
 
 export function generateStaticParams() {
-  return vehicleMakes.filter((m) => m.id !== "other").map((m) => ({ make: m.id }));
+  return evMakes.filter((m) => m.id !== "other").map((m) => ({ make: m.id }));
 }
 
 function getMake(id: string) {
-  return vehicleMakes.find((m) => m.id === id);
+  return evMakes.find((m) => m.id === id);
 }
 
 export async function generateMetadata({
@@ -24,8 +25,9 @@ export async function generateMetadata({
   const m = getMake(make);
   if (!m) return {};
   const title = `Charging a ${m.name} at HubCharge | Alhambra & Fontana, CA`;
+  const band = makeTenMinuteBand(m.id);
   const description = `${m.name} charging at HubCharge: ${m.portNote} Roughly ${
-    m.tenMinMilesApprox ? `${m.tenMinMilesApprox[0]}–${m.tenMinMilesApprox[1]} miles` : "range"
+    band ? `${band[0]}–${band[1]} miles` : "range"
   } added in about ten minutes at our up-to-180kW chargers in Alhambra and Fontana.`;
   return {
     title,
@@ -65,7 +67,7 @@ export default async function VehicleGuide({
     );
   }
 
-  const range = m.tenMinMilesApprox;
+  const range = makeTenMinuteBand(m.id);
 
   return (
     <PageShell
@@ -73,7 +75,7 @@ export default async function VehicleGuide({
       backTo={{ href: "/charging-101/vehicles", label: "All makes" }}
       title={`Charging a ${m.name} at HubCharge`}
       intro={m.portNote}
-      meta={<><span>Updated {VEHICLE_DATA_UPDATED}</span><span>2 min read</span></>}
+      meta={<><span>Updated {EV_DATA_UPDATED}</span><span>2 min read</span></>}
     >
       <GuideBreadcrumb
         trail={[

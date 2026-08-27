@@ -254,3 +254,135 @@ export function getModel(id: string): EvModel | undefined {
 export function efficiencyMiPerKwh(m: EvModel): number {
   return m.epaMiles / m.usableKwh;
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// MAKE-LEVEL VIEW
+//
+// Derived from the models above rather than maintained separately, so the
+// two can never disagree. This replaces the old lib/vehicles.ts, where a
+// make carried its own hand-typed range band independent of any model.
+// ─────────────────────────────────────────────────────────────────────────
+
+export type PortStatus = "nacs" | "ccs" | "transitioning";
+
+export type EvMake = {
+  id: string;
+  name: string;
+  port: PortStatus;
+  portNote: string;
+  note?: string;
+};
+
+const MAKE_COPY: Record<string, { name: string; portNote: string; note?: string }> = {
+  tesla: {
+    name: "Tesla",
+    portNote: "All models use NACS — plug straight into our NACS cable.",
+  },
+  hyundai: {
+    name: "Hyundai / Kia / Genesis",
+    portNote:
+      "Newer models have a NACS port; earlier models use CCS. Either way, we have your cable.",
+    note: "The 800V models — Ioniq 5, Ioniq 6, EV6 — are among the fastest-charging EVs on our chargers.",
+  },
+  ford: {
+    name: "Ford",
+    portNote:
+      "Mustang Mach-E, F-150 Lightning and E-Transit use CCS — plug straight into our CCS cable.",
+  },
+  gm: {
+    name: "Chevrolet / GMC / Cadillac",
+    portNote:
+      "Most current models use CCS; the newest are moving to NACS. We have both cables.",
+    note: "Bolts from 2017–2023 peak around 55kW, so they charge noticeably slower than a current model.",
+  },
+  rivian: {
+    name: "Rivian",
+    portNote:
+      "Newer R1T, R1S and R2 have a NACS port; earlier models use CCS. Both work here.",
+    note: "Quick to charge, but they're heavy trucks — the same kWh buys fewer miles than in a sedan.",
+  },
+  bmw: {
+    name: "BMW / Mini",
+    portNote:
+      "Most current models use CCS; the newest are adopting NACS. Both plug in here.",
+  },
+  mercedes: {
+    name: "Mercedes-Benz",
+    portNote:
+      "Newer EQ models have a NACS port; earlier ones use CCS. Both work here.",
+  },
+  porsche: {
+    name: "Porsche",
+    portNote: "Taycan and Macan Electric use CCS — plug straight into our CCS cable.",
+    note: "800V cars — they hold our charger's full output right through the useful part of the curve.",
+  },
+  vw: {
+    name: "Volkswagen / Audi",
+    portNote: "ID.4, Q6 e-tron and the rest use CCS — plug straight into our CCS cable.",
+  },
+  toyota: {
+    name: "Toyota / Lexus / Subaru",
+    portNote:
+      "The newest models have a NACS port; earlier ones use CCS. We have both cables.",
+  },
+  honda: {
+    name: "Honda / Acura",
+    portNote: "Prologue and ZDX use CCS — plug straight into our CCS cable.",
+  },
+  nissan: {
+    name: "Nissan",
+    portNote:
+      "The 2026 Leaf has a NACS port and charges here. Ariya uses CCS and works too.",
+    note: "Leafs from 2011–2025 use CHAdeMO for fast charging, which our stations don't carry — those model years can't DC fast-charge here.",
+  },
+  volvo: {
+    name: "Volvo / Polestar",
+    portNote: "Current models use CCS — plug straight into our CCS cable.",
+  },
+  lucid: {
+    name: "Lucid",
+    portNote: "Gravity has a NACS port; Air uses CCS. Both plug in here.",
+  },
+  stellantis: {
+    name: "Jeep / Dodge / Ram / Fiat",
+    portNote: "Current models use CCS — plug straight into our CCS cable.",
+  },
+};
+
+/** Port status for a make, derived from the ports its models actually use. */
+function derivePort(models: EvModel[]): PortStatus {
+  const ports = new Set(models.map((m) => m.port));
+  if (ports.size === 1) return [...ports][0] === "nacs" ? "nacs" : "ccs";
+  return "transitioning";
+}
+
+export const evMakes: EvMake[] = Object.keys(MAKE_COPY).map((id) => {
+  const models = modelsForMake(id);
+  const copy = MAKE_COPY[id];
+  return { id, name: copy.name, portNote: copy.portNote, note: copy.note, port: derivePort(models) };
+});
+
+export function getMake(id: string): EvMake | undefined {
+  return evMakes.find((m) => m.id === id);
+}
+
+/**
+ * Range band a make adds in ten minutes, derived from the widest span across
+ * its models rather than typed by hand — so it always reflects the data.
+ */
+export function makeRangeBand(
+  makeId: string,
+  simulate: (m: EvModel) => { milesLow: number; milesHigh: number }
+): [number, number] | null {
+  const models = modelsForMake(makeId);
+  if (models.length === 0) return null;
+  const results = models.map(simulate);
+  return [
+    Math.min(...results.map((r) => r.milesLow)),
+    Math.max(...results.map((r) => r.milesHigh)),
+  ];
+}
+
+/** The disclosure that must accompany any published range figure. */
+export const RANGE_FOOTNOTE =
+  "Approximate figures at our up-to-180kW chargers, modelled from each car's published charging curve. Actual charging speed and added range vary by vehicle, battery state of charge, temperature and battery age. Larger trucks and older EVs charge more slowly.";

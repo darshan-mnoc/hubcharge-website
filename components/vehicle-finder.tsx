@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { Search, CheckCircle2, AlertTriangle } from "lucide-react";
-import { vehicleMakes, RANGE_FOOTNOTE, VEHICLE_DATA_UPDATED } from "@/lib/vehicles";
+import { evMakes, RANGE_FOOTNOTE, EV_DATA_UPDATED } from "@/lib/ev-models";
+import { makeTenMinuteBand } from "@/lib/charging-math";
 
 const FILTERS = [
   { id: "all", label: "All makes" },
@@ -21,7 +22,7 @@ export function VehicleFinder() {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return vehicleMakes.filter((m) => {
+    return evMakes.filter((m) => {
       const matchesFilter = filter === "all" || m.port === filter;
       const matchesQuery =
         q.length === 0 ||
@@ -71,7 +72,7 @@ export function VehicleFinder() {
       </div>
 
       <p aria-live="polite" className="text-caption text-ink-400 mb-4">
-        {results.length} of {vehicleMakes.length} makes
+        {results.length} of {evMakes.length} makes
       </p>
 
       {results.length === 0 ? (
@@ -82,7 +83,9 @@ export function VehicleFinder() {
         </p>
       ) : (
         <ul>
-          {results.map((m) => (
+          {results.map((m) => {
+            const band = makeTenMinuteBand(m.id);
+            return (
             <li
               key={m.id}
               className="grid md:grid-cols-[minmax(0,20ch)_1fr_auto] gap-x-8 gap-y-1 py-5 border-t border-paper-300 last:border-b"
@@ -100,18 +103,19 @@ export function VehicleFinder() {
                   </span>
                 )}
               </span>
-              {m.tenMinMilesApprox && (
+              {band && (
                 <span className="text-brand-ink font-semibold text-body-sm md:text-right whitespace-nowrap">
-                  ~{m.tenMinMilesApprox[0]}–{m.tenMinMilesApprox[1]} mi
+                  ~{band[0]}–{band[1]} mi
                 </span>
               )}
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
 
       <p className="text-caption text-ink-400 mt-6">
-        Approximate range added in ~10 minutes. Last updated {VEHICLE_DATA_UPDATED}.
+        Approximate range added in ~10 minutes. Last updated {EV_DATA_UPDATED}.
       </p>
       <p className="text-[11px] text-ink-400 mt-2 max-w-[70ch]">{RANGE_FOOTNOTE}</p>
     </div>

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { stations } from "@/lib/stations";
 import { guides } from "@/lib/guides";
-import { vehicleMakes } from "@/lib/vehicles";
+import { evMakes } from "@/lib/ev-models";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://hubcharge.com";
@@ -36,7 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: g.slug === "can-my-ev-charge-here" ? 0.7 : 0.6,
     })),
-    ...vehicleMakes
+    ...evMakes
       .filter((m) => m.id !== "other")
       .map((m) => ({
         url: `${base}/charging-101/vehicles/${m.id}`,

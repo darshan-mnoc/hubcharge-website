@@ -1,4 +1,9 @@
-import { type EvModel, efficiencyMiPerKwh } from "@/lib/ev-models";
+import {
+  type EvModel,
+  efficiencyMiPerKwh,
+  modelsForMake,
+  getModel,
+} from "@/lib/ev-models";
 
 /**
  * Charging simulation.
@@ -137,3 +142,59 @@ export function minutesBetweenSoc(
 /** The disclosure that must sit beside any figure these functions produce. */
 export const ESTIMATE_BASIS =
   "Estimates model your car's published charging curve against our charger's output, assuming a preconditioned battery and a stall you're not sharing. Real results vary with temperature, starting charge, battery age and driving conditions.";
+
+/** Our stations' output. Every published figure is modelled against this. */
+export const STATION_KW = 180;
+
+/** Reference conditions for published figures: arrive at 20%, mild weather. */
+export const REFERENCE_START_SOC = 20;
+
+/** What one model adds in ten minutes under reference conditions. */
+export function tenMinuteBand(model: EvModel): [number, number] {
+  const r = simulateSession(model, STATION_KW, REFERENCE_START_SOC, 10);
+  return [r.milesLow, r.milesHigh];
+}
+
+/**
+ * A make's ten-minute band, spanning its models. Derived rather than typed,
+ * so it can never drift from the per-model data underneath it.
+ */
+export function makeTenMinuteBand(makeId: string): [number, number] | null {
+  const models = modelsForMake(makeId);
+  if (models.length === 0) return null;
+  const bands = models.map(tenMinuteBand);
+  return [
+    Math.min(...bands.map((b) => b[0])),
+    Math.max(...bands.map((b) => b[1])),
+  ];
+}
+
+/** Minutes from 10% to 80% for a model at our stations. */
+export function tenToEighty(model: EvModel): number {
+  return minutesBetweenSoc(model, STATION_KW, 10, 80);
+}
+
+
+/**
+ * Compact model list for the homepage configurator — one representative per
+ * make so the control stays scannable, each carrying its real ten-minute band
+ * rather than a hand-typed per-make average.
+ */
+export function configuratorModels() {
+  const pick = [
+    "tesla-model-y-lr",
+    "hyundai-ioniq-5",
+    "ford-mach-e-er",
+    "chevy-equinox-ev",
+    "rivian-r1t-large",
+    "bmw-i4-edrive40",
+    "porsche-taycan",
+    "honda-prologue",
+  ];
+  return pick.flatMap((id) => {
+    const model = getModel(id);
+    if (!model) return [];
+    const [lo, hi] = tenMinuteBand(model);
+    return [{ id: model.id, name: model.short, lo, hi, model }];
+  });
+}

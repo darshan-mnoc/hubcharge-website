@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { CtaButton } from "@/components/ui/cta-button";
 import { fadeUp, fadeUpStagger } from "@/lib/motion";
-import { configuratorCars } from "@/lib/vehicles";
+import { configuratorModels, simulateSession, STATION_KW, REFERENCE_START_SOC } from "@/lib/charging-math";
 
 /* "Design your stop" — a number-free pricing experience.
    The user picks how far, their car, and what to enjoy; we preview the
@@ -28,16 +28,16 @@ const distances: {
   label: string;
   time: string;
   fill: number;
-  mult: number;
+  minutes: number;
 }[] = [
-  { id: "topup", label: "Quick top-up", time: "~10 min", fill: 38, mult: 1 },
-  { id: "half", label: "Half charge", time: "~20 min", fill: 68, mult: 1.9 },
-  { id: "full", label: "Full charge", time: "~30 min", fill: 96, mult: 2.7 },
+  { id: "topup", label: "Quick top-up", time: "~10 min", fill: 38, minutes: 10 },
+  { id: "half", label: "Half charge", time: "~20 min", fill: 68, minutes: 20 },
+  { id: "full", label: "Full charge", time: "~30 min", fill: 96, minutes: 30 },
 ];
 
-// Approximate added range for a ~10-min HubCharge session — sourced from
-// lib/vehicles.ts (single source of truth, conservative 180kW-capped figures).
-const cars = configuratorCars();
+// Real models with real charging curves — simulated per session length
+// rather than a per-make average times a fixed multiplier.
+const cars = configuratorModels();
 
 const addons = [
   { id: "coffee", label: "Coffee & drinks", icon: Coffee },
@@ -58,12 +58,13 @@ const gotchas = [
 
 export function PricingExperience() {
   const [distance, setDistance] = useState<DistanceId>("topup");
-  const [carId, setCarId] = useState("tesla");
+  const [carId, setCarId] = useState("tesla-model-y-lr");
   const [chosen, setChosen] = useState<Set<AddonId>>(new Set(["coffee"]));
 
   const dist = distances.find((d) => d.id === distance)!;
-  const car = cars.find((c) => c.id === carId)!;
-  const miles = Math.round((car.r * dist.mult) / 5) * 5;
+  const car = cars.find((c) => c.id === carId) ?? cars[0];
+  // Simulated from the car's real curve against our output, not a multiplier.
+  const sim = simulateSession(car.model, STATION_KW, REFERENCE_START_SOC, dist.minutes);
   const chosenList = addons.filter((a) => chosen.has(a.id));
 
   const toggle = (id: AddonId) =>
@@ -249,7 +250,7 @@ export function PricingExperience() {
                 {/* Announces the recalculated result to screen readers when a
                     distance / car / add-on selection changes (WCAG 4.1.3). */}
                 <p aria-live="polite" className="sr-only">
-                  {`About ${miles} miles added to your ${car.name} in ${dist.time}.`}
+                  {`About ${sim.milesLow} to ${sim.milesHigh} miles added to your ${car.name} in ${dist.time}.`}
                 </p>
                 <div className="flex items-center gap-2 mb-2 text-on-dark">
                   <BatteryCharging className="h-5 w-5 text-brand" />
@@ -259,7 +260,7 @@ export function PricingExperience() {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-2xl font-black"
                   >
-                    +{miles} mi
+                    {sim.milesLow}–{sim.milesHigh} mi
                   </motion.span>
                   <span className="text-sm text-muted-dark">
                     to your {car.name} · {dist.time}

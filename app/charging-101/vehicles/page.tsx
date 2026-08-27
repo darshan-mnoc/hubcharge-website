@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
-import { vehicleMakes, VEHICLE_DATA_UPDATED, RANGE_FOOTNOTE } from "@/lib/vehicles";
+import { evMakes, EV_DATA_UPDATED, RANGE_FOOTNOTE } from "@/lib/ev-models";
+import { makeTenMinuteBand } from "@/lib/charging-math";
 
 export const metadata: Metadata = {
   title: "EV Charging Guides by Make — Tesla, Ford, Rivian & More | HubCharge",
@@ -19,7 +20,7 @@ const PORT_SHORT = {
 } as const;
 
 export default function VehiclesIndex() {
-  const makes = vehicleMakes.filter((m) => m.id !== "other");
+  const makes = evMakes.filter((m) => m.id !== "other");
 
   return (
     <PageShell
@@ -29,7 +30,7 @@ export default function VehiclesIndex() {
       imageAlt="A charging cable seated in an electric car's charge port"
       title="Charging guides by make"
       intro="Every make below charges at HubCharge. Find yours for the specifics — which cable, how fast, and anything worth knowing."
-      meta={<><span>Updated {VEHICLE_DATA_UPDATED}</span><span>{makes.length} makes</span></>}
+      meta={<><span>Updated {EV_DATA_UPDATED}</span><span>{makes.length} makes</span></>}
     >
       <GuideBreadcrumb
         trail={[
@@ -40,7 +41,9 @@ export default function VehiclesIndex() {
       />
 
       <ol className="max-w-measure">
-        {makes.map((m, i) => (
+        {makes.map((m, i) => {
+          const band = makeTenMinuteBand(m.id);
+          return (
           <li key={m.id}>
             <Link
               href={`/charging-101/vehicles/${m.id}`}
@@ -54,8 +57,7 @@ export default function VehiclesIndex() {
               </span>
               <span className="col-span-2 lg:col-span-1 text-body-sm text-ink-500 mt-2 lg:mt-0">
                 {PORT_SHORT[m.port]}
-                {m.tenMinMilesApprox &&
-                  ` · ~${m.tenMinMilesApprox[0]}–${m.tenMinMilesApprox[1]} mi in 10 min`}
+                {band && ` · ~${band[0]}–${band[1]} mi in 10 min`}
               </span>
               <span className="hidden lg:flex items-baseline justify-end gap-2 text-caption text-ink-400">
                 Guide
@@ -63,7 +65,8 @@ export default function VehiclesIndex() {
               </span>
             </Link>
           </li>
-        ))}
+          );
+        })}
       </ol>
 
       <p className="text-[11px] text-ink-400 mt-8 max-w-[70ch]">{RANGE_FOOTNOTE}</p>
