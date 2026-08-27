@@ -33,122 +33,130 @@ function CarSVG({
   return (
     <svg viewBox="0 0 200 70" className={className} style={style}>
       <defs>
+        {/* Body: three stops so the flank reads rounded rather than flat. */}
         <linearGradient id={`carBody-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#33455F" />
-          <stop offset="100%" stopColor="#243449" />
+          <stop offset="0%" stopColor="#41556F" />
+          <stop offset="45%" stopColor="#2E4159" />
+          <stop offset="100%" stopColor="#1B2739" />
         </linearGradient>
 
-        <linearGradient id={`glass-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.20" />
-          <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.10" />
+        {/* Greenhouse: darker at the base, as glass reads against a body. */}
+        <linearGradient id={`glass-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#8FA8C4" stopOpacity="0.45" />
+          <stop offset="60%" stopColor="#33455F" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#16233B" stopOpacity="0.7" />
         </linearGradient>
 
-        <linearGradient id={`sheen-${id}`} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.08" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        {/* Ground reflection under the car. */}
+        <linearGradient id={`reflect-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#41556F" stopOpacity="0.30" />
+          <stop offset="100%" stopColor="#41556F" stopOpacity="0" />
         </linearGradient>
 
-        <radialGradient id={`wheel-${id}`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#141F31" />
-          <stop offset="100%" stopColor="#141F31" />
+        <radialGradient id={`contact-${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#020617" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#020617" stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      {/* shadow */}
-      <ellipse cx="100" cy="64" rx="75" ry="4" fill="#020617" opacity="0.15" />
+      {/* Contact shadow, offset right — one light source, upper-left. */}
+      <ellipse cx="104" cy="63.5" rx="78" ry="5" fill={`url(#contact-${id})`} />
 
-      {/* main body */}
+      {/* Reflection: a squashed mirror of the body, fading down. */}
+      <g transform="translate(0,127) scale(1,-0.34)" opacity="0.5">
+        <path
+          d="M18 47 C24 35 41 29 57 29 L133 29 C151 29 168 35 178 47
+             L182 51 C184 55 181 57 171 57 L29 57 C19 57 16 54 18 51Z"
+          fill={`url(#reflect-${id})`}
+        />
+      </g>
+
+      {/* Lower body / rocker — darkest plane, grounds the car. */}
       <path
-        d="M20 46
-           C25 36 40 30 55 30
-           L135 30
-           C150 30 165 36 175 46
-           L180 50
-           C182 53 180 56 170 56
-           L30 56
-           C20 56 18 53 20 50Z"
+        d="M22 52 L178 52 L180 55 C181 57 178 58 169 58 L31 58 C21 58 19 56 20 54Z"
+        fill="#111C2C"
+      />
+
+      {/* Main body. Longer dash-to-axle, faster rear taper — a modern
+          crossover profile rather than the symmetric bubble this had. */}
+      <path
+        d="M18 47
+           C24 35 41 29 57 29
+           L133 29
+           C151 29 168 35 178 47
+           L182 51
+           C184 55 181 57 171 57
+           L29 57
+           C19 57 16 54 18 51Z"
         fill={`url(#carBody-${id})`}
       />
 
-      {/* reflection */}
+      {/* Beltline highlight — the single strongest depth cue at this size. */}
       <path
-        d="M20 46
-           C25 36 40 30 55 30
-           L135 30
-           C150 30 165 36 175 46"
-        stroke={`url(#sheen-${id})`}
-        strokeWidth="4"
+        d="M20 46 C26 35 42 30 57 30 L133 30 C151 30 167 35 177 46"
+        stroke="rgba(255,255,255,0.34)"
+        strokeWidth="1"
         fill="none"
+        strokeLinecap="round"
       />
 
-      {/* roof */}
+      {/* Roof: raked screen, long roofline, fastback rear. */}
       <path
-        d="M60 30
-           C70 16 120 16 130 30
-           Z"
+        d="M58 29 C69 15 92 12 108 12 C124 12 132 19 136 29 Z"
         fill={`url(#carBody-${id})`}
       />
-
-      {/* glass */}
       <path
-        d="M66 30
-           C74 20 116 20 124 30
-           Z"
+        d="M58 29 C69 15 92 12 108 12 C124 12 132 19 136 29"
+        stroke="rgba(255,255,255,0.28)"
+        strokeWidth="0.9"
+        fill="none"
+        strokeLinecap="round"
+      />
+
+      {/* Glass, inset from the roof so a pillar reads on each side. */}
+      <path
+        d="M64 28.5 C73 17 92 14.5 107 14.5 C121 14.5 128 20.5 131.5 28.5 Z"
         fill={`url(#glass-${id})`}
       />
+      {/* B-pillar */}
+      <path d="M99 14.6 L102 14.7 L102 28.5 L99 28.5 Z" fill="#16233B" opacity="0.85" />
 
-      {/* panoramic roof divider */}
-      <line
-        x1="100"
-        y1="21"
-        x2="100"
-        y2="30"
-        stroke="#7dd3fc"
-        strokeWidth="1"
-        opacity="0.4"
-      />
+      {/* Wheel arches, drawn as arches rather than full rings. */}
+      {[60, 141].map((cx) => (
+        <g key={cx}>
+          <path
+            d={`M${cx - 13} 55 A13 13 0 0 1 ${cx + 13} 55`}
+            fill="none"
+            stroke="#111C2C"
+            strokeWidth="3.2"
+          />
+          <circle cx={cx} cy={53.5} r="9.6" fill="#0E1725" />
+          <circle
+            cx={cx}
+            cy={53.5}
+            r="9.6"
+            fill="none"
+            stroke="rgba(255,255,255,0.22)"
+            strokeWidth="0.9"
+          />
+          {/* Rim face */}
+          <circle cx={cx} cy={53.5} r="6" fill="#243449" />
+          <g stroke="rgba(203,213,225,0.55)" strokeWidth="0.85" strokeLinecap="round">
+            <line x1={cx} y1={48} x2={cx} y2={59} />
+            <line x1={cx - 5.5} y1={53.5} x2={cx + 5.5} y2={53.5} />
+            <line x1={cx - 3.9} y1={49.6} x2={cx + 3.9} y2={57.4} />
+            <line x1={cx - 3.9} y1={57.4} x2={cx + 3.9} y2={49.6} />
+          </g>
+          <circle cx={cx} cy={53.5} r="1.5" fill="#94A3B8" />
+        </g>
+      ))}
 
-      {/* front wheel */}
-      <circle cx="60" cy="54" r="9.7" fill={`url(#wheel-${id})`} stroke="rgba(255,255,255,0.30)" strokeWidth="1.25" />
-      <circle cx="60" cy="54" r="11" fill="none" stroke="#020617" strokeWidth="1" />
-      <circle cx="60" cy="54" r="6.6" fill="#1e293b" />
-      <g stroke="#94a3b8" strokeWidth="0.9" opacity="0.6" strokeLinecap="round">
-        <line x1="60" y1="48.5" x2="60" y2="59.5" />
-        <line x1="54.5" y1="54" x2="65.5" y2="54" />
-        <line x1="56.2" y1="50.2" x2="63.8" y2="57.8" />
-        <line x1="56.2" y1="57.8" x2="63.8" y2="50.2" />
-      </g>
-      <circle cx="60" cy="54" r="1.7" fill="#cbd5e1" />
+      {/* Lights: presence, not glow. */}
+      <path d="M16 44 L23 43.4 L23 46.6 L16 46.4 Z" fill="rgba(255,255,255,0.72)" />
+      <path d="M177 43.6 L183 44.4 L183 46.8 L177 46.6 Z" fill="rgba(255,255,255,0.5)" />
 
-      {/* rear wheel */}
-      <circle cx="140" cy="54" r="9.7" fill={`url(#wheel-${id})`} stroke="rgba(255,255,255,0.30)" strokeWidth="1.25" />
-      <circle cx="140" cy="54" r="11" fill="none" stroke="#020617" strokeWidth="1" />
-      <circle cx="140" cy="54" r="6.6" fill="#1e293b" />
-      <g stroke="#94a3b8" strokeWidth="0.9" opacity="0.6" strokeLinecap="round">
-        <line x1="140" y1="48.5" x2="140" y2="59.5" />
-        <line x1="134.5" y1="54" x2="145.5" y2="54" />
-        <line x1="136.2" y1="50.2" x2="143.8" y2="57.8" />
-        <line x1="136.2" y1="57.8" x2="143.8" y2="50.2" />
-      </g>
-      <circle cx="140" cy="54" r="1.7" fill="#cbd5e1" />
-
-      {/* LED headlight */}
-      <rect
-        x="15"
-        y="44"
-        width="7"
-        height="3"
-        rx="1"
-        fill="#f8fafc"
-        opacity="0.9"
-      />
-
-      {/* LED rear light bar */}
-      <rect x="178" y="45" width="6" height="3" rx="1" fill="rgba(255,255,255,0.55)" />
-
-      {/* charge port — a point of light, not a bloom */}
-      <circle cx="155" cy="36" r="2.2" fill="#FF7A00" opacity="0.95" />
+      {/* Charge port — a point of light */}
+      <circle cx="158" cy="37" r="2" fill="#FF7A00" opacity="0.95" />
     </svg>
   );
 }
