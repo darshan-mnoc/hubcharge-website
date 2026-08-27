@@ -156,20 +156,20 @@ export default async function StationPage({
           <h2 className="text-h3 text-ink-900 mb-4">{station.name}</h2>
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
             <div className="card-light p-4">
-              <p className="text-overline text-ink-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-ink-500 mb-1 text-caption uppercase tracking-wider font-semibold">
                 Address
               </p>
-              <p className="text-ink-600 text-sm">
+              <p className="text-ink-600 text-body-sm">
                 {station.address}
                 <br />
                 {station.city}, {station.state} {station.zip}
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-overline text-ink-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-ink-500 mb-1 text-caption uppercase tracking-wider font-semibold">
                 Hours
               </p>
-              <p className="text-ink-600 text-sm flex items-center gap-2">
+              <p className="text-ink-600 text-body-sm flex items-center gap-2">
                 <Clock className="h-4 w-4 text-ink-700" /> Open daily,{" "}
                 {station.hours}
               </p>
@@ -182,15 +182,15 @@ export default async function StationPage({
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-overline text-ink-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-ink-500 mb-1 text-caption uppercase tracking-wider font-semibold">
                 Charging
               </p>
-              <p className="text-ink-600 text-sm flex items-center gap-2">
+              <p className="text-ink-600 text-body-sm flex items-center gap-2">
                 <Zap className="h-4 w-4 text-ink-700" />
                 {station.chargers} DC fast charger
                 {station.chargers > 1 ? "s" : ""} · {station.power}
               </p>
-              <p className="text-ink-500 text-xs mt-1">
+              <p className="text-ink-500 text-caption mt-1">
                 Connectors: {station.connectors.join(" + ")} — works with
                 Tesla, BMW, Ford, Rivian, Hyundai, Kia &amp; more.{" "}
                 <Link
@@ -202,12 +202,12 @@ export default async function StationPage({
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-overline text-ink-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-ink-500 mb-1 text-caption uppercase tracking-wider font-semibold">
                 Contact
               </p>
               <a
                 href={`tel:${station.phoneE164}`}
-                className="text-ink-600 text-sm flex items-center gap-2 hover:text-brand-ink"
+                className="text-ink-600 text-body-sm flex items-center gap-2 hover:text-brand-ink"
               >
                 <Phone className="h-4 w-4 text-ink-700" /> {station.phone}
               </a>
@@ -216,10 +216,10 @@ export default async function StationPage({
 
           {/* Full service explainer */}
           <div className="bg-ink-900 rounded-lg p-6 lg:p-8 mb-8">
-            <p className="flex items-center gap-2 text-brand text-xs font-bold uppercase tracking-widest mb-3">
+            <p className="flex items-center gap-2 text-brand text-caption font-bold uppercase tracking-widest mb-3">
               <UserRound className="h-4 w-4" /> Full-service charging
             </p>
-            <h3 className="text-white text-xl font-bold mb-3">
+            <h3 className="text-h3 text-white mb-3">
               Stay in your car — we handle it
             </h3>
             <ul className="space-y-2">
@@ -230,7 +230,7 @@ export default async function StationPage({
               ].map((line) => (
                 <li
                   key={line}
-                  className="flex items-start gap-2 text-on-dark text-sm"
+                  className="flex items-start gap-2 text-on-dark text-body-sm"
                 >
                   <CheckCircle2 className="h-4 w-4 text-brand mt-0.5 shrink-0" />
                   {line}
@@ -240,7 +240,7 @@ export default async function StationPage({
           </div>
 
           {station.note && (
-            <p className="text-sm text-brand-ink font-medium mb-8">
+            <p className="text-body-sm text-brand-ink font-medium mb-8">
               {station.note}
             </p>
           )}
@@ -277,7 +277,7 @@ export default async function StationPage({
             <p className="flex items-center gap-2 font-bold text-ink-900 mb-2">
               <Smartphone className="h-4 w-4 text-ink-700" /> No app needed
             </p>
-            <p className="text-ink-500 text-sm">
+            <p className="text-ink-500 text-body-sm">
               Tap your phone or scan the code at the charger — HubCharge runs
               right in your browser.{" "}
               <Link href="/faq" className="text-brand-ink underline">
@@ -296,7 +296,7 @@ export default async function StationPage({
         <NearbyPlaces places={places} />
       </div>
 
-      <p className="text-xs text-ink-400 max-w-2xl">
+      <p className="text-caption text-ink-400 max-w-2xl">
         *Attendant availability varies by location and time. Actual charging
         speed and added range vary by vehicle, battery state of charge, and
         temperature.

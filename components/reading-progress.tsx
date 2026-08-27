@@ -109,7 +109,7 @@ export function ReadingProgress({
                     href={`#${id}`}
                     aria-current={on ? "true" : undefined}
                     tabIndex={past ? 0 : -1}
-                    className={`line-clamp-2 block -ml-px border-l py-1.5 pl-3 text-[12px] leading-snug transition-colors ${
+                    className={`line-clamp-2 block -ml-px border-l py-1.5 pl-3 text-caption leading-snug transition-colors ${
                       on
                         ? "border-brand text-ink-900 font-medium"
                         : "border-transparent text-ink-500 hover:text-ink-900"

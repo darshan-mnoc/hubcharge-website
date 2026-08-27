@@ -7,8 +7,8 @@ type Size = "sm" | "md" | "lg";
 type Variant = "primary" | "secondary" | "secondaryOnDark";
 
 const SIZE: Record<Size, string> = {
-  sm: "px-5 py-2.5 text-sm",
-  md: "px-7 py-3.5 text-sm",
+  sm: "px-5 py-2.5 text-body-sm",
+  md: "px-7 py-3.5 text-body-sm",
   lg: "px-8 py-4 text-base",
 };
 

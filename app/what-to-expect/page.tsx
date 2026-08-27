@@ -76,7 +76,7 @@ export default function WhatToExpectPage() {
               />
             </div>
             <div>
-              <p className="text-brand-ink font-bold text-sm tracking-widest mb-2">
+              <p className="text-brand-ink font-bold text-body-sm tracking-widest mb-2">
                 {step.n}
               </p>
               <h2 className="text-h3 text-ink-900 mb-3">{step.title}</h2>
@@ -91,7 +91,7 @@ export default function WhatToExpectPage() {
         sub="No app downloads, no memberships, no guessing what it’ll cost. Come see why drivers don’t go back to self-serve."
       />
 
-      <p className="text-xs text-ink-500 mt-8 max-w-2xl">
+      <p className="text-caption text-ink-500 mt-8 max-w-2xl">
         *Attendant service at select locations and hours — self-serve is always
         available. Charging speed and added range vary by vehicle, battery
         state of charge, and temperature.

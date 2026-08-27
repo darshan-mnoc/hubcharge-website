@@ -39,7 +39,7 @@ export default function CompatibilityPage() {
           <p className="font-bold text-ink-900 mb-1">
             Two connectors. No adapters. Nearly every EV.
           </p>
-          <p className="text-ink-600 text-sm">
+          <p className="text-ink-600 text-body-sm">
             Elsewhere, drivers often need a $200+ adapter to use a
             single-connector charger. At HubCharge you never do — whether your
             car has a NACS port (like every Tesla) or a CCS port (like most
@@ -60,7 +60,7 @@ export default function CompatibilityPage() {
         {/* Honest exception */}
         <div className="rounded-lg border border-note-line bg-note-surface p-5 mb-8 flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 text-note-ink shrink-0 mt-0.5" />
-          <div className="text-sm text-ink-700">
+          <div className="text-body-sm text-ink-700">
             <p className="font-semibold mb-1">
               One honest exception: older Nissan Leaf (2011–2025)
             </p>
@@ -74,7 +74,7 @@ export default function CompatibilityPage() {
           </div>
         </div>
 
-        <p className="text-sm text-ink-600">
+        <p className="text-body-sm text-ink-600">
           Want the deeper story on the two connectors?{" "}
           <Link href="/charging-101/connectors" className="text-brand-ink underline">
             NACS vs CCS, explained →

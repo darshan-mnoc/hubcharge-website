@@ -1229,10 +1229,9 @@ export function JourneyBattery() {
           {/* Header - Mobile only (desktop header is inside pinned container) */}
           <div className="journey-header mb-6 lg:hidden">
             <p className="text-overline text-white/55">The experience</p>
-            <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
-            <h2 className="text-h2 text-white mb-2">
-              Your charging journey
-            </h2>
+            {/* Not an <h2>: the pinned desktop header below owns that heading,
+                and both are in the DOM simultaneously. */}
+            <p className="text-h2 text-white mb-2">Your charging journey</p>
             <p className="text-body-sm text-on-dark/60">Swipe to explore each step</p>
           </div>
 
@@ -1389,7 +1388,7 @@ export function JourneyBattery() {
                 {/* Status text */}
                 <div className="ml-4 text-left">
                   <p
-                    className="text-xs font-semibold"
+                    className="text-caption font-semibold"
                     style={{
                       color:
                         mobileActiveCard >= 4
@@ -1425,7 +1424,6 @@ export function JourneyBattery() {
             {/* Header - Inside pinned container for desktop */}
             <div className="mb-20">
               <p className="text-overline text-white/55">The experience</p>
-              <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
               <h2 className="text-h2 text-white mb-3 max-w-headline">
                 Your charging journey
               </h2>
@@ -1547,7 +1545,7 @@ export function JourneyBattery() {
                       <div className="px-1">
                         <p
                           data-title
-                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand text-sm lg:text-base"
+                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand text-body-sm lg:text-base"
                           style={{
                             color: isCurrent ? "#FFFFFF" : "rgba(255,255,255,0.55)",
                             marginBottom: "2px",
@@ -1557,7 +1555,7 @@ export function JourneyBattery() {
                         </p>
                         {/* <p
                           data-subtitle
-                          className="text-white/50 leading-snug transition-all duration-300 text-xs lg:text-sm"
+                          className="text-white/50 leading-snug transition-all duration-300 text-caption lg:text-body-sm"
                           style={{
                             opacity: isActive ? 0.8 : 0,
                           }}

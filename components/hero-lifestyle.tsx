@@ -101,7 +101,7 @@ export function HeroLifestyle() {
           variants={item}
           className="text-body-lg text-on-dark/80 max-w-[44ch] mt-6"
         >
-          Our attendant plugs you in — you stay in your car.
+          Our attendant plugs you in. You stay in your car.
           <span className="text-brass">*</span> No app needed; it all runs in
           your browser.
         </motion.p>
@@ -136,7 +136,7 @@ export function HeroLifestyle() {
             </div>
           ))}
         </div>
-        <p className="section-container text-[11px] text-white/55 pb-5">
+        <p className="section-container text-footnote text-white/55 pb-5">
           *Attendant service at select locations and hours. Charging speed and
           added range vary by vehicle, battery state of charge, and temperature.
         </p>

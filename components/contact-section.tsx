@@ -46,13 +46,12 @@ export function ContactSection() {
         className="relative section-container"
       >
         <p className="text-overline text-white/55">Support</p>
-        <span aria-hidden className="mt-3 mb-6 block h-px w-8 bg-brass" />
 
         <div className="grid lg:grid-cols-[minmax(0,1fr)_auto] gap-10 lg:gap-16 items-end">
           <div>
             <h2 className="text-h2 text-white max-w-[18ch]">Questions? We&rsquo;re here.</h2>
             <p className="text-body-lg text-on-dark/80 max-w-[46ch] mt-5">
-              Most answers are already on the site — compatibility, pricing,
+              Most answers are already on the site: compatibility, pricing,
               what to do when a session misbehaves. If yours isn&rsquo;t, tell
               us what you need and it reaches the right person.
             </p>

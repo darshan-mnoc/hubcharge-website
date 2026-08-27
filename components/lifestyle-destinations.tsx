@@ -27,7 +27,7 @@ const features = [
   {
     icon: Utensils,
     title: "Food & Meals",
-    desc: "Breakfast, lunch, dinner — from local restaurants to your car.",
+    desc: "Breakfast, lunch or dinner, brought from local restaurants to your car.",
     image: "/images/lifestyle-food-v2.webp",
     color: "from-brand",
   },
@@ -41,7 +41,7 @@ const features = [
   {
     icon: Sparkles,
     title: "Services",
-    desc: "Car detailing, dry cleaning pickup — make your 10 minutes count.",
+    desc: "Detailing and dry-cleaning pickup. Make the ten minutes count.",
     image: "/images/lifestyle-services-v2.webp",
     color: "from-brand",
   },
@@ -98,11 +98,10 @@ export function LifestyleDestinations() {
         >
           <div className="mb-8">
             <p className="text-overline text-white/55">More than charging</p>
-            <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
           </div>
 
           <h2 className="text-h2 text-white mb-6 max-w-headline">
-            Charge your car, and
+            Charge your car, and{" "}
             <br />
             get things done.
           </h2>
@@ -162,16 +161,16 @@ export function LifestyleDestinations() {
                     While you charge
                   </p>
                   <motion.span
-                                        className="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-xs font-semibold"
+                                        className="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-caption font-semibold"
                   >
                     Coming Soon
                   </motion.span>
                 </div>
-                <h3 className="text-3xl lg:text-4xl font-bold text-[#f4f3f2] mb-4">
+                <h3 className="text-h2 text-[#f4f3f2] mb-4">
                   Services delivered to your car
                 </h3>
                 <p className="text-muted-dark mb-6 max-w-md">
-                  Food, coffee, errands — brought right to your window while
+                  Food, coffee and errands, brought to your window while
                   your EV charges. No waiting, no walking.
                 </p>
 
@@ -199,10 +198,10 @@ export function LifestyleDestinations() {
                           <category.icon className="h-5 w-5 text-brand" />
                         </div>
                         <div>
-                          <p className="text-[#f4f3f2] font-semibold text-sm group-hover:text-[#f4f3f2] transition-colors">
+                          <p className="text-[#f4f3f2] font-semibold text-body-sm group-hover:text-[#f4f3f2] transition-colors">
                             {category.label}
                           </p>
-                          <p className="text-muted-dark text-xs group-hover:text-muted-dark transition-colors">
+                          <p className="text-muted-dark text-caption group-hover:text-muted-dark transition-colors">
                             {category.desc}
                           </p>
                         </div>
@@ -221,7 +220,7 @@ export function LifestyleDestinations() {
               transition={{ delay: 0.5 }}
               className="mt-8 pt-6 border-t border-white/10"
             >
-              <div className="flex items-center justify-center gap-2 text-muted-dark text-sm">
+              <div className="flex items-center justify-center gap-2 text-muted-dark text-body-sm">
                 <Clock className="h-4 w-4" />
                 <span>
                   Full lifestyle services launching soon at select locations
@@ -243,12 +242,12 @@ export function LifestyleDestinations() {
               Find your hub
               <ArrowRight className="h-5 w-5" />
             </CtaButton>
-            <span className="text-muted-dark text-sm hidden sm:block">or</span>
+            <span className="text-muted-dark text-body-sm hidden sm:block">or</span>
             <motion.a
               href="#newsletter"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="text-brand hover:text-[#FF9433] text-sm font-medium underline underline-offset-4 transition-colors"
+              className="text-brand hover:text-[#FF9433] text-body-sm font-medium underline underline-offset-4 transition-colors"
             >
               Get notified when services launch →
             </motion.a>

@@ -10,7 +10,7 @@ import Link from "next/link";
 const solutionSteps = [
   {
     number: "01",
-    title: "Arrive & Relax",
+    title: "Arrive and relax",
     desc: "Pull up to any available charger. Our team handles everything from there.",
     highlight: "No apps to download",
     image: "/images/valet-greet-v2.webp",
@@ -22,11 +22,11 @@ const solutionSteps = [
     number: "02",
     title: (
       <>
-        We Handle Charging
+        We handle the charging
         <span className="text-brass-ink">*</span>
       </>
     ),
-    desc: "Payment, plug-in, monitoring — all taken care of. Stay in your car.",
+    desc: "We take care of payment, plug-in and monitoring. You stay in your seat.",
     highlight: "Zero effort required",
     image: "/images/charging-service-v2.webp",
     imageAlt: "An attendant plugging a charging cable into an electric car",
@@ -36,7 +36,7 @@ const solutionSteps = [
     number: "03",
     title: (
       <>
-        Get Things Done
+        Get things done
         <span className="text-brass-ink">*</span>
       </>
     ),
@@ -72,7 +72,7 @@ const LEDGER = [
   },
   {
     k: "You pay",
-    them: "Per kWh, at a rate that can move by time of day — so the total only exists once you're finished.",
+    them: "Per kWh, at a rate that can move by time of day. The total only exists once you're finished.",
     us: "One flat rate for the session, shown on your phone for approval before the cable moves.",
   },
   {
@@ -132,7 +132,7 @@ export function ProblemSection() {
           >
             Chargers advertise big numbers your car can&apos;t actually use.{" "}
             <span className="text-ink-900">
-              We advertise what we deliver — and deliver what you need.
+              We advertise what we deliver, and deliver what you need.
             </span>
           </motion.p>
 
@@ -155,7 +155,6 @@ export function ProblemSection() {
         >
           <motion.div variants={itemVariants} className="mb-8">
             <p className="text-overline text-ink-500">The same stop, twice</p>
-            <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
           </motion.div>
 
           <div className="grid lg:grid-cols-[minmax(0,1fr)_22rem] gap-10 lg:gap-14 items-start">
@@ -271,7 +270,6 @@ export function ProblemSection() {
               <p className="text-overline text-white/55">
                 The HubCharge™ difference
               </p>
-              <span aria-hidden className="mt-3 block h-px w-8 bg-brass" />
             </div>
 
             <h2 className="text-h2 text-white mb-6 max-w-[26ch]">
@@ -279,7 +277,7 @@ export function ProblemSection() {
               Full-service convenience*
             </h2>
 
-            <p className="text-lg text-muted-dark max-w-xl">
+            <p className="text-body-lg text-muted-dark max-w-xl">
               Need enough charge to get home or to your destination?
               <span className="text-on-dark font-medium"> Top up and go.</span>
             </p>
@@ -327,7 +325,7 @@ export function ProblemSection() {
                     <div className="relative flex h-full min-h-[420px] lg:min-h-[460px] flex-col justify-between p-6">
                       {/* Top: step number + hover arrow */}
                       <div className="flex items-start justify-between">
-                        <span className="text-5xl font-black text-white/70 transition-colors group-hover/card:text-brand">
+                        <span className="text-stat text-white/70 transition-colors group-hover/card:text-brand">
                           {step.number}
                         </span>
                         <ArrowRight className="mt-2 h-5 w-5 text-brand opacity-0 -translate-x-1 transition-all group-hover/card:opacity-100 group-hover/card:translate-x-0" />
@@ -335,21 +333,21 @@ export function ProblemSection() {
 
                       {/* Bottom: title, desc, highlight */}
                       <div className="space-y-3">
-                        <h3 className="text-xl font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+                        <h3 className="text-h3 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
                           {step.title}
                         </h3>
-                        <p className="text-sm leading-relaxed text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
+                        <p className="text-body-sm leading-relaxed text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
                           {step.desc}
                         </p>
                         <div className="flex flex-wrap items-center gap-2 pt-1">
                           <div className="inline-flex items-center gap-2 rounded-full bg-brand/20 px-3 py-1.5 backdrop-blur-sm">
                             <Sparkles className="h-3 w-3 text-brand" />
-                            <span className="text-xs font-medium text-brand">
+                            <span className="text-caption font-medium text-brand">
                               {step.highlight}
                             </span>
                           </div>
                           {i === 2 && (
-                            <span className="inline-flex items-center gap-2 rounded-full bg-brand/20 px-3 py-1.5 text-xs font-semibold text-brand backdrop-blur-sm">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-brand/20 px-3 py-1.5 text-caption font-semibold text-brand backdrop-blur-sm">
                               Coming Soon
                             </span>
                           )}
@@ -373,7 +371,7 @@ export function ProblemSection() {
               viewport={{ once: true }}
               className="mt-10"
             >
-              <p className="text-muted-dark text-sm">
+              <p className="text-muted-dark text-body-sm">
                 <span className="text-brass-ink">*</span>Full-service attendant
                 available at select locations.{" "}
                 <a
@@ -396,7 +394,7 @@ export function ProblemSection() {
             <motion.a
               href="#how-it-works"
               whileHover={{ scale: 1.05 }}
-              className="inline-flex items-center gap-3 text-brand hover:text-brand-hover transition-colors text-lg font-semibold group"
+              className="inline-flex items-center gap-3 text-brand hover:text-brand-hover transition-colors text-h4 group"
             >
               See the full charging experience
               <ArrowDown className="h-5 w-5 transition-transform group-hover:translate-y-0.5" />

@@ -83,12 +83,12 @@ export default function PricingPage() {
 
       <div className="grid md:grid-cols-2 gap-8 mb-14 max-w-4xl">
         <div className="card-light p-8">
-          <p className="flex items-center gap-2 text-brand-ink text-xs font-bold uppercase tracking-widest mb-4">
+          <p className="flex items-center gap-2 text-brand-ink text-caption font-bold uppercase tracking-widest mb-4">
             <CheckCircle2 className="h-4 w-4" /> Included in your flat rate
           </p>
           <ul className="space-y-3">
             {included.map((line) => (
-              <li key={line} className="flex items-start gap-3 text-ink-600 text-sm">
+              <li key={line} className="flex items-start gap-3 text-ink-600 text-body-sm">
                 <CheckCircle2 className="h-4 w-4 text-ok-on-dark mt-0.5 shrink-0" />
                 {line}
               </li>
@@ -96,12 +96,12 @@ export default function PricingPage() {
           </ul>
         </div>
         <div className="card-light p-8">
-          <p className="flex items-center gap-2 text-ink-500 text-xs font-bold uppercase tracking-widest mb-4">
+          <p className="flex items-center gap-2 text-ink-500 text-caption font-bold uppercase tracking-widest mb-4">
             <XCircle className="h-4 w-4" /> What you&apos;ll never see
           </p>
           <ul className="space-y-3">
             {neverCharged.map((line) => (
-              <li key={line} className="flex items-start gap-3 text-ink-500 text-sm line-through decoration-ink-300">
+              <li key={line} className="flex items-start gap-3 text-ink-500 text-body-sm line-through decoration-ink-300">
                 <XCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 {line}
               </li>
@@ -161,7 +161,6 @@ export default function PricingPage() {
 
       <section className="max-w-measure mb-20">
         <p className="text-overline text-ink-500">Common questions</p>
-        <span aria-hidden className="mt-4 mb-6 block h-px w-8 bg-brass" />
         {PRICING_FAQS.map((f) => (
           <details key={f.q} className="group border-t border-paper-300 last:border-b">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-h4 text-ink-900 hover:text-brand-ink transition-colors">
@@ -197,7 +196,7 @@ export default function PricingPage() {
             Pricing questions? See the FAQ
           </CtaButton>
         </div>
-        <p className="text-xs text-ink-500 mt-8">
+        <p className="text-caption text-ink-500 mt-8">
           *Attendant service at select locations and hours. Added range varies
           by vehicle, battery state of charge, and temperature. Your total
           price is always disclosed before your session starts.

@@ -43,21 +43,21 @@ export default function LocationsPage() {
                 className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <span className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-ok-ink text-white text-xs font-semibold">
+              <span className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-ok-ink text-white text-caption font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-white" />
                 Open now
               </span>
             </div>
             <div className="p-6">
-              <h2 className="text-xl font-bold text-ink-900 mb-2 group-hover:text-brand-ink transition-colors">
+              <h2 className="text-h3 text-ink-900 mb-2 group-hover:text-brand-ink transition-colors">
                 {station.name}
               </h2>
-              <p className="text-ink-500 text-sm mb-4">
+              <p className="text-ink-500 text-body-sm mb-4">
                 {station.address}
                 {station.address !== station.city && `, ${station.city}`},{" "}
                 {station.state} {station.zip}
               </p>
-              <ul className="space-y-2 text-sm text-ink-600 mb-5">
+              <ul className="space-y-2 text-body-sm text-ink-600 mb-5">
                 <li className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-ink-700" />
                   {station.chargers} DC fast charger
@@ -73,7 +73,7 @@ export default function LocationsPage() {
                   Open daily, {station.hours}
                 </li>
               </ul>
-              <span className="inline-flex items-center gap-1.5 text-brand-ink font-semibold text-sm">
+              <span className="inline-flex items-center gap-1.5 text-brand-ink font-semibold text-body-sm">
                 Station details
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </span>
@@ -92,13 +92,13 @@ export default function LocationsPage() {
         </p>
         <Link
           href="/#locations"
-          className="text-brand-ink font-semibold text-sm underline underline-offset-4"
+          className="text-brand-ink font-semibold text-body-sm underline underline-offset-4"
         >
           Get notified when new hubs open →
         </Link>
       </div>
 
-      <p className="text-xs text-ink-500 mt-8 max-w-2xl">
+      <p className="text-caption text-ink-500 mt-8 max-w-2xl">
         *Attendant availability varies by location and time. Actual charging
         speed and added range vary by vehicle, battery state of charge, and
         temperature.

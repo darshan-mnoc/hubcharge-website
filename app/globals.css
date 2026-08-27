@@ -495,6 +495,15 @@ body {
     letter-spacing: 0.16em; text-transform: uppercase;
   }
   .text-caption { font-size: 0.8125rem; font-weight: 500; line-height: 1.45; }
+  /* The scale had no step below caption, so twenty-one footnotes were written
+     as text-[11px] instead. A design system that omits a size people need
+     doesn't prevent that size being used — it just makes it arbitrary. */
+  .text-footnote { font-size: 0.6875rem; font-weight: 400; line-height: 1.5; }
+
+  /* Sanctioned exceptions to the scale, so future greps don't "fix" them:
+     the journey illustration and the phone mockup use text-[9px]/[10px] to
+     simulate device UI seen at a distance. That type is a picture of text,
+     not text, and holding it to the reading scale would break the illusion. */
 
   /* Specials */
   .text-stat {

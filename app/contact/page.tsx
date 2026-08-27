@@ -105,7 +105,6 @@ export default function ContactPage() {
       {/* ── Self-serve ─────────────────────────────────────────── */}
       <section id="quick" className="scroll-mt-28 mb-20">
         <p className="text-overline text-ink-500">Quick answers</p>
-        <span aria-hidden className="mt-3 mb-6 block h-px w-8 bg-brass" />
         <ul className="grid sm:grid-cols-2 gap-x-8">
           {SELF_SERVE.map((s) => (
             <li key={s.q} className="border-t border-paper-300 py-5">
@@ -130,7 +129,6 @@ export default function ContactPage() {
       {/* ── Stations (NAP) ─────────────────────────────────────── */}
       <section id="stations" className="scroll-mt-28 mb-20">
         <p className="text-overline text-ink-500">Our stations</p>
-        <span aria-hidden className="mt-3 mb-6 block h-px w-8 bg-brass" />
         <div className="grid md:grid-cols-2 gap-x-10 gap-y-8">
           {stations.map((s) => {
             const status = stationStatus(s);
@@ -217,7 +215,6 @@ export default function ContactPage() {
       {/* ── Form ───────────────────────────────────────────────── */}
       <section id="form" className="scroll-mt-28 max-w-2xl">
         <p className="text-overline text-ink-500">Send a message</p>
-        <span aria-hidden className="mt-3 mb-6 block h-px w-8 bg-brass" />
         <ContactForm />
 
         <p className="flex gap-2 text-caption text-ink-400 mt-7">

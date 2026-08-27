@@ -149,11 +149,11 @@ export function PricingExperience() {
                       }`}
                     >
                       <span
-                        className={`block text-sm font-semibold ${active ? "text-white" : "text-ink-800"}`}
+                        className={`block text-body-sm font-semibold ${active ? "text-white" : "text-ink-800"}`}
                       >
                         {d.label}
                       </span>
-                      <span className={`block text-xs mt-0.5 ${active ? "text-on-dark/70" : "text-ink-500"}`}>
+                      <span className={`block text-caption mt-0.5 ${active ? "text-on-dark/70" : "text-ink-500"}`}>
                         {d.time}
                       </span>
                     </button>
@@ -178,7 +178,7 @@ export function PricingExperience() {
                       role="radio"
                       aria-checked={active}
                       onClick={() => setCarId(c.id)}
-                      className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                      className={`rounded-full border px-4 py-2 text-body-sm font-medium transition-all ${
                         active
                           ? "border-brand bg-brand text-ink-900"
                           : "border-paper-300 text-ink-700 hover:border-paper-400"
@@ -216,7 +216,7 @@ export function PricingExperience() {
                         <a.icon className="h-4 w-4" />
                       </span>
                       <span
-                        className={`text-sm font-medium ${active ? "text-white" : "text-ink-600"}`}
+                        className={`text-body-sm font-medium ${active ? "text-white" : "text-ink-600"}`}
                       >
                         {a.label}
                       </span>
@@ -231,7 +231,7 @@ export function PricingExperience() {
                   );
                 })}
               </div>
-              <p className="text-xs text-ink-500 mt-2">
+              <p className="text-caption text-ink-500 mt-2">
                 Lifestyle services launching at select hubs.
               </p>
             </div>
@@ -258,11 +258,11 @@ export function PricingExperience() {
                     key={`${carId}-${distance}`}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-2xl font-black"
+                    className="text-h2"
                   >
                     {sim.milesLow}–{sim.milesHigh} mi
                   </motion.span>
-                  <span className="text-sm text-muted-dark">
+                  <span className="text-body-sm text-muted-dark">
                     to your {car.name} · {dist.time}
                   </span>
                 </div>
@@ -273,7 +273,7 @@ export function PricingExperience() {
                     transition={{ type: "spring", stiffness: 90, damping: 18 }}
                   />
                 </div>
-                <p className="text-[11px] text-muted-dark mt-1">
+                <p className="text-footnote text-muted-dark mt-1">
                   Estimated added range
                 </p>
               </div>
@@ -281,7 +281,7 @@ export function PricingExperience() {
               {/* extensions */}
               <div className="mb-5 flex items-center gap-2 rounded-lg bg-white/[0.04] border border-white/10 px-3 py-2">
                 <Clock className="h-4 w-4 text-brand flex-shrink-0" />
-                <p className="text-xs text-muted-dark">
+                <p className="text-caption text-muted-dark">
                   Need longer? Extend in quick taps —{" "}
                   <span className="text-on-dark font-medium">
                     up to 4 times
@@ -301,7 +301,7 @@ export function PricingExperience() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -8 }}
                       transition={{ duration: 0.2 }}
-                      className="flex items-center gap-2.5 text-sm text-on-dark"
+                      className="flex items-center gap-2.5 text-body-sm text-on-dark"
                     >
                       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/20">
                         <Check className="h-3 w-3 text-brand" />
@@ -317,10 +317,10 @@ export function PricingExperience() {
             <div className="relative mt-auto rounded-lg border border-white/10 bg-white/[0.04] p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Zap className="h-5 w-5 text-brand" />
-                <span className="text-lg font-bold text-on-dark">
+                <span className="text-h4 text-on-dark">
                   One flat rate
                 </span>
-                <span className="text-sm text-muted-dark">
+                <span className="text-body-sm text-muted-dark">
                   — known upfront.
                 </span>
               </div>
@@ -328,7 +328,7 @@ export function PricingExperience() {
                 {gotchas.map((g) => (
                   <span
                     key={g}
-                    className="inline-flex items-center gap-1.5 text-xs text-muted-dark"
+                    className="inline-flex items-center gap-1.5 text-caption text-muted-dark"
                   >
                     <X className="h-3.5 w-3.5 text-error-on-dark/80" />
                     <span className="line-through decoration-error/40">
@@ -340,7 +340,7 @@ export function PricingExperience() {
               <CtaButton href="#locations" size="lg" fullWidth>
                 Find your hub
               </CtaButton>
-              <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-dark mt-3">
+              <p className="flex items-center justify-center gap-1.5 text-footnote text-muted-dark mt-3">
                 <Check className="h-3 w-3 text-brand" />
                 Flat, fair, and predictable.{" "}
                 <a

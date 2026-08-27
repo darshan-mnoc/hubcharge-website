@@ -38,7 +38,7 @@ function Step({
     <div className="grid grid-cols-[1.5rem_1fr] gap-x-3">
       <span
         aria-hidden
-        className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full border border-white/20 text-[11px] text-on-dark/70"
+        className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full border border-white/20 text-footnote text-on-dark/70"
       >
         {n}
       </span>

@@ -191,7 +191,7 @@ export default async function VehicleGuide({
           </Link>
           .
         </p>
-        <p className="text-[11px] text-ink-400 mt-6">*{RANGE_FOOTNOTE}</p>
+        <p className="text-footnote text-ink-400 mt-6">*{RANGE_FOOTNOTE}</p>
       </div>
 
       <GuideCta headline={`Ready to charge your ${m.name.split(" / ")[0]}?`} />

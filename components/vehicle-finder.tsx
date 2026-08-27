@@ -163,7 +163,7 @@ export function VehicleFinder() {
       <p className="text-caption text-ink-400 mt-6">
         Vehicle data last updated {EV_DATA_UPDATED}.
       </p>
-      <p className="text-[11px] text-ink-400 mt-2 max-w-[75ch]">{ESTIMATE_BASIS}</p>
+      <p className="text-footnote text-ink-400 mt-2 max-w-[75ch]">{ESTIMATE_BASIS}</p>
     </div>
   );
 }

@@ -59,7 +59,7 @@ function StationMarker({
         >
           <MapPin aria-hidden className="h-3 w-3" />
         </span>
-        <span className="text-[11px] font-semibold whitespace-nowrap">
+        <span className="text-footnote font-semibold whitespace-nowrap">
           {station.city}
         </span>
       </button>

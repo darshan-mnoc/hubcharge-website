@@ -182,7 +182,7 @@ export function ChargingCurveChart({
         The shaded area is what actually reaches the battery. Notice how it
         collapses past 60% — that is why a short top-up beats charging to full.
       </figcaption>
-      <p className="mt-2 text-[11px] text-ink-400">{ESTIMATE_BASIS}</p>
+      <p className="mt-2 text-footnote text-ink-400">{ESTIMATE_BASIS}</p>
     </figure>
   );
 }

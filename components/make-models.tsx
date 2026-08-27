@@ -121,7 +121,7 @@ export function MakeModels({ makeId }: { makeId: string }) {
         </Link>
         .
       </p>
-      <p className="text-[11px] text-ink-400 mt-3">{ESTIMATE_BASIS}</p>
+      <p className="text-footnote text-ink-400 mt-3">{ESTIMATE_BASIS}</p>
     </div>
   );
 }

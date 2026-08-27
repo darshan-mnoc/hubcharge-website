@@ -191,7 +191,7 @@ export function BatteryNav() {
                                 <span className="block text-caption font-semibold text-white">
                                   {g.navTitle ?? g.title}
                                 </span>
-                                <span className="block text-[11px] text-on-dark/55 mt-0.5">
+                                <span className="block text-footnote text-on-dark/55 mt-0.5">
                                   {g.read} read
                                 </span>
                               </Link>
@@ -257,7 +257,7 @@ export function BatteryNav() {
             target="_blank"
             rel="noopener noreferrer"
             whileTap={{ scale: 0.95 }}
-            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-brand text-ink-900 rounded-full"
+            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-caption font-semibold bg-brand text-ink-900 rounded-full"
           >
             <Zap className="h-3 w-3" strokeWidth={2.5} />
             <span>Login</span>
@@ -315,7 +315,7 @@ export function BatteryNav() {
                         strokeWidth={1.5}
                       />
                     </div>
-                    <span className="text-[#f4f3f2]/90 font-semibold text-lg">
+                    <span className="text-on-dark/90 text-h4">
                       {link.label}
                     </span>
                   </motion.button>
@@ -346,7 +346,7 @@ export function BatteryNav() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
                 onClick={() => router.push("/locations")}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover w-full text-sm"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover w-full text-body-sm"
               >
                 <Zap className="h-4 w-4" strokeWidth={2.5} />
                 Start Charging Now

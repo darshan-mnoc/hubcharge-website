@@ -36,7 +36,7 @@ function Slider({
         onChange={(e) => onChange(Number(e.target.value))}
         className="range-brand mt-2 w-full"
       />
-      {hint && <p className="text-[11px] text-ink-400 mt-1">{hint}</p>}
+      {hint && <p className="text-footnote text-ink-400 mt-1">{hint}</p>}
     </div>
   );
 }
@@ -138,7 +138,7 @@ export function CostPerMile() {
                     style={{ width: `${Math.max(2, (r.cost / worst) * 100)}%` }}
                   />
                 </div>
-                <p className="text-[11px] text-ink-400 mt-1.5">{r.note}</p>
+                <p className="text-footnote text-ink-400 mt-1.5">{r.note}</p>
               </li>
             ))}
           </ul>
@@ -160,7 +160,7 @@ export function CostPerMile() {
         </div>
       </div>
 
-      <p className="mt-5 text-[11px] text-ink-400">
+      <p className="mt-5 text-footnote text-ink-400">
         Efficiency is the EPA combined figure for the selected trim. Charging
         losses are folded in — about 7% on DC, 12% on AC — because you pay for
         what leaves the charger, not what reaches the battery. Rates are yours

@@ -69,7 +69,7 @@ export default function VehiclesIndex() {
         })}
       </ol>
 
-      <p className="text-[11px] text-ink-400 mt-8 max-w-[70ch]">{RANGE_FOOTNOTE}</p>
+      <p className="text-footnote text-ink-400 mt-8 max-w-[70ch]">{RANGE_FOOTNOTE}</p>
 
       <GuideFooter slug="vehicles" />
       <GuideCta />

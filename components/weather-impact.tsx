@@ -75,7 +75,7 @@ export function WeatherImpact() {
                   key={p.degF}
                   onClick={() => setDegF(p.degF)}
                   aria-pressed={degF === p.degF}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] transition-colors ${
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-footnote transition-colors ${
                     degF === p.degF
                       ? "border-brand bg-brand text-ink-900"
                       : "border-paper-300 text-ink-600 hover:border-ink-300"
@@ -100,7 +100,7 @@ export function WeatherImpact() {
                 {lo}–{hi}
                 <span className="text-h4 text-ink-500 ml-1">mi</span>
               </dd>
-              <dd className="text-[11px] text-ink-400 mt-1">
+              <dd className="text-footnote text-ink-400 mt-1">
                 {mild.milesLow}–{mild.milesHigh} mi at 70°F
               </dd>
             </div>
@@ -110,7 +110,7 @@ export function WeatherImpact() {
                 {fullNow}
                 <span className="text-h4 text-ink-500 ml-1">min</span>
               </dd>
-              <dd className="text-[11px] text-ink-400 mt-1">{mildFull} min at 70°F</dd>
+              <dd className="text-footnote text-ink-400 mt-1">{mildFull} min at 70°F</dd>
             </div>
           </dl>
 
@@ -144,7 +144,7 @@ export function WeatherImpact() {
                     style={{ width: `${r.v * 100}%` }}
                   />
                 </div>
-                <p className="text-[11px] text-ink-400 mt-1.5">{r.why}</p>
+                <p className="text-footnote text-ink-400 mt-1.5">{r.why}</p>
               </li>
             ))}
           </ul>
@@ -160,7 +160,7 @@ export function WeatherImpact() {
         </div>
       </div>
 
-      <p className="mt-5 text-[11px] text-ink-400">{TEMP_BASIS}</p>
+      <p className="mt-5 text-footnote text-ink-400">{TEMP_BASIS}</p>
     </div>
   );
 }

@@ -196,10 +196,10 @@ export function ChatPopup() {
                     <MapPin className="h-5 w-5 text-white" />
                   </motion.div>
                   <div>
-                    <h3 className="font-bold text-base sm:text-lg text-white">
+                    <h3 className="text-h4 text-white">
                       Help Us Grow
                     </h3>
-                    <p className="text-white/80 text-xs sm:text-sm">
+                    <p className="text-white/80 text-caption sm:text-body-sm">
                       What do you want near HubCharge™?
                     </p>
                   </div>
@@ -241,10 +241,10 @@ export function ChatPopup() {
                         />
                       </motion.svg>
                     </motion.div>
-                    <h4 className="text-lg sm:text-xl font-bold text-white mb-2">
+                    <h4 className="text-h3 text-white mb-2">
                       Thank You!
                     </h4>
-                    <p className="text-white/50 text-sm">
+                    <p className="text-white/50 text-body-sm">
                       Your feedback helps us bring the best to your area.
                     </p>
                   </motion.div>
@@ -257,7 +257,7 @@ export function ChatPopup() {
                     onSubmit={handleSubmit}
                     className="p-4 sm:p-6"
                   >
-                    <p className="text-white/50 text-xs sm:text-sm mb-3 sm:mb-4">
+                    <p className="text-white/50 text-caption sm:text-body-sm mb-3 sm:mb-4">
                       Select what you&apos;d like to see near HubCharge™ stations:
                     </p>
 
@@ -285,7 +285,7 @@ export function ChatPopup() {
                               className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-ink-900" : "text-white/55"}`}
                             />
                             <span
-                              className={`text-xs sm:text-sm font-medium ${isSelected ? "text-ink-900" : "text-white/60"}`}
+                              className={`text-caption sm:text-body-sm font-medium ${isSelected ? "text-ink-900" : "text-white/60"}`}
                             >
                               {option.label}
                             </span>
@@ -298,7 +298,7 @@ export function ChatPopup() {
                     <div className="mb-4">
                       <label
                         htmlFor="feedback-message"
-                        className="text-xs sm:text-sm text-white/60 mb-2 block"
+                        className="text-caption sm:text-body-sm text-white/60 mb-2 block"
                       >
                         Or tell us something specific:
                       </label>
@@ -307,13 +307,13 @@ export function ChatPopup() {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="I'd love to see..."
-                        className="field-dark px-3 py-2 resize-none h-16 sm:h-20 text-sm"
+                        className="field-dark px-3 py-2 resize-none h-16 sm:h-20 text-body-sm"
                       />
                     </div>
 
                     {/* Submit */}
                     {error && (
-                      <p role="alert" className="text-xs text-error-on-dark mb-2">
+                      <p role="alert" className="text-caption text-error-on-dark mb-2">
                         {error}
                       </p>
                     )}
@@ -321,13 +321,13 @@ export function ChatPopup() {
                       type="submit"
                       disabled={sending}
                       whileTap={{ scale: 0.98 }}
-                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover w-full rounded-full text-sm sm:text-base py-2.5 sm:py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover w-full rounded-full text-body-sm py-2.5 sm:py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                       {sending ? "Sending…" : "Send Feedback"}
                     </motion.button>
 
-                    <p className="text-center text-[10px] sm:text-xs text-white/55 mt-3 sm:mt-4">
+                    <p className="text-center text-[10px] sm:text-caption text-white/55 mt-3 sm:mt-4">
                       We read every suggestion
                     </p>
                   </motion.form>

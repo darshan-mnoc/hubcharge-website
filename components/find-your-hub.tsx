@@ -160,12 +160,12 @@ export function FindYourHub() {
         >
           <div className="inline-flex items-center gap-2 mb-8">
             <MapPin className="h-4 w-4" />
-            <span className="text-sm font-semibold uppercase tracking-wider">
+            <span className="text-body-sm font-semibold uppercase tracking-wider">
               Locations
             </span>
           </div>
           <h2 className="text-h2 text-ink-900 mb-4 max-w-headline">
-            Find your nearest
+            Find your nearest{" "}
             <br />
             HubCharge station
           </h2>
@@ -205,7 +205,7 @@ export function FindYourHub() {
                 disabled={isSearching}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="shrink-0 px-4 sm:px-6 py-4 text-sm bg-brand hover:bg-brand-hover text-ink-900 font-semibold rounded-lg transition-colors disabled:opacity-50"
+                className="shrink-0 px-4 sm:px-6 py-4 text-body-sm bg-brand hover:bg-brand-hover text-ink-900 font-semibold rounded-lg transition-colors disabled:opacity-50"
               >
                 {isSearching ? (
                   <span className="flex items-center gap-2">
@@ -231,7 +231,7 @@ export function FindYourHub() {
           <div className="flex items-center justify-center gap-2 mt-4">
             <button
               onClick={handleUseLocation}
-              className="flex items-center gap-1.5 text-sm text-ink-500 hover:text-brand-ink transition-colors"
+              className="flex items-center gap-1.5 text-body-sm text-ink-500 hover:text-brand-ink transition-colors"
             >
               <Navigation className="h-3.5 w-3.5" />
               Use current location
@@ -239,7 +239,7 @@ export function FindYourHub() {
           </div>
           {searchNote && (
             <div className="flex items-center justify-center mt-2">
-              <p className="text-xs text-ink-500">{searchNote}</p>
+              <p className="text-caption text-ink-500">{searchNote}</p>
             </div>
           )}
         </motion.div>
@@ -249,7 +249,7 @@ export function FindYourHub() {
           {/* Station List */}
           <div className="lg:col-span-2">
             <div className="sticky top-24">
-              <h3 className="text-lg font-bold text-ink-900 mb-4 flex items-center gap-2">
+              <h3 className="text-h3 text-ink-900 mb-4 flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-ink-700" />
                 {searchResults
                   ? `${searchResults.length} Station${searchResults.length === 1 ? "" : "s"} Found`
@@ -283,7 +283,7 @@ export function FindYourHub() {
                             const st = stationStatus(station);
                             return (
                               <span
-                                className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${
+                                className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-caption font-medium ${
                                   st.open
                                     ? "bg-ok-surface text-ok-ink"
                                     : "bg-ink-100 text-ink-500"
@@ -297,14 +297,14 @@ export function FindYourHub() {
                             );
                           })()}
                         </div>
-                        <p className="text-ink-500 text-sm">
+                        <p className="text-ink-500 text-body-sm">
                           {station.address}
                         </p>
-                        <p className="text-ink-500 text-sm">
+                        <p className="text-ink-500 text-body-sm">
                           {station.city}, {station.state} {station.zip}
                         </p>
                         {distances?.[station.id] != null && (
-                          <p className="text-brand-ink text-xs font-semibold mt-1">
+                          <p className="text-brand-ink text-caption font-semibold mt-1">
                             ~{Math.round(distances[station.id])} mi away
                           </p>
                         )}
@@ -313,16 +313,16 @@ export function FindYourHub() {
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-brand/10 text-brand-ink text-xs">
+                      <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-brand/10 text-brand-ink text-caption">
                         <Zap className="h-3 w-3" />
                         {station.power}
                       </span>
-                      {/* <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-paper-100 text-ink-500 text-xs">
+                      {/* <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-paper-100 text-ink-500 text-caption">
                         <Clock className="h-3 w-3" />
                         {station.hours}
                       </span> */}
                       {station.hasAttendant && (
-                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-ok-surface text-ok-ink text-xs font-medium">
+                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-ok-surface text-ok-ink text-caption font-medium">
                           <CheckCircle2 className="h-3 w-3" />
                           Attendant
                         </span>
@@ -330,7 +330,7 @@ export function FindYourHub() {
                     </div>
 
                     {station.note && (
-                      <div className="flex items-center gap-1.5 mb-3 text-xs font-medium text-brand-ink">
+                      <div className="flex items-center gap-1.5 mb-3 text-caption font-medium text-brand-ink">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand" />
                         {station.note}
                       </div>
@@ -343,7 +343,7 @@ export function FindYourHub() {
                         rel="noopener noreferrer"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-brand hover:bg-brand-hover text-ink-900 text-sm font-semibold transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-brand hover:bg-brand-hover text-ink-900 text-body-sm font-semibold transition-colors"
                       >
                         <Navigation className="h-4 w-4" />
                         Directions
@@ -359,7 +359,7 @@ export function FindYourHub() {
                     <a
                       href={`/locations/${station.slug}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-brand-ink hover:text-brand-hover"
+                      className="inline-flex items-center gap-1 mt-3 text-body-sm font-semibold text-brand-ink hover:text-brand-hover"
                     >
                       Station details
                       <ChevronRight className="h-4 w-4" />
@@ -371,7 +371,7 @@ export function FindYourHub() {
               {/* Attendant note */}
               <div className="flex items-start gap-2.5 mt-4 p-3.5 rounded-lg bg-paper-100 border border-paper-300">
                 <AlertCircle className="h-4 w-4 text-ink-500 mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-ink-600 leading-relaxed">
+                <p className="text-caption text-ink-600 leading-relaxed">
                   Attendant availability varies by location and time. Check
                   station details for current availability.
                 </p>
@@ -404,7 +404,7 @@ export function FindYourHub() {
           className="mt-12"
         >
           <h3 className="text-h3 text-ink-900 mb-1">
-            What&apos;s Nearby — Delivered to Your Car
+            What&apos;s nearby, delivered to your car
           </h3>
           <p className="text-body-sm text-ink-500 mb-6">
             Near {selected.name} · {selected.city}, {selected.state}
@@ -436,7 +436,7 @@ export function FindYourHub() {
                     className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-paper-300 hover:border-brand/40 transition-colors"
                   >
                     <span className="text-ink-700">{place.name}</span>
-                    <span className="text-ink-400 text-sm">{place.walk} walk</span>
+                    <span className="text-ink-400 text-body-sm">{place.walk} walk</span>
                   </motion.a>
                 ))}
               </div>
@@ -467,7 +467,7 @@ export function FindYourHub() {
                     className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-paper-300 hover:border-brand/40 transition-colors"
                   >
                     <span className="text-ink-700">{place.name}</span>
-                    <span className="text-ink-400 text-sm">{place.walk} walk</span>
+                    <span className="text-ink-400 text-body-sm">{place.walk} walk</span>
                   </motion.a>
                 ))}
               </div>
@@ -498,7 +498,7 @@ export function FindYourHub() {
                     className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-paper-300 hover:border-brand/40 transition-colors"
                   >
                     <span className="text-ink-700">{place.name}</span>
-                    <span className="text-ink-400 text-sm">{place.walk} walk</span>
+                    <span className="text-ink-400 text-body-sm">{place.walk} walk</span>
                   </motion.a>
                 ))}
               </div>
@@ -515,7 +515,7 @@ export function FindYourHub() {
         >
           <div className="card-light p-8">
             <h3 className="text-h3 text-ink-900 mb-3">
-              More Locations Coming Soon
+              More locations coming soon
             </h3>
             <p className="text-ink-500 mb-6 max-w-[52ch]">
               We&apos;re expanding across California. Enter your email to be notified
@@ -589,7 +589,7 @@ export function FindYourHub() {
               </form>
             )}
             {notifyError && (
-              <p role="alert" className="text-sm text-error-ink mt-2">
+              <p role="alert" className="text-body-sm text-error-ink mt-2">
                 {notifyError}
               </p>
             )}

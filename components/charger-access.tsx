@@ -16,7 +16,7 @@ const steps = [
   {
     icon: Globe,
     title: "Opens in your browser",
-    desc: "HubCharge™ loads instantly — no app to download. Start as a guest, or sign in to see your session history and get quick access next time",
+    desc: "HubCharge™ loads instantly. No app to download. Start as a guest, or sign in to keep your session history for next time.",
   },
   {
     icon: Zap,
@@ -62,7 +62,7 @@ export function ChargerAccess() {
               className="text-body-lg text-ink-600 mb-8 max-w-md"
             >
               Skip the download. HubCharge™ runs right in your phone&apos;s
-              browser — tap, scan, and you&apos;re charging in seconds.
+              browser. Tap, scan, and you&apos;re charging in seconds.
             </motion.p>
 
             {/* steps */}
@@ -73,13 +73,13 @@ export function ChargerAccess() {
                     <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white border border-paper-300 shadow-card">
                       <s.icon className="h-5 w-5 text-ink-700" />
                     </div>
-                    <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-ink-900">
+                    <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-footnote font-bold text-ink-900">
                       {i + 1}
                     </span>
                   </div>
                   <div>
                     <p className="font-semibold text-ink-900">{s.title}</p>
-                    <p className="text-sm text-ink-600 leading-relaxed">
+                    <p className="text-body-sm text-ink-600 leading-relaxed">
                       {s.desc}
                     </p>
                   </div>
@@ -95,7 +95,7 @@ export function ChargerAccess() {
               {reassurance.map((r) => (
                 <span
                   key={r}
-                  className="inline-flex items-center gap-2 text-sm text-ink-700"
+                  className="inline-flex items-center gap-2 text-body-sm text-ink-700"
                 >
                   <Check className="h-4 w-4 text-ink-700" />
                   {r}
@@ -108,7 +108,7 @@ export function ChargerAccess() {
                 Find a charger near you
                 <ArrowRight className="h-5 w-5" />
               </CtaButton>
-              <p className="mt-4 text-sm text-ink-500">
+              <p className="mt-4 text-body-sm text-ink-500">
                 First visit?{" "}
                 <Link href="/what-to-expect" className="text-brand-ink underline underline-offset-2">
                   See what to expect
@@ -142,7 +142,7 @@ export function ChargerAccess() {
               {/* floating badge — sits beside the browser bar it refers to */}
               <div className="absolute -left-5 bottom-8 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-card-hover border border-paper-300">
                 <Globe aria-hidden className="h-4 w-4 text-ink-700" />
-                <span className="text-xs font-semibold text-ink-900">
+                <span className="text-caption font-semibold text-ink-900">
                   In your browser
                 </span>
               </div>

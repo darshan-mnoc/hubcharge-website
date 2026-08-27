@@ -135,7 +135,7 @@ export function ChargingLevelsCompare() {
         ))}
       </ul>
 
-      <p className="mt-4 text-[11px] text-ink-400">
+      <p className="mt-4 text-footnote text-ink-400">
         AC figures assume steady power and about 12% conversion loss in the
         car&rsquo;s onboard charger; the {model.short} caps at {model.acKw} kW on
         AC no matter how big the wallbox. The DC figure models this car&rsquo;s

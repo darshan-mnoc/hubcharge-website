@@ -109,7 +109,7 @@ export default function ChargingSpeedPage() {
           </Link>
           .
         </p>
-        <p className="text-sm text-ink-500">{RANGE_FOOTNOTE}</p>
+        <p className="text-body-sm text-ink-500">{RANGE_FOOTNOTE}</p>
       </Prose>
 
       <GuideFooter slug="charging-speed" />
