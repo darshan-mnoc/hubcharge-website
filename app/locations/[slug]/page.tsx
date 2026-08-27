@@ -17,9 +17,11 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { CtaButton } from "@/components/ui/cta-button";
 import { GuideBreadcrumb } from "@/components/learn";
+import { NearbyPlaces } from "@/components/nearby-places";
+import { getNearbyPlaces } from "@/lib/places";
+import { stationStatus } from "@/lib/hours";
 import {
   stations,
-  nearbyByStation,
   getStationBySlug,
   directionsUrl,
   mapEmbedUrl,
@@ -68,7 +70,8 @@ export default async function StationPage({
   const station = getStationBySlug(slug);
   if (!station) notFound();
 
-  const nearby = nearbyByStation[station.id];
+  const places = await getNearbyPlaces(station);
+  const status = stationStatus(station);
 
   // Local-business structured data for this specific station
   const jsonLd = {
@@ -149,48 +152,44 @@ export default async function StationPage({
       <div className="grid lg:grid-cols-5 gap-10 mb-16">
         {/* Left: details */}
         <div className="lg:col-span-3">
-          <div className="relative h-64 sm:h-80 rounded-lg overflow-hidden mb-8">
-            <Image
-              src={stationImages[station.slug] ?? "/images/home.webp"}
-              alt={`Attendant service at ${station.name}`}
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 60vw"
-              priority
-            />
-          </div>
-
-          <h2 className="text-h3 text-midnight-navy mb-4">{station.name}</h2>
+          <h2 className="text-h3 text-ink-900 mb-4">{station.name}</h2>
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
             <div className="card-light p-4">
-              <p className="text-overline text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-ink-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Address
               </p>
-              <p className="text-gray-700 text-sm">
+              <p className="text-ink-600 text-sm">
                 {station.address}
                 <br />
                 {station.city}, {station.state} {station.zip}
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-overline text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-ink-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Hours
               </p>
-              <p className="text-gray-700 text-sm flex items-center gap-2">
+              <p className="text-ink-600 text-sm flex items-center gap-2">
                 <Clock className="h-4 w-4 text-ink-700" /> Open daily,{" "}
                 {station.hours}
               </p>
+              <p
+                className={`text-caption mt-1 ${
+                  status.open ? "text-green-700" : "text-ink-400"
+                }`}
+              >
+                {status.text}
+              </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-overline text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-ink-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Charging
               </p>
-              <p className="text-gray-700 text-sm flex items-center gap-2">
+              <p className="text-ink-600 text-sm flex items-center gap-2">
                 <Zap className="h-4 w-4 text-ink-700" />
                 {station.chargers} DC fast charger
                 {station.chargers > 1 ? "s" : ""} · {station.power}
               </p>
-              <p className="text-gray-500 text-xs mt-1">
+              <p className="text-ink-500 text-xs mt-1">
                 Connectors: {station.connectors.join(" + ")} — works with
                 Tesla, BMW, Ford, Rivian, Hyundai, Kia &amp; more.{" "}
                 <Link
@@ -202,12 +201,12 @@ export default async function StationPage({
               </p>
             </div>
             <div className="card-light p-4">
-              <p className="text-overline text-gray-500 mb-1 text-xs uppercase tracking-wider font-semibold">
+              <p className="text-overline text-ink-500 mb-1 text-xs uppercase tracking-wider font-semibold">
                 Contact
               </p>
               <a
                 href={`tel:${station.phoneE164}`}
-                className="text-gray-700 text-sm flex items-center gap-2 hover:text-brand-ink"
+                className="text-ink-600 text-sm flex items-center gap-2 hover:text-brand-ink"
               >
                 <Phone className="h-4 w-4 text-ink-700" /> {station.phone}
               </a>
@@ -273,42 +272,11 @@ export default async function StationPage({
             />
           </div>
 
-          {nearby && (
-            <div className="card-light p-6">
-              <h3 className="font-bold text-midnight-navy mb-4">
-                What&rsquo;s nearby
-              </h3>
-              <div className="space-y-4 text-sm">
-                {(
-                  [
-                    ["Coffee & drinks", Coffee, nearby.coffee],
-                    ["Food", Utensils, nearby.food],
-                    ["Retail", ShoppingBag, nearby.retail],
-                  ] as const
-                ).map(([label, Icon, places]) => (
-                  <div key={label}>
-                    <p className="flex items-center gap-2 text-gray-500 text-xs uppercase tracking-wider font-semibold mb-1.5">
-                      <Icon className="h-3.5 w-3.5 text-ink-700" /> {label}
-                    </p>
-                    <ul className="text-gray-600 space-y-1">
-                      {places.map((pl) => (
-                        <li key={pl.name} className="flex justify-between">
-                          <span>{pl.name}</span>
-                          <span className="text-gray-500">{pl.walk} walk</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           <div className="card-light p-6">
-            <p className="flex items-center gap-2 font-bold text-midnight-navy mb-2">
+            <p className="flex items-center gap-2 font-bold text-ink-900 mb-2">
               <Smartphone className="h-4 w-4 text-ink-700" /> No app needed
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-ink-500 text-sm">
               Tap your phone or scan the code at the charger — HubCharge runs
               right in your browser.{" "}
               <Link href="/faq" className="text-brand-ink underline">
@@ -319,7 +287,11 @@ export default async function StationPage({
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 max-w-2xl">
+      <div className="mb-16">
+        <NearbyPlaces places={places} />
+      </div>
+
+      <p className="text-xs text-ink-400 max-w-2xl">
         *Attendant availability varies by location and time. Actual charging
         speed and added range vary by vehicle, battery state of charge, and
         temperature.

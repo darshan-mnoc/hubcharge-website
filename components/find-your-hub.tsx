@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { notifyMe } from "@/lib/actions";
 import { haversineMiles, zipToCoords } from "@/lib/geo";
+import { StationMap } from "@/components/station-map";
+import { stationStatus } from "@/lib/hours";
 import {
   stations,
   upcomingLocations,
@@ -45,6 +47,7 @@ export function FindYourHub() {
     null,
   );
   const [searchNote, setSearchNote] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifySending, setNotifySending] = useState(false);
   const [notifyDone, setNotifyDone] = useState(false);
@@ -70,6 +73,7 @@ export function FindYourHub() {
   };
 
   const applyOrigin = (lat: number, lng: number) => {
+    setUserLocation({ lat, lng });
     const dist: Record<number, number> = {};
     for (const st of stations) {
       dist[st.id] = haversineMiles(lat, lng, st.coords.lat, st.coords.lng);
@@ -258,12 +262,23 @@ export function FindYourHub() {
                           <h4 className="font-bold text-gray-900">
                             {station.name}
                           </h4>
-                          {station.status === "open" && (
-                            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-medium">
-                              <span className="w-1.5 h-1.5 rounded-full bg-green-600" />
-                              Open
-                            </span>
-                          )}
+                          {(() => {
+                            const st = stationStatus(station);
+                            return (
+                              <span
+                                className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  st.open
+                                    ? "bg-green-50 text-green-700"
+                                    : "bg-ink-100 text-ink-500"
+                                }`}
+                              >
+                                <span
+                                  className={`w-1.5 h-1.5 rounded-full ${st.open ? "bg-green-600" : "bg-ink-400"}`}
+                                />
+                                {st.short}
+                              </span>
+                            );
+                          })()}
                         </div>
                         <p className="text-gray-500 text-sm">
                           {station.address}
@@ -347,65 +362,20 @@ export function FindYourHub() {
             </div>
           </div>
 
-          {/* Map */}
+          {/* Map — real markers, not a decorative pin glued to the centre */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-3 relative rounded-lg overflow-hidden border border-gray-200 bg-gray-100 min-h-[500px]"
+            className="lg:col-span-3 rounded-lg overflow-hidden border border-gray-200 bg-ink-900 min-h-[500px]"
           >
-            <iframe
-              key={selected.id}
-              title={`Map — ${selected.name}`}
-              src={`https://maps.google.com/maps?q=${selected.coords.lat},${selected.coords.lng}&z=15&output=embed`}
-              width="100%"
-              height="100%"
-              style={{
-                border: 0,
-                minHeight: "500px",
-              }}
-              allowFullScreen
-              loading="lazy"
-              className="absolute inset-0"
+            <StationMap
+              stations={stations}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              userLocation={userLocation}
+              className="h-full min-h-[500px]"
             />
-            {/* Pin overlay */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="relative">
-                <motion.div
-                                    className="absolute inset-0 bg-brand rounded-full"
-                />
-                <div className="relative w-12 h-12 bg-brand rounded-full flex items-center justify-center shadow-lg">
-                  <MapPin className="h-6 w-6 text-white" />
-                </div>
-              </div>
-            </div>
-
-            {/* Map Legend */}
-            <div className="absolute bottom-4 left-4 right-4 p-4 rounded-lg glass-light border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-brand" />
-                    <span className="text-gray-500 text-sm">
-                      HubCharge™ Station
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
-                    <span className="text-gray-500 text-sm">Coming Soon</span>
-                  </div>
-                </div>
-                <a
-                  href={`https://maps.google.com/?q=${selected.coords.lat},${selected.coords.lng}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-brand-ink text-sm hover:underline"
-                >
-                  Open in Maps
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-              </div>
-            </div>
           </motion.div>
         </div>
 
@@ -434,20 +404,23 @@ export function FindYourHub() {
               </div>
               <div className="space-y-3">
                 {nearby.coffee.map((place, i) => (
-                  <motion.div
+                  <motion.a
                     key={i}
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      `${place.name} ${selected.city} ${selected.state}`,
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
+                    transition={{ delay: i * 0.06 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 cursor-pointer"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 hover:border-brand/40 transition-colors"
                   >
-                    <span className="text-gray-700">{place.name}</span>
-                    <span className="text-amber-400 text-sm font-medium">
-                      {place.walk}
-                    </span>
-                  </motion.div>
+                    <span className="text-ink-700">{place.name}</span>
+                    <span className="text-ink-400 text-sm">{place.walk} walk</span>
+                  </motion.a>
                 ))}
               </div>
             </motion.div>
@@ -462,20 +435,23 @@ export function FindYourHub() {
               </div>
               <div className="space-y-3">
                 {nearby.food.map((place, i) => (
-                  <motion.div
+                  <motion.a
                     key={i}
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      `${place.name} ${selected.city} ${selected.state}`,
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
+                    transition={{ delay: i * 0.06 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 cursor-pointer"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 hover:border-brand/40 transition-colors"
                   >
-                    <span className="text-gray-700">{place.name}</span>
-                    <span className="text-brand-ink text-sm font-medium">
-                      {place.walk}
-                    </span>
-                  </motion.div>
+                    <span className="text-ink-700">{place.name}</span>
+                    <span className="text-ink-400 text-sm">{place.walk} walk</span>
+                  </motion.a>
                 ))}
               </div>
             </motion.div>
@@ -490,20 +466,23 @@ export function FindYourHub() {
               </div>
               <div className="space-y-3">
                 {nearby.retail.map((place, i) => (
-                  <motion.div
+                  <motion.a
                     key={i}
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      `${place.name} ${selected.city} ${selected.state}`,
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
+                    transition={{ delay: i * 0.06 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 cursor-pointer"
+                    className="flex items-center justify-between glass-light rounded-lg px-4 py-3 border border-gray-200 hover:border-brand/40 transition-colors"
                   >
-                    <span className="text-gray-700">{place.name}</span>
-                    <span className="text-blue-400 text-sm font-medium">
-                      {place.walk}
-                    </span>
-                  </motion.div>
+                    <span className="text-ink-700">{place.name}</span>
+                    <span className="text-ink-400 text-sm">{place.walk} walk</span>
+                  </motion.a>
                 ))}
               </div>
             </motion.div>
