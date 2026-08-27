@@ -22,6 +22,8 @@ import { notifyMe } from "@/lib/actions";
 import { haversineMiles, zipToCoords } from "@/lib/geo";
 import { StationMap } from "@/components/station-map";
 import { stationStatus } from "@/lib/hours";
+const SOMEWHERE_ELSE = "Somewhere else";
+
 import {
   stations,
   upcomingLocations,
@@ -48,10 +50,16 @@ export function FindYourHub() {
   );
   const [searchNote, setSearchNote] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [wantedLocations, setWantedLocations] = useState<string[]>([]);
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifySending, setNotifySending] = useState(false);
   const [notifyDone, setNotifyDone] = useState(false);
   const [notifyError, setNotifyError] = useState<string | null>(null);
+
+  const toggleWanted = (loc: string) =>
+    setWantedLocations((prev) =>
+      prev.includes(loc) ? prev.filter((l) => l !== loc) : [...prev, loc],
+    );
 
   const handleNotify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +68,9 @@ export function FindYourHub() {
     setNotifyError(null);
     const result = await notifyMe({
       email: notifyEmail,
-      location: upcomingLocations.join(", "),
+      location: wantedLocations.length
+        ? wantedLocations.join(", ")
+        : "(no preference given)",
       company: "",
     });
     setNotifySending(false);
@@ -496,33 +506,60 @@ export function FindYourHub() {
           viewport={{ once: true }}
           className="mt-12"
         >
-          <div className="card-light p-8 text-center">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
+          <div className="card-light p-8">
+            <h3 className="text-h3 text-ink-900 mb-3">
               More Locations Coming Soon
             </h3>
-            <p className="text-gray-500 mb-6 max-w-lg mx-auto">
+            <p className="text-ink-500 mb-6 max-w-[52ch]">
               We&apos;re expanding across California. Enter your email to be notified
               when we open near you.
             </p>
-            <div className="flex flex-wrap justify-center gap-3 mb-6">
-              {upcomingLocations.map((location, i) => (
-                <span
-                  key={i}
-                  className="px-4 py-2 rounded-full glass-light border border-gray-200 text-gray-700"
-                >
-                  {location}
-                </span>
-              ))}
+            <p className="text-caption text-ink-400 mb-3">
+              Which area are you waiting on?
+            </p>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {upcomingLocations.map((location) => {
+                const active = wantedLocations.includes(location);
+                return (
+                  <button
+                    key={location}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => toggleWanted(location)}
+                    className={`rounded-full border px-4 py-2 text-body-sm transition-colors ${
+                      active
+                        ? "border-brand bg-brand text-white"
+                        : "border-gray-200 text-ink-600 hover:border-brand/50"
+                    }`}
+                  >
+                    {location}
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                aria-pressed={wantedLocations.includes(SOMEWHERE_ELSE)}
+                onClick={() => toggleWanted(SOMEWHERE_ELSE)}
+                className={`rounded-full border px-4 py-2 text-body-sm transition-colors ${
+                  wantedLocations.includes(SOMEWHERE_ELSE)
+                    ? "border-brand bg-brand text-white"
+                    : "border-gray-200 text-ink-600 hover:border-brand/50"
+                }`}
+              >
+                {SOMEWHERE_ELSE}
+              </button>
             </div>
             {notifyDone ? (
-              <p className="text-green-600 font-medium">
-                You&apos;re on the list — we&apos;ll let you know when new hubs
-                open.
+              <p className="text-green-700 font-medium">
+                You&apos;re on the list
+                {wantedLocations.length > 0
+                  ? ` — we'll tell you first about ${wantedLocations.join(" and ")}.`
+                  : " — we'll let you know when new hubs open."}
               </p>
             ) : (
               <form
                 onSubmit={handleNotify}
-                className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+                className="flex flex-col sm:flex-row gap-3 max-w-md"
               >
                 <input
                   type="email"

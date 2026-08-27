@@ -2,12 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, Zap } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { VehicleFinder } from "@/components/vehicle-finder";
 import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
-import {
-  vehicleMakes,
-  RANGE_FOOTNOTE,
-  VEHICLE_DATA_UPDATED,
-} from "@/lib/vehicles";
 
 export const metadata: Metadata = {
   title: "Can My EV Charge at HubCharge? Tesla, Ford, Hyundai & More | HubCharge",
@@ -17,25 +13,6 @@ export const metadata: Metadata = {
     canonical: "https://hubcharge.com/charging-101/can-my-ev-charge-here",
   },
 };
-
-const GROUPS = [
-  {
-    port: "nacs" as const,
-    title: "Plug into the NACS cable",
-    blurb: "These use the NACS connector.",
-  },
-  {
-    port: "transitioning" as const,
-    title: "NACS or CCS — depends on your model year",
-    blurb:
-      "These brands are mid-switch to NACS. Check your car's charge port; whichever it is, the cable is on the charger.",
-  },
-  {
-    port: "ccs" as const,
-    title: "Plug into the CCS cable",
-    blurb: "These use the CCS connector.",
-  },
-];
 
 export default function CompatibilityPage() {
   return (
@@ -59,10 +36,10 @@ export default function CompatibilityPage() {
       <div className="card-light p-6 max-w-4xl mb-10 flex items-start gap-4">
         <Zap className="h-6 w-6 text-ink-700 shrink-0 mt-0.5" />
         <div>
-          <p className="font-bold text-midnight-navy mb-1">
+          <p className="font-bold text-ink-900 mb-1">
             Two connectors. No adapters. Nearly every EV.
           </p>
-          <p className="text-gray-600 text-sm">
+          <p className="text-ink-600 text-sm">
             Elsewhere, drivers often need a $200+ adapter to use a
             single-connector charger. At HubCharge you never do — whether your
             car has a NACS port (like every Tesla) or a CCS port (like most
@@ -74,42 +51,11 @@ export default function CompatibilityPage() {
 
       {/* Make-by-make grid */}
       <div className="max-w-4xl">
-        <h2 className="text-h3 text-midnight-navy mb-2">Check your make</h2>
-        <p className="text-gray-500 text-sm mb-6">
-          Every make below charges at HubCharge. Grouped by which cable you
-          plug in. Approximate added range is for a ~10-minute session.*
-          Last updated: {VEHICLE_DATA_UPDATED}.
+        <h2 className="text-h3 text-ink-900 mb-2">Check your make</h2>
+        <p className="text-body-sm text-ink-500 mb-6">
+          Search for your make, or filter by which cable you plug in.
         </p>
-        {GROUPS.map((g) => {
-          const makes = vehicleMakes.filter((m) => m.port === g.port);
-          if (makes.length === 0) return null;
-          return (
-            <section key={g.port} className="mb-10">
-              <h3 className="font-bold text-midnight-navy mb-1">{g.title}</h3>
-              <p className="text-gray-500 text-sm mb-4">{g.blurb}</p>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {makes.map((m) => (
-                  <div key={m.id} className="card-light p-5">
-                    <div className="flex items-baseline justify-between gap-3 mb-2">
-                      <h4 className="font-bold text-midnight-navy">{m.name}</h4>
-                      {m.tenMinMilesApprox && (
-                        <span className="shrink-0 text-brand-ink font-bold text-sm">
-                          ~{m.tenMinMilesApprox[0]}–{m.tenMinMilesApprox[1]} mi
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-gray-600 text-sm">{m.portNote}</p>
-                    {m.note && (
-                      <p className="text-gray-500 text-xs mt-2 border-t border-gray-100 pt-2">
-                        {m.note}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          );
-        })}
+        <VehicleFinder />
 
         {/* Honest exception */}
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 mb-8 flex items-start gap-3">
@@ -128,8 +74,7 @@ export default function CompatibilityPage() {
           </div>
         </div>
 
-        <p className="text-xs text-gray-500 mb-2">*{RANGE_FOOTNOTE}</p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-ink-600">
           Want the deeper story on the two connectors?{" "}
           <Link href="/charging-101/connectors" className="text-brand-ink underline">
             NACS vs CCS, explained →

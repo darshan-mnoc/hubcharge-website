@@ -18,6 +18,7 @@ import { PageShell } from "@/components/page-shell";
 import { CtaButton } from "@/components/ui/cta-button";
 import { GuideBreadcrumb } from "@/components/learn";
 import { NearbyPlaces } from "@/components/nearby-places";
+import { PlanYourStop } from "@/components/plan-your-stop";
 import { getNearbyPlaces } from "@/lib/places";
 import { stationStatus } from "@/lib/hours";
 import {
@@ -285,6 +286,10 @@ export default async function StationPage({
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="mb-16">
+        <PlanYourStop station={station} />
       </div>
 
       <div className="mb-16">

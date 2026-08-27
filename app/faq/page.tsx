@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
+import { FaqSearch } from "@/components/faq-search";
 
 export const metadata: Metadata = {
   title: "FAQ — Charging, Compatibility, Pricing & More | HubCharge",
@@ -192,35 +193,10 @@ export default function FaqPage() {
       title="Frequently asked questions"
       intro="Everything about charging with HubCharge — compatibility, pricing, and how full service works."
     >
-      <div className="max-w-3xl space-y-12">
-        {groups.map((group) => (
-          <section key={group.title}>
-            <h2 className="text-h3 text-midnight-navy mb-5">{group.title}</h2>
-            <div className="space-y-4">
-              {group.items.map((item) => (
-                <details
-                  key={item.q}
-                  className="card-light p-5 group open:ring-1 open:ring-brand/20"
-                >
-                  <summary className="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between gap-4">
-                    {item.q}
-                    <span
-                      aria-hidden
-                      className="text-brand-ink transition-transform group-open:rotate-45 text-xl leading-none"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <div className="text-gray-600 text-sm leading-relaxed mt-3">
-                    {item.a}
-                  </div>
-                </details>
-              ))}
-            </div>
-          </section>
-        ))}
+      <FaqSearch groups={groups} />
 
-        <p className="text-xs text-gray-500">
+      <div className="max-w-measure mt-14">
+        <p className="text-caption text-ink-400">
           Charging speed and added range vary by vehicle, battery state of
           charge, and temperature. Attendant service at select locations and
           hours.
