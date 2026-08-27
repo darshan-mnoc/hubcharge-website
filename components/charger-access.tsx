@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { QrCode, Globe, Zap, Check, ArrowRight } from "lucide-react";
 import { CtaButton } from "@/components/ui/cta-button";
+import { PhoneChargingUI } from "@/components/phone-charging-ui";
 import { fadeUp, fadeUpStagger } from "@/lib/motion";
 
 const steps = [
@@ -134,28 +134,15 @@ export function ChargerAccess() {
             transition={{ duration: 0.6 }}
             className="relative flex justify-center"
           >
-            {/* glow */}
             {/* Phone mockup: arbitrary radii intentionally opt out of the 8px
                 card clamp — this depicts a physical device, not a card. */}
+            <div className="relative">
+              <PhoneChargingUI />
 
-            <div className="relative w-[260px] sm:w-[290px] lg:w-[310px]">
-              {/* phone frame — dark, reads premium on the light section */}
-              <div className="relative rounded-[2.75rem] bg-hero p-2.5 shadow-[0_34px_70px_-22px_rgba(10,25,47,0.55)] border border-[#1E293B]">
-                <div className="relative rounded-[2.25rem] overflow-hidden bg-black aspect-[9/16]">
-                  <Image
-                    src="/images/charging-service.webp"
-                    alt="HubCharge web charging interface — choose connector, add card, swipe to start"
-                    fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 640px) 260px, 310px"
-                  />
-                </div>
-              </div>
-
-              {/* floating "in your browser" badge — sits over the empty lower screen, not the UI */}
-              <div className="absolute -left-3 bottom-6 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_8px_24px_-8px_rgba(16,24,40,0.25)] border border-gray-100">
-                <Globe className="h-4 w-4 text-ink-700" />
-                <span className="text-xs font-semibold text-gray-800">
+              {/* floating badge — sits beside the browser bar it refers to */}
+              <div className="absolute -left-5 bottom-28 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_8px_24px_-8px_rgba(16,24,40,0.25)] border border-paper-300">
+                <Globe aria-hidden className="h-4 w-4 text-ink-700" />
+                <span className="text-xs font-semibold text-ink-900">
                   In your browser
                 </span>
               </div>
