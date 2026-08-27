@@ -25,19 +25,19 @@ const config: Config = {
         //              white, which fails WCAG AA; this is 5.3:1. Use text-brand-ink
         //              for links/labels on white or surface-warm.
         brand: { DEFAULT: '#FF7A00', hover: '#E66E00', ink: '#B34D00' },
-        'electric-blue': '#00D1FF',
-        'midnight-navy': '#0A192F',
-        slate: { 900: '#0F172A', 800: '#1E293B', 700: '#334155' },
-        surface: { DEFAULT: '#FFFFFF', warm: '#F7F6F4' }, // bg-surface / bg-surface-warm
-        hero: '#0A192F', // bg-hero (dark feature sections)
+        // NB: `hero`, `midnight-navy`, `surface` and `electric-blue` were
+        // removed here. The first three were duplicate names for colours the
+        // ink/paper ramps already define (#0A192F reachable three ways,
+        // #F7F6F4 two), which is how the same navy ended up stacked against
+        // itself on /pricing under two names. electric-blue had zero uses.
+        // The Tailwind-default `gray` and `slate` ramps lived here and were
+        // the escape hatch every off-system colour used. Zero references now.
         'on-dark': '#e0e3e5',
         'muted-dark': '#8A9BB5',
-        gray: {
-          900: '#0F172A', 800: '#1E293B', 700: '#334155', 600: '#475569',
-          500: '#64748b', 400: '#94a3b8', 300: '#cbd5e1', 200: '#e2e8f0',
-          100: '#f1f5f9', 50: '#f8fafc',
-        },
-        error: '#ffb4ab',
+        // ── Error, two shades. The single #ffb4ab was 10.4:1 on navy and
+        //    1.6:1 on paper, so the same token was legible in the footer and
+        //    invisible on the notify form. `ink` is 6.3:1 on paper.
+        error: { DEFAULT: '#B3261E', ink: '#B3261E', 'on-dark': '#ffb4ab' },
 
         // ── Navy ladder — structure and hierarchy. Carries ~90% of the
         //    non-photo surface so orange doesn't have to.
@@ -64,6 +64,19 @@ const config: Config = {
         //    for the rule under a section eyebrow and divider hairlines.
         //    brass.ink is the text-safe shade (6.14:1 on white).
         brass: { DEFAULT: '#A8875C', ink: '#7A5C33' },
+
+        // ── One success green, two shades. Previously "available / open /
+        //    verified" was carried by green-700, -600, -500, -400, -300 AND a
+        //    parallel emerald family — six colours for one meaning, twice on
+        //    the same page. `ink` is 4.6:1 on white; `on-dark` is 7.9:1 on
+        //    ink-900. There is no third.
+        ok: { ink: '#15803D', 'on-dark': '#86EFAC', surface: '#F0FAF3' },
+
+        // ── Caution / "read this before you drive over". Built on brass so
+        //    the one warm tertiary covers it rather than importing Tailwind's
+        //    amber family, which was appearing as -50, -200, -300, -400, -500
+        //    and -600 for the same callout across four files.
+        note: { ink: '#7A5C33', line: '#E3D6C0', surface: '#FBF7F0' },
       },
       // Soft shape language — 4px base, 8px max on cards. rounded-full is kept
       // for pills/chips, and arbitrary values (e.g. the phone mockup's

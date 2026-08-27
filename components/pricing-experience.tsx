@@ -87,7 +87,7 @@ export function PricingExperience() {
     <section
       id="pricing"
       data-reveal
-      className="relative section-padding bg-surface-warm overflow-hidden"
+      className="relative section-padding bg-paper-100 overflow-hidden"
     >
 
       <div className="section-container relative">
@@ -123,7 +123,7 @@ export function PricingExperience() {
         {/* Builder */}
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
           {/* LEFT — choices */}
-          <div className="rounded-lg bg-white border border-paper-300 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_12px_28px_-12px_rgba(16,24,40,0.10)] p-6 lg:p-8 space-y-8">
+          <div className="rounded-lg bg-white border border-paper-300 shadow-card p-6 lg:p-8 space-y-8">
             {/* 1. distance */}
             <div>
               <p className="text-overline text-ink-500 mb-3">
@@ -142,7 +142,7 @@ export function PricingExperience() {
                       role="radio"
                       aria-checked={active}
                       onClick={() => setDistance(d.id)}
-                      className={`rounded-xl border px-3 py-3 text-center transition-all ${
+                      className={`rounded-lg border px-3 py-3 text-center transition-all ${
                         active
                           ? "border-brand bg-brand/5 ring-1 ring-brand/30"
                           : "border-paper-300 hover:border-paper-400"
@@ -204,7 +204,7 @@ export function PricingExperience() {
                       key={a.id}
                       aria-pressed={active}
                       onClick={() => toggle(a.id)}
-                      className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
+                      className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-all ${
                         active
                           ? "border-brand bg-brand/5 ring-1 ring-brand/30"
                           : "border-paper-300 hover:border-paper-400"
@@ -238,7 +238,7 @@ export function PricingExperience() {
           </div>
 
           {/* RIGHT — your stop (dark feature card) */}
-          <div className="relative rounded-lg bg-hero overflow-hidden p-6 lg:p-8 flex flex-col">
+          <div className="relative rounded-lg bg-ink-900 overflow-hidden p-6 lg:p-8 flex flex-col">
 
             <div className="relative">
               <p className="text-overline text-muted-dark mb-1">
@@ -330,7 +330,7 @@ export function PricingExperience() {
                     key={g}
                     className="inline-flex items-center gap-1.5 text-xs text-muted-dark"
                   >
-                    <X className="h-3.5 w-3.5 text-error/70" />
+                    <X className="h-3.5 w-3.5 text-error-on-dark/80" />
                     <span className="line-through decoration-error/40">
                       {g}
                     </span>

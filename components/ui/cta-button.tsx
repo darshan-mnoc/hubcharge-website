@@ -33,9 +33,9 @@ const VARIANT: Record<Variant, string> = {
   // where the paper hairlines used elsewhere would be 1.8:1.
   secondary:
     "bg-transparent border border-ink-400 text-ink-700 hover:border-brand-ink hover:text-brand-ink focus-visible:ring-brand-ink focus-visible:ring-offset-white",
-  // Same shape, tuned for the navy (bg-hero) bands.
+  // Same shape, tuned for the navy (bg-ink-900) bands.
   secondaryOnDark:
-    "bg-transparent border border-white/25 text-on-dark hover:border-brand hover:text-brand focus-visible:ring-brand focus-visible:ring-offset-hero",
+    "bg-transparent border border-white/25 text-on-dark hover:border-brand hover:text-brand focus-visible:ring-brand focus-visible:ring-offset-ink-900",
 };
 
 interface CtaButtonProps {

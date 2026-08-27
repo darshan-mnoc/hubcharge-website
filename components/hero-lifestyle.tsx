@@ -44,7 +44,7 @@ export function HeroLifestyle() {
     <section
       ref={heroRef}
       id="top"
-      className="relative min-h-[88vh] lg:min-h-[78vh] flex flex-col justify-end overflow-hidden bg-hero"
+      className="relative min-h-[88vh] lg:min-h-[78vh] flex flex-col justify-end overflow-hidden bg-ink-900"
     >
       {/* Photograph at full strength. A single bottom-anchored scrim carries the
           type, instead of dimming the whole image to 40% and muddying it. */}

@@ -89,7 +89,7 @@ export default function PricingPage() {
           <ul className="space-y-3">
             {included.map((line) => (
               <li key={line} className="flex items-start gap-3 text-ink-600 text-sm">
-                <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-ok-on-dark mt-0.5 shrink-0" />
                 {line}
               </li>
             ))}
@@ -101,7 +101,7 @@ export default function PricingPage() {
           </p>
           <ul className="space-y-3">
             {neverCharged.map((line) => (
-              <li key={line} className="flex items-start gap-3 text-ink-500 text-sm line-through decoration-gray-300">
+              <li key={line} className="flex items-start gap-3 text-ink-500 text-sm line-through decoration-ink-300">
                 <XCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 {line}
               </li>

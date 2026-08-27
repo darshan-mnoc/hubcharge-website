@@ -163,7 +163,7 @@ export function LifestyleFooter() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="flex items-center gap-2 text-emerald-400 text-sm"
+                      className="flex items-center gap-2 text-ok-on-dark text-sm"
                     >
                       <motion.div
                         initial={{ scale: 0 }}
@@ -207,7 +207,7 @@ export function LifestyleFooter() {
                   )}
                 </AnimatePresence>
                 {subscribeError && (
-                  <p role="alert" className="text-xs text-[#ffb4ab] mt-2">
+                  <p role="alert" className="text-xs text-error-on-dark mt-2">
                     {subscribeError}
                   </p>
                 )}

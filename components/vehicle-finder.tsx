@@ -116,9 +116,9 @@ export function VehicleFinder() {
                 <span className="min-w-0">
                   <span className="flex items-center gap-2 text-h4 text-ink-900">
                     {chademo ? (
-                      <XCircle aria-hidden className="h-3.5 w-3.5 shrink-0 text-error" />
+                      <XCircle aria-hidden className="h-3.5 w-3.5 shrink-0 text-error-ink" />
                     ) : (
-                      <CheckCircle2 aria-hidden className="h-3.5 w-3.5 shrink-0 text-green-700" />
+                      <CheckCircle2 aria-hidden className="h-3.5 w-3.5 shrink-0 text-ok-ink" />
                     )}
                     <span className="truncate">{m.name}</span>
                   </span>

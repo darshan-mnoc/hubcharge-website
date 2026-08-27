@@ -72,8 +72,8 @@
   }
 
   body {
-    /* Design system: light-default. Sections opt into dark via bg-hero. */
-    @apply bg-surface text-gray-700 antialiased;
+    /* Design system: light-default. Sections opt into dark via bg-ink-900. */
+    @apply bg-paper text-ink-600 antialiased;
     margin: 0;
     overflow-x: hidden;
     font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
@@ -199,41 +199,31 @@
   }
 
   /* Light-section surfaces (for white/warm sections in the 50/50 rhythm) */
+  /* 8px is the card ceiling this config sets; this was 16px, on the single
+     most-reused surface primitive. */
   .card-light {
-    @apply bg-white rounded-2xl border border-gray-100;
-    box-shadow:
-      0 1px 2px rgba(16, 24, 40, 0.03),
-      0 12px 28px -10px rgba(16, 24, 40, 0.08);
+    @apply bg-paper rounded-lg border border-paper-300;
+    @apply shadow-card;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .card-light:hover {
-    @apply border-gray-200;
-    box-shadow:
-      0 2px 6px rgba(16, 24, 40, 0.05),
-      0 18px 36px -12px rgba(16, 24, 40, 0.12);
+    @apply border-paper-400 shadow-card-hover;
   }
   .glass-light {
-    @apply bg-white/70 backdrop-blur-md border border-gray-200;
+    @apply bg-paper/70 backdrop-blur-md border border-paper-300;
   }
 
   /* Badges */
-  .badge {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium;
-    @apply bg-[#f4f3f2]/5 border border-[#f4f3f2]/10 backdrop-blur-sm;
-  }
 
   /* Glass Effects */
   .glass {
     @apply bg-[#f4f3f2]/5 backdrop-blur-md;
   }
 
-  .glass-card {
-    @apply bg-[#f4f3f2]/[0.03] backdrop-blur-md border border-[#f4f3f2]/[0.08] rounded-2xl;
-  }
 
   /* Cards - Chargetrip Style */
   .card {
-    @apply bg-[#0F172A] rounded-2xl border border-[#334155];
+    @apply bg-[#0F172A] rounded-lg border border-[#334155];
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -242,54 +232,19 @@
   }
 
   /* Buttons — design-system shape (rounded-lg, matches CtaButton) for consistency */
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-300;
-  }
 
   /* Navy label, not white: white on #FF7A00 is 2.6:1 and fails AA. Navy on the
      same untouched orange is 6.7:1. Matches CtaButton's primary variant. */
-  .btn-primary {
-    @apply bg-[#FF7A00] text-ink-900 px-6 py-3;
-    @apply hover:bg-[#E66E00] hover:shadow-lg hover:shadow-[#FF7A00]/25 hover:scale-[1.02];
-    @apply active:scale-[0.98];
-  }
 
-  .btn-secondary {
-    @apply bg-[#f4f3f2]/10 text-[#f4f3f2] px-6 py-3 border border-[#f4f3f2]/10;
-    @apply hover:bg-[#f4f3f2]/15 hover:border-[#f4f3f2]/20;
-  }
 
-  .btn-outline {
-    @apply border-2 border-[#f4f3f2]/20 text-[#f4f3f2] px-6 py-3;
-    @apply hover:border-[#FF7A00] hover:text-[#FF7A00] hover:bg-[#FF7A00]/10;
-  }
 
-  .btn-lg {
-    @apply px-8 py-4 text-lg;
-  }
 
   /* Icon Containers */
-  .icon-box {
-    @apply w-12 h-12 rounded-xl flex items-center justify-center;
-  }
 
   /* Grid Pattern - Subtler */
-  .grid-pattern {
-    background-image:
-      linear-gradient(rgba(244, 243, 242, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(244, 243, 242, 0.02) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
 
   /* Interactive Elements */
-  .interactive {
-    @apply transition-all duration-300 cursor-pointer;
-    @apply hover:-translate-y-1 hover:shadow-xl;
-  }
 
-  .magnetic {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
 
   /* Form Elements - Chargetrip Style */
   /* ── Form fields ───────────────────────────────────────────────
@@ -377,7 +332,7 @@
 /* On the navy bands the default brand-ink outline drops to 2.4:1, so those
    surfaces switch to brand orange (6.7:1 there). */
 .bg-ink-900 *:focus-visible,
-.bg-hero *:focus-visible {
+.bg-ink-900 *:focus-visible {
   outline-color: theme('colors.brand.DEFAULT');
 }
 

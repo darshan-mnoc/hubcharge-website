@@ -22,7 +22,7 @@ const features = [
     title: "Coffee & Drinks",
     desc: "Fresh coffee, boba, smoothies delivered hot to your window.",
     image: "/images/lifestyle-coffee-v2.webp",
-    color: "from-amber-500",
+    color: "from-brand",
   },
   {
     icon: Utensils,
@@ -36,14 +36,14 @@ const features = [
     title: "Groceries & Errands",
     desc: "Quick essentials, pharmacy runs, anything you need picked up.",
     image: "/images/lifestyle-groceries-v2.webp",
-    color: "from-blue-500",
+    color: "from-brand",
   },
   {
     icon: Sparkles,
     title: "Services",
     desc: "Car detailing, dry cleaning pickup — make your 10 minutes count.",
     image: "/images/lifestyle-services-v2.webp",
-    color: "from-purple-500",
+    color: "from-brand",
   },
 ];
 
@@ -65,7 +65,7 @@ export function LifestyleDestinations() {
       ref={sectionRef}
       id="lifestyle"
       data-reveal
-      className="relative section-padding bg-hero overflow-hidden"
+      className="relative section-padding bg-ink-900 overflow-hidden"
     >
       {/* Background photo + navy overlay (§5a) */}
       <div className="absolute inset-0">
@@ -137,7 +137,7 @@ export function LifestyleDestinations() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/55 via-transparent to-transparent" />
                 {/* Charging badge */}
-                <div className="absolute top-4 right-4 w-9 h-9 bg-brand rounded-full flex items-center justify-center shadow-lg ring-4 ring-[#0A192F]/40">
+                <div className="absolute top-4 right-4 w-9 h-9 bg-brand rounded-full flex items-center justify-center shadow-card-hover ring-4 ring-[#0A192F]/40">
                   <Zap className="h-4 w-4 text-white" />
                 </div>
               </div>
@@ -185,7 +185,7 @@ export function LifestyleDestinations() {
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 }}
                       whileHover={{ scale: 1.03, y: -2 }}
-                      className="group relative glass rounded-xl p-4 border border-[#334155] hover:border-brand/30 cursor-pointer transition-all overflow-hidden"
+                      className="group relative glass rounded-lg p-4 border border-[#334155] hover:border-brand/30 cursor-pointer transition-all overflow-hidden"
                     >
                       {/* Hover glow */}
                       <motion.div

@@ -77,7 +77,7 @@ export function NearbyPlaces({ places }: { places: NearbyPlace[] }) {
                           {p.openNow != null && (
                             <span
                               className={`inline-flex items-center gap-1 ${
-                                p.openNow ? "text-green-700" : "text-ink-400"
+                                p.openNow ? "text-ok-ink" : "text-ink-400"
                               }`}
                             >
                               <Clock aria-hidden className="h-3 w-3" />

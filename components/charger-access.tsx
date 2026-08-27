@@ -36,7 +36,7 @@ export function ChargerAccess() {
     <section
       id="access"
       data-reveal
-      className="relative section-padding bg-surface-warm overflow-hidden"
+      className="relative section-padding bg-paper-100 overflow-hidden"
     >
 
       <div className="section-container relative">
@@ -70,7 +70,7 @@ export function ChargerAccess() {
               {steps.map((s, i) => (
                 <li key={s.title} className="flex items-start gap-4">
                   <div className="relative flex-shrink-0">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-paper-300 shadow-sm">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white border border-paper-300 shadow-card">
                       <s.icon className="h-5 w-5 text-ink-700" />
                     </div>
                     <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-ink-900">
@@ -140,7 +140,7 @@ export function ChargerAccess() {
               <PhoneChargingUI />
 
               {/* floating badge — sits beside the browser bar it refers to */}
-              <div className="absolute -left-5 bottom-28 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_8px_24px_-8px_rgba(16,24,40,0.25)] border border-paper-300">
+              <div className="absolute -left-5 bottom-28 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-card-hover border border-paper-300">
                 <Globe aria-hidden className="h-4 w-4 text-ink-700" />
                 <span className="text-xs font-semibold text-ink-900">
                   In your browser

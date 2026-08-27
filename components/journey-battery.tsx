@@ -801,7 +801,7 @@ function Scene4({
           }}
         >
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center shadow-sm">
+            <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center shadow-card">
               <span className="text-[9px] text-white font-bold">H</span>
             </div>
             <div>

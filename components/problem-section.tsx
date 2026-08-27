@@ -97,7 +97,7 @@ export function ProblemSection() {
       ref={sectionRef}
       id="story"
       data-reveal
-      className="relative bg-surface overflow-hidden"
+      className="relative bg-paper overflow-hidden"
     >
 
       <div className="section-container relative pt-24 lg:pt-32 pb-16">
@@ -241,7 +241,7 @@ export function ProblemSection() {
       </div>
 
       {/* DARK band — "The HubCharge Difference" + How It Works (photo background) */}
-      <div className="relative overflow-hidden bg-hero">
+      <div className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0">
           <Image
             src="/images/charging-service-v2.webp"

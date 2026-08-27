@@ -40,7 +40,7 @@ export function ContactSection() {
       ref={sectionRef}
       id="contact"
       data-reveal
-      className="relative section-padding bg-hero overflow-hidden"
+      className="relative section-padding bg-ink-900 overflow-hidden"
     >
       {/* Background photo + navy overlay (§5a) */}
       <div className="absolute inset-0">
@@ -101,10 +101,10 @@ export function ContactSection() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", delay: 0.2 }}
-                className="w-16 h-16 mx-auto glass rounded-full flex items-center justify-center mb-5 border border-green-500/30"
+                className="w-16 h-16 mx-auto glass rounded-full flex items-center justify-center mb-5 border border-ok-on-dark/30"
               >
                 <svg
-                  className="w-8 h-8 text-green-400"
+                  className="w-8 h-8 text-ok-on-dark"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -217,7 +217,7 @@ export function ContactSection() {
               />
 
               {error && (
-                <p role="alert" className="text-sm text-[#ffb4ab]">
+                <p role="alert" className="text-sm text-error-on-dark">
                   {error}
                 </p>
               )}
@@ -251,7 +251,7 @@ export function ContactSection() {
 
           {/* Hours */}
           <div className="flex items-center gap-3 text-muted-dark">
-            <Clock className="h-4 w-4 text-green-400" />
+            <Clock className="h-4 w-4 text-ok-on-dark" />
             <span className="text-sm">
               Mon–Fri, 9 AM – 6 PM PST
             </span>

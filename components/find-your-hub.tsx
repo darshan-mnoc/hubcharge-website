@@ -146,7 +146,7 @@ export function FindYourHub() {
       ref={sectionRef}
       id="locations"
       data-reveal
-      className="relative section-padding bg-surface overflow-hidden"
+      className="relative section-padding bg-paper overflow-hidden"
     >
 
 
@@ -203,7 +203,7 @@ export function FindYourHub() {
                 disabled={isSearching}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="absolute right-2 px-4 sm:px-6 py-2.5 text-sm bg-brand hover:bg-brand-hover text-ink-900 font-semibold rounded-xl transition-colors disabled:opacity-50"
+                className="absolute right-2 px-4 sm:px-6 py-2.5 text-sm bg-brand hover:bg-brand-hover text-ink-900 font-semibold rounded-lg transition-colors disabled:opacity-50"
               >
                 {isSearching ? (
                   <span className="flex items-center gap-2">
@@ -278,12 +278,12 @@ export function FindYourHub() {
                               <span
                                 className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${
                                   st.open
-                                    ? "bg-green-50 text-green-700"
+                                    ? "bg-ok-surface text-ok-ink"
                                     : "bg-ink-100 text-ink-500"
                                 }`}
                               >
                                 <span
-                                  className={`w-1.5 h-1.5 rounded-full ${st.open ? "bg-green-600" : "bg-ink-400"}`}
+                                  className={`w-1.5 h-1.5 rounded-full ${st.open ? "bg-ok-ink" : "bg-ink-400"}`}
                                 />
                                 {st.short}
                               </span>
@@ -315,7 +315,7 @@ export function FindYourHub() {
                         {station.hours}
                       </span> */}
                       {station.hasAttendant && (
-                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-50 text-green-700 text-xs font-medium">
+                        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-ok-surface text-ok-ink text-xs font-medium">
                           <CheckCircle2 className="h-3 w-3" />
                           Attendant
                         </span>
@@ -362,7 +362,7 @@ export function FindYourHub() {
               </div>
 
               {/* Attendant note */}
-              <div className="flex items-start gap-2.5 mt-4 p-3.5 rounded-xl bg-paper-100 border border-paper-300">
+              <div className="flex items-start gap-2.5 mt-4 p-3.5 rounded-lg bg-paper-100 border border-paper-300">
                 <AlertCircle className="h-4 w-4 text-ink-500 mt-0.5 flex-shrink-0" />
                 <p className="text-xs text-ink-600 leading-relaxed">
                   Attendant availability varies by location and time. Check
@@ -407,8 +407,8 @@ export function FindYourHub() {
             {/* Coffee */}
             <motion.div whileHover={{ y: -4 }} className="card-light p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                  <Coffee className="h-5 w-5 text-amber-400" />
+                <div className="w-10 h-10 rounded-lg bg-ink-100 flex items-center justify-center">
+                  <Coffee className="h-5 w-5 text-ink-700" />
                 </div>
                 <h4 className="font-semibold text-ink-900">Coffee & Tea</h4>
               </div>
@@ -469,8 +469,8 @@ export function FindYourHub() {
             {/* Retail */}
             <motion.div whileHover={{ y: -4 }} className="card-light p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                  <ShoppingBag className="h-5 w-5 text-blue-400" />
+                <div className="w-10 h-10 rounded-lg bg-ink-100 flex items-center justify-center">
+                  <ShoppingBag className="h-5 w-5 text-ink-700" />
                 </div>
                 <h4 className="font-semibold text-ink-900">Shopping & More</h4>
               </div>
@@ -550,7 +550,7 @@ export function FindYourHub() {
               </button>
             </div>
             {notifyDone ? (
-              <p className="text-green-700 font-medium">
+              <p className="text-ok-ink font-medium">
                 You&apos;re on the list
                 {wantedLocations.length > 0
                   ? ` — we'll tell you first about ${wantedLocations.join(" and ")}.`
@@ -575,14 +575,14 @@ export function FindYourHub() {
                   disabled={notifySending}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-6 py-3 bg-brand hover:bg-brand-hover disabled:opacity-60 text-ink-900 font-semibold rounded-xl transition-colors"
+                  className="px-6 py-3 bg-brand hover:bg-brand-hover disabled:opacity-60 text-ink-900 font-semibold rounded-lg transition-colors"
                 >
                   {notifySending ? "Sending…" : "Notify Me"}
                 </motion.button>
               </form>
             )}
             {notifyError && (
-              <p role="alert" className="text-sm text-red-500 mt-2">
+              <p role="alert" className="text-sm text-error-ink mt-2">
                 {notifyError}
               </p>
             )}

@@ -162,7 +162,7 @@ export function ChatPopup() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed z-50 card shadow-2xl overflow-hidden
+            className="fixed z-50 card shadow-card-hover overflow-hidden
               inset-x-4 top-20 bottom-auto
               sm:inset-auto sm:bottom-36 sm:right-6 sm:top-auto
               lg:bottom-24
@@ -172,7 +172,7 @@ export function ChatPopup() {
           >
             {/* Header */}
             <div className="relative overflow-hidden shrink-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-brand to-amber-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand to-brand-hover" />
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -222,10 +222,10 @@ export function ChatPopup() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", delay: 0.2 }}
-                      className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-green-500/20 rounded-full flex items-center justify-center mb-4 border border-green-500/30"
+                      className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-ok-on-dark/20 rounded-full flex items-center justify-center mb-4 border border-ok-on-dark/30"
                     >
                       <motion.svg
-                        className="w-7 h-7 sm:w-8 sm:h-8 text-green-400"
+                        className="w-7 h-7 sm:w-8 sm:h-8 text-ok-on-dark"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -275,17 +275,17 @@ export function ChatPopup() {
                             whileTap={{ scale: 0.98 }}
                             aria-pressed={isSelected}
                             onClick={() => toggleOption(option.value)}
-                            className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-xl border-2 transition-all duration-200 ${
+                            className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-lg border-2 transition-all duration-200 ${
                               isSelected
-                                ? "border-orange-500 bg-orange-500/20"
+                                ? "border-brand bg-brand/20"
                                 : "border-white/10 bg-white/5 hover:border-white/20"
                             }`}
                           >
                             <option.icon
-                              className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-orange-400" : "text-white/55"}`}
+                              className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-brand" : "text-white/55"}`}
                             />
                             <span
-                              className={`text-xs sm:text-sm font-medium ${isSelected ? "text-orange-400" : "text-white/60"}`}
+                              className={`text-xs sm:text-sm font-medium ${isSelected ? "text-brand" : "text-white/60"}`}
                             >
                               {option.label}
                             </span>
@@ -313,7 +313,7 @@ export function ChatPopup() {
 
                     {/* Submit */}
                     {error && (
-                      <p role="alert" className="text-xs text-[#ffb4ab] mb-2">
+                      <p role="alert" className="text-xs text-error-on-dark mb-2">
                         {error}
                       </p>
                     )}
@@ -321,7 +321,7 @@ export function ChatPopup() {
                       type="submit"
                       disabled={sending}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full btn btn-primary rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base py-2.5 sm:py-3"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover w-full rounded-full text-sm sm:text-base py-2.5 sm:py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                       {sending ? "Sending…" : "Send Feedback"}

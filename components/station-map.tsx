@@ -46,7 +46,7 @@ function StationMarker({
       <button
         type="button"
         aria-label={`${station.name}${selected ? " (selected)" : ""}`}
-        className={`flex items-center gap-1.5 rounded-full border pl-1.5 pr-3 py-1.5 shadow-lg transition-all ${
+        className={`flex items-center gap-1.5 rounded-full border pl-1.5 pr-3 py-1.5 shadow-card-hover transition-all ${
           selected
             ? "bg-brand border-brand text-ink-900 scale-105"
             : "bg-ink-900 border-white/25 text-white hover:border-brand"

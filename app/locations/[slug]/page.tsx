@@ -175,7 +175,7 @@ export default async function StationPage({
               </p>
               <p
                 className={`text-caption mt-1 ${
-                  status.open ? "text-green-700" : "text-ink-400"
+                  status.open ? "text-ok-ink" : "text-ink-400"
                 }`}
               >
                 {status.text}
@@ -215,7 +215,7 @@ export default async function StationPage({
           </div>
 
           {/* Full service explainer */}
-          <div className="bg-hero rounded-lg p-6 lg:p-8 mb-8">
+          <div className="bg-ink-900 rounded-lg p-6 lg:p-8 mb-8">
             <p className="flex items-center gap-2 text-brand text-xs font-bold uppercase tracking-widest mb-3">
               <UserRound className="h-4 w-4" /> Full-service charging
             </p>

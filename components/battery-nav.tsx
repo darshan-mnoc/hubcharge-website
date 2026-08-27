@@ -180,7 +180,7 @@ export function BatteryNav() {
                           transition={{ duration: 0.15 }}
                           className="absolute left-1/2 z-50 -translate-x-1/2 top-full pt-4 w-[300px]"
                         >
-                          <div className="rounded-lg border border-white/12 bg-ink-900 shadow-2xl p-2">
+                          <div className="rounded-lg border border-white/12 bg-ink-900 shadow-card-hover p-2">
                             {navGuides.map((g) => (
                               <Link
                                 key={g.slug}
@@ -242,7 +242,7 @@ export function BatteryNav() {
                 boxShadow: "0 0 30px rgba(255, 122, 0, 0.5)",
               }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 btn btn-primary"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover"
             >
               <Zap className="h-4 w-4" strokeWidth={2.5} />
               <span>Login</span>
@@ -270,7 +270,7 @@ export function BatteryNav() {
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
-            className="lg:hidden p-3 rounded-xl text-[#f4f3f2]/80 hover:text-[#f4f3f2] hover:bg-[#f4f3f2]/[0.06]"
+            className="lg:hidden p-3 rounded-lg text-[#f4f3f2]/80 hover:text-[#f4f3f2] hover:bg-[#f4f3f2]/[0.06]"
           >
             {mobileOpen ? (
               <X className="h-6 w-6" />
@@ -295,7 +295,7 @@ export function BatteryNav() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-hero lg:hidden"
+            className="fixed inset-0 z-40 bg-ink-900 lg:hidden"
           >
 
             <div className="relative pt-28 px-6 pb-10 h-full overflow-y-auto">
@@ -309,7 +309,7 @@ export function BatteryNav() {
                     onClick={() => handleNavItem(link)}
                     className="w-full flex items-center gap-4 p-5 rounded-lg glass border border-[#f4f3f2]/[0.06] hover:border-brand/30 text-left group"
                   >
-                    <div className="w-14 h-14 rounded-xl bg-brand/10 group-hover:bg-brand/20 flex items-center justify-center transition-colors">
+                    <div className="w-14 h-14 rounded-lg bg-brand/10 group-hover:bg-brand/20 flex items-center justify-center transition-colors">
                       <link.icon
                         className="h-6 w-6 text-brand"
                         strokeWidth={1.5}
@@ -346,7 +346,7 @@ export function BatteryNav() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
                 onClick={() => router.push("/locations")}
-                className="flex items-center justify-center gap-2 w-full btn btn-primary text-sm py-3"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover w-full text-sm"
               >
                 <Zap className="h-4 w-4" strokeWidth={2.5} />
                 Start Charging Now
@@ -360,7 +360,7 @@ export function BatteryNav() {
       <motion.nav
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-hero/95 backdrop-blur-md border-t border-[#f4f3f2]/[0.06] safe-area-bottom"
+        className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-ink-900/95 backdrop-blur-md border-t border-[#f4f3f2]/[0.06] safe-area-bottom"
         aria-label="Quick links"
       >
         <div className="grid grid-cols-5">

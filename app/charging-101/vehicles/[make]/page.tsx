@@ -116,8 +116,8 @@ export default async function VehicleGuide({
         </div>
 
         {m.note && (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 mb-12 flex items-start gap-3">
-            <AlertTriangle aria-hidden className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="rounded-lg border border-note-line bg-note-surface p-5 mb-12 flex items-start gap-3">
+            <AlertTriangle aria-hidden className="h-5 w-5 text-note-ink shrink-0 mt-0.5" />
             <p className="text-body-sm text-ink-700">{m.note}</p>
           </div>
         )}
@@ -167,7 +167,7 @@ export default async function VehicleGuide({
               className="group border-t border-paper-300 pt-5 hover:border-ink-400 transition-colors"
             >
               <span className="flex items-center gap-1.5 text-overline text-ink-400">
-                <CheckCircle2 aria-hidden className="h-3 w-3 text-green-700" />
+                <CheckCircle2 aria-hidden className="h-3 w-3 text-ok-ink" />
                 {s.city}
               </span>
               <span className="block text-h4 text-ink-900 mt-2 group-hover:text-brand-ink transition-colors">

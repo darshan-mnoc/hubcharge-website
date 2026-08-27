@@ -37,7 +37,7 @@ function Row({ model }: { model: EvModel }) {
   return (
     <li className="grid grid-cols-[1fr_auto] md:grid-cols-[minmax(0,16ch)_8rem_minmax(0,1fr)_7rem] gap-x-6 gap-y-1 items-baseline py-4 border-t border-paper-300 last:border-b">
       <span className="flex items-center gap-2 text-h4 text-ink-900">
-        <CheckCircle2 aria-hidden className="h-3.5 w-3.5 shrink-0 text-green-700" />
+        <CheckCircle2 aria-hidden className="h-3.5 w-3.5 shrink-0 text-ok-ink" />
         {model.short}
       </span>
       <span className="hidden md:block text-caption text-ink-400">
