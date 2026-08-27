@@ -122,7 +122,7 @@ export function PlanYourStop({ station }: { station: Station }) {
                     onClick={() => setStartSoc(s)}
                     className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
                       active
-                        ? "border-brand bg-brand text-white"
+                        ? "border-brand bg-brand text-ink-900"
                         : "border-white/20 text-on-dark/75 hover:border-white/45"
                     }`}
                   >
@@ -151,7 +151,7 @@ export function PlanYourStop({ station }: { station: Station }) {
                     onClick={() => setStayId(s.id)}
                     className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
                       active
-                        ? "border-brand bg-brand text-white"
+                        ? "border-brand bg-brand text-ink-900"
                         : "border-white/20 text-on-dark/75 hover:border-white/45"
                     }`}
                   >
@@ -177,7 +177,7 @@ export function PlanYourStop({ station }: { station: Station }) {
                     onClick={() => setTemp(t.id as TemperatureId)}
                     className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
                       active
-                        ? "border-brand bg-brand text-white"
+                        ? "border-brand bg-brand text-ink-900"
                         : "border-white/20 text-on-dark/75 hover:border-white/45"
                     }`}
                   >

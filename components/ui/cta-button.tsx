@@ -19,9 +19,15 @@ const BASE =
 // Focus ring colour is per-variant so the indicator keeps >=3:1 against the
 // surface it actually sits on (WCAG 1.4.11). brand-ink on white is 5.3:1;
 // brand on navy is 6.7:1.
+//
+// The primary label is ink-900, not white. White on #FF7A00 is 2.6:1 and
+// fails AA outright, which on the most-clicked control on the site is the
+// kind of thing the Unruh Act attaches to. Darkening the fill would have
+// fixed it too, but that would have cost the brand orange; navy on the
+// untouched orange scores 6.7:1, better than either alternative.
 const VARIANT: Record<Variant, string> = {
   primary:
-    "bg-brand text-white hover:bg-brand-hover focus-visible:ring-brand-ink focus-visible:ring-offset-white",
+    "bg-brand text-ink-900 hover:bg-brand-hover focus-visible:ring-brand-ink focus-visible:ring-offset-white",
   // Ghost button for light sections. The border is the only thing marking the
   // control, so it needs 3:1 against white (WCAG 1.4.11) — ink-400 is 3.35:1,
   // where the paper hairlines used elsewhere would be 1.8:1.

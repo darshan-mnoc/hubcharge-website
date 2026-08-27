@@ -73,7 +73,7 @@ export function ChargerAccess() {
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-paper-300 shadow-sm">
                       <s.icon className="h-5 w-5 text-ink-700" />
                     </div>
-                    <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-white">
+                    <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] font-bold text-ink-900">
                       {i + 1}
                     </span>
                   </div>

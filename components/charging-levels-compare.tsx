@@ -86,7 +86,7 @@ export function ChargingLevelsCompare() {
                   onClick={() => setSupplyKw(s.kw)}
                   className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
                     active
-                      ? "border-brand bg-brand text-white"
+                      ? "border-brand bg-brand text-ink-900"
                       : "border-paper-300 text-ink-600 hover:border-ink-300"
                   }`}
                 >

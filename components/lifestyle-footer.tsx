@@ -199,7 +199,7 @@ export function LifestyleFooter() {
                           boxShadow: "0 0 20px rgba(255, 122, 0, 0.3)",
                         }}
                         whileTap={{ scale: 0.95 }}
-                        className="w-10 h-10 rounded-full bg-brand hover:bg-brand-hover flex items-center justify-center text-[#f4f3f2] transition-colors"
+                        className="w-10 h-10 rounded-full bg-brand hover:bg-brand-hover flex items-center justify-center text-ink-900 transition-colors"
                       >
                         <ArrowRight className="h-4 w-4" />
                       </motion.button>

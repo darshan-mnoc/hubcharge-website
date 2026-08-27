@@ -243,8 +243,10 @@
     @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-300;
   }
 
+  /* Navy label, not white: white on #FF7A00 is 2.6:1 and fails AA. Navy on the
+     same untouched orange is 6.7:1. Matches CtaButton's primary variant. */
   .btn-primary {
-    @apply bg-[#FF7A00] text-white px-6 py-3;
+    @apply bg-[#FF7A00] text-ink-900 px-6 py-3;
     @apply hover:bg-[#E66E00] hover:shadow-lg hover:shadow-[#FF7A00]/25 hover:scale-[1.02];
     @apply active:scale-[0.98];
   }
@@ -379,7 +381,9 @@ body {
     z-index: 100;
     transform: translateY(-150%);
     background: #FF7A00;
-    color: #fff;
+    /* Navy, matching every other orange control — white here is 2.6:1, which
+       would leave the accessibility affordance itself failing AA. */
+    color: #0A192F;
     font-weight: 600;
     padding: 0.75rem 1.25rem;
     border-radius: 0.5rem;

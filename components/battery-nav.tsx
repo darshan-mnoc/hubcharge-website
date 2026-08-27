@@ -257,7 +257,7 @@ export function BatteryNav() {
             target="_blank"
             rel="noopener noreferrer"
             whileTap={{ scale: 0.95 }}
-            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-brand text-[#f4f3f2] rounded-full"
+            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-xs font-semibold bg-brand text-ink-900 rounded-full"
           >
             <Zap className="h-3 w-3" strokeWidth={2.5} />
             <span>Login</span>

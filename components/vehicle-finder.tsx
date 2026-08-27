@@ -81,7 +81,7 @@ export function VehicleFinder() {
               onClick={() => setFilter(f.id)}
               className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
                 active
-                  ? "border-brand bg-brand text-white"
+                  ? "border-brand bg-brand text-ink-900"
                   : "border-paper-300 text-ink-500 hover:border-ink-400"
               }`}
             >

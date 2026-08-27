@@ -180,7 +180,7 @@ export function PricingExperience() {
                       onClick={() => setCarId(c.id)}
                       className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
                         active
-                          ? "border-brand bg-brand text-white"
+                          ? "border-brand bg-brand text-ink-900"
                           : "border-paper-300 text-ink-700 hover:border-paper-400"
                       }`}
                     >

@@ -89,7 +89,7 @@ export function PhoneChargingUI() {
                 Connector
               </p>
               <div className="flex gap-1.5">
-                <span className="flex-1 rounded-lg bg-brand px-2 py-1.5 text-center text-[10px] font-semibold text-white">
+                <span className="flex-1 rounded-lg bg-brand px-2 py-1.5 text-center text-[10px] font-semibold text-ink-900">
                   NACS
                 </span>
                 <span className="flex-1 rounded-lg border border-paper-300 px-2 py-1.5 text-center text-[10px] text-ink-500">

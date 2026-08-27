@@ -203,7 +203,7 @@ export function FindYourHub() {
                 disabled={isSearching}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="absolute right-2 px-4 sm:px-6 py-2.5 text-sm bg-brand hover:bg-brand-hover text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
+                className="absolute right-2 px-4 sm:px-6 py-2.5 text-sm bg-brand hover:bg-brand-hover text-ink-900 font-semibold rounded-xl transition-colors disabled:opacity-50"
               >
                 {isSearching ? (
                   <span className="flex items-center gap-2">
@@ -336,7 +336,7 @@ export function FindYourHub() {
                         rel="noopener noreferrer"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-semibold transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-brand hover:bg-brand-hover text-ink-900 text-sm font-semibold transition-colors"
                       >
                         <Navigation className="h-4 w-4" />
                         Directions
@@ -528,7 +528,7 @@ export function FindYourHub() {
                     onClick={() => toggleWanted(location)}
                     className={`rounded-full border px-4 py-2 text-body-sm transition-colors ${
                       active
-                        ? "border-brand bg-brand text-white"
+                        ? "border-brand bg-brand text-ink-900"
                         : "border-paper-300 text-ink-600 hover:border-brand/50"
                     }`}
                   >
@@ -542,7 +542,7 @@ export function FindYourHub() {
                 onClick={() => toggleWanted(SOMEWHERE_ELSE)}
                 className={`rounded-full border px-4 py-2 text-body-sm transition-colors ${
                   wantedLocations.includes(SOMEWHERE_ELSE)
-                    ? "border-brand bg-brand text-white"
+                    ? "border-brand bg-brand text-ink-900"
                     : "border-paper-300 text-ink-600 hover:border-brand/50"
                 }`}
               >
@@ -575,7 +575,7 @@ export function FindYourHub() {
                   disabled={notifySending}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-6 py-3 bg-brand hover:bg-brand-hover disabled:opacity-60 text-white font-semibold rounded-xl transition-colors"
+                  className="px-6 py-3 bg-brand hover:bg-brand-hover disabled:opacity-60 text-ink-900 font-semibold rounded-xl transition-colors"
                 >
                   {notifySending ? "Sending…" : "Notify Me"}
                 </motion.button>

@@ -77,7 +77,7 @@ export function WeatherImpact() {
                   aria-pressed={degF === p.degF}
                   className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] transition-colors ${
                     degF === p.degF
-                      ? "border-brand bg-brand text-white"
+                      ? "border-brand bg-brand text-ink-900"
                       : "border-paper-300 text-ink-600 hover:border-ink-300"
                   }`}
                 >
