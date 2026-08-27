@@ -136,6 +136,65 @@
     @apply max-w-content mx-auto px-6;
   }
 
+  /* An interactive block inside prose needs width the way a paragraph needs
+     restraint. Breaks the 68ch measure without leaving the page gutter. */
+  .breakout {
+    width: 100%;
+  }
+
+  /* Range inputs. Left to the UA these render a near-black track against our
+     warm paper, and the mobile 44px min-height below stretches the default
+     control instead of its hit area. Both are handled here. */
+  .range-brand {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .range-brand::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 9999px;
+    background: theme('colors.paper.300');
+  }
+  .range-brand::-moz-range-track {
+    height: 4px;
+    border-radius: 9999px;
+    background: theme('colors.paper.300');
+  }
+  .range-brand::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -7px;
+    height: 18px;
+    width: 18px;
+    border-radius: 9999px;
+    background: theme('colors.brand.DEFAULT');
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(10, 25, 47, 0.25);
+  }
+  .range-brand::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 9999px;
+    background: theme('colors.brand.DEFAULT');
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(10, 25, 47, 0.25);
+  }
+  .range-brand:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid theme('colors.brand.ink');
+    outline-offset: 2px;
+  }
+  .range-brand:focus-visible::-moz-range-thumb {
+    outline: 2px solid theme('colors.brand.ink');
+    outline-offset: 2px;
+  }
+  @media (min-width: 1024px) {
+    .breakout {
+      width: min(56rem, calc(100vw - 3rem));
+    }
+  }
+
   /* Light-section surfaces (for white/warm sections in the 50/50 rhythm) */
   .card-light {
     @apply bg-white rounded-2xl border border-gray-100;

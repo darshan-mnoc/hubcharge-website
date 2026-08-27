@@ -198,3 +198,74 @@ export function configuratorModels() {
     return [{ id: model.id, name: model.short, lo, hi, model }];
   });
 }
+
+/* ------------------------------------------------------------------ *
+ * Temperature
+ *
+ * Two separate penalties, routinely confused. A cold battery accepts
+ * power more slowly (chemistry), and a cold car uses more energy per
+ * mile (cabin heat, denser air, stiffer tyres). They compound, so a
+ * winter stop adds far less range than the same stop in June.
+ *
+ * Anchors follow Recurrent Auto's 2024 fleet study (~10,000 vehicles)
+ * and AAA's cold-weather testing; interpolated linearly between them.
+ * ------------------------------------------------------------------ */
+
+const CHARGE_TEMP_CURVE: [degF: number, factor: number][] = [
+  [0, 0.42], [20, 0.52], [32, 0.58], [40, 0.62], [50, 0.78],
+  [60, 0.92], [70, 1.0], [80, 0.97], [95, 0.88], [110, 0.78],
+];
+
+const RANGE_TEMP_CURVE: [degF: number, factor: number][] = [
+  [0, 0.54], [20, 0.64], [32, 0.72], [40, 0.79], [50, 0.88],
+  [60, 0.95], [70, 1.0], [80, 0.99], [90, 0.97], [100, 0.93], [110, 0.88],
+];
+
+function interpolate(curve: [number, number][], x: number): number {
+  if (x <= curve[0][0]) return curve[0][1];
+  const last = curve[curve.length - 1];
+  if (x >= last[0]) return last[1];
+  for (let i = 0; i < curve.length - 1; i++) {
+    const [x0, y0] = curve[i];
+    const [x1, y1] = curve[i + 1];
+    if (x >= x0 && x <= x1) return y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
+  }
+  return 1;
+}
+
+/** How much of its normal charging power a battery accepts at this temperature. */
+export function chargeTempFactor(degF: number): number {
+  return interpolate(CHARGE_TEMP_CURVE, degF);
+}
+
+/** How much of its rated driving range the car delivers at this temperature. */
+export function rangeTempFactor(degF: number): number {
+  return interpolate(RANGE_TEMP_CURVE, degF);
+}
+
+export const TEMP_BASIS =
+  "Temperature effects follow Recurrent Auto's 2024 study of roughly 10,000 vehicles and AAA cold-weather testing, interpolated between measured anchor points. Your car, your heat-pump, and whether you preconditioned will move the figure.";
+
+/* ------------------------------------------------------------------ *
+ * AC charging
+ *
+ * Level 1 and Level 2 run at near-constant power, so no curve is
+ * needed — but the ceiling is the lower of the outlet and the car's
+ * own onboard charger, which is the part people miss when they buy an
+ * 11 kW wallbox for a 7.2 kW car.
+ * ------------------------------------------------------------------ */
+
+export const AC_EFFICIENCY = 0.88;
+export const L1_KW = 1.4;
+
+/** Hours to move between two states of charge on AC at the given supply. */
+export function acHours(
+  model: EvModel,
+  supplyKw: number,
+  fromSoc: number,
+  toSoc: number
+): number {
+  const kw = Math.min(supplyKw, model.acKw);
+  const kwh = (model.usableKwh * (toSoc - fromSoc)) / 100;
+  return kwh / (kw * AC_EFFICIENCY);
+}

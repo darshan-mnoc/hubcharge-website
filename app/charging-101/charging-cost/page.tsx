@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { CostPerMile } from "@/components/cost-per-mile";
+import { ReadingProgress } from "@/components/reading-progress";
 
 export const metadata: Metadata = {
   title: "What Does EV Charging Cost? Public Charging Pricing Explained | HubCharge",
@@ -11,6 +13,13 @@ export const metadata: Metadata = {
     canonical: "https://hubcharge.com/charging-101/charging-cost",
   },
 };
+
+const SECTIONS: [string, string][] = [
+  ["models", "Pricing models"],
+  ["flat-rate", "Our flat rate"],
+  ["fair-question", "Is it right for you?"],
+  ["per-mile", "Cost per mile"],
+];
 
 export default function ChargingCostPage() {
   return (
@@ -22,6 +31,8 @@ export default function ChargingCostPage() {
       title="What does charging cost?"
       intro="Public charging pricing can be genuinely confusing. Here's how the industry's models work — and how we simplified ours."
     >
+      <ReadingProgress sections={SECTIONS} />
+
       <GuideBreadcrumb
         trail={[
           ["Home", "/"],
@@ -31,7 +42,7 @@ export default function ChargingCostPage() {
       />
 
       <Prose>
-        <h2>How most networks price charging</h2>
+        <h2 id="models">How most networks price charging</h2>
         <ul>
           <li>
             <strong>Per kWh</strong> — you pay for energy delivered, like a
@@ -62,7 +73,16 @@ export default function ChargingCostPage() {
           without knowing what they&rsquo;ll pay.
         </p>
 
-        <h2>The HubCharge model: one flat rate, known first</h2>
+        <h2 id="per-mile">So what does a mile actually cost?</h2>
+        <p>
+          Per-kWh pricing is only meaningful once you divide it by your
+          car&rsquo;s efficiency — which is the sum nobody does standing at a
+          charger. Here it is, with your own rates:
+        </p>
+
+        <CostPerMile />
+
+        <h2 id="flat-rate">The HubCharge model: one flat rate, known first</h2>
         <p>
           We charge a <strong>flat rate per session</strong>. Your exact
           price appears on your phone <em>before</em> you plug in — approve
@@ -76,7 +96,7 @@ export default function ChargingCostPage() {
           <Link href="/pricing">our pricing page</Link>.
         </p>
 
-        <h2>A fair question: is flat-rate right for everyone?</h2>
+        <h2 id="fair-question">A fair question: is flat-rate right for everyone?</h2>
         <p>
           Honest answer: flat-rate is built for the quick top-up — our
           10-minute sweet-spot session. If you routinely need to charge a

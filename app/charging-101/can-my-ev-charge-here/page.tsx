@@ -51,9 +51,9 @@ export default function CompatibilityPage() {
 
       {/* Make-by-make grid */}
       <div className="max-w-4xl">
-        <h2 className="text-h3 text-ink-900 mb-2">Check your make</h2>
+        <h2 className="text-h3 text-ink-900 mb-2">Check your car</h2>
         <p className="text-body-sm text-ink-500 mb-6">
-          Search for your make, or filter by which cable you plug in.
+          Search by model — every row shows the connector, the power that car will actually see here, and how long 10 to 80% takes.
         </p>
         <VehicleFinder />
 

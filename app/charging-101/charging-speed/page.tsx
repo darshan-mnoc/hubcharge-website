@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { ChargingCurveChart } from "@/components/charging-curve-chart";
+import { ReadingProgress } from "@/components/reading-progress";
 import { RANGE_FOOTNOTE } from "@/lib/ev-models";
 
 export const metadata: Metadata = {
@@ -13,6 +15,14 @@ export const metadata: Metadata = {
   },
 };
 
+const SECTIONS: [string, string][] = [
+  ["curve", "It's a curve"],
+  ["top-up", "Why top-ups win"],
+  ["factors", "What sets your speed"],
+  ["preconditioning", "Preconditioning"],
+  ["headline-numbers", "Headline numbers"],
+];
+
 export default function ChargingSpeedPage() {
   return (
     <PageShell
@@ -23,6 +33,8 @@ export default function ChargingSpeedPage() {
       title="How long does charging take?"
       intro="Honest answer: it depends — but in a predictable way. Understand the charging curve and you'll charge smarter than most EV owners."
     >
+      <ReadingProgress sections={SECTIONS} />
+
       <GuideBreadcrumb
         trail={[
           ["Home", "/"],
@@ -32,7 +44,7 @@ export default function ChargingSpeedPage() {
       />
 
       <Prose>
-        <h2>Charging isn&rsquo;t a straight line — it&rsquo;s a curve</h2>
+        <h2 id="curve">Charging isn&rsquo;t a straight line — it&rsquo;s a curve</h2>
         <p>
           A battery doesn&rsquo;t accept power at one constant rate. Speed
           ramps up from a low state of charge, peaks somewhere in the{" "}
@@ -42,7 +54,9 @@ export default function ChargingSpeedPage() {
           it&rsquo;s the same on every fast-charging network.
         </p>
 
-        <h2>Which is why the quick top-up wins</h2>
+        <ChargingCurveChart />
+
+        <h2 id="top-up">Which is why the quick top-up wins</h2>
         <p>
           Because the curve is fastest in the middle, the smartest use of a DC
           fast charger is usually a short session in that sweet spot — grab
@@ -52,7 +66,7 @@ export default function ChargingSpeedPage() {
           100% at a fast charger is almost never worth the time.
         </p>
 
-        <h2>What actually determines your speed</h2>
+        <h2 id="factors">What actually determines your speed</h2>
         <ul>
           <li>
             <strong>Your car&rsquo;s maximum charging rate</strong> — every
@@ -73,7 +87,7 @@ export default function ChargingSpeedPage() {
           </li>
         </ul>
 
-        <h2>The one trick worth knowing: preconditioning</h2>
+        <h2 id="preconditioning">The one trick worth knowing: preconditioning</h2>
         <p>
           Most EVs warm their battery automatically when you{" "}
           <strong>navigate to a fast charger in the car&rsquo;s own
@@ -82,7 +96,7 @@ export default function ChargingSpeedPage() {
           single biggest thing you control.
         </p>
 
-        <h2>Beware the headline numbers</h2>
+        <h2 id="headline-numbers">Beware the headline numbers</h2>
         <p>
           You&rsquo;ll see claims like &ldquo;200 miles in 10 minutes&rdquo;
           in car ads. Those usually assume 350kW+ chargers and perfect

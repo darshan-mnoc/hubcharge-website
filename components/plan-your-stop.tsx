@@ -61,7 +61,7 @@ export function PlanYourStop({ station }: { station: Station }) {
   }, []);
 
   return (
-    <section className="bg-ink-900 rounded-lg p-5 sm:p-8">
+    <section id="plan" className="bg-ink-900 rounded-lg p-5 sm:p-8 scroll-mt-28">
       <p className="text-overline text-white/55">Plan your stop</p>
       <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
       <h2 className="text-h3 text-white mb-6">

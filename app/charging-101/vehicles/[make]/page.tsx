@@ -4,6 +4,7 @@ import { CheckCircle2, AlertTriangle, Zap, Plug } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta } from "@/components/learn";
 import { CtaButton } from "@/components/ui/cta-button";
+import { MakeModels } from "@/components/make-models";
 import { evMakes, RANGE_FOOTNOTE, EV_DATA_UPDATED } from "@/lib/ev-models";
 import { makeTenMinuteBand } from "@/lib/charging-math";
 import { stations } from "@/lib/stations";
@@ -120,6 +121,17 @@ export default async function VehicleGuide({
             <p className="text-body-sm text-ink-700">{m.note}</p>
           </div>
         )}
+
+        <h2 className="text-h3 text-ink-900 mb-2">
+          Your exact model
+        </h2>
+        <p className="text-body-sm text-ink-500 mb-6">
+          A make can only ever tell you &ldquo;roughly&rdquo;. Open a trim for
+          the figures it actually produces at our chargers.
+        </p>
+        <div className="mb-14">
+          <MakeModels makeId={m.id} />
+        </div>
 
         <h2 className="text-h3 text-ink-900 mb-4">
           What a stop looks like in a {m.name.split(" / ")[0]}

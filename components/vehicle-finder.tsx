@@ -1,40 +1,60 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, CheckCircle2, AlertTriangle } from "lucide-react";
-import { evMakes, RANGE_FOOTNOTE, EV_DATA_UPDATED } from "@/lib/ev-models";
-import { makeTenMinuteBand } from "@/lib/charging-math";
+import Link from "next/link";
+import { Search, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
+import { evModels, getMake, EV_DATA_UPDATED, type EvModel } from "@/lib/ev-models";
+import {
+  tenMinuteBand,
+  tenToEighty,
+  STATION_KW,
+  ESTIMATE_BASIS,
+} from "@/lib/charging-math";
+import { CurveSpark } from "@/components/curve-spark";
 
 const FILTERS = [
-  { id: "all", label: "All makes" },
+  { id: "all", label: "All cars" },
   { id: "nacs", label: "NACS port" },
   { id: "ccs", label: "CCS port" },
-  { id: "transitioning", label: "Either, by model year" },
+  { id: "800", label: "800-volt" },
 ] as const;
 
+type FilterId = (typeof FILTERS)[number]["id"];
+
+function matchesFilter(m: EvModel, f: FilterId) {
+  if (f === "all") return true;
+  if (f === "800") return m.archV === 800;
+  return m.port === f;
+}
+
 /**
- * Searchable compatibility checker. Fifteen equal-weight cards with no way to
- * find your own make was a lot to scan; typing three letters is not.
+ * Model-level compatibility.
+ *
+ * This used to answer at make level, which was too coarse to be useful: "Ford
+ * — CCS, roughly 60–110 miles" covers a Standard Range Mach-E and a Lightning
+ * that behave nothing alike. Every row here is one trim, with the figures that
+ * trim actually produces at our chargers.
  */
 export function VehicleFinder() {
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]["id"]>("all");
+  const [filter, setFilter] = useState<FilterId>("all");
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return evMakes.filter((m) => {
-      const matchesFilter = filter === "all" || m.port === filter;
-      const matchesQuery =
-        q.length === 0 ||
+    return evModels.filter((m) => {
+      if (!matchesFilter(m, filter)) return false;
+      if (!q) return true;
+      const make = getMake(m.makeId);
+      return (
         m.name.toLowerCase().includes(q) ||
-        m.portNote.toLowerCase().includes(q) ||
-        (m.note?.toLowerCase().includes(q) ?? false);
-      return matchesFilter && matchesQuery;
+        m.short.toLowerCase().includes(q) ||
+        (make?.name.toLowerCase().includes(q) ?? false)
+      );
     });
   }, [query, filter]);
 
   return (
-    <div className="max-w-measure">
+    <div className="max-w-4xl">
       <div className="relative mb-4">
         <Search
           aria-hidden
@@ -44,13 +64,13 @@ export function VehicleFinder() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search your make — Tesla, Ford, Rivian…"
-          aria-label="Search vehicle makes"
+          placeholder="Search your car — Ioniq 5, Model Y, Lightning…"
+          aria-label="Search electric vehicles"
           className="w-full rounded-lg border border-paper-300 bg-white pl-11 pr-4 py-3.5 text-body text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
         />
       </div>
 
-      <div role="radiogroup" aria-label="Filter by port" className="flex flex-wrap gap-2 mb-8">
+      <div role="radiogroup" aria-label="Filter" className="flex flex-wrap gap-2 mb-7">
         {FILTERS.map((f) => {
           const active = filter === f.id;
           return (
@@ -71,53 +91,79 @@ export function VehicleFinder() {
         })}
       </div>
 
-      <p aria-live="polite" className="text-caption text-ink-400 mb-4">
-        {results.length} of {evMakes.length} makes
+      <p aria-live="polite" className="text-caption text-ink-400 mb-3">
+        {results.length} of {evModels.length} cars
       </p>
 
       {results.length === 0 ? (
         <p className="text-body text-ink-500 border-t border-paper-300 pt-6">
-          No match for &ldquo;{query}&rdquo;. If your EV fast-charges with a
-          NACS or CCS port, it works here — that covers nearly every EV sold in
-          the US.
+          No match for &ldquo;{query}&rdquo;. We list the highest-volume trims
+          rather than every variant — if your EV fast-charges with a NACS or CCS
+          port, it works here, which covers nearly every EV sold in the US.
         </p>
       ) : (
         <ul>
           {results.map((m) => {
-            const band = makeTenMinuteBand(m.id);
+            const [lo, hi] = tenMinuteBand(m);
+            const full = tenToEighty(m);
+            const chademo = m.port === "chademo";
+            const make = getMake(m.makeId);
             return (
-            <li
-              key={m.id}
-              className="grid md:grid-cols-[minmax(0,20ch)_1fr_auto] gap-x-8 gap-y-1 py-5 border-t border-paper-300 last:border-b"
-            >
-              <span className="text-h4 text-ink-900 flex items-center gap-2">
-                <CheckCircle2 aria-hidden className="h-3.5 w-3.5 text-green-700 shrink-0" />
-                {m.name}
-              </span>
-              <span className="text-body-sm text-ink-500">
-                {m.portNote}
-                {m.note && (
-                  <span className="mt-1.5 flex items-start gap-1.5 text-caption text-ink-400">
-                    <AlertTriangle aria-hidden className="h-3 w-3 mt-0.5 shrink-0 text-brass" />
-                    {m.note}
+              <li
+                key={m.id}
+                className="grid grid-cols-[1fr_auto] sm:grid-cols-[minmax(0,23ch)_5rem_minmax(0,1fr)_auto] gap-x-6 gap-y-2 items-center py-5 border-t border-paper-300 last:border-b"
+              >
+                <span className="min-w-0">
+                  <span className="flex items-center gap-2 text-h4 text-ink-900">
+                    {chademo ? (
+                      <XCircle aria-hidden className="h-3.5 w-3.5 shrink-0 text-error" />
+                    ) : (
+                      <CheckCircle2 aria-hidden className="h-3.5 w-3.5 shrink-0 text-green-700" />
+                    )}
+                    <span className="truncate">{m.name}</span>
                   </span>
-                )}
-              </span>
-              {band && (
-                <span className="text-brand-ink font-semibold text-body-sm md:text-right whitespace-nowrap">
-                  ~{band[0]}–{band[1]} mi
+                  <span className="block text-caption text-ink-400 mt-1 pl-[1.375rem]">
+                    {m.port === "nacs" ? "NACS" : m.port === "ccs" ? "CCS" : "CHAdeMO"} ·{" "}
+                    {m.archV}V
+                  </span>
                 </span>
-              )}
-            </li>
+
+                <CurveSpark model={m} className="hidden sm:block w-20 h-8" />
+
+                <span className="col-span-2 sm:col-span-1 text-body-sm text-ink-500">
+                  {chademo ? (
+                    <>Cannot DC fast-charge here — see the note below.</>
+                  ) : (
+                    <>
+                      <span className="whitespace-nowrap">~{lo}–{hi} mi in 10 min</span>
+                      {" · "}
+                      <span className="whitespace-nowrap">10–80% in {full} min</span>
+                      {" · "}
+                      <span className="whitespace-nowrap">
+                        {Math.min(m.peakKw, STATION_KW)} kW here
+                      </span>
+                    </>
+                  )}
+                </span>
+
+                {make && (
+                  <Link
+                    href={`/charging-101/vehicles/${make.id}`}
+                    className="hidden sm:block text-caption text-brand-ink hover:underline whitespace-nowrap"
+                  >
+                    {make.name} →
+                  </Link>
+                )}
+              </li>
             );
           })}
         </ul>
       )}
 
       <p className="text-caption text-ink-400 mt-6">
-        Approximate range added in ~10 minutes. Last updated {EV_DATA_UPDATED}.
+        Vehicle data last updated {EV_DATA_UPDATED}.
       </p>
-      <p className="text-[11px] text-ink-400 mt-2 max-w-[70ch]">{RANGE_FOOTNOTE}</p>
+      <p className="text-[11px] text-ink-400 mt-2 max-w-[75ch]">{ESTIMATE_BASIS}</p>
     </div>
   );
 }

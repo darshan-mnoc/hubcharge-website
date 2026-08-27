@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Home, Building2, Zap } from "lucide-react";
 import { PageShell, Prose } from "@/components/page-shell";
+import { ChargingLevelsCompare } from "@/components/charging-levels-compare";
 import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
 
 export const metadata: Metadata = {
@@ -11,31 +11,6 @@ export const metadata: Metadata = {
     canonical: "https://hubcharge.com/charging-101/charging-levels",
   },
 };
-
-const levels = [
-  {
-    icon: Home,
-    name: "Level 1",
-    spec: "120V household outlet · ~1.4–1.9 kW",
-    adds: "~3–5 miles of range per hour",
-    body: "The regular wall outlet. Fine for plug-in hybrids or very light daily driving — a full EV charge can take days. Best thought of as a trickle.",
-  },
-  {
-    icon: Building2,
-    name: "Level 2",
-    spec: "240V · typically ~7–19 kW",
-    adds: "~10–40 miles of range per hour",
-    body: "Home wallboxes, workplaces, shopping centers. The overnight workhorse — most EV owners who can charge at home do most of their charging this way.",
-  },
-  {
-    icon: Zap,
-    name: "DC Fast Charging",
-    spec: "Direct DC to the battery · 50–350+ kW",
-    adds: "Can add 100+ miles in well under an hour",
-    body: "Skips your car's onboard charger and feeds the battery directly. This is road-trip and quick-top-up charging — and it's what HubCharge does, at up to 180kW.",
-    highlight: true,
-  },
-];
 
 export default function ChargingLevelsPage() {
   return (
@@ -55,24 +30,12 @@ export default function ChargingLevelsPage() {
         ]}
       />
 
-      <div className="grid md:grid-cols-3 gap-6 max-w-5xl mb-12">
-        {levels.map((l) => (
-          <div
-            key={l.name}
-            className={`card-light p-6 ${
-              l.highlight ? "ring-1 ring-brand/30 bg-brand/[0.03]" : ""
-            }`}
-          >
-            <l.icon className="h-7 w-7 text-ink-700 mb-4" />
-            <h2 className="font-bold text-midnight-navy text-lg mb-1">
-              {l.name}
-            </h2>
-            <p className="text-gray-500 text-xs mb-2">{l.spec}</p>
-            <p className="text-brand-ink font-semibold text-sm mb-3">{l.adds}</p>
-            <p className="text-gray-600 text-sm">{l.body}</p>
-          </div>
-        ))}
-      </div>
+      <p className="text-quote text-ink-900 max-w-[34ch] mb-8">
+        The three levels aren&rsquo;t really about volts. They&rsquo;re about
+        how much of your day charging takes.
+      </p>
+
+      <ChargingLevelsCompare />
 
       <Prose>
         <h2>So which one do I need?</h2>
@@ -84,7 +47,7 @@ export default function ChargingLevelsPage() {
           day — with an attendant handling the process at participating
           locations.
         </p>
-        <p className="text-sm text-gray-500">
+        <p className="text-body-sm text-ink-400">
           Figures are typical ranges; actual speed varies by vehicle, battery
           state of charge, and temperature.
         </p>

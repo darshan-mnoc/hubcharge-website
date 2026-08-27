@@ -155,7 +155,7 @@ export function PageShell({
 /** Prose wrapper for long-form legal/help text. */
 export function Prose({ children }: { children: ReactNode }) {
   return (
-    <div className="max-w-prose space-y-6 text-ink-600 text-body [&_h2]:text-h3 [&_h2]:text-ink-900 [&_h2]:mt-12 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:text-ink-900 [&_h3]:mt-7 [&_h3]:mb-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1.5 [&_a]:text-brand-ink [&_a]:underline">
+    <div className="max-w-prose space-y-6 text-ink-600 text-body [&_h2]:text-h3 [&_h2]:text-ink-900 [&_h2]:mt-12 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:text-ink-900 [&_h3]:mt-7 [&_h3]:mb-2 [&_ul:not(.not-prose_ul)]:list-disc [&_ul:not(.not-prose_ul)]:pl-6 [&_ul:not(.not-prose_ul)]:space-y-1.5 [&_a]:text-brand-ink [&_a]:underline">
       {children}
     </div>
   );

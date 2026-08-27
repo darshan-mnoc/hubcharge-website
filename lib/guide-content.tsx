@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { WeatherImpact } from "@/components/weather-impact";
 
 /**
  * Body copy for the prose guides, kept beside the registry so a guide is a
@@ -79,6 +80,19 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
           day, through no fault of the charger. This surprises people far more
           than it should, because nothing on the screen explains it.
         </p>
+      ),
+    },
+    {
+      heading: "See it on your own car",
+      body: (
+        <>
+          <p>
+            Drag the temperature and watch both penalties move. They are
+            separate effects that compound: the stop takes longer{" "}
+            <em>and</em> the miles you gained don&rsquo;t go as far.
+          </p>
+          <WeatherImpact />
+        </>
       ),
     },
     {
