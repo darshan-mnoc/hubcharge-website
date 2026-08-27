@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { NAV_GUIDES, getGuide, guideHref } from "@/lib/guides";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -12,19 +14,37 @@ import {
   Menu,
   X,
   Battery,
+  BookOpen,
+  ChevronDown,
 } from "lucide-react";
 import Image from "next/image";
 
 const LOGIN_URL = "https://hubcharge.micronocinc.com/login.html";
 
-const navLinks = [
+/**
+ * A nav item is EITHER a homepage section (`id`) or a real route (`href`).
+ * Previously every item was a section id, so "Pricing" on a sub-page bounced
+ * you to /#pricing even though /pricing exists as its own page.
+ */
+type NavItem = {
+  label: string;
+  icon: typeof Zap;
+  id?: string;
+  href?: string;
+  /** Renders a dropdown of guides rather than a single link */
+  guides?: boolean;
+};
+
+const navLinks: NavItem[] = [
   { id: "how-it-works", label: "Experience", icon: Zap },
   { id: "lifestyle", label: "Lifestyle", icon: Utensils },
-  { id: "pricing", label: "Pricing", icon: Battery },
-  // { id: "membership", label: "Membership", icon: Crown },
-  { id: "locations", label: "Locations", icon: MapPin },
+  { href: "/charging-101", label: "Guides", icon: BookOpen, guides: true },
+  { href: "/pricing", label: "Pricing", icon: Battery },
+  { href: "/locations", label: "Locations", icon: MapPin },
   { id: "contact", label: "Contact", icon: Phone },
 ];
+
+const navGuides = NAV_GUIDES.map((slug) => getGuide(slug)!).filter(Boolean);
 
 export function BatteryNav() {
   const router = useRouter();
@@ -35,6 +55,7 @@ export function BatteryNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const [activeLink, setActiveLink] = useState<string | null>(null);
+  const [guidesOpen, setGuidesOpen] = useState(false);
 
   useFocusTrap(mobileMenuRef, mobileOpen);
 
@@ -55,6 +76,15 @@ export function BatteryNav() {
       window.removeEventListener("keydown", onKey);
     };
   }, [mobileOpen]);
+
+  const handleNavItem = (item: NavItem) => {
+    setMobileOpen(false);
+    if (item.href) {
+      router.push(item.href);
+      return;
+    }
+    if (item.id) handleNavClick(item.id);
+  };
 
   const handleNavClick = (id: string) => {
     setMobileOpen(false);
@@ -108,23 +138,97 @@ export function BatteryNav() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-x-8">
-            {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                onMouseEnter={() => setActiveLink(link.id)}
-                onMouseLeave={() => setActiveLink(null)}
-                className="relative py-1 text-caption font-medium text-on-dark/70 hover:text-white transition-colors"
-              >
-                {link.label}
-                <span
-                  aria-hidden
-                  className={`absolute -bottom-1 left-0 h-[1.5px] bg-brand transition-all duration-200 ${
-                    activeLink === link.id ? "w-full" : "w-0"
-                  }`}
-                />
-              </button>
-            ))}
+            {navLinks.map((link) => {
+              const key = link.id ?? link.href!;
+              const isCurrent = link.href ? pathname.startsWith(link.href) : false;
+
+              if (link.guides) {
+                return (
+                  <div
+                    key={key}
+                    className="relative"
+                    onMouseEnter={() => setGuidesOpen(true)}
+                    onMouseLeave={() => setGuidesOpen(false)}
+                  >
+                    <button
+                      onClick={() => setGuidesOpen((v) => !v)}
+                      aria-expanded={guidesOpen}
+                      aria-haspopup="true"
+                      aria-controls="guides-menu"
+                      className="relative flex items-center gap-1 py-1 text-caption font-medium text-on-dark/70 hover:text-white transition-colors"
+                    >
+                      {link.label}
+                      <ChevronDown
+                        aria-hidden
+                        className={`h-3.5 w-3.5 transition-transform ${guidesOpen ? "rotate-180" : ""}`}
+                      />
+                      <span
+                        aria-hidden
+                        className={`absolute -bottom-1 left-0 h-[1.5px] bg-brand transition-all duration-200 ${
+                          guidesOpen || isCurrent ? "w-full" : "w-0"
+                        }`}
+                      />
+                    </button>
+
+                    <AnimatePresence>
+                      {guidesOpen && (
+                        <motion.div
+                          id="guides-menu"
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[300px]"
+                        >
+                          <div className="rounded-lg border border-white/10 bg-ink-900/98 backdrop-blur-md shadow-2xl p-2">
+                            {navGuides.map((g) => (
+                              <Link
+                                key={g.slug}
+                                href={guideHref(g.slug)}
+                                onClick={() => setGuidesOpen(false)}
+                                className="block rounded px-3 py-2.5 hover:bg-white/[0.06] transition-colors"
+                              >
+                                <span className="block text-caption font-semibold text-white">
+                                  {g.navTitle ?? g.title}
+                                </span>
+                                <span className="block text-[11px] text-on-dark/55 mt-0.5">
+                                  {g.read} read
+                                </span>
+                              </Link>
+                            ))}
+                            <Link
+                              href="/charging-101"
+                              onClick={() => setGuidesOpen(false)}
+                              className="block rounded px-3 py-2.5 mt-1 border-t border-white/10 text-caption font-semibold text-brand hover:bg-white/[0.06] transition-colors"
+                            >
+                              All guides →
+                            </Link>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleNavItem(link)}
+                  onMouseEnter={() => setActiveLink(key)}
+                  onMouseLeave={() => setActiveLink(null)}
+                  className="relative py-1 text-caption font-medium text-on-dark/70 hover:text-white transition-colors"
+                >
+                  {link.label}
+                  <span
+                    aria-hidden
+                    className={`absolute -bottom-1 left-0 h-[1.5px] bg-brand transition-all duration-200 ${
+                      activeLink === key || isCurrent ? "w-full" : "w-0"
+                    }`}
+                  />
+                </button>
+              );
+            })}
           </div>
 
           {/* CTA Button - Desktop Only */}
@@ -195,11 +299,11 @@ export function BatteryNav() {
               <nav aria-label="Mobile" className="space-y-3 mb-10">
                 {navLinks.map((link, i) => (
                   <motion.button
-                    key={link.id}
+                    key={link.id ?? link.href}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    onClick={() => handleNavClick(link.id)}
+                    transition={{ delay: i * 0.06 }}
+                    onClick={() => handleNavItem(link)}
                     className="w-full flex items-center gap-4 p-5 rounded-lg glass border border-[#f4f3f2]/[0.06] hover:border-brand/30 text-left group"
                   >
                     <div className="w-14 h-14 rounded-xl bg-brand/10 group-hover:bg-brand/20 flex items-center justify-center transition-colors">
@@ -215,11 +319,30 @@ export function BatteryNav() {
                 ))}
               </nav>
 
+              <div className="mb-10">
+                <p className="text-overline text-white/45 mb-3">Popular guides</p>
+                <div className="space-y-1">
+                  {navGuides.map((g) => (
+                    <Link
+                      key={g.slug}
+                      href={guideHref(g.slug)}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-baseline justify-between gap-4 py-2.5 border-t border-white/[0.07] text-on-dark/80 hover:text-white transition-colors"
+                    >
+                      <span className="text-body-sm">{g.navTitle ?? g.title}</span>
+                      <span className="text-caption text-white/40 shrink-0">
+                        {g.read}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               <motion.button
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                onClick={() => handleNavClick("locations")}
+                transition={{ delay: 0.5 }}
+                onClick={() => router.push("/locations")}
                 className="flex items-center justify-center gap-2 w-full btn btn-primary text-sm py-3"
               >
                 <Zap className="h-4 w-4" strokeWidth={2.5} />
@@ -240,15 +363,15 @@ export function BatteryNav() {
         <div className="grid grid-cols-5">
           {[
             { id: "how-it-works", icon: Zap, label: "Charge" },
-            { id: "lifestyle", icon: Utensils, label: "Lifestyle" },
-            { id: "pricing", icon: Battery, label: "Pricing" },
-            { id: "locations", icon: MapPin, label: "Locations" },
+            { href: "/charging-101", icon: BookOpen, label: "Guides" },
+            { href: "/pricing", icon: Battery, label: "Pricing" },
+            { href: "/locations", icon: MapPin, label: "Locations" },
             { id: "contact", icon: Phone, label: "Contact" },
           ].map((item) => (
             <motion.button
-              key={item.id}
+              key={item.id ?? item.href}
               whileTap={{ scale: 0.9 }}
-              onClick={() => handleNavClick(item.id)}
+              onClick={() => handleNavItem(item)}
               className="flex flex-col items-center py-3 text-muted-dark hover:text-brand transition-colors"
             >
               <item.icon className="h-5 w-5" strokeWidth={1.5} />

@@ -80,6 +80,7 @@ const GROUPS: {
 export default function Charging101Page() {
   return (
     <PageShell
+      backTo={{ href: "/", label: "Home" }}
       eyebrow="Guides"
       image="/images/valet-greet-v2.webp"
       imageAlt="A HubCharge attendant greeting a driver at the charger"

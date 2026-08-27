@@ -28,6 +28,7 @@ const neverCharged = [
 export default function PricingPage() {
   return (
     <PageShell
+      backTo={{ href: "/", label: "Home" }}
       eyebrow="Pricing"
       tone="dark"
       image="/images/coffee-delivery-v3.webp"

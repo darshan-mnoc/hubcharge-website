@@ -185,6 +185,7 @@ const groups: Group[] = [
 export default function FaqPage() {
   return (
     <PageShell
+      backTo={{ href: "/", label: "Home" }}
       eyebrow="Support"
       image="/images/valet-greet-v2.webp"
       imageAlt="A HubCharge attendant at a driver's window"

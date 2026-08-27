@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageShell } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
 
 export const metadata: Metadata = {
   title: "EV Charging Glossary: kW, kWh, SOC, NACS & More | HubCharge",
@@ -78,6 +78,7 @@ const terms: { term: string; def: string }[] = [
 export default function GlossaryPage() {
   return (
     <PageShell
+      backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
       toc={[
         ["Power and energy", "#power-and-energy"],
@@ -119,6 +120,8 @@ export default function GlossaryPage() {
           </section>
         ))}
       </div>
+
+      <GuideFooter slug="glossary" />
 
       <GuideCta />
     </PageShell>

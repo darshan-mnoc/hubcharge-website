@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
 
 export const metadata: Metadata = {
   title: "What Does EV Charging Cost? Public Charging Pricing Explained | HubCharge",
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 export default function ChargingCostPage() {
   return (
     <PageShell
+      backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
       image="/images/valet-greet-v2.webp"
       imageAlt="A HubCharge attendant greeting a driver"
@@ -84,6 +85,8 @@ export default function ChargingCostPage() {
           now&rdquo; stop, knowing your price upfront is exactly the point.
         </p>
       </Prose>
+
+      <GuideFooter slug="charging-cost" />
 
       <GuideCta headline="Know your price before you plug in." />
     </PageShell>

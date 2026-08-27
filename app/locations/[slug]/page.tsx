@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CtaButton } from "@/components/ui/cta-button";
+import { GuideBreadcrumb } from "@/components/learn";
 import {
   stations,
   nearbyByStation,
@@ -116,28 +117,9 @@ export default async function StationPage({
     },
   };
 
-  const breadcrumbLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://hubcharge.com" },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Locations",
-        item: "https://hubcharge.com/locations",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: station.city,
-        item: `https://hubcharge.com/locations/${station.slug}`,
-      },
-    ],
-  };
-
   return (
     <PageShell
+      backTo={{ href: "/locations", label: "All locations" }}
       eyebrow={station.city}
       image={stationImages[station.slug] ?? "/images/home.webp"}
       imageAlt={`The HubCharge station in ${station.city}, California`}
@@ -155,27 +137,14 @@ export default async function StationPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
-      />
 
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="mb-8 -mt-6">
-        <ol className="flex items-center gap-2 text-sm text-gray-500">
-          <li>
-            <Link href="/" className="hover:text-brand-ink">Home</Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li>
-            <Link href="/locations" className="hover:text-brand-ink">Locations</Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li className="text-gray-600 font-medium" aria-current="page">
-            {station.city}
-          </li>
-        </ol>
-      </nav>
+      <GuideBreadcrumb
+        trail={[
+          ["Home", "/"],
+          ["Locations", "/locations"],
+          [station.city, `/locations/${station.slug}`],
+        ]}
+      />
 
       <div className="grid lg:grid-cols-5 gap-10 mb-16">
         {/* Left: details */}

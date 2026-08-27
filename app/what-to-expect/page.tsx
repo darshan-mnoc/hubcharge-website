@@ -51,6 +51,7 @@ const steps = [
 export default function WhatToExpectPage() {
   return (
     <PageShell
+      backTo={{ href: "/", label: "Home" }}
       eyebrow="First visit"
       image="/images/valet-greet-v2.webp"
       imageAlt="A HubCharge attendant greeting a driver at their car window"

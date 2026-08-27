@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default function AccessibilityPage() {
   return (
     <PageShell
+      backTo={{ href: "/", label: "Home" }}
       eyebrow="Accessibility"
       title="Accessibility"
       intro="We want every driver to be able to use our website and our stations."

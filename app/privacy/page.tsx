@@ -14,6 +14,7 @@ const EFFECTIVE_DATE = "August 25, 2026";
 export default function PrivacyPage() {
   return (
     <PageShell
+      backTo={{ href: "/", label: "Home" }}
       eyebrow="Legal"
       title="Privacy Policy"
       intro={`Effective date: ${EFFECTIVE_DATE}`}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Home, Building2, Zap } from "lucide-react";
 import { PageShell, Prose } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
 
 export const metadata: Metadata = {
   title: "EV Charging Levels Explained: Level 1, Level 2 & DC Fast | HubCharge",
@@ -40,6 +40,7 @@ const levels = [
 export default function ChargingLevelsPage() {
   return (
     <PageShell
+      backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
       image="/images/home.webp"
       imageAlt="HubCharge DC fast chargers beneath a lit canopy"
@@ -88,6 +89,8 @@ export default function ChargingLevelsPage() {
           state of charge, and temperature.
         </p>
       </Prose>
+
+      <GuideFooter slug="charging-levels" />
 
       <GuideCta />
     </PageShell>

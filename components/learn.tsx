@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CtaButton } from "@/components/ui/cta-button";
+import { guideHref, guideNeighbours } from "@/lib/guides";
 
 /** Visible breadcrumb + BreadcrumbList JSON-LD for Charging 101 pages. */
 export function GuideBreadcrumb({
@@ -74,5 +76,53 @@ export function GuideCta({
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Prev/next chrome at the foot of a guide. Without it every guide is a dead
+ * end apart from the breadcrumb, which is a poor way to read a manual.
+ */
+export function GuideFooter({ slug }: { slug: string }) {
+  const { prev, next } = guideNeighbours(slug);
+  if (!prev && !next) return null;
+
+  return (
+    <nav
+      aria-label="Guide navigation"
+      className="mt-20 grid gap-4 sm:grid-cols-2 max-w-measure"
+    >
+      {prev ? (
+        <Link
+          href={guideHref(prev.slug)}
+          className="group border-t border-paper-300 pt-5 hover:border-ink-400 transition-colors"
+        >
+          <span className="flex items-center gap-1.5 text-overline text-ink-400">
+            <ArrowLeft aria-hidden className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
+            Previous
+          </span>
+          <span className="block text-h4 text-ink-900 mt-2">
+            {prev.navTitle ?? prev.title}
+          </span>
+        </Link>
+      ) : (
+        <span aria-hidden />
+      )}
+
+      {next && (
+        <Link
+          href={guideHref(next.slug)}
+          className="group border-t border-paper-300 pt-5 hover:border-ink-400 transition-colors sm:text-right"
+        >
+          <span className="flex items-center gap-1.5 text-overline text-ink-400 sm:justify-end">
+            Next
+            <ArrowRight aria-hidden className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </span>
+          <span className="block text-h4 text-ink-900 mt-2">
+            {next.navTitle ?? next.title}
+          </span>
+        </Link>
+      )}
+    </nav>
   );
 }

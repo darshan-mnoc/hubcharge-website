@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, Zap } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
 import {
   vehicleMakes,
   RANGE_FOOTNOTE,
@@ -40,6 +40,7 @@ const GROUPS = [
 export default function CompatibilityPage() {
   return (
     <PageShell
+      backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
       image="/images/charging-service-v2.webp"
       imageAlt="A charging cable seated in an electric car's charge port"
@@ -135,6 +136,8 @@ export default function CompatibilityPage() {
           </Link>
         </p>
       </div>
+
+      <GuideFooter slug="can-my-ev-charge-here" />
 
       <GuideCta headline="Your car works here. Come see how easy it is." />
     </PageShell>

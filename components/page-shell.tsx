@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { BatteryNav } from "@/components/battery-nav";
 import { LifestyleFooter } from "@/components/lifestyle-footer";
 
@@ -27,6 +29,7 @@ export function PageShell({
   meta,
   toc,
   tone = "light",
+  backTo,
   children,
 }: {
   title: string;
@@ -41,6 +44,8 @@ export function PageShell({
   /** Small facts under the intro — "Updated August 2026" */
   meta?: ReactNode;
   tone?: Tone;
+  /** Upward navigation. Every sub-page should offer one. */
+  backTo?: { href: string; label: string };
   children: ReactNode;
 }) {
   const dark = tone === "dark";
@@ -53,6 +58,22 @@ export function PageShell({
 
   const lead = (
     <>
+      {backTo && (
+        <Link
+          href={backTo.href}
+          className={`group inline-flex items-center gap-1.5 text-caption mb-6 transition-colors ${
+            dark
+              ? "text-on-dark/60 hover:text-white"
+              : "text-ink-400 hover:text-ink-900"
+          }`}
+        >
+          <ArrowLeft
+            aria-hidden
+            className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
+          />
+          {backTo.label}
+        </Link>
+      )}
       {eyebrow && (
         <>
           <p className={`text-overline ${eyebrowCls}`}>{eyebrow}</p>

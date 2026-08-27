@@ -20,6 +20,7 @@ const stationImages: Record<string, string> = {
 export default function LocationsPage() {
   return (
     <PageShell
+      backTo={{ href: "/", label: "Home" }}
       eyebrow="Locations"
       tone="dark"
       image="/images/home.webp"

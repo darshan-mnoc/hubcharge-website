@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { PageShell, Prose } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
 
 export const metadata: Metadata = {
   title: "NACS vs CCS: EV Charging Connectors Explained | HubCharge",
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 export default function ConnectorsPage() {
   return (
     <PageShell
+      backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
       image="/images/charging-service-v2.webp"
       imageAlt="A charging cable connected to an electric car"
@@ -104,6 +105,8 @@ export default function ConnectorsPage() {
           .
         </p>
       </Prose>
+
+      <GuideFooter slug="connectors" />
 
       <GuideCta />
     </PageShell>

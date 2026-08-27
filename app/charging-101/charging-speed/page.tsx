@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
 import { RANGE_FOOTNOTE } from "@/lib/vehicles";
 
 export const metadata: Metadata = {
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 export default function ChargingSpeedPage() {
   return (
     <PageShell
+      backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
       image="/images/charging-service-v2.webp"
       imageAlt="An electric car charging at a HubCharge station"
@@ -96,6 +97,8 @@ export default function ChargingSpeedPage() {
         </p>
         <p className="text-sm text-gray-500">{RANGE_FOOTNOTE}</p>
       </Prose>
+
+      <GuideFooter slug="charging-speed" />
 
       <GuideCta headline="Ten good minutes beats an hour of waiting." />
     </PageShell>
