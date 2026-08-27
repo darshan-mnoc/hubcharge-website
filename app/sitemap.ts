@@ -29,6 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    { url: `${base}/contact`, lastModified, changeFrequency: "yearly", priority: 0.6 },
     { url: `${base}/charging-101`, lastModified, changeFrequency: "monthly", priority: 0.7 },
     ...guides.map((g) => ({
       url: `${base}/charging-101/${g.slug}`,

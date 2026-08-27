@@ -41,7 +41,7 @@ const navLinks: NavItem[] = [
   { href: "/charging-101", label: "Guides", icon: BookOpen, guides: true },
   { href: "/pricing", label: "Pricing", icon: Battery },
   { href: "/locations", label: "Locations", icon: MapPin },
-  { id: "contact", label: "Contact", icon: Phone },
+  { href: "/contact", label: "Contact", icon: Phone },
 ];
 
 const navGuides = NAV_GUIDES.map((slug) => getGuide(slug)!).filter(Boolean);
@@ -369,7 +369,7 @@ export function BatteryNav() {
             { href: "/charging-101", icon: BookOpen, label: "Guides" },
             { href: "/pricing", icon: Battery, label: "Pricing" },
             { href: "/locations", icon: MapPin, label: "Locations" },
-            { id: "contact", icon: Phone, label: "Contact" },
+            { href: "/contact", icon: Phone, label: "Contact" },
           ].map((item) => (
             <motion.button
               key={item.id ?? item.href}

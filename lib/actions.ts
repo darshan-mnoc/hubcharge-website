@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { CONTACT_TOPICS, type ContactTopic } from "@/lib/contact-topics";
 import { Resend } from "resend";
 import { headers } from "next/headers";
 
@@ -78,9 +79,14 @@ async function deliver(subject: string, text: string): Promise<ActionResult> {
 const honeypot = z.string().max(0, "Invalid submission").optional().or(z.literal(""));
 
 // ---------- Contact form ----------
+
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Please enter your name").max(200),
   email: z.string().trim().email("Please enter a valid email"),
+  topic: z
+    .enum(Object.keys(CONTACT_TOPICS) as [ContactTopic, ...ContactTopic[]])
+    .optional()
+    .default("other"),
   subject: z.string().trim().max(300).optional().default(""),
   message: z.string().trim().min(1, "Please enter a message").max(5000),
   company: honeypot, // honeypot — humans never fill this
@@ -96,10 +102,13 @@ export async function submitContact(
   if (await rateLimited()) {
     return { ok: false, error: "Too many submissions — please try again in a minute." };
   }
-  const { name, email, subject, message } = parsed.data;
+  const { name, email, topic, subject, message } = parsed.data;
+  const t = CONTACT_TOPICS[topic];
   return deliver(
-    `[Website contact] ${subject || "New message"} — ${name}`,
-    `New contact form submission from hubcharge.com\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject || "(none)"}\n\n${message}`
+    `[${t.label}] ${subject || "New message"} — ${name}`,
+    `New contact form submission from hubcharge.com\n\n` +
+      `Topic: ${t.label} (target response: ${t.sla})\n` +
+      `Name: ${name}\nEmail: ${email}\nSubject: ${subject || "(none)"}\n\n${message}`
   );
 }
 

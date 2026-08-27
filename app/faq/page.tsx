@@ -172,7 +172,7 @@ const groups: Group[] = [
               info@micronocinc.com
             </a>
             , or use the{" "}
-            <Link href="/#contact" className="text-brand-ink underline">
+            <Link href="/contact" className="text-brand-ink underline">
               contact form
             </Link>
             .
