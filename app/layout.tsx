@@ -103,6 +103,9 @@ export const viewport: Viewport = {
   themeColor: "#FF7A00",
   width: "device-width",
   initialScale: 1,
+  // Required for env(safe-area-inset-*) to resolve to anything but 0, which
+  // the mobile tab bar's .safe-area-bottom depends on.
+  viewportFit: "cover",
 };
 
 // Brand-level structured data (site-wide). Each station page emits its own

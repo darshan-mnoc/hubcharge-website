@@ -39,7 +39,7 @@ export default function Charging101Page() {
                 <li key={g.slug}>
                   <Link
                     href={guideHref(g.slug)}
-                    className="group grid grid-cols-[3rem_1fr] md:grid-cols-[4rem_minmax(0,22ch)_minmax(0,1fr)_5rem] gap-x-6 items-baseline py-7 border-t border-paper-300 last:border-b hover:bg-paper-100 transition-colors"
+                    className="group grid grid-cols-[3rem_1fr] lg:grid-cols-[4rem_minmax(0,22ch)_minmax(0,1fr)_5rem] gap-x-6 items-baseline py-7 border-t border-paper-300 last:border-b hover:bg-paper-100 transition-colors"
                   >
                     <span className="text-index text-ink-400">
                       {String(guides.indexOf(g) + 1).padStart(2, "0")}
@@ -52,10 +52,10 @@ export default function Charging101Page() {
                         </span>
                       )}
                     </span>
-                    <span className="col-span-2 md:col-span-1 text-body-sm text-ink-500 mt-2 md:mt-0">
+                    <span className="col-span-2 lg:col-span-1 text-body-sm text-ink-500 mt-2 lg:mt-0">
                       {g.desc}
                     </span>
-                    <span className="hidden md:flex items-baseline justify-end gap-2 text-caption text-ink-400">
+                    <span className="hidden lg:flex items-baseline justify-end gap-2 text-caption text-ink-400">
                       {g.read}
                       <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100 text-ink-900" />
                     </span>

@@ -195,15 +195,15 @@ export function FindYourHub() {
                 aria-label="ZIP code"
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
-                placeholder="Enter ZIP code to find stations near you"
-                className="w-full pl-12 pr-36 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-brand/50 focus:ring-2 focus:ring-brand/20 transition-all"
+                placeholder="Enter your ZIP code"
+                className="w-full pl-11 pr-32 sm:pr-36 py-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-brand/50 focus:ring-2 focus:ring-brand/20 transition-all"
               />
               <motion.button
                 type="submit"
                 disabled={isSearching}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="absolute right-2 px-6 py-2.5 bg-brand hover:bg-brand-hover text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
+                className="absolute right-2 px-4 sm:px-6 py-2.5 text-sm bg-brand hover:bg-brand-hover text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
               >
                 {isSearching ? (
                   <span className="flex items-center gap-2">

@@ -104,7 +104,7 @@ export function ChatPopup() {
           boxShadow: { duration: 2, repeat: Infinity },
           scale: { duration: 0.2 },
         }}
-        className={`fixed bottom-20 right-6 lg:bottom-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
+        className={`fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-6 lg:bottom-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
           isOpen
             ? "bg-[#1a1a1a] border border-white/20"
             : "bg-ink-900 border border-white/15"
@@ -183,7 +183,7 @@ export function ChatPopup() {
                 <button
                   onClick={() => setIsOpen(false)}
                   aria-label="Close feedback"
-                  className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors sm:hidden"
+                  className="absolute top-2.5 right-2.5 w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors sm:hidden"
                 >
                   <X className="h-4 w-4 text-white" />
                 </button>

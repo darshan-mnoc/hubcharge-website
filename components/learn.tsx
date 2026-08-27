@@ -60,7 +60,7 @@ export function GuideCta({
   sub?: string;
 }) {
   return (
-    <div className="bg-ink-900 mt-24 -mx-6 lg:-mx-10 px-6 lg:px-10 py-20">
+    <div className="bg-ink-900 mt-24 -mx-4 sm:-mx-6 px-4 sm:px-6 py-16 sm:py-20">
       <div className="grid grid-cols-12 gap-x-8 items-end max-w-content mx-auto">
         <div className="col-span-12 lg:col-span-6">
           <h2 className="text-h2 text-white max-w-headline">{headline}</h2>

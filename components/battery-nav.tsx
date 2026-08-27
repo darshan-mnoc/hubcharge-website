@@ -112,7 +112,7 @@ export function BatteryNav() {
             : "bg-transparent"
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <nav className="section-container h-20 flex items-center justify-between">
           {/* Logo */}
           <motion.a
             href="/"
@@ -178,9 +178,9 @@ export function BatteryNav() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -6 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[300px]"
+                          className="absolute left-1/2 z-50 -translate-x-1/2 top-full pt-4 w-[300px]"
                         >
-                          <div className="rounded-lg border border-white/10 bg-ink-900/98 backdrop-blur-md shadow-2xl p-2">
+                          <div className="rounded-lg border border-white/12 bg-ink-900 shadow-2xl p-2">
                             {navGuides.map((g) => (
                               <Link
                                 key={g.slug}
@@ -249,7 +249,9 @@ export function BatteryNav() {
             </motion.a>
           </div>
 
-          {/* Mobile CTA Button - Small, between logo and hamburger */}
+          {/* Mobile: Login + hamburger grouped right, so the pill doesn't
+              float in the dead centre of the bar at tablet widths. */}
+          <div className="flex items-center gap-1.5 lg:hidden">
           <motion.a
             href={LOGIN_URL}
             target="_blank"
@@ -276,6 +278,7 @@ export function BatteryNav() {
               <Menu className="h-6 w-6" />
             )}
           </motion.button>
+          </div>
         </nav>
       </motion.header>
 

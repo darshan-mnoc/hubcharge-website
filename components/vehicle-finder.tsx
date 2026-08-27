@@ -85,7 +85,7 @@ export function VehicleFinder() {
           {results.map((m) => (
             <li
               key={m.id}
-              className="grid sm:grid-cols-[minmax(0,20ch)_1fr_auto] gap-x-8 gap-y-1 py-5 border-t border-paper-300 last:border-b"
+              className="grid md:grid-cols-[minmax(0,20ch)_1fr_auto] gap-x-8 gap-y-1 py-5 border-t border-paper-300 last:border-b"
             >
               <span className="text-h4 text-ink-900 flex items-center gap-2">
                 <CheckCircle2 aria-hidden className="h-3.5 w-3.5 text-green-700 shrink-0" />
@@ -101,7 +101,7 @@ export function VehicleFinder() {
                 )}
               </span>
               {m.tenMinMilesApprox && (
-                <span className="text-brand-ink font-semibold text-body-sm sm:text-right whitespace-nowrap">
+                <span className="text-brand-ink font-semibold text-body-sm md:text-right whitespace-nowrap">
                   ~{m.tenMinMilesApprox[0]}–{m.tenMinMilesApprox[1]} mi
                 </span>
               )}

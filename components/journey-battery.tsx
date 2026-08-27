@@ -1077,7 +1077,10 @@ export function JourneyBattery() {
 
     const handleScroll = () => {
       const scrollLeft = carousel.scrollLeft;
-      const cardWidth = carousel.offsetWidth * 0.85 + 16; // 85vw + gap
+      const first = carousel.firstElementChild as HTMLElement | null;
+      const cardWidth = first
+        ? first.offsetWidth + 16
+        : carousel.offsetWidth * 0.85 + 16;
       const activeIndex = Math.round(scrollLeft / cardWidth);
       setMobileActiveCard(Math.min(activeIndex, 4));
     };
@@ -1087,7 +1090,7 @@ export function JourneyBattery() {
   }, []);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => setIsMobile(window.innerWidth < 1024);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
@@ -1203,6 +1206,11 @@ export function JourneyBattery() {
       return;
     }
 
+    // Guarded: below lg the trigger element is display:none, and pinning a
+    // zero-height node with end "+=200%" injects ~2 viewport-heights of blank
+    // scroll on mobile.
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 1024px)", () => {
     const ctx = gsap.context(() => {
       const st = ScrollTrigger.create({
         trigger: batteryRef.current,
@@ -1237,7 +1245,10 @@ export function JourneyBattery() {
       );
     }, sectionRef);
 
-    return () => ctx.revert();
+      return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, [updatePanels, reduced]);
 
   const getStepProgress = useCallback((i: number) => {
@@ -1261,7 +1272,7 @@ export function JourneyBattery() {
       <div className="relative py-8 lg:py-12">
         <div className="section-container">
           {/* Header - Mobile only (desktop header is inside pinned container) */}
-          <div className="journey-header mb-6 md:hidden">
+          <div className="journey-header mb-6 lg:hidden">
             <p className="text-overline text-white/55">The experience</p>
             <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
             <h2 className="text-h2 text-white mb-2">
@@ -1271,7 +1282,7 @@ export function JourneyBattery() {
           </div>
 
           {/* ---- MOBILE HORIZONTAL CAROUSEL ---- */}
-          <div className="md:hidden -mx-6">
+          <div className="lg:hidden -mx-4 sm:-mx-6">
             {/* Swipeable cards container */}
             <div
               ref={mobileCarouselRef}
@@ -1361,8 +1372,10 @@ export function JourneyBattery() {
                           onClick={() => {
                             const carousel = mobileCarouselRef.current;
                             if (carousel) {
-                              const cardWidth =
-                                carousel.offsetWidth * 0.85 + 16;
+                              const first = carousel.firstElementChild as HTMLElement | null;
+                              const cardWidth = first
+                                ? first.offsetWidth + 16
+                                : carousel.offsetWidth * 0.85 + 16;
                               carousel.scrollTo({
                                 left: i * cardWidth,
                                 behavior: "smooth",
@@ -1456,7 +1469,7 @@ export function JourneyBattery() {
           </div>
 
           {/* ---- DESKTOP BATTERY WIDGET ---- */}
-          <div ref={batteryRef} className="hidden md:block">
+          <div ref={batteryRef} className="hidden lg:block">
             {/* Header - Inside pinned container for desktop */}
             <div className="mb-20">
               <p className="text-overline text-white/55">The experience</p>

@@ -93,17 +93,17 @@ export function PageShell({
   );
 
   return (
-    <main id="main" className="min-h-screen bg-paper">
+    <main id="main" className="min-h-screen pb-16 lg:pb-0 bg-paper">
       <BatteryNav />
 
       <header className={dark ? "bg-ink-900" : "bg-paper"}>
-        <div className="section-container pt-36 pb-14 lg:pt-44 lg:pb-20">
+        <div className="section-container pt-28 pb-12 sm:pt-32 lg:pt-32 lg:pb-16">
           {hasAside ? (
-            <div className="grid grid-cols-12 gap-x-8 items-end">
+            <div className="grid grid-cols-12 gap-x-8 lg:items-center">
               <div className="col-span-12 lg:col-span-6">{lead}</div>
               <div className="col-span-12 lg:col-span-6 mt-10 lg:mt-0">
                 {image ? (
-                  <div className="relative aspect-[16/10] lg:aspect-[4/3] overflow-hidden -mx-6 lg:mx-0 lg:-mr-[max(0px,calc((100vw-1280px)/2+2.5rem))]">
+                  <div className="relative aspect-[16/10] lg:aspect-[3/2] overflow-hidden -mx-4 sm:-mx-6 lg:mx-0 lg:-mr-[max(0px,calc((100vw-1280px)/2+1.5rem))]">
                     <Image
                       src={image}
                       alt={imageAlt ?? ""}

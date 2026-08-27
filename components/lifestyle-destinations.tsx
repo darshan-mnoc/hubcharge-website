@@ -123,7 +123,7 @@ export function LifestyleDestinations() {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <div className="relative card p-8 lg:p-12 overflow-hidden">
+          <div className="relative card p-5 sm:p-8 lg:p-12 overflow-hidden">
 
             <div className="relative flex flex-col lg:flex-row items-center lg:items-stretch gap-10 lg:gap-16">
               {/* Full image panel */}
@@ -176,7 +176,7 @@ export function LifestyleDestinations() {
                 </p>
 
                 {/* Interactive service categories */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {serviceCategories.map((category, i) => (
                     <motion.div
                       key={category.label}

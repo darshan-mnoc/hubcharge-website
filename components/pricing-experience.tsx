@@ -129,7 +129,7 @@ export function PricingExperience() {
                 1 · How far do you need?
               </p>
               <div
-                className="grid grid-cols-3 gap-2"
+                className="grid grid-cols-1 sm:grid-cols-3 gap-2"
                 role="radiogroup"
                 aria-label="How much charge"
               >
@@ -195,7 +195,7 @@ export function PricingExperience() {
               <p className="text-overline text-gray-500 mb-3">
                 3 · While you charge
               </p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {addons.map((a) => {
                   const active = chosen.has(a.id);
                   return (

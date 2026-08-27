@@ -121,9 +121,6 @@ export function ProblemSection() {
             variants={itemVariants}
             className="mt-10 max-w-2xl mx-auto"
           >
-            <div className="grid grid-cols-2 gap-4">
-
-            </div>
           </motion.div>
         </motion.div>
 
