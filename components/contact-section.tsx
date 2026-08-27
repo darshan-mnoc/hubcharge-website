@@ -144,7 +144,7 @@ export function ContactSection() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="input"
+                    className="field-dark px-4 py-3"
                     placeholder="John Doe"
                   />
                 </div>
@@ -162,7 +162,7 @@ export function ContactSection() {
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
-                    className="input"
+                    className="field-dark px-4 py-3"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -181,7 +181,7 @@ export function ContactSection() {
                   onChange={(e) =>
                     setFormData({ ...formData, subject: e.target.value })
                   }
-                  className="input"
+                  className="field-dark px-4 py-3"
                   placeholder="How can we help?"
                 />
               </div>
@@ -199,7 +199,7 @@ export function ContactSection() {
                     setFormData({ ...formData, message: e.target.value })
                   }
                   rows={4}
-                  className="input resize-none"
+                  className="field-dark px-4 py-3 resize-none"
                   placeholder="Tell us more..."
                 />
               </div>

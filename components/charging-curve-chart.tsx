@@ -95,7 +95,7 @@ export function ChargingCurveChart({
               id="curve-model"
               value={modelId}
               onChange={(e) => setModelId(e.target.value)}
-              className="appearance-none rounded-lg border border-paper-300 bg-paper pl-3 pr-9 py-2 text-body-sm text-ink-900 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+              className="field appearance-none w-auto pl-3 pr-9 py-2 text-body-sm"
             >
               {grouped.map(([makeId, models]) => (
                 <optgroup key={makeId} label={models[0].name.split(" ")[0]}>

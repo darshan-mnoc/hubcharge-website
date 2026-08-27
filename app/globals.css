@@ -59,8 +59,11 @@
 }
 
 @layer base {
+  /* Anything that sets `border` without a colour used to get slate-700 —
+     a cool grey that belongs to no part of this palette, leaking a dark
+     hairline onto warm paper surfaces. The paper hairline is the default. */
   * {
-    @apply border-[#334155];
+    @apply border-paper-300;
   }
 
   html {
@@ -289,16 +292,50 @@
   }
 
   /* Form Elements - Chargetrip Style */
-  .input {
-    @apply w-full px-4 py-3 bg-[#f4f3f2]/5 border border-[#334155] rounded-xl text-[#f4f3f2];
-    @apply placeholder:text-[#475569];
-    @apply focus:outline-none focus:ring-2 focus:ring-[#FF7A00]/30 focus:border-[#FF7A00]/50;
-    @apply transition-all duration-200;
+  /* ── Form fields ───────────────────────────────────────────────
+     No resting border. A box drawn around a field is a convention from an
+     era when a filled ground wasn't reliable; it adds a rectangle of
+     visual noise per control and, on this palette, a cool hairline against
+     warm paper. The field is the fill, plus a single bottom rule so the
+     baseline reads as an input rather than a label.
+
+     Focus is a different question. :focus-visible only fires for keyboard
+     navigation, so a ring here is invisible to anyone using a pointer and
+     essential for anyone who isn't — the resting cleanliness and WCAG
+     2.4.7 do not trade off. Each surface sets its own ring offset so the
+     indicator never sits on a colour it can't be seen against. */
+  .field {
+    @apply w-full rounded-lg border-0 transition-colors duration-150;
+    @apply bg-paper-100 text-ink-900 placeholder:text-ink-500;
+    box-shadow: inset 0 -1px 0 theme('colors.paper.400');
+  }
+  .field:hover {
+    box-shadow: inset 0 -1px 0 theme('colors.ink.400');
+  }
+  .field:focus-visible {
+    outline: 2px solid theme('colors.brand.ink');
+    outline-offset: 2px;
+    box-shadow: inset 0 -1px 0 theme('colors.brand.ink');
   }
 
-  .input:hover {
-    @apply border-[#475569];
+  /* Same field on the navy bands. */
+  .field-dark {
+    @apply w-full rounded-lg border-0 transition-colors duration-150;
+    @apply text-white placeholder:text-on-dark/50;
+    background-color: rgb(255 255 255 / 0.06);
+    box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.22);
   }
+  .field-dark:hover {
+    background-color: rgb(255 255 255 / 0.09);
+    box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.4);
+  }
+  .field-dark:focus-visible {
+    /* brand orange is 6.7:1 on ink-900; brand-ink would be 2.4:1 there. */
+    outline: 2px solid theme('colors.brand.DEFAULT');
+    outline-offset: 2px;
+    box-shadow: inset 0 -1px 0 theme('colors.brand.DEFAULT');
+  }
+
 
   /* Safe Area */
   .safe-area-bottom {
@@ -320,9 +357,28 @@
   transition: width 0.5s ease-out;
 }
 
-/* Focus States */
+/* Focus States
+   ────────────────────────────────────────────────────────────────
+   This used to be `ring-offset-[#0A192F]` — a hardcoded navy offset on a
+   universal selector. On paper and white surfaces it drew a 2px dark
+   rectangle around every input and select, which is what read as an
+   "outline" on the controls. It is also why the offset can't be set here:
+   the correct colour depends on the surface the control sits on, so each
+   component sets its own via `--tw-ring-offset-color`.
+
+   The indicator itself stays. :focus-visible only fires for keyboard
+   navigation, so pointer users never see it — the clean resting look and
+   WCAG 2.4.7 are not in conflict. */
 *:focus-visible {
-  @apply outline-none ring-2 ring-[#FF7A00] ring-offset-2 ring-offset-[#0A192F];
+  outline: 2px solid theme('colors.brand.ink');
+  outline-offset: 2px;
+}
+
+/* On the navy bands the default brand-ink outline drops to 2.4:1, so those
+   surfaces switch to brand orange (6.7:1 there). */
+.bg-ink-900 *:focus-visible,
+.bg-hero *:focus-visible {
+  outline-color: theme('colors.brand.DEFAULT');
 }
 
 /* Reduced Motion */
@@ -336,13 +392,18 @@
   }
 }
 
-/* Mobile Tap Targets */
+/* Mobile Tap Targets
+   `a` is deliberately excluded. It used to be in this list, which gave every
+   inline link inside a paragraph a 44px height — inflating the line it sits
+   on. Standalone tap targets opt in with .tap-target; links inside prose are
+   not tap targets, they are text. */
 @media (max-width: 768px) {
   button,
-  a,
   input,
   select,
-  textarea {
+  textarea,
+  .tap-target,
+  a[role="button"] {
     min-height: 44px;
   }
 }

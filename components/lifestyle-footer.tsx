@@ -189,7 +189,7 @@ export function LifestyleFooter() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="flex-1 bg-[#f4f3f2]/10 rounded-full px-4 py-2.5 text-[#f4f3f2] text-sm placeholder:text-muted-dark border border-[#334155] focus:border-brand/50 focus:outline-none"
+                        className="field-dark flex-1 rounded-full px-4 py-2.5 text-sm"
                         required
                       />
                       <motion.button

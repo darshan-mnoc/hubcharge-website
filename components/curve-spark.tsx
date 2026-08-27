@@ -10,10 +10,15 @@ import type { EvModel } from "@/lib/ev-models";
 export function CurveSpark({
   model,
   className = "",
+  tone = "light",
 }: {
   model: EvModel;
   className?: string;
+  /** The curve line is ink on paper and white on navy — at 14% fill the
+   *  original single palette vanished entirely on the dark cards. */
+  tone?: "light" | "dark";
 }) {
+  const dark = tone === "dark";
   const w = 160;
   const h = 44;
   const max = Math.max(model.peakKw, STATION_KW);
@@ -28,15 +33,15 @@ export function CurveSpark({
   const capY = h - (STATION_KW / max) * h;
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className={className} aria-hidden preserveAspectRatio="none">
-      <polygon points={`0,${h} ${fill.join(" ")} ${w},${h}`} fill="#FF7A00" fillOpacity="0.14" />
+      <polygon points={`0,${h} ${fill.join(" ")} ${w},${h}`} fill="#FF7A00" fillOpacity={dark ? 0.3 : 0.14} />
       <line
         x1="0" x2={w} y1={capY} y2={capY}
-        stroke="#B34D00" strokeWidth="1" strokeDasharray="3 3"
+        stroke={dark ? "#FF7A00" : "#B34D00"} strokeWidth="1" strokeDasharray="3 3"
         vectorEffect="non-scaling-stroke"
       />
       <polyline
         points={line.join(" ")}
-        fill="none" stroke="#0A192F" strokeWidth="1.5"
+        fill="none" stroke={dark ? "#E0E3E5" : "#0A192F"} strokeWidth="1.5"
         vectorEffect="non-scaling-stroke"
       />
     </svg>

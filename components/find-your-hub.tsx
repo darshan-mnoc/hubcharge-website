@@ -196,7 +196,7 @@ export function FindYourHub() {
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
                 placeholder="Enter your ZIP code"
-                className="w-full pl-11 pr-32 sm:pr-36 py-4 bg-paper-100 border border-paper-300 rounded-lg text-ink-900 placeholder:text-ink-500 focus:outline-none focus:border-brand/50 focus:ring-2 focus:ring-brand/20 transition-all"
+                className="field pl-11 pr-32 sm:pr-36 py-4"
               />
               <motion.button
                 type="submit"
@@ -568,7 +568,7 @@ export function FindYourHub() {
                   value={notifyEmail}
                   onChange={(e) => setNotifyEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 bg-paper-100 border border-paper-300 rounded-xl text-ink-900 placeholder:text-ink-500 focus:outline-none focus:border-brand/50"
+                  className="field flex-1 px-4 py-3"
                 />
                 <motion.button
                   type="submit"

@@ -42,7 +42,7 @@ export function FaqSearch({ groups }: { groups: FaqGroup[] }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search questions — adapter, price, attendant…"
           aria-label="Search frequently asked questions"
-          className="w-full rounded-lg border border-paper-300 bg-white pl-11 pr-4 py-3.5 text-body text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+          className="field pl-11 pr-4 py-3.5 text-body"
         />
       </div>
 

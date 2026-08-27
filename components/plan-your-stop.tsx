@@ -208,7 +208,7 @@ export function PlanYourStop({ station }: { station: Station }) {
           </AnimatePresence>
 
           {/* The shape behind the number — same curve the estimate integrates. */}
-          <CurveSpark model={model} className="mt-4 h-9 w-full max-w-[17ch] lg:ml-auto opacity-70" />
+          <CurveSpark model={model} tone="dark" className="mt-4 h-9 w-full max-w-[17ch] lg:ml-auto" />
 
           <dl className="mt-5 space-y-1.5 text-caption">
             <div className="flex gap-2 lg:justify-end">
