@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 import { stations } from "@/lib/stations";
+import { guides } from "@/lib/guides";
+import { vehicleMakes } from "@/lib/vehicles";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://hubcharge.com";
@@ -28,19 +30,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     { url: `${base}/charging-101`, lastModified, changeFrequency: "monthly", priority: 0.7 },
-    ...[
-      "can-my-ev-charge-here",
-      "connectors",
-      "charging-levels",
-      "charging-speed",
-      "charging-cost",
-      "glossary",
-    ].map((slug) => ({
-      url: `${base}/charging-101/${slug}`,
+    ...guides.map((g) => ({
+      url: `${base}/charging-101/${g.slug}`,
       lastModified,
       changeFrequency: "monthly" as const,
-      priority: slug === "can-my-ev-charge-here" ? 0.7 : 0.6,
+      priority: g.slug === "can-my-ev-charge-here" ? 0.7 : 0.6,
     })),
+    ...vehicleMakes
+      .filter((m) => m.id !== "other")
+      .map((m) => ({
+        url: `${base}/charging-101/vehicles/${m.id}`,
+        lastModified,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
     { url: `${base}/accessibility`, lastModified, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/privacy`, lastModified, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/terms`, lastModified, changeFrequency: "yearly", priority: 0.3 },

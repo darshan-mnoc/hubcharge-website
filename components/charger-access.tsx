@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { QrCode, Globe, Zap, Check, ArrowRight } from "lucide-react";
 import { CtaButton } from "@/components/ui/cta-button";
 import { fadeUp, fadeUpStagger } from "@/lib/motion";
@@ -109,17 +110,17 @@ export function ChargerAccess() {
               </CtaButton>
               <p className="mt-4 text-sm text-gray-500">
                 First visit?{" "}
-                <a href="/what-to-expect" className="text-brand-ink underline underline-offset-2">
+                <Link href="/what-to-expect" className="text-brand-ink underline underline-offset-2">
                   See what to expect
-                </a>
+                </Link>
                 ,{" "}
-                <a href="/charging-101/can-my-ev-charge-here" className="text-brand-ink underline underline-offset-2">
+                <Link href="/charging-101/can-my-ev-charge-here" className="text-brand-ink underline underline-offset-2">
                   check if your EV is compatible
-                </a>
+                </Link>
                 , or{" "}
-                <a href="/faq" className="text-brand-ink underline underline-offset-2">
+                <Link href="/faq" className="text-brand-ink underline underline-offset-2">
                   read the FAQ
-                </a>
+                </Link>
                 .
               </p>
             </motion.div>

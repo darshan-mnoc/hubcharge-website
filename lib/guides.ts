@@ -39,6 +39,14 @@ export const guides: Guide[] = [
     note: "Start here.",
   },
   {
+    slug: "new-ev-owner",
+    title: "Just got an EV? Start here",
+    desc: "A short path through everything above, in the order it actually matters during your first month.",
+    read: "3 min",
+    group: "start",
+    note: "New owner? This first.",
+  },
+  {
     slug: "connectors",
     title: "NACS vs CCS, explained",
     desc: "The two fast-charging plugs in America, explained — and why we carry both.",
@@ -114,14 +122,6 @@ export const guides: Guide[] = [
     desc: "The I-10 and I-210 corridors, where HubCharge sits on them, and how to route a day of driving around LA.",
     read: "5 min",
     group: "trips",
-  },
-  {
-    slug: "new-ev-owner",
-    title: "Just got an EV? Start here",
-    desc: "A short path through everything above, in the order it actually matters during your first month.",
-    read: "3 min",
-    group: "start",
-    note: "New owner? This first.",
   },
   {
     slug: "glossary",
