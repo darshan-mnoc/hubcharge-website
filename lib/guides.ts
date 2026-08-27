@@ -110,6 +110,31 @@ export const guides: Guide[] = [
     group: "practical",
   },
   {
+    slug: "apartment-charging",
+    title: "Charging an EV without a driveway",
+    navTitle: "No driveway?",
+    desc: "Renting, or parking on the street? How to run an EV on public charging alone, and what it takes each week.",
+    read: "6 min",
+    group: "practical",
+    note: "For renters and street parkers.",
+  },
+  {
+    slug: "charging-troubleshooting",
+    title: "When charging goes wrong",
+    navTitle: "Troubleshooting",
+    desc: "The session won't start, the car stopped early, the cable won't come out. What each symptom usually means.",
+    read: "6 min",
+    group: "practical",
+  },
+  {
+    slug: "rideshare-drivers",
+    title: "Charging for rideshare and delivery drivers",
+    navTitle: "Rideshare & delivery",
+    desc: "Fitting charging into a shift instead of around it — how many stops a day of driving actually needs.",
+    read: "5 min",
+    group: "practical",
+  },
+  {
     slug: "road-trip",
     title: "Planning an EV road trip",
     desc: "How to plan stops, how much buffer to leave, and the mistakes that strand people on their first long drive.",
@@ -122,6 +147,14 @@ export const guides: Guide[] = [
     desc: "The I-10 and I-210 corridors, where HubCharge sits on them, and how to route a day of driving around LA.",
     read: "5 min",
     group: "trips",
+  },
+  {
+    slug: "ev-incentives-california",
+    title: "EV incentives in California",
+    navTitle: "Incentives",
+    desc: "Federal credits, state and utility programmes, HOV access — what exists, who qualifies, and where to verify each one.",
+    read: "7 min",
+    group: "reference",
   },
   {
     slug: "glossary",
@@ -138,11 +171,20 @@ export function getGuide(slug: string): Guide | undefined {
   return guides.find((g) => g.slug === slug);
 }
 
-/** Ordered neighbours for prev/next chrome at the foot of a guide. */
+/**
+ * Ordered neighbours for prev/next chrome at the foot of a guide.
+ *
+ * Scoped to the guide's own group. Walking the flat array sent you from
+ * "Charging guides by make" (Your car) straight into "Charging etiquette"
+ * (Everyday charging) — a prev/next that crosses a section boundary reads as
+ * a broken index rather than a reading order.
+ */
 export function guideNeighbours(slug: string): { prev?: Guide; next?: Guide } {
-  const i = guides.findIndex((g) => g.slug === slug);
-  if (i === -1) return {};
-  return { prev: guides[i - 1], next: guides[i + 1] };
+  const g = getGuide(slug);
+  if (!g) return {};
+  const siblings = guidesByGroup(g.group);
+  const i = siblings.findIndex((x) => x.slug === slug);
+  return { prev: siblings[i - 1], next: siblings[i + 1] };
 }
 
 export function guidesByGroup(group: GuideGroup): Guide[] {

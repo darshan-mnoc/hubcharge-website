@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageShell } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { GlossaryIndex } from "@/components/glossary-index";
 
 export const metadata: Metadata = {
   title: "EV Charging Glossary: kW, kWh, SOC, NACS & More | HubCharge",
@@ -97,29 +98,7 @@ export default function GlossaryPage() {
         ]}
       />
 
-      <div className="max-w-measure">
-        {GROUPS.map((g) => (
-          <section key={g.id} id={g.id} className="mb-14 scroll-mt-28">
-            <h2 className="text-overline text-ink-500">{g.label}</h2>
-            <span aria-hidden className="mt-4 mb-2 block h-px w-8 bg-brass" />
-            <dl>
-              {g.terms.map((name) => {
-                const t = terms.find((x) => x.term === name);
-                if (!t) return null;
-                return (
-                  <div
-                    key={t.term}
-                    className="grid sm:grid-cols-[minmax(0,15ch)_minmax(0,1fr)] gap-x-8 gap-y-1 py-5 border-t border-paper-300 last:border-b"
-                  >
-                    <dt className="text-h4 text-ink-900">{t.term}</dt>
-                    <dd className="text-body-sm text-ink-500">{t.def}</dd>
-                  </div>
-                );
-              })}
-            </dl>
-          </section>
-        ))}
-      </div>
+      <GlossaryIndex terms={terms} groups={GROUPS} />
 
       <GuideFooter slug="glossary" />
 

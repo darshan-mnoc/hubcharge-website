@@ -31,14 +31,23 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * Masthead per guide. Eleven guides against seven photographs means repeats
+ * are unavoidable; these are assigned so that no two guides in the same group
+ * share one, which is where a repeat actually gets noticed.
+ */
 const GUIDE_IMAGES: Record<string, string> = {
   etiquette: "/images/charging-service-v2.webp",
   weather: "/images/home.webp",
-  "battery-health": "/images/charging-service-v2.webp",
+  "battery-health": "/images/waiting-v3.webp",
   "home-vs-public": "/images/valet-greet-v2.webp",
+  "apartment-charging": "/images/lifestyle-groceries-v2.webp",
+  "charging-troubleshooting": "/images/charging-service-v2.webp",
+  "rideshare-drivers": "/images/lifestyle-food-v2.webp",
   "road-trip": "/images/home.webp",
-  "socal-charging": "/images/home.webp",
+  "socal-charging": "/images/lifestyle-services-v2.webp",
   "new-ev-owner": "/images/valet-greet-v2.webp",
+  "ev-incentives-california": "/images/lifestyle-coffee-v2.webp",
 };
 
 /** Stable anchor from a heading — the scroll-spy and the rail must agree. */

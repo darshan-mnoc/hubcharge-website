@@ -1,5 +1,11 @@
 import type { ReactNode } from "react";
 import { WeatherImpact } from "@/components/weather-impact";
+import { RoutinePlanner } from "@/components/routine-planner";
+import { ShiftPlanner } from "@/components/shift-planner";
+import { Troubleshooter } from "@/components/troubleshooter";
+import { IncentiveFinder, INCENTIVES_CHECKED } from "@/components/incentive-finder";
+import { SocWindow } from "@/components/soc-window";
+import { TripPlanner } from "@/components/trip-planner";
 
 /**
  * Body copy for the prose guides, kept beside the registry so a guide is a
@@ -144,6 +150,18 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       ),
     },
     {
+      heading: "The band that matters",
+      body: (
+        <>
+          <p>
+            Most of the advice reduces to one geometric fact, which is far
+            easier to see than to argue about:
+          </p>
+          <SocWindow />
+        </>
+      ),
+    },
+    {
       heading: "What actually matters more",
       body: (
         <ul>
@@ -243,6 +261,18 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
           to make anyway — food, coffee, stretching your legs. Plan your breaks
           first, then find chargers at them.
         </p>
+      ),
+    },
+    {
+      heading: "What your own trip looks like",
+      body: (
+        <>
+          <p>
+            Put the distance in and see how it breaks up. The stops are usually
+            fewer and shorter than people expect:
+          </p>
+          <TripPlanner />
+        </>
       ),
     },
     {
@@ -388,6 +418,280 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
           you need the range, precondition before fast charging in cold
           weather. That is the whole discipline. Everything else is detail.
         </p>
+      ),
+    },
+  ],
+
+  "apartment-charging": [
+    {
+      heading: "The question nobody answers honestly",
+      body: (
+        <>
+          <p>
+            Most EV advice assumes a garage. &ldquo;Just charge overnight&rdquo;
+            is useless if you park on the street, in a shared lot, or in a
+            building whose board has been discussing chargers since 2021.
+            Roughly a third of American households rent, and in Los Angeles it
+            is closer to half.
+          </p>
+          <p>
+            You can absolutely run an EV without a driveway. But it is a
+            different routine, not the same one with an asterisk, and it is
+            worth knowing what it costs you before you buy the car rather than
+            after.
+          </p>
+        </>
+      ),
+    },
+    {
+      heading: "What it actually takes each week",
+      body: (
+        <>
+          <p>
+            The real currency is stops per week, not miles of range. Put your
+            car and your mileage in:
+          </p>
+          <RoutinePlanner />
+        </>
+      ),
+    },
+    {
+      heading: "Ask about work before you ask about home",
+      body: (
+        <p>
+          Workplace Level 2 is the quiet solution to this problem. Eight hours
+          parked at 7&ndash;11 kW covers almost any commute, and it costs you no
+          time at all because you were going to be there anyway. Many California
+          employers have chargers they under-publicise; some have them installed
+          and unused. It is worth one email to facilities before you rearrange
+          your week around public charging.
+        </p>
+      ),
+    },
+    {
+      heading: "If you're going to rely on public charging, pick your spot",
+      body: (
+        <>
+          <p>
+            The difference between a good public-charging routine and a bad one
+            is almost entirely about where the charger is, not how fast it is.
+            A 350 kW unit in a car park you have no reason to visit will lose
+            every time to a slower one where you already buy groceries.
+          </p>
+          <p>
+            Look for somewhere you would spend twenty minutes anyway, that is on
+            a route you already drive, and where you are not going to feel
+            stranded if a stall is occupied. That last one is why the number of
+            stalls matters more than the peak power on the sign.
+          </p>
+        </>
+      ),
+    },
+    {
+      heading: "What to ask your building",
+      body: (
+        <>
+          <p>
+            If you rent, California law gives you more standing than most people
+            realise. Civil Code sections 1947.6 and 4745 limit a landlord&rsquo;s
+            or HOA&rsquo;s ability to refuse a tenant-funded charging station
+            outright, subject to conditions about insurance, permits and who
+            pays.
+          </p>
+          <p>
+            That is not the same as a right to a free charger, and it is worth
+            reading the actual text or asking someone who has, rather than
+            quoting it at a landlord from memory. But &ldquo;no&rdquo; is not
+            always the end of the conversation.
+          </p>
+        </>
+      ),
+    },
+  ],
+
+  "charging-troubleshooting": [
+    {
+      heading: "Most charging problems are one of five things",
+      body: (
+        <>
+          <p>
+            Public charging fails often enough that every EV owner has a story.
+            What the stories rarely include is that the majority of failed
+            sessions come down to a handful of causes, most of which you can
+            clear from the driver&rsquo;s seat in under a minute.
+          </p>
+          <p>
+            Pick what is happening and work down the list. They are ordered by
+            how often each one is actually the answer, not by how dramatic it
+            sounds.
+          </p>
+          <Troubleshooter />
+        </>
+      ),
+    },
+    {
+      heading: "Before you decide the charger is broken",
+      body: (
+        <>
+          <p>
+            Two things are worth checking in every case, because they explain a
+            surprising share of what gets reported as a fault.
+          </p>
+          <p>
+            <strong>Where you are on the curve.</strong> Arriving at 70% and
+            seeing low power is the charging system working correctly. Every
+            battery tapers above roughly 60%, on every network.
+          </p>
+          <p>
+            <strong>Your car&rsquo;s own ceiling.</strong> Plenty of EVs peak
+            well below what a fast charger can deliver. If your car maxes out at
+            55 kW, it will do 55 kW on a 350 kW unit too.
+          </p>
+        </>
+      ),
+    },
+    {
+      heading: "What we'd rather you didn't have to do",
+      body: (
+        <p>
+          At participating locations there is an attendant on site, and the
+          honest answer to most of this is that you should not have to
+          troubleshoot anything &mdash; wave, and someone deals with it. This
+          page exists for the times you are somewhere else, or outside our
+          hours, or would simply rather know.
+        </p>
+      ),
+    },
+  ],
+
+  "rideshare-drivers": [
+    {
+      heading: "Charging time is unpaid time",
+      body: (
+        <>
+          <p>
+            For most drivers, charging is a mild inconvenience. If you drive for
+            a living it is directly lost income, and that changes every decision
+            about it &mdash; where you stop, how long for, and how full you let
+            the car get.
+          </p>
+          <p>
+            The good news is that the economics work out well: a driving day is
+            exactly the use case that fast charging was built for, and the
+            per-mile cost of electricity is low enough that the maths usually
+            favours the EV comfortably even after the stops.
+          </p>
+        </>
+      ),
+    },
+    {
+      heading: "How much of a shift it takes",
+      body: (
+        <>
+          <p>
+            Put your car and a typical day in and see what comes out:
+          </p>
+          <ShiftPlanner />
+        </>
+      ),
+    },
+    {
+      heading: "Short and often beats long and rare",
+      body: (
+        <>
+          <p>
+            The instinct is to charge to full so you can forget about it. For a
+            working driver that is usually the wrong call, because the last
+            twenty percent is the slowest part of the curve &mdash; you are
+            paying your most expensive minutes for your least valuable miles.
+          </p>
+          <p>
+            Two or three ten-minute stops keep you in the fast part of the curve
+            every time, and they slot into the gaps a shift already has: between
+            rides, waiting on an order, at the end of a long drop.
+          </p>
+        </>
+      ),
+    },
+    {
+      heading: "Charge where you were going to wait anyway",
+      body: (
+        <p>
+          The stops that cost nothing are the ones layered onto time you had
+          already lost. Airport queues, the twenty minutes at the end of a shift,
+          the gap while a restaurant finishes an order. Our Alhambra site sits
+          in walking distance of Main Street, which is a reasonable place to be
+          told your pickup is eight minutes away.
+        </p>
+      ),
+    },
+    {
+      heading: "Keep the receipts",
+      body: (
+        <p>
+          Charging for work is generally deductible, and per-session receipts
+          are considerably easier to reconcile at tax time than per-kWh billing
+          spread across four networks and three apps. Whatever you use, get the
+          records into one place as you go rather than in April.
+        </p>
+      ),
+    },
+  ],
+
+  "ev-incentives-california": [
+    {
+      heading: "Why this page has no dollar amounts on it",
+      body: (
+        <>
+          <p>
+            Incentive programmes change constantly. Amounts move, income caps
+            move, eligible-vehicle lists move, and programmes open and close
+            with little notice. Any figure printed here would be wrong within a
+            year &mdash; and a stale number on a charging company&rsquo;s
+            website is worse than no number, because somebody plans a purchase
+            around it.
+          </p>
+          <p>
+            So this page routes rather than quotes. It tells you which
+            programmes are worth your time given your situation, and sends you
+            to the body that administers each one. That is where the number of
+            record lives.
+          </p>
+        </>
+      ),
+    },
+    {
+      heading: "Find the ones that apply to you",
+      body: <IncentiveFinder />,
+    },
+    {
+      heading: "The one people forget",
+      body: (
+        <p>
+          Purchase incentives get the attention because they are large and
+          one-off. But if you can charge where you park, an EV-specific
+          time-of-use rate from your utility is often worth more over the life
+          of the car than any single rebate &mdash; it applies every night for
+          years rather than once. It is also the least advertised, because no
+          dealer earns anything by telling you about it.
+        </p>
+      ),
+    },
+    {
+      heading: "What we can and can't tell you",
+      body: (
+        <>
+          <p>
+            We run charging stations. We are not tax advisers, and nothing here
+            is tax advice &mdash; eligibility for the federal credits in
+            particular depends on your own return in ways no website can assess.
+          </p>
+          <p>
+            The eligibility logic on this page was last reviewed in{" "}
+            {INCENTIVES_CHECKED}. If you are reading this much later than that,
+            treat the links as the source and this page as a map to them.
+          </p>
+        </>
       ),
     },
   ],

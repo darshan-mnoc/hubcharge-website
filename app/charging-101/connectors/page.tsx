@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { PageShell, Prose } from "@/components/page-shell";
+import { ConnectorDiagram } from "@/components/connector-diagram";
 import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
 
 export const metadata: Metadata = {
@@ -29,37 +29,7 @@ export default function ConnectorsPage() {
         ]}
       />
 
-      <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mb-12">
-        {[
-          {
-            img: "/images/NACS.png",
-            name: "NACS",
-            sub: "North American Charging Standard (SAE J3400)",
-            body: "Originally Tesla's connector, standardized by SAE in 2023. Compact, one port for both AC and DC charging. Every Tesla uses it, and most automakers are switching their new models to it.",
-          },
-          {
-            img: "/images/CCS.png",
-            name: "CCS",
-            sub: "Combined Charging System (CCS1)",
-            body: "The plug most non-Tesla EVs have used for years — the J1772 AC connector plus two DC pins below it. Ford, VW, Honda, Volvo and many current models still use it.",
-          },
-        ].map((c) => (
-          <div key={c.name} className="card-light p-6 text-center">
-            <div className="relative h-24 mb-4">
-              <Image
-                src={c.img}
-                alt={`${c.name} connector`}
-                fill
-                className="object-contain"
-                sizes="200px"
-              />
-            </div>
-            <h2 className="font-bold text-ink-900 text-lg">{c.name}</h2>
-            <p className="text-ink-500 text-xs mb-3">{c.sub}</p>
-            <p className="text-ink-600 text-sm text-left">{c.body}</p>
-          </div>
-        ))}
-      </div>
+      <ConnectorDiagram />
 
       <Prose>
         <h2>Why HubCharge carries both cables</h2>
