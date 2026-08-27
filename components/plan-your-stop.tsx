@@ -1,70 +1,139 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BatteryCharging } from "lucide-react";
-import { configuratorCars, RANGE_FOOTNOTE } from "@/lib/vehicles";
+import { BatteryCharging, ChevronDown, Info } from "lucide-react";
+import { evModels, getModel, type EvModel } from "@/lib/ev-models";
+import {
+  simulateSession,
+  minutesBetweenSoc,
+  TEMPERATURE_FACTORS,
+  type TemperatureId,
+  ESTIMATE_BASIS,
+} from "@/lib/charging-math";
 import type { Station } from "@/lib/stations";
 
-const cars = configuratorCars();
-
-const LENGTHS = [
-  { id: "topup", label: "Quick top-up", minutes: "~10 min", mult: 1 },
-  { id: "half", label: "Half charge", minutes: "~20 min", mult: 1.9 },
-  { id: "full", label: "Longer stop", minutes: "~30 min", mult: 2.7 },
+const STAYS = [
+  { id: "topup", label: "Quick top-up", minutes: 10 },
+  { id: "half", label: "Half stop", minutes: 20 },
+  { id: "long", label: "Longer stop", minutes: 30 },
 ] as const;
 
+const START_SOCS = [10, 20, 40, 60] as const;
+
 /**
- * Per-station version of the homepage configurator: pick your car, see the
- * range this station adds. Reuses the same vehicle figures so the two can
- * never drift apart.
+ * Per-station charging estimate.
+ *
+ * Simulates the selected car's actual charging curve against this station's
+ * output, rather than multiplying a per-make average. Starting state of
+ * charge is a control because it is the single largest factor in how much
+ * range a short stop adds — a car at 20% charges roughly twice as fast as
+ * the same car at 60%.
  */
 export function PlanYourStop({ station }: { station: Station }) {
-  const [carId, setCarId] = useState(cars[0].id);
-  const [lengthId, setLengthId] = useState<(typeof LENGTHS)[number]["id"]>("topup");
+  const [modelId, setModelId] = useState("hyundai-ioniq-5");
+  const [stayId, setStayId] = useState<(typeof STAYS)[number]["id"]>("topup");
+  const [startSoc, setStartSoc] = useState<number>(20);
+  const [temp, setTemp] = useState<TemperatureId>("mild");
 
-  const car = cars.find((c) => c.id === carId)!;
-  const length = LENGTHS.find((l) => l.id === lengthId)!;
-  const miles = Math.round((car.r * length.mult) / 5) * 5;
+  const model = getModel(modelId) as EvModel;
+  const stay = STAYS.find((s) => s.id === stayId)!;
+
+  const result = useMemo(
+    () => simulateSession(model, station.maxKw, startSoc, stay.minutes, temp),
+    [model, station.maxKw, startSoc, stay.minutes, temp]
+  );
+
+  const tenToEighty = useMemo(
+    () => minutesBetweenSoc(model, station.maxKw, 10, 80, temp),
+    [model, station.maxKw, temp]
+  );
+
+  // Grouped for the picker so ~31 models stay navigable.
+  const grouped = useMemo(() => {
+    const byMake = new Map<string, EvModel[]>();
+    evModels.forEach((m) => {
+      const list = byMake.get(m.makeId) ?? [];
+      list.push(m);
+      byMake.set(m.makeId, list);
+    });
+    return [...byMake.entries()];
+  }, []);
 
   return (
-    <section className="bg-ink-900 rounded-lg p-6 lg:p-8">
+    <section className="bg-ink-900 rounded-lg p-5 sm:p-8">
       <p className="text-overline text-white/55">Plan your stop</p>
       <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
       <h2 className="text-h3 text-white mb-6">
         What {station.city} adds to your car
       </h2>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:gap-10 items-end">
-        <div className="space-y-5">
+      <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12 items-start">
+        <div className="space-y-5 min-w-0">
+          {/* Model */}
           <div>
-            <p className="text-caption text-on-dark/60 mb-2">Your car</p>
+            <label
+              htmlFor="pys-model"
+              className="block text-caption text-on-dark/60 mb-2"
+            >
+              Your car
+            </label>
+            <div className="relative">
+              <select
+                id="pys-model"
+                value={modelId}
+                onChange={(e) => setModelId(e.target.value)}
+                className="w-full appearance-none rounded-lg border border-white/20 bg-ink-800 pl-4 pr-10 py-3 text-body-sm text-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/25"
+              >
+                {grouped.map(([makeId, models]) => (
+                  <optgroup key={makeId} label={models[0].name.split(" ")[0]}>
+                    {models.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <ChevronDown
+                aria-hidden
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50"
+              />
+            </div>
+          </div>
+
+          {/* Starting charge */}
+          <div>
+            <p className="text-caption text-on-dark/60 mb-2">
+              Battery when you arrive
+            </p>
             <div
               role="radiogroup"
-              aria-label="Your car"
+              aria-label="Battery when you arrive"
               className="flex flex-wrap gap-2"
             >
-              {cars.map((c) => {
-                const active = c.id === carId;
+              {START_SOCS.map((s) => {
+                const active = s === startSoc;
                 return (
                   <button
-                    key={c.id}
+                    key={s}
                     role="radio"
                     aria-checked={active}
-                    onClick={() => setCarId(c.id)}
-                    className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
+                    onClick={() => setStartSoc(s)}
+                    className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
                       active
                         ? "border-brand bg-brand text-white"
                         : "border-white/20 text-on-dark/75 hover:border-white/45"
                     }`}
                   >
-                    {c.name}
+                    {s}%
                   </button>
                 );
               })}
             </div>
           </div>
 
+          {/* Stay length */}
           <div>
             <p className="text-caption text-on-dark/60 mb-2">How long you stay</p>
             <div
@@ -72,22 +141,47 @@ export function PlanYourStop({ station }: { station: Station }) {
               aria-label="How long you stay"
               className="flex flex-wrap gap-2"
             >
-              {LENGTHS.map((l) => {
-                const active = l.id === lengthId;
+              {STAYS.map((s) => {
+                const active = s.id === stayId;
                 return (
                   <button
-                    key={l.id}
+                    key={s.id}
                     role="radio"
                     aria-checked={active}
-                    onClick={() => setLengthId(l.id)}
-                    className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
+                    onClick={() => setStayId(s.id)}
+                    className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
                       active
                         ? "border-brand bg-brand text-white"
                         : "border-white/20 text-on-dark/75 hover:border-white/45"
                     }`}
                   >
-                    {l.label}
-                    <span className="ml-1.5 opacity-60">{l.minutes}</span>
+                    {s.label}
+                    <span className="ml-1.5 opacity-60">{s.minutes} min</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Weather */}
+          <div>
+            <p className="text-caption text-on-dark/60 mb-2">Weather</p>
+            <div role="radiogroup" aria-label="Weather" className="flex flex-wrap gap-2">
+              {Object.values(TEMPERATURE_FACTORS).map((t) => {
+                const active = t.id === temp;
+                return (
+                  <button
+                    key={t.id}
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => setTemp(t.id as TemperatureId)}
+                    className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
+                      active
+                        ? "border-brand bg-brand text-white"
+                        : "border-white/20 text-on-dark/75 hover:border-white/45"
+                    }`}
+                  >
+                    {t.label}
                   </button>
                 );
               })}
@@ -95,33 +189,64 @@ export function PlanYourStop({ station }: { station: Station }) {
           </div>
         </div>
 
-        <div className="lg:text-right lg:min-w-[15ch]">
+        {/* Result */}
+        <div className="lg:text-right lg:min-w-[17ch] border-t lg:border-t-0 lg:border-l border-white/10 pt-6 lg:pt-0 lg:pl-10">
           <p aria-live="polite" className="sr-only">
-            {`About ${miles} miles added to your ${car.name} in ${length.minutes}.`}
+            {`About ${result.milesLow} to ${result.milesHigh} miles added to your ${model.name} in ${stay.minutes} minutes.`}
           </p>
           <span className="flex items-center gap-2 lg:justify-end text-on-dark/60 text-caption mb-1">
             <BatteryCharging aria-hidden className="h-4 w-4 text-brand" />
             Estimated range added
           </span>
+
           <AnimatePresence mode="wait">
             <motion.p
-              key={`${carId}-${lengthId}`}
+              key={`${modelId}-${stayId}-${startSoc}-${temp}`}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.2 }}
-              className="text-stat text-white"
+              transition={{ duration: 0.18 }}
+              className="text-stat text-white whitespace-nowrap"
             >
-              ~{miles} mi
+              {result.milesLow}–{result.milesHigh}
+              <span className="text-h3 text-white/70 ml-1.5">mi</span>
             </motion.p>
           </AnimatePresence>
-          <p className="text-caption text-on-dark/55 mt-1">
-            {length.minutes} at {station.power.toLowerCase()}
-          </p>
+
+          <dl className="mt-5 space-y-1.5 text-caption">
+            <div className="flex gap-2 lg:justify-end">
+              <dt className="text-on-dark/50">Battery after</dt>
+              <dd className="text-on-dark">{startSoc}% → {result.endSoc}%</dd>
+            </div>
+            <div className="flex gap-2 lg:justify-end">
+              <dt className="text-on-dark/50">Average power</dt>
+              <dd className="text-on-dark">{result.avgKw} kW</dd>
+            </div>
+            <div className="flex gap-2 lg:justify-end">
+              <dt className="text-on-dark/50">10–80% here</dt>
+              <dd className="text-on-dark">{tenToEighty} min</dd>
+            </div>
+          </dl>
+
+          {result.vehicleLimited && (
+            <p className="mt-4 flex gap-1.5 lg:justify-end text-[11px] text-brass">
+              <Info aria-hidden className="h-3 w-3 mt-0.5 shrink-0" />
+              <span className="lg:text-right">
+                This car peaks at {model.peakKw}kW — it, not our charger, sets
+                the pace.
+              </span>
+            </p>
+          )}
         </div>
       </div>
 
-      <p className="text-[11px] text-white/35 mt-7 max-w-[70ch]">{RANGE_FOOTNOTE}</p>
+      {model.note && (
+        <p className="mt-7 flex gap-2 text-[11px] text-on-dark/60 max-w-[80ch]">
+          <Info aria-hidden className="h-3.5 w-3.5 mt-0.5 shrink-0 text-brass" />
+          {model.note}
+        </p>
+      )}
+      <p className="text-[11px] text-white/35 mt-3 max-w-[80ch]">{ESTIMATE_BASIS}</p>
     </section>
   );
 }
