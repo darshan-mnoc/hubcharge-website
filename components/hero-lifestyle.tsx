@@ -3,9 +3,11 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { CtaButton } from "@/components/ui/cta-button";
+import { stations } from "@/lib/stations";
 
 const container = {
   hidden: { opacity: 0 },
@@ -24,11 +26,32 @@ const item = {
   },
 };
 
-/** Facts, presented as a hairline spec bar rather than a floating glass card. */
+/**
+ * Facts, presented as a hairline spec bar rather than a floating glass card.
+ *
+ * All three were hardcoded and all three disagreed with the rest of the site:
+ *
+ *   "160kW+"    — every other page, and STATION_KW, say up to 180. The hero
+ *                 was underselling its own hardware.
+ *   "up to 100 miles" — the estimator computes 135 for a Model 3 Long Range
+ *                 and a median of 85 across 31 models, so this both
+ *                 understated the ceiling and overstated the typical car.
+ *   "& all EVs" — five pages state plainly that a 2011-2025 Leaf cannot fast
+ *                 charge here. An overclaim the site elsewhere corrects.
+ *
+ * The power figure is read from the station record now, so it can't drift
+ * again. The range is a band rather than a ceiling, because a band is the
+ * shape of the truth and the estimator is one click away to prove it.
+ */
 const specs = [
-  { value: "160kW+", label: "DC fast chargers" },
-  { value: "10 min", label: "Adds up to 100 miles" },
-  { value: "NACS + CCS", label: "Tesla, BMW, Ford & all EVs" },
+  { value: stations[0].power, label: "DC fast charging, both connectors" },
+  {
+    value: "10 minutes",
+    label: "Adds 50–135 miles, depending on the car",
+    href: "/pricing#plan",
+    cta: "Check yours",
+  },
+  { value: "No app", label: "It runs in your phone's browser" },
 ];
 
 export function HeroLifestyle() {
@@ -84,16 +107,24 @@ export function HeroLifestyle() {
         variants={container}
         initial="hidden"
         animate="visible"
-        className="relative z-10 section-container pt-40 pb-14 lg:pb-20"
+        // w-full matters here. The parent is a flex column, and inside one
+        // `margin: auto` absorbs free space rather than centring a stretched
+        // box — so .section-container's mx-auto was shrink-wrapping this
+        // column to its content width and centring that. The hero type sat
+        // ~300px right of the page gutter, aligned with nothing else on the
+        // page, including the nav above it and the spec bar below.
+        className="relative z-10 w-full section-container pt-40 pb-12 lg:pb-16"
       >
-        <motion.span
-          variants={item}
-          aria-hidden
-          className="mb-7 block h-px w-8 bg-brass"
-        />
+        {/* Descriptor as an eyebrow rather than half a two-tone headline.
+            Split across one line the muted clause was the longer of the two,
+            so the headline read as a grey block with a bright phrase in it —
+            the emphasis inverted. This also matches PageShell, which every
+            sub-page already uses: eyebrow, heading, intro. */}
+        <motion.p variants={item} className="text-overline text-on-dark/65 mb-5">
+          Full-service EV charging
+        </motion.p>
 
-        <motion.h1 variants={item} className="text-display text-white max-w-[15ch]">
-          <span className="text-white/55">Full service EV charging.</span>{" "}
+        <motion.h1 variants={item} className="text-display text-white max-w-[11ch]">
           Reclaim your time.
         </motion.h1>
 
@@ -132,14 +163,41 @@ export function HeroLifestyle() {
           {specs.map((s) => (
             <div key={s.value} className="py-5 sm:px-6 sm:first:pl-0 sm:last:pr-0">
               <p className="text-h3 text-white">{s.value}</p>
-              <p className="text-caption text-white/55 mt-1">{s.label}</p>
+              <p className="text-caption text-on-dark/60 mt-1">
+                {s.label}
+                {s.href && (
+                  <>
+                    {" · "}
+                    <Link
+                      href={s.href}
+                      className="text-brand hover:underline underline-offset-2"
+                    >
+                      {s.cta}
+                    </Link>
+                  </>
+                )}
+              </p>
             </div>
           ))}
         </div>
-        <p className="section-container text-footnote text-white/55 pb-5">
-          *Attendant service at select locations and hours. Charging speed and
-          added range vary by vehicle, battery state of charge, and temperature.
-        </p>
+        <div className="section-container flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 pb-5">
+          <p className="text-footnote text-on-dark/55 max-w-[64ch]">
+            *Attendant service at select locations and hours. Range added
+            depends on your car, its state of charge and the temperature.
+          </p>
+          {/* A quiet cue that there is more below — the hero fills the
+              viewport, so without one the fold reads as the end of the page. */}
+          <a
+            href="#story"
+            className="group hidden sm:inline-flex items-center gap-2 text-footnote text-on-dark/55 hover:text-white transition-colors"
+          >
+            Scroll
+            <ArrowDown
+              aria-hidden
+              className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5"
+            />
+          </a>
+        </div>
       </div>
     </section>
   );
