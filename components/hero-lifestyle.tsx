@@ -115,20 +115,26 @@ export function HeroLifestyle() {
         // page, including the nav above it and the spec bar below.
         className="relative z-10 w-full section-container pt-40 pb-12 lg:pb-16"
       >
-        {/* Both halves at display size, separated by colour rather than
-            scale. Brass is the system's one warm tertiary — 5.3:1 on this
-            navy, so it carries a headline comfortably — and warm gold against
-            navy is the hospitality read the brand is after. Orange was the
-            other candidate and would have been louder than the payoff line it
-            is meant to set up; the palette note is explicit that ink carries
-            the surface so orange doesn't have to.
+        {/* Both halves at display size, separated by colour rather than scale.
+
+            The muted half was brass, and brass was wrong here for a reason
+            worth recording: the photograph behind it is a canopy lit in warm
+            gold, and #A8875C sits in that same hue family. There was nothing
+            for the eye to separate, so it read muddy rather than secondary.
+            It measured fine (5.3:1) and still looked off, because contrast
+            against flat navy is not the thing being judged — the type is over
+            a photograph, not over the token.
+
+            So: separate by temperature instead. A cool neutral reads as
+            clearly subordinate against gold light, and gets cleaner rather
+            than muddier as the canopy behind it brightens.
 
             Descriptor first, payoff second: the bright line lands last. */}
         <motion.h1
           variants={item}
           className="text-display max-w-[14ch] text-balance"
         >
-          <span className="text-brass">Full-service EV charging.</span>{" "}
+          <span className="text-on-dark/60">Full-service EV charging.</span>{" "}
           <span className="text-white">Reclaim your time.</span>
         </motion.h1>
 

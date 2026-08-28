@@ -35,7 +35,7 @@ const steps = [
   {
     n: "04",
     title: "Relax while you charge",
-    desc: "Stay in your seat — your car is your space. A quick top-up takes about 10 minutes and can add up to 100 miles, depending on your vehicle.*",
+    desc: "Stay in your seat — your car is your space. A quick top-up takes about 10 minutes and adds roughly 50–135 miles, depending on your vehicle.*",
     image: "/images/charging-service-v2.webp",
     alt: "EV charging while the driver relaxes in the car",
   },

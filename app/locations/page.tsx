@@ -12,11 +12,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://hubcharge.com/locations" },
 };
 
-const stationImages: Record<string, string> = {
-  alhambra: "/images/valet-greet-v2.webp",
-  fontana: "/images/charging-service-v2.webp",
-};
-
 export default function LocationsPage() {
   return (
     <PageShell
@@ -37,8 +32,8 @@ export default function LocationsPage() {
           >
             <div className="relative h-52 overflow-hidden">
               <Image
-                src={stationImages[station.slug] ?? "/images/home.webp"}
-                alt={`${station.name} charging station`}
+                src={station.photos[0].src}
+                alt={station.photos[0].alt}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                 sizes="(max-width: 768px) 100vw, 50vw"

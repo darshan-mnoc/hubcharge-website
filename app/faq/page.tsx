@@ -46,7 +46,7 @@ const groups: Group[] = [
             Our chargers deliver up to 180kW. Your actual speed depends on
             your vehicle&apos;s maximum charging rate, battery state of
             charge, and temperature — a quick top-up typically takes about 10
-            minutes and can add up to 100 miles, depending on your car. See{" "}
+            minutes and adds roughly 50–135 miles, depending on your car. See{" "}
             <Link
               href="/charging-101/charging-speed"
               className="text-brand-ink underline"

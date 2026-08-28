@@ -40,6 +40,16 @@ export type Station = {
   coords: { lat: number; lng: number };
   /** Short marketing blurb used on the location page */
   blurb: string;
+  /**
+   * Real photographs of this site, first one leading.
+   *
+   * These live on the record rather than in a lookup because two identical
+   * `stationImages` maps had grown in app/locations/page.tsx and
+   * app/locations/[slug]/page.tsx, and find-your-hub had none at all — so a
+   * station card on the homepage showed no photo while the same station's
+   * page showed one. Same consolidation as lib/ev-models.ts.
+   */
+  photos: { src: string; alt: string }[];
 };
 
 export const stations: Station[] = [
@@ -67,6 +77,32 @@ export const stations: Station[] = [
     coords: { lat: 34.095, lng: -118.127 },
     blurb:
       "DC fast charging in the heart of downtown Alhambra, steps from Main Street's cafés, restaurants, and shops. Pull up, and our attendant handles the rest.",
+    photos: [
+      {
+        src: "/images/alhambra-station.webp",
+        alt: "A HubCharge fast charger in the Alhambra parking structure, screen lit and status bars green",
+      },
+      {
+        src: "/images/alhambra-charger.webp",
+        alt: "The HubCharge unit at Alhambra showing pricing and connector QR codes on its screen, with CCS1 and NACS cables holstered",
+      },
+      {
+        src: "/images/alhambra-unit.webp",
+        alt: "Full view of a HubCharge charger at Alhambra between yellow bollards",
+      },
+      {
+        src: "/images/alhambra-connectors.webp",
+        alt: "Close view of the CCS1 and NACS connectors and card reader on the Alhambra charger",
+      },
+      {
+        src: "/images/alhambra-bay.webp",
+        alt: "A HubCharge charging bay at Alhambra with a car parked alongside",
+      },
+      {
+        src: "/images/alhambra-wide.webp",
+        alt: "The Alhambra charging bay seen from across the parking structure",
+      },
+    ],
   },
   {
     id: 2,
@@ -91,6 +127,20 @@ export const stations: Station[] = [
     coords: { lat: 34.0922, lng: -117.435 },
     blurb:
       "Fast, convenient DC charging at Fontana Nissan — an easy stop off the 10 with food, coffee, and big-box retail minutes away.",
+    photos: [
+      {
+        src: "/images/fontana-station.webp",
+        alt: "A red Tesla Model Y charging at the HubCharge station outside Fontana Nissan",
+      },
+      {
+        src: "/images/fontana-charging.webp",
+        alt: "A Tesla Model Y connected to the HubCharge charger at Fontana Nissan",
+      },
+      {
+        src: "/images/fontana-forecourt.webp",
+        alt: "The HubCharge charging bays on the Fontana Nissan forecourt",
+      },
+    ],
   },
 ];
 

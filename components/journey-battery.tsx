@@ -1588,7 +1588,7 @@ export function JourneyBattery() {
 
           <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
             {[
-              { v: "10 min", l: "Adds up to 100 miles" },
+              { v: "10 min", l: "Adds 50–135 miles, by car" },
               { v: "Attendant", l: "Plugs in and unplugs for you" },
               { v: "Lifestyle", l: "Delivered to your window" },
             ].map((stat, i) => (

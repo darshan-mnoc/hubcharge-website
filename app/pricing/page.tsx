@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 const included = [
-  "Your full charging session — a quick top-up adds up to 100 miles in about 10 minutes*",
+  "Your full charging session — a quick top-up adds roughly 50–135 miles in about 10 minutes*",
   "Attendant service — we plug in and unplug for you*",
   "Pay right from your phone's browser — no app, no account required",
   "Need more? Extend your session in quick taps, up to 4 times",

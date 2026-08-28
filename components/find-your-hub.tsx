@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import {
@@ -273,6 +274,18 @@ export function FindYourHub() {
                         station.id === selectedId ? "bg-brand" : "bg-transparent"
                       }`}
                     />
+
+                    {/* The card listed a station without ever showing it. */}
+                    <div className="relative -mx-5 -mt-5 mb-4 ml-[-1.5rem] aspect-[16/9] overflow-hidden">
+                      <Image
+                        src={station.photos[0].src}
+                        alt={station.photos[0].alt}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        sizes="(max-width: 1024px) 100vw, 420px"
+                      />
+                    </div>
+
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <div className="flex items-center gap-2 mb-1">

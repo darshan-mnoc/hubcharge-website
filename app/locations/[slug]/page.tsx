@@ -28,11 +28,6 @@ import {
   mapEmbedUrl,
 } from "@/lib/stations";
 
-const stationImages: Record<string, string> = {
-  alhambra: "/images/valet-greet-v2.webp",
-  fontana: "/images/charging-service-v2.webp",
-};
-
 export function generateStaticParams() {
   return stations.map((s) => ({ slug: s.slug }));
 }
@@ -125,8 +120,8 @@ export default async function StationPage({
     <PageShell
       backTo={{ href: "/locations", label: "All locations" }}
       eyebrow={station.city}
-      image={stationImages[station.slug] ?? "/images/home.webp"}
-      imageAlt={`The HubCharge station in ${station.city}, California`}
+      image={station.photos[0].src}
+      imageAlt={station.photos[0].alt}
       meta={
         <>
           <span>Open daily, {station.hours}</span>
@@ -213,6 +208,29 @@ export default async function StationPage({
               </a>
             </div>
           </div>
+
+          {/* The rest of the photographs. A station page that shows the site
+              once and then describes it in prose is asking to be trusted; a
+              page that shows the equipment, the connectors and the bay is
+              letting you check. These are the real units, not renders. */}
+          {station.photos.length > 1 && (
+            <div className="mb-8">
+              <p className="text-overline text-ink-500 mb-4">At this station</p>
+              <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {station.photos.slice(1).map((photo) => (
+                  <li key={photo.src} className="relative aspect-[3/4] overflow-hidden rounded-lg">
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 45vw, 220px"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Full service explainer */}
           <div className="bg-ink-900 rounded-lg p-6 lg:p-8 mb-8">

@@ -3,7 +3,17 @@
 import { useRef } from "react";
 import { motion, useInView, easeOut } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import { ArrowDown, ArrowRight, Sparkles, Check, X } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowRight,
+  Sparkles,
+  Check,
+  X,
+  Plug,
+  Receipt,
+  Clock,
+  CarFront,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -67,21 +77,25 @@ const itemVariants = {
 const LEDGER = [
   {
     k: "You plug in",
+    icon: Plug,
     them: "You do it yourself, in whatever weather the forecast gave you.",
     us: "An attendant does it. You stay in the driver's seat.*",
   },
   {
     k: "You pay",
+    icon: Receipt,
     them: "Per kWh, at a rate that can move by time of day. The total only exists once you're finished.",
     us: "One flat rate for the session, shown on your phone for approval before the cable moves.",
   },
   {
     k: "You wait",
+    icon: Clock,
     them: "30–40 minutes, because the pitch is a full battery.",
     us: "10 minutes puts roughly 90–135 miles into most popular EVs. Extend in taps if you want more.",
   },
   {
     k: "You leave",
+    icon: CarFront,
     them: "You watch the clock to get back before idle fees start.",
     us: "We unplug. There is no idle fee to race.",
   },
@@ -175,7 +189,13 @@ export function ProblemSection() {
                     variants={itemVariants}
                     className="grid gap-y-3 md:grid-cols-[minmax(0,10rem)_1fr_1fr] md:gap-x-8 md:gap-y-0 py-5 border-t border-paper-300 last:border-b items-start"
                   >
-                    <dt className="text-h4 text-ink-900">{row.k}</dt>
+                    <dt className="flex items-center gap-2.5 text-h4 text-ink-900">
+                      {/* Quiet on purpose: the check and cross in each cell
+                          carry the comparison, and two icon weights competing
+                          in one row is how a table stops being scannable. */}
+                      <row.icon aria-hidden className="h-4 w-4 shrink-0 text-ink-400" />
+                      {row.k}
+                    </dt>
                     <dd className="text-body-sm text-ink-500 flex gap-2">
                       <X aria-hidden className="h-3.5 w-3.5 mt-1 shrink-0 text-ink-300" />
                       <span>
@@ -273,7 +293,7 @@ export function ProblemSection() {
             </div>
 
             <h2 className="text-h2 text-white mb-6 max-w-[26ch]">
-              <span className="text-on-dark/60">10 minutes. Up to 100 miles.</span>{" "}
+              <span className="text-on-dark/60">10 minutes. 50–135 miles.</span>{" "}
               Full-service convenience*
             </h2>
 

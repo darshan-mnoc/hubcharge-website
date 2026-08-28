@@ -43,7 +43,7 @@ export default function ChargingLevelsPage() {
           Most EV life is Level 2 overnight, plus DC fast charging when
           you&rsquo;re out and about, on a trip, or just need miles{" "}
           <em>now</em>. That last case is what HubCharge is built for: pull
-          in, add up to 100 miles in about 10 minutes, and get on with your
+          in, add roughly 50–135 miles in about 10 minutes, and get on with your
           day — with an attendant handling the process at participating
           locations.
         </p>
