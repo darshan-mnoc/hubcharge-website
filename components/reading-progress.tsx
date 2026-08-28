@@ -40,14 +40,28 @@ export function ReadingProgress({
       const max = doc.scrollHeight - window.innerHeight;
       setPct(max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0);
 
-      // Reveal once the first section has reached the top third — i.e. once
-      // the masthead is behind you and a contents list is actually useful.
+      // Visible only while you are actually inside the article.
+      //
+      // The opening condition was here from the start; the closing one was
+      // not, so `past` latched true and the rail kept floating over the CTA
+      // and the footer — a light panel sitting on the dark footer. A contents
+      // list for a page you have finished reading is just an obstruction.
       const first = sections?.length ? document.getElementById(sections[0][0]) : null;
-      setPast(
-        first
-          ? first.getBoundingClientRect().top < window.innerHeight * 0.5
-          : window.scrollY > window.innerHeight * 0.7
-      );
+      const last =
+        sections?.length ? document.getElementById(sections[sections.length - 1][0]) : null;
+
+      const started = first
+        ? first.getBoundingClientRect().top < window.innerHeight * 0.5
+        : window.scrollY > window.innerHeight * 0.7;
+
+      // Ended once the final section's own bottom has left the viewport —
+      // measured on the section, not on scroll distance, so it holds whatever
+      // the page length is.
+      const ended = last
+        ? last.getBoundingClientRect().bottom < window.innerHeight * 0.25
+        : false;
+
+      setPast(started && !ended);
 
       if (sections?.length) {
         // The heading whose top has most recently passed a third of the
@@ -89,6 +103,10 @@ export function ReadingProgress({
       {sections && sections.length > 2 && (
         <nav
           aria-label="On this page"
+          // opacity alone leaves the landmark in the accessibility tree, so a
+          // screen reader still finds a contents list for a page you have
+          // scrolled past. tabIndex handles the links; this handles the nav.
+          aria-hidden={!past}
           // The rail only appears where the gutter genuinely fits it. The
           // content box is 1280 wide, so the gutter is (100vw-1280)/2 — it
           // reaches 176px of rail plus 24px of air at 1680px and not before.

@@ -662,7 +662,18 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
     },
     {
       heading: "Find the ones that apply to you",
-      body: <IncentiveFinder />,
+      body: (
+        <>
+          <p>
+            Four of the programmes below have closed since 2025 — including
+            both federal credits and California&rsquo;s carpool-lane decal.
+            They stay listed, marked with the date they ended, because being
+            told a thing is over is more useful than finding nothing and
+            assuming the page is broken.
+          </p>
+          <IncentiveFinder />
+        </>
+      ),
     },
     {
       heading: "The one people forget",

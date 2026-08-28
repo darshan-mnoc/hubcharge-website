@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink, Check, X, HelpCircle } from "lucide-react";
+import { ExternalLink, Check, X, HelpCircle, CircleSlash } from "lucide-react";
 import { GuideFigure } from "@/components/guide-figure";
 
 /**
@@ -16,7 +16,7 @@ import { GuideFigure } from "@/components/guide-figure";
  * your time given your situation, and links each to the body that administers
  * it. Every claim is a link, and the page carries the date it was checked.
  */
-export const INCENTIVES_CHECKED = "August 2026";
+export const INCENTIVES_CHECKED = "27 August 2026";
 
 type Answer = "yes" | "no" | "unsure";
 
@@ -28,58 +28,96 @@ type Programme = {
   what: string;
   relevant: (a: Record<string, Answer>) => boolean;
   note?: string;
+  /**
+   * Ended programmes stay on the page rather than being deleted.
+   *
+   * Someone searching "federal EV tax credit" needs to be told it ended and
+   * when — finding nothing reads as a broken page and sends them to a blog
+   * post that hasn't been updated either. `ended` carries the date so the
+   * claim is checkable.
+   */
+  status: "live" | "ended";
+  ended?: string;
 };
 
 const PROGRAMMES: Programme[] = [
   {
     id: "federal",
-    name: "Federal clean vehicle credit",
+    name: "Federal clean vehicle credit (§30D)",
     body: "IRS",
     url: "https://www.irs.gov/credits-deductions/credits-for-new-clean-vehicles-purchased-in-2023-or-after",
-    what: "A credit against federal tax for qualifying new EVs, with caps on both your income and the vehicle's price. Assembly and battery-sourcing rules narrow the eligible list considerably, and it changes by model year.",
-    relevant: (a) => a.buying !== "no",
-    note: "The eligible-vehicle list is the part that moves most. Check it against your exact trim and delivery date, not the model name.",
+    status: "ended",
+    ended: "30 September 2025",
+    what: "The federal credit against tax for a qualifying new EV. Terminated by the One Big Beautiful Bill Act in July 2025 for any vehicle acquired after 30 September 2025.",
+    relevant: () => true,
+    note: "The cut-off turns on when the vehicle was acquired, not when it was delivered — a binding written contract with a payment made on or before that date can still qualify. That is a question for your tax preparer, not for us.",
   },
   {
     id: "federal-used",
-    name: "Used clean vehicle credit",
+    name: "Used clean vehicle credit (§25E)",
     body: "IRS",
     url: "https://www.irs.gov/credits-deductions/used-clean-vehicle-credit",
-    what: "A separate, smaller credit for qualifying used EVs bought from a dealer, with its own price and income limits.",
-    relevant: (a) => a.buying !== "no" && a.used !== "no",
+    status: "ended",
+    ended: "30 September 2025",
+    what: "The smaller credit for a qualifying used EV bought from a dealer. Ended on the same date and under the same law as the new-vehicle credit.",
+    relevant: () => true,
   },
   {
     id: "cvrp",
-    name: "California vehicle incentives",
+    name: "Clean Vehicle Rebate Project (CVRP)",
     body: "California Air Resources Board",
-    url: "https://cleanvehiclerebate.org/",
-    what: "California has run several purchase-side programmes with different names and eligibility over the years, some income-capped, some region-specific. What is open at any moment varies.",
+    url: "https://ww2.arb.ca.gov/our-work/programs/clean-vehicle-rebate-project",
+    status: "ended",
+    ended: "late 2023",
+    what: "California's long-running purchase rebate, which put close to 600,000 clean vehicles on the road. Closed to new applications and not returning — the state has shifted its money toward income-qualified programmes instead.",
     relevant: (a) => a.california !== "no",
-    note: "Check what is currently accepting applications before you buy — these open and close.",
-  },
-  {
-    id: "income",
-    name: "Income-qualified replacement programmes",
-    body: "California / regional air districts",
-    url: "https://ww2.arb.ca.gov/our-work/programs/clean-cars-4-all",
-    what: "Programmes that pay considerably more to scrap an older combustion car for a cleaner one, aimed at lower-income households. Run regionally, so the terms depend on your air district.",
-    relevant: (a) => a.california !== "no" && a.income !== "no",
   },
   {
     id: "hov",
-    name: "HOV lane access",
-    body: "California DMV / CAV decal",
-    url: "https://www.dmv.ca.gov/portal/vehicle-registration/license-plates-decals-and-placards/clean-air-vehicle-decals-hov-lanes/",
-    what: "A decal allowing solo drivers into carpool lanes. In Los Angeles traffic this is often worth more per week than any one-off rebate.",
+    name: "HOV lane access (Clean Air Vehicle decal)",
+    body: "California DMV",
+    url: "https://ww2.arb.ca.gov/end-californias-clean-air-vehicle-decal-program",
+    status: "ended",
+    ended: "1 October 2025",
+    what: "Solo access to carpool lanes for zero-emission vehicles. The federal authority that let states run it lapsed on 30 September 2025; every decal expired the next day and the DMV had already stopped issuing them.",
     relevant: (a) => a.california !== "no",
-    note: "This programme has had legislated end dates before. Confirm the current status with the DMV.",
+    note: "California legislated an extension through 2027, but it needs federal approval under 23 U.S.C. §166 that has not been granted. If that changes, this comes back.",
+  },
+  {
+    id: "ccfa",
+    name: "Clean Cars 4 All",
+    body: "California / regional air districts",
+    url: "https://ww2.arb.ca.gov/our-work/programs/clean-cars-4-all",
+    status: "live",
+    what: "Pays substantially more than the old rebate did to scrap an older, higher-polluting car for a cleaner one. Run regionally, so the terms depend on your air district.",
+    relevant: (a) => a.california !== "no" && a.income !== "no",
+  },
+  {
+    id: "dcap",
+    name: "Driving Clean Assistance Program (DCAP)",
+    body: "California Air Resources Board",
+    url: "https://ww2.arb.ca.gov/our-work/programs/driving-clean-assistance-program",
+    status: "live",
+    what: "The statewide programme that took over after CVRP closed. Aimed at first-time and lower-income buyers, and unlike Clean Cars 4 All it does not require scrapping an old car. Covers used EVs as well as new.",
+    relevant: (a) => a.california !== "no" && a.income !== "no",
+  },
+  {
+    id: "myfirstev",
+    name: "MyFirstEV",
+    body: "California",
+    url: "https://ww2.arb.ca.gov/our-work/programs/driving-clean-assistance-program",
+    status: "live",
+    what: "An instant rebate applied at purchase rather than claimed later, launched in August 2026 and currently offered through a small number of manufacturers.",
+    relevant: (a) => a.california !== "no" && a.buying !== "no",
+    note: "New enough that participating brands are still changing. Confirm with the dealer before you count on it.",
   },
   {
     id: "utility",
-    name: "Utility rates and rebates",
+    name: "Utility rates and charger rebates",
     body: "Your electricity provider",
     url: "https://www.energy.ca.gov/programs-and-topics/topics/transportation",
-    what: "Most California utilities offer EV-specific time-of-use rates, and some offer rebates towards home charger installation. If you can charge at home this is usually the largest recurring saving available.",
+    status: "live",
+    what: "Most California utilities run an EV-specific time-of-use rate, and some pay toward a home charger install. If you can charge where you park, this is usually the largest recurring saving on the list.",
     relevant: (a) => a.home !== "no",
   },
 ];
@@ -95,7 +133,14 @@ const QUESTIONS = [
 export function IncentiveFinder() {
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const answered = Object.keys(answers).length;
-  const shown = PROGRAMMES.filter((p) => p.relevant(answers));
+  // Live first. An ended programme listed above a claimable one buries the
+  // thing the reader can actually act on.
+  const matching = PROGRAMMES.filter((p) => p.relevant(answers));
+  const shown = [
+    ...matching.filter((p) => p.status === "live"),
+    ...matching.filter((p) => p.status === "ended"),
+  ];
+  const liveCount = matching.filter((p) => p.status === "live").length;
 
   return (
     <GuideFigure
@@ -151,23 +196,39 @@ export function IncentiveFinder() {
 
         <div>
           <p aria-live="polite" className="text-caption text-ink-400 mb-3">
-            {shown.length} of {PROGRAMMES.length} programmes
-            {answered > 0 ? " match what you've told us" : " — answer to narrow"}
+            {liveCount} open {liveCount === 1 ? "programme" : "programmes"}
+            {shown.length - liveCount > 0 &&
+              `, ${shown.length - liveCount} ended`}
+            {answered > 0 ? " · matched to your answers" : " — answer to narrow"}
           </p>
           <ul>
             {shown.map((p) => (
               <li key={p.id} className="py-4 border-t border-paper-300 last:border-b">
-                <a
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-baseline gap-1.5 text-h4 text-ink-900 hover:text-brand-ink transition-colors"
-                >
-                  {p.name}
-                  <ExternalLink aria-hidden className="h-3.5 w-3.5 shrink-0 self-center opacity-50 group-hover:opacity-100" />
-                </a>
+                <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`group inline-flex items-baseline gap-1.5 text-h4 transition-colors ${
+                      p.status === "ended"
+                        ? "text-ink-500 hover:text-ink-900"
+                        : "text-ink-900 hover:text-brand-ink"
+                    }`}
+                  >
+                    {p.name}
+                    <ExternalLink aria-hidden className="h-3.5 w-3.5 shrink-0 self-center opacity-50 group-hover:opacity-100" />
+                  </a>
+                  {p.status === "ended" && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-paper-200 px-2 py-0.5 text-caption text-ink-600">
+                      <CircleSlash aria-hidden className="h-3 w-3" />
+                      Ended {p.ended}
+                    </span>
+                  )}
+                </span>
                 <p className="text-caption text-ink-400 mt-0.5">{p.body}</p>
-                <p className="text-body-sm text-ink-500 mt-2">{p.what}</p>
+                <p className={`text-body-sm mt-2 ${p.status === "ended" ? "text-ink-400" : "text-ink-500"}`}>
+                  {p.what}
+                </p>
                 {p.note && (
                   <p className="text-body-sm text-ink-700 mt-2 border-l-2 border-brass pl-3">
                     {p.note}
