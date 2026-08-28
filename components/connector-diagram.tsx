@@ -181,6 +181,7 @@ const PORTS = {
       { kind: "empty", n: 2, what: "AC pins, unpopulated on a DC cable" },
     ],
     height: 220,
+    cardHeight: 116,
   },
   nacs: {
     marker: 2,
@@ -200,6 +201,7 @@ const PORTS = {
     // 56 viewBox units against CCS1's 86 — both SVGs render at the same
     // units-per-pixel, so the size difference on screen is the real one.
     height: (56 / 86) * 220,
+    cardHeight: (56 / 86) * 116,
   },
 } as const;
 
@@ -230,9 +232,13 @@ export function ConnectorDiagram() {
       title="Which cable do I grab?"
       footnote={
         <>
-          Photographed at HubCharge Alhambra. Every station carries both
-          cables, so if you pick up the wrong one it simply will not fit —
-          put it back and take the other.
+          The charger is photographed at HubCharge Alhambra. The two faces are
+          drawn, not photographed &mdash; the plugs sit nose-first in their
+          holsters, so no photograph we have shows one head-on. Pin count,
+          size and spacing follow the published standards, and the two are to
+          the same scale as each other. Every station carries both cables, so
+          if you pick up the wrong one it simply will not fit &mdash; put it
+          back and take the other.
         </>
       }
     >
@@ -270,10 +276,17 @@ export function ConnectorDiagram() {
         })}
       </div>
 
+      {/* Each card carries its own connector face, because the photograph
+          above shows both plugs seated in their holsters — nose into the
+          wall. You can see which is bigger there, but not what you are
+          matching against the socket on your car. Both faces render at the
+          same units-per-pixel as each other, so the size difference here is
+          the real one too. */}
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {ORDER.map((id) => {
           const p = PORTS[id];
           const on = active === id;
+          const Svg = p.Svg;
           return (
             <button
               key={id}
@@ -284,27 +297,42 @@ export function ConnectorDiagram() {
               onFocus={() => setActive(id)}
               onBlur={() => setActive(null)}
               aria-pressed={on}
-              className={`flex gap-4 rounded-lg border p-4 text-left transition-colors ${
+              className={`flex flex-col rounded-lg border p-4 text-left transition-colors ${
                 on ? "border-brand bg-paper-100" : "border-paper-300 hover:bg-paper-100"
               }`}
             >
-              <span
-                aria-hidden
-                className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand text-caption font-semibold text-ink-900"
-              >
-                {p.marker}
+              <span className="flex grow gap-4">
+                <span
+                  aria-hidden
+                  className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand text-caption font-semibold text-ink-900"
+                >
+                  {p.marker}
+                </span>
+                <span className="min-w-0">
+                  <span className="flex flex-wrap items-baseline gap-x-2.5">
+                    <span className="text-h4 text-ink-900">{p.label}</span>
+                    <span className="text-body-sm text-ink-500">{p.plain}</span>
+                  </span>
+                  <span className="mt-1.5 block text-body-sm text-ink-500">
+                    {brands[id].join(" · ")}
+                  </span>
+                  <span className="mt-2 block text-caption text-brand-ink tabular-nums">
+                    {counts[id]} of the {evModels.length} cars we list
+                  </span>
+                </span>
               </span>
-              <span className="min-w-0">
-                <span className="flex flex-wrap items-baseline gap-x-2.5">
-                  <span className="text-h4 text-ink-900">{p.label}</span>
-                  <span className="text-body-sm text-ink-500">{p.plain}</span>
+
+              {/* the face, on a shared baseline across both cards */}
+              <span className="mt-5 flex h-32 items-end justify-center border-t border-paper-300 pt-5">
+                <span
+                  style={{ height: p.cardHeight }}
+                  className="block [&>svg]:h-full [&>svg]:w-auto"
+                >
+                  <Svg />
                 </span>
-                <span className="mt-1.5 block text-body-sm text-ink-500">
-                  {brands[id].join(" · ")}
-                </span>
-                <span className="mt-2 block text-caption text-brand-ink tabular-nums">
-                  {counts[id]} of the {evModels.length} cars we list
-                </span>
+              </span>
+              <span className="mt-3 block text-center text-caption text-ink-400">
+                The end that goes into your car
               </span>
             </button>
           );
@@ -338,21 +366,19 @@ export function ConnectorDiagram() {
         <div className="mt-6 grid gap-8 md:grid-cols-2 md:gap-12">
           {ORDER.map((id) => {
             const p = PORTS[id];
-            const Svg = p.Svg;
             return (
               <div key={id} className="flex flex-col">
-                {/* shared baseline — the scale comparison is the whole point */}
-                <div className="mb-5 flex h-56 items-end justify-center">
-                  <div style={{ height: p.height }} className="[&>svg]:h-full [&>svg]:w-auto">
-                    <Svg />
-                  </div>
-                </div>
+                {/* The drawings moved up into the cards, where someone
+                    matching a plug to their car will actually look. Repeating
+                    them here would ask the reader which of two identical
+                    pictures they were meant to be reading. */}
+                <p className="text-h4 text-ink-900">{p.label}</p>
                 {/* The pin names used to be set inside the SVG, at 8px — below
                     anything readable, immune to the reader's font size, and
                     unselectable. And they labelled four of CCS1's seven pins,
                     so the drawing implied the rest were unimportant. Same
                     information, in real text, at a real size, complete. */}
-                <ul className="mb-5 flex flex-col gap-1.5">
+                <ul className="order-last mt-4 flex flex-col gap-1.5">
                   {p.legend.map((l) => (
                     <li key={l.kind} className="flex items-center gap-2.5 text-caption text-ink-500">
                       <span
@@ -378,7 +404,6 @@ export function ConnectorDiagram() {
                     </li>
                   ))}
                 </ul>
-                <p className="text-h4 text-ink-900">{p.label}</p>
                 <p className="text-caption text-ink-400 mt-1">{p.full}</p>
                 <p className="text-caption text-ink-400">{p.also}</p>
                 <p className="text-body-sm text-ink-500 mt-3">{p.body}</p>

@@ -115,7 +115,7 @@ export default function PricingPage() {
           the two read as one slab and neither got any emphasis. The estimator
           keeps the dark treatment because it is the thing worth looking at. */}
       <div className="max-w-4xl mb-16">
-        <p className="text-overline text-ink-500">How it works</p>
+        <h2 className="text-overline text-ink-500">How it works</h2>
         <span aria-hidden className="mt-3 mb-6 block h-px w-8 bg-brass" />
         <ol className="grid sm:grid-cols-3 gap-x-8 gap-y-6">
           {[
@@ -160,7 +160,7 @@ export default function PricingPage() {
       </div>
 
       <section className="max-w-measure mb-20">
-        <p className="text-overline text-ink-500">Common questions</p>
+        <h2 className="text-overline text-ink-500 mb-5">Common questions</h2>
         {PRICING_FAQS.map((f) => (
           <details key={f.q} className="group border-t border-paper-300 last:border-b">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-h4 text-ink-900 hover:text-brand-ink transition-colors">

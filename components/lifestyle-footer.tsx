@@ -233,7 +233,7 @@ export function LifestyleFooter() {
 
             {/* Experience */}
             <div>
-              <h4 className="text-[#f4f3f2] font-semibold mb-4">Experience</h4>
+              <h2 className="text-[#f4f3f2] font-semibold mb-4">Experience</h2>
               <ul className="space-y-3">
                 {footerLinks.experience.map((link, i) => (
                   <motion.li
@@ -257,7 +257,7 @@ export function LifestyleFooter() {
 
             {/* Learn */}
             <div>
-              <h4 className="text-[#f4f3f2] font-semibold mb-4">Learn</h4>
+              <h2 className="text-[#f4f3f2] font-semibold mb-4">Learn</h2>
               <ul className="space-y-3">
                 {footerLinks.learn.map((link, i) => (
                   <motion.li
@@ -281,7 +281,7 @@ export function LifestyleFooter() {
 
             {/* Support */}
             <div>
-              <h4 className="text-[#f4f3f2] font-semibold mb-4">Support</h4>
+              <h2 className="text-[#f4f3f2] font-semibold mb-4">Support</h2>
               <ul className="space-y-3">
                 {footerLinks.support.map((link, i) => (
                   <motion.li
@@ -305,7 +305,7 @@ export function LifestyleFooter() {
 
             {/* Contact */}
             <div>
-              <h4 className="text-[#f4f3f2] font-semibold mb-4">Contact</h4>
+              <h2 className="text-[#f4f3f2] font-semibold mb-4">Contact</h2>
               <ul className="space-y-3">
                 <li>
                   <motion.a
