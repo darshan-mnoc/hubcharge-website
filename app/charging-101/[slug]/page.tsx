@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PageShell, Prose } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
 import { ReadingProgress } from "@/components/reading-progress";
-import { getGuide } from "@/lib/guides";
+import { getGuide, guideSectionId } from "@/lib/guides";
 import { GUIDE_BODIES } from "@/lib/guide-content";
 
 /**
@@ -51,14 +51,6 @@ const GUIDE_IMAGES: Record<string, string> = {
 };
 
 /** Stable anchor from a heading — the scroll-spy and the rail must agree. */
-function slugify(heading: string): string {
-  return heading
-    .toLowerCase()
-    .replace(/[\u2018\u2019\u201c\u201d]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
 export default async function ProseGuide({
   params,
 }: {
@@ -79,7 +71,7 @@ export default async function ProseGuide({
       intro={guide.desc}
       meta={<span>{guide.read} read</span>}
     >
-      <ReadingProgress sections={sections.map((s) => [slugify(s.heading), s.heading])} />
+      <ReadingProgress sections={sections.map((s) => [guideSectionId(s.heading), s.heading])} />
 
       <GuideBreadcrumb
         trail={[
@@ -93,7 +85,7 @@ export default async function ProseGuide({
 
       <Prose>
         {sections.map((s) => (
-          <section key={s.heading} id={slugify(s.heading)} className="scroll-mt-28">
+          <section key={s.heading} id={guideSectionId(s.heading)} className="scroll-mt-28">
             <h2>{s.heading}</h2>
             {s.body}
           </section>

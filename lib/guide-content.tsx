@@ -1,4 +1,8 @@
 import type { ReactNode } from "react";
+import { ChargerEtiquette } from "@/components/charger-etiquette";
+import { HomeVsPublic as HomeVsPublicCompare } from "@/components/home-vs-public";
+import { SoCalCorridor } from "@/components/socal-corridor";
+import { FirstMonth } from "@/components/first-month";
 import { Term } from "@/components/term";
 import { WeatherImpact } from "@/components/weather-impact";
 import { RoutinePlanner } from "@/components/routine-planner";
@@ -23,6 +27,8 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       heading: "Move when you're done",
       body: (
         <>
+          <ChargerEtiquette />
+          <>
           <p>
             The single rule that matters. A DC fast charger is a shared
             resource, and a finished car occupying one is the most common
@@ -30,6 +36,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
             you at participating locations, so there is nothing to race back
             for — but at other networks, set a timer.
           </p>
+        </>
         </>
       ),
     },
@@ -208,12 +215,15 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
     {
       heading: "If you can charge at home, do",
       body: (
-        <p>
+        <>
+          <HomeVsPublicCompare />
+          <p>
           Home charging is cheaper per mile, and the car is full every morning
           without you thinking about it. For most owners with a driveway or
           garage, a Level 2 home charger removes charging from daily life
           almost entirely.
         </p>
+        </>
       ),
     },
     {
@@ -322,12 +332,15 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
     {
       heading: "The two corridors that matter",
       body: (
-        <p>
+        <>
+          <SoCalCorridor />
+          <p>
           Most driving around Los Angeles funnels onto the I-10 heading east
           toward Palm Springs and Arizona, or the I-210 skirting the foothills.
           HubCharge sits on both: Alhambra just off the I-10 near downtown, and
           Fontana further east where the Inland Empire begins.
         </p>
+        </>
       ),
     },
     {
@@ -371,12 +384,15 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
     {
       heading: "Week one: find out what plug you have",
       body: (
-        <p>
+        <>
+          <FirstMonth />
+          <p>
           Everything else follows from this. Look at your charge port, or check
           your make in our compatibility guide. If it is <Term id="nacs">NACS</Term> or <Term id="ccs">CCS</Term> — which
           covers nearly every EV sold in the US — you can charge at HubCharge
           with no adapter, because both cables are on every charger.
         </p>
+        </>
       ),
     },
     {

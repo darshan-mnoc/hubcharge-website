@@ -153,9 +153,20 @@ export function PageShell({
 }
 
 /** Prose wrapper for long-form legal/help text. */
+/**
+ * Body copy for the guides.
+ *
+ * The anchor rule used to be a bare `[&_a]`, so every link inside every
+ * figure — timeline steps, etiquette cards, programme links — came out
+ * brand-orange and underlined no matter what the component asked for.
+ * `not-prose` reads like it should have stopped that and does not: nothing
+ * here implements it except the list rule, which spells the exemption out.
+ * The anchor rule now spells it out too, so `not-prose` means what it looks
+ * like it means for both.
+ */
 export function Prose({ children }: { children: ReactNode }) {
   return (
-    <div className="max-w-prose space-y-6 text-ink-600 text-body [&_h2]:text-h3 [&_h2]:text-ink-900 [&_h2]:mt-12 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:text-ink-900 [&_h3]:mt-7 [&_h3]:mb-2 [&_ul:not(.not-prose_ul)]:list-disc [&_ul:not(.not-prose_ul)]:pl-6 [&_ul:not(.not-prose_ul)]:space-y-1.5 [&_a]:text-brand-ink [&_a]:underline [&_p+p]:mt-4 [&_p+ul]:mt-4 [&_ul+p]:mt-4">
+    <div className="max-w-prose space-y-6 text-ink-600 text-body [&_h2]:text-h3 [&_h2]:text-ink-900 [&_h2]:mt-12 [&_h2]:mb-3 [&_h3]:font-semibold [&_h3]:text-ink-900 [&_h3]:mt-7 [&_h3]:mb-2 [&_ul:not(.not-prose_ul)]:list-disc [&_ul:not(.not-prose_ul)]:pl-6 [&_ul:not(.not-prose_ul)]:space-y-1.5 [&_a:not(.not-prose_a)]:text-brand-ink [&_a:not(.not-prose_a)]:underline [&_p+p]:mt-4 [&_p+ul]:mt-4 [&_ul+p]:mt-4">
       {children}
     </div>
   );

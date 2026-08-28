@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PortByMake } from "@/components/port-by-make";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
@@ -41,6 +42,8 @@ export default function VehiclesIndex() {
       />
 
       <GuideShort slug="vehicles" />
+
+      <PortByMake />
 
       <ol className="max-w-measure">
         {makes.map((m, i) => {

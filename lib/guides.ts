@@ -243,3 +243,15 @@ export const NAV_GUIDES = [
   "vehicles",
   "glossary",
 ] as const;
+
+/**
+ * The anchor a guide section renders under. Lived inside the [slug] route,
+ * which meant anything else linking to a section had to guess the same rules.
+ */
+export function guideSectionId(heading: string): string {
+  return heading
+    .toLowerCase()
+    .replace(/[\u2018\u2019\u201c\u201d]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
