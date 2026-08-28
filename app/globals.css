@@ -382,6 +382,25 @@
   }
 }
 
+/* Touch
+   Removes the ~300ms double-tap-to-zoom delay browsers hold on tappable
+   elements. Every control here is a discrete target, so there is nothing to
+   pinch-zoom into and the wait is pure lag. `manipulation` keeps pan and
+   pinch on the page itself, so only the double-tap gesture is given up.
+
+   The tap highlight is deliberately left alone: each control already has a
+   visible :active state, and killing the highlight without one leaves a
+   touch with no feedback at all. */
+button,
+a,
+input,
+select,
+textarea,
+summary,
+[role="button"] {
+  touch-action: manipulation;
+}
+
 /* Mobile Tap Targets
    `a` is deliberately excluded. It used to be in this list, which gave every
    inline link inside a paragraph a 44px height — inflating the line it sits

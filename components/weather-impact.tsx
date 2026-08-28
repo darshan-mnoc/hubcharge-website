@@ -96,7 +96,7 @@ export function WeatherImpact() {
           <dl className="grid grid-cols-2 gap-x-6 gap-y-5">
             <div>
               <dt className="text-caption text-ink-400">10 minutes adds</dt>
-              <dd className="text-stat text-ink-900 whitespace-nowrap">
+              <dd className="text-stat text-ink-900 whitespace-nowrap tabular-nums">
                 {lo}–{hi}
                 <span className="text-h4 text-ink-500 ml-1">mi</span>
               </dd>
@@ -106,7 +106,7 @@ export function WeatherImpact() {
             </div>
             <div>
               <dt className="text-caption text-ink-400">10 → 80% takes</dt>
-              <dd className="text-stat text-ink-900 whitespace-nowrap">
+              <dd className="text-stat text-ink-900 whitespace-nowrap tabular-nums">
                 {fullNow}
                 <span className="text-h4 text-ink-500 ml-1">min</span>
               </dd>

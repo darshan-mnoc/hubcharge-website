@@ -75,14 +75,13 @@ export function ChargingLevelsCompare() {
         <ModelPicker id="levels-model" value={modelId} onChange={setModelId} />
         <div>
           <p className="text-caption text-ink-500 mb-1.5">Your Level 2 supply</p>
-          <div role="radiogroup" aria-label="Level 2 supply" className="flex flex-wrap gap-2">
+          <div role="group" aria-label="Level 2 supply" className="flex flex-wrap gap-2">
             {L2_SUPPLIES.map((s) => {
               const active = s.kw === supplyKw;
               return (
                 <button
                   key={s.kw}
-                  role="radio"
-                  aria-checked={active}
+                  aria-pressed={active}
                   onClick={() => setSupplyKw(s.kw)}
                   className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
                     active

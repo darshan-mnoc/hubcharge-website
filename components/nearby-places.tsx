@@ -86,6 +86,7 @@ export function NearbyPlaces({ places }: { places: NearbyPlace[] }) {
                           )}
                         </span>
                       </span>
+                      <span className="sr-only"> (opens in a new tab)</span>
                     </a>
                   </li>
                 ))}

@@ -271,7 +271,8 @@ export default async function StationPage({
               size="lg"
             >
               <Navigation className="h-5 w-5" />
-              Get Directions
+              Get directions
+              <span className="sr-only"> (opens in a new tab)</span>
             </CtaButton>
             <CtaButton to="/what-to-expect" size="lg" variant="secondary">
               First visit? See what to expect

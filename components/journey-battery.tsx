@@ -1401,7 +1401,7 @@ export function JourneyBattery() {
                     {mobileActiveCard >= 4
                       ? "Ready!"
                       : mobileActiveCard >= 2
-                        ? "Charging..."
+                        ? "Charging…"
                         : `Step ${mobileActiveCard + 1}`}
                   </p>
                   <p className="text-[10px] text-white/50">

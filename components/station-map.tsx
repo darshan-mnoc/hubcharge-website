@@ -137,6 +137,7 @@ export function StationMap({
       >
         <Navigation aria-hidden className="h-3.5 w-3.5" />
         Open in Maps
+        <span className="sr-only"> (opens in a new tab)</span>
       </a>
     </div>
   );

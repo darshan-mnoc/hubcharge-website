@@ -90,11 +90,11 @@ export function SocWindow() {
           <dl className="grid grid-cols-3 gap-x-5 gap-y-4 mt-7">
             <div>
               <dt className="text-caption text-ink-500">Usable range</dt>
-              <dd className="text-h3 text-ink-900 mt-1">{miles} mi</dd>
+              <dd className="text-h3 text-ink-900 mt-1 tabular-nums">{miles} mi</dd>
             </div>
             <div>
               <dt className="text-caption text-ink-500">Time to fill it</dt>
-              <dd className="text-h3 text-ink-900 mt-1">{mins} min</dd>
+              <dd className="text-h3 text-ink-900 mt-1 tabular-nums">{mins} min</dd>
             </div>
             <div>
               <dt className="text-caption text-ink-500">Long-term strain</dt>

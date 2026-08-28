@@ -49,14 +49,13 @@ export function GlossaryIndex({ terms, groups }: { terms: Term[]; groups: Group[
         />
       </div>
 
-      <div role="radiogroup" aria-label="Filter by topic" className="flex flex-wrap gap-2 mb-7">
+      <div role="group" aria-label="Filter by topic" className="flex flex-wrap gap-2 mb-7">
         {[{ id: "all", label: "Everything" }, ...groups].map((g) => {
           const on = group === g.id;
           return (
             <button
               key={g.id}
-              role="radio"
-              aria-checked={on}
+              aria-pressed={on}
               onClick={() => setGroup(g.id)}
               className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
                 on

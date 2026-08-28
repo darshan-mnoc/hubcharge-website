@@ -70,14 +70,13 @@ export function VehicleFinder() {
         />
       </div>
 
-      <div role="radiogroup" aria-label="Filter" className="flex flex-wrap gap-2 mb-7">
+      <div role="group" aria-label="Filter" className="flex flex-wrap gap-2 mb-7">
         {FILTERS.map((f) => {
           const active = filter === f.id;
           return (
             <button
               key={f.id}
-              role="radio"
-              aria-checked={active}
+              aria-pressed={active}
               onClick={() => setFilter(f.id)}
               className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
                 active

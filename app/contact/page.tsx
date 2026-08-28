@@ -198,6 +198,7 @@ export default function ContactPage() {
                   >
                     <Navigation aria-hidden className="h-3.5 w-3.5" />
                     Directions
+                    <span className="sr-only"> (opens in a new tab)</span>
                   </a>
                   <Link
                     href={`/locations/${s.slug}`}

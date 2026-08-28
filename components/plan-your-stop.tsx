@@ -104,7 +104,7 @@ export function PlanYourStop({ station }: { station: Station }) {
           {/* Starting charge */}
           <Step n={2} label="Battery when you arrive">
             <div
-              role="radiogroup"
+              role="group"
               aria-label="Battery when you arrive"
               className="flex flex-wrap gap-2"
             >
@@ -113,8 +113,7 @@ export function PlanYourStop({ station }: { station: Station }) {
                 return (
                   <button
                     key={s}
-                    role="radio"
-                    aria-checked={active}
+                    aria-pressed={active}
                     onClick={() => setStartSoc(s)}
                     className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
                       active
@@ -132,7 +131,7 @@ export function PlanYourStop({ station }: { station: Station }) {
           {/* Stay length */}
           <Step n={3} label="How long you stay">
             <div
-              role="radiogroup"
+              role="group"
               aria-label="How long you stay"
               className="flex flex-wrap gap-2"
             >
@@ -141,8 +140,7 @@ export function PlanYourStop({ station }: { station: Station }) {
                 return (
                   <button
                     key={s.id}
-                    role="radio"
-                    aria-checked={active}
+                    aria-pressed={active}
                     onClick={() => setStayId(s.id)}
                     className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
                       active
@@ -160,14 +158,13 @@ export function PlanYourStop({ station }: { station: Station }) {
 
           {/* Weather */}
           <Step n={4} label="Weather">
-            <div role="radiogroup" aria-label="Weather" className="flex flex-wrap gap-2">
+            <div role="group" aria-label="Weather" className="flex flex-wrap gap-2">
               {Object.values(TEMPERATURE_FACTORS).map((t) => {
                 const active = t.id === temp;
                 return (
                   <button
                     key={t.id}
-                    role="radio"
-                    aria-checked={active}
+                    aria-pressed={active}
                     onClick={() => setTemp(t.id as TemperatureId)}
                     className={`rounded-full border px-4 py-1.5 text-caption transition-colors ${
                       active

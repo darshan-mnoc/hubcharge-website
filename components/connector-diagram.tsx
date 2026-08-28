@@ -46,41 +46,30 @@ function Pin({
   r,
   fill,
   empty = false,
-  label,
-  labelY,
 }: {
   cx: number;
   cy: number;
   r: number;
   fill: string;
+  /** An unpopulated well: the hole is there, the contact is not. */
   empty?: boolean;
-  label?: string;
-  /** Absolute y for labels that belong outside the connector outline. */
-  labelY?: number;
 }) {
   return (
     <g>
+      {/* the bore, then the contact seated inside it */}
       <circle cx={cx} cy={cy} r={r} fill={ILLO.shadow} />
       <circle
         cx={cx}
         cy={cy}
         r={r * 0.74}
         fill={empty ? ILLO.recess : fill}
+        // An empty well was drawn with a 0.5-unit hairline, which at the
+        // rendered scale is a third of a pixel — it vanished, so the two AC
+        // positions read as "nothing here" rather than "here and unused".
         stroke={empty ? ILLO.seam : "none"}
-        strokeWidth={empty ? 0.5 : 0}
+        strokeWidth={empty ? 1.1 : 0}
+        strokeDasharray={empty ? "2 1.6" : undefined}
       />
-      {label && (
-        <text
-          x={cx}
-          y={labelY ?? cy + r + 4.6}
-          textAnchor="middle"
-          fontSize={labelY ? 4.2 : 3.4}
-          fill={labelY ? ILLO.body : ILLO.edge}
-          fontWeight="600"
-        >
-          {label}
-        </text>
-      )}
     </g>
   );
 }
@@ -95,7 +84,7 @@ function NacsSvg() {
   const h = 44 * MM;
   const cx = w / 2;
   return (
-    <svg viewBox={`-6 -6 ${w + 12} ${h + 20}`} className="h-full w-auto" role="img"
+    <svg viewBox={`-6 -6 ${w + 12} ${h + 12}`} className="h-full w-auto" role="img"
       aria-label="NACS connector face: three small signal pins in a row across the top, and two large power pins below them that carry both AC and DC.">
       {/* the compact rounded outline — not the tall oval this used to be */}
       <path
@@ -107,13 +96,13 @@ function NacsSvg() {
       />
 
       {/* top row — three small: ground centre, CP and PP either side */}
-      <Pin cx={cx - 9} cy={14} r={2.6} fill={ILLO.seam} label="PP" />
-      <Pin cx={cx} cy={13} r={3.2} fill={ILLO.seam} label="G" />
-      <Pin cx={cx + 9} cy={14} r={2.6} fill={ILLO.seam} label="CP" />
+      <Pin cx={cx - 9} cy={14} r={2.6} fill={ILLO.seam} />
+      <Pin cx={cx} cy={13} r={3.2} fill={ILLO.seam} />
+      <Pin cx={cx + 9} cy={14} r={2.6} fill={ILLO.seam} />
 
       {/* bottom row — two large, doing both AC and DC */}
-      <Pin cx={cx - 7.4} cy={30} r={6.2} fill={ILLO.live} label="DC+" labelY={51} />
-      <Pin cx={cx + 7.4} cy={30} r={6.2} fill={ILLO.live} label="DC−" labelY={51} />
+      <Pin cx={cx - 7.4} cy={30} r={6.2} fill={ILLO.live} />
+      <Pin cx={cx + 7.4} cy={30} r={6.2} fill={ILLO.live} />
     </svg>
   );
 }
@@ -128,7 +117,7 @@ function Ccs1Svg() {
   const w = 68 * MM;
   const h = 74 * MM;
   return (
-    <svg viewBox={`-6 -6 ${w + 12} ${h + 20}`} className="h-full w-auto" role="img"
+    <svg viewBox={`-6 -6 ${w + 12} ${h + 12}`} className="h-full w-auto" role="img"
       aria-label="CCS1 connector face: a round J1772 section on top carrying five pins, with two large DC fast-charging pins in a housing beneath it. On a DC cable the two AC pins are not populated.">
       {/* lower DC housing, drawn first so the round section overlaps it */}
       <path
@@ -144,8 +133,8 @@ function Ccs1Svg() {
       {/* J1772 pins, positioned from the standard's own offsets.
           L1 / N-L2: large, 6.8mm above centreline, 15.7mm apart.
           Unpopulated here because this is the DC cable. */}
-      <Pin cx={cx - 15.7 / 2} cy={cyTop - 6.8} r={4.2} fill={ILLO.seam} empty label="L1" />
-      <Pin cx={cx + 15.7 / 2} cy={cyTop - 6.8} r={4.2} fill={ILLO.seam} empty label="N/L2" />
+      <Pin cx={cx - 15.7 / 2} cy={cyTop - 6.8} r={4.2} fill={ILLO.seam} empty />
+      <Pin cx={cx + 15.7 / 2} cy={cyTop - 6.8} r={4.2} fill={ILLO.seam} empty />
       {/* PP / CP: small, 5.6mm below centreline, 21.3mm apart — wider than
           the power pins, which is the detail everyone draws wrong. */}
       <Pin cx={cx - 21.3 / 2} cy={cyTop + 5.6} r={2.3} fill={ILLO.seam} />
@@ -154,8 +143,8 @@ function Ccs1Svg() {
       <Pin cx={cx} cy={cyTop + 10.6} r={4.2} fill={ILLO.seam} />
 
       {/* the two DC pins — the reason the whole thing is this big */}
-      <Pin cx={cx - 13} cy={h - 20} r={8.4} fill={ILLO.live} label="DC+" labelY={81} />
-      <Pin cx={cx + 13} cy={h - 20} r={8.4} fill={ILLO.live} label="DC−" labelY={81} />
+      <Pin cx={cx - 13} cy={h - 20} r={8.4} fill={ILLO.live} />
+      <Pin cx={cx + 13} cy={h - 20} r={8.4} fill={ILLO.live} />
     </svg>
   );
 }
@@ -167,9 +156,14 @@ const PORTS = {
     also: "Tesla connector · SAE J3400",
     body: "Five pins: three small ones for ground and signalling across the top, and two large ones below that carry AC at home and DC here. Re-using the same two pins for both jobs is what keeps the connector — and the port on your car — this small.",
     Svg: NacsSvg,
-    // viewBox height 58 units against CCS1's 88 — so at a shared baseline the
-    // on-screen ratio is the real one.
-    height: (64 / 94) * 220,
+    legend: [
+      { kind: "live", n: 2, what: "carry DC here, and AC at home" },
+      { kind: "signal", n: 3, what: "ground and signalling" },
+      { kind: "none", n: undefined, what: "no separate AC pins — which is what keeps it small" },
+    ],
+    // 56 viewBox units against CCS1's 86 — both SVGs render at the same
+    // units-per-pixel, so the size difference on screen is the real one.
+    height: (56 / 86) * 220,
   },
   ccs: {
     label: "CCS1",
@@ -177,6 +171,11 @@ const PORTS = {
     also: "SAE J1772 Combo",
     body: "A complete J1772 AC connector — five pins, 43mm across — with two more added underneath for DC. That is what the word Combined means, and why it is so much bigger. It has been the non-Tesla standard here for a decade.",
     Svg: Ccs1Svg,
+    legend: [
+      { kind: "live", n: 2, what: "carry DC — the pair added below the J1772 face" },
+      { kind: "signal", n: 3, what: "ground and signalling" },
+      { kind: "empty", n: 2, what: "AC pins, unpopulated on a DC cable" },
+    ],
     height: 220,
   },
 } as const;
@@ -200,11 +199,10 @@ export function ConnectorDiagram() {
           A schematic drawn to relative scale: pin count, size and position
           follow the published standards, with the J1772 face at 43mm and its
           pins placed from the specification&rsquo;s own offsets. It is not a
-          dimensioned engineering drawing. Orange marks the pins carrying DC
-          here — two on NACS, two more bolted below a whole AC connector on
-          CCS1. The hollow L1 and N/L2 wells are drawn empty because a DC cable
-          does not populate them, and every HubCharge station carries both
-          cables, so this is only ever a question of which one you pick up.
+          dimensioned engineering drawing. The two dashed wells on CCS1 are the
+          AC pins, drawn empty because a DC cable does not populate them.
+          Every HubCharge station carries both cables, so this is only ever a
+          question of which one you pick up.
         </>
       }
     >
@@ -218,7 +216,7 @@ export function ConnectorDiagram() {
               key={id}
               onClick={() => setActive(id)}
               aria-pressed={on}
-              className={`text-left rounded-lg p-4 -m-4 transition-colors ${
+              className={`flex flex-col text-left rounded-lg p-4 -m-4 transition-colors ${
                 on ? "bg-paper-100" : "hover:bg-paper-100/60"
               } group`}
             >
@@ -228,6 +226,37 @@ export function ConnectorDiagram() {
                   <Svg />
                 </div>
               </div>
+              {/* The pin names used to be set inside the SVG, at 8px — below
+                  anything readable, immune to the reader's font size, and
+                  unselectable. And they labelled four of CCS1's seven pins,
+                  so the drawing implied the rest were unimportant. Same
+                  information, in real text, at a real size, complete. */}
+              <ul className="flex flex-col gap-1.5 mb-5">
+                {p.legend.map((l) => (
+                  <li key={l.kind} className="flex items-center gap-2.5 text-caption text-ink-500">
+                    <span
+                      aria-hidden
+                      className={`shrink-0 ${
+                        l.kind === "live"
+                          ? "h-2.5 w-2.5 rounded-full bg-brand"
+                          : l.kind === "signal"
+                            ? "h-2.5 w-2.5 rounded-full bg-ink-400"
+                            : l.kind === "empty"
+                              ? "h-2.5 w-2.5 rounded-full border border-dashed border-ink-400"
+                              : // not a pin category — a rule, so it doesn't
+                                // read as a fourth kind of contact
+                                "h-px w-2.5 bg-ink-300"
+                      }`}
+                    />
+                    <span>
+                      {l.n !== undefined && (
+                        <span className="text-ink-900 font-medium tabular-nums">{l.n} </span>
+                      )}
+                      {l.what}
+                    </span>
+                  </li>
+                ))}
+              </ul>
               <p className="text-h3 text-ink-900">{p.label}</p>
               <p className="text-caption text-ink-400 mt-1">{p.full}</p>
               <p className="text-caption text-ink-400">{p.also}</p>

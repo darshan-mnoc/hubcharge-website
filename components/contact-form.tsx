@@ -86,8 +86,7 @@ export function ContactForm({ tone = "light" }: { tone?: "light" | "dark" }) {
               <button
                 key={id}
                 type="button"
-                role="radio"
-                aria-checked={on}
+                aria-pressed={on}
                 onClick={() => setTopic(id)}
                 className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
                   on

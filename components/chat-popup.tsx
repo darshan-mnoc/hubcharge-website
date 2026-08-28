@@ -306,7 +306,7 @@ export function ChatPopup() {
                         id="feedback-message"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="I'd love to see..."
+                        placeholder="I’d love to see…"
                         className="field-dark px-3 py-2 resize-none h-16 sm:h-20 text-body-sm"
                       />
                     </div>

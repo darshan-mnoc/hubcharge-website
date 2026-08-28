@@ -360,6 +360,7 @@ export function FindYourHub() {
                       >
                         <Navigation className="h-4 w-4" />
                         Directions
+                        <span className="sr-only"> (opens in a new tab)</span>
                       </motion.a>
                       <a
                         href={`tel:+1${station.phone.replace(/\D/g, "")}`}
@@ -450,6 +451,7 @@ export function FindYourHub() {
                   >
                     <span className="text-ink-700">{place.name}</span>
                     <span className="text-ink-400 text-body-sm">{place.walk} walk</span>
+                    <span className="sr-only"> (opens in a new tab)</span>
                   </motion.a>
                 ))}
               </div>
@@ -481,6 +483,7 @@ export function FindYourHub() {
                   >
                     <span className="text-ink-700">{place.name}</span>
                     <span className="text-ink-400 text-body-sm">{place.walk} walk</span>
+                    <span className="sr-only"> (opens in a new tab)</span>
                   </motion.a>
                 ))}
               </div>
@@ -512,6 +515,7 @@ export function FindYourHub() {
                   >
                     <span className="text-ink-700">{place.name}</span>
                     <span className="text-ink-400 text-body-sm">{place.walk} walk</span>
+                    <span className="sr-only"> (opens in a new tab)</span>
                   </motion.a>
                 ))}
               </div>
@@ -584,6 +588,7 @@ export function FindYourHub() {
                 <input
                   type="email"
                   required
+                  autoComplete="email"
                   aria-label="Email address for new-location updates"
                   value={notifyEmail}
                   onChange={(e) => setNotifyEmail(e.target.value)}

@@ -69,7 +69,7 @@ const PROGRAMMES: Programme[] = [
     url: "https://ww2.arb.ca.gov/our-work/programs/clean-vehicle-rebate-project",
     status: "ended",
     ended: "late 2023",
-    what: "California's long-running purchase rebate, which put close to 600,000 clean vehicles on the road. Closed to new applications and not returning — the state has shifted its money toward income-qualified programmes instead.",
+    what: "California’s long-running purchase rebate, which put close to 600,000 clean vehicles on the road. Closed to new applications and not returning — the state has shifted its money toward income-qualified programmes instead.",
     relevant: (a) => a.california !== "no",
   },
   {
@@ -166,14 +166,13 @@ export function IncentiveFinder() {
             {QUESTIONS.map(({ id, q }) => (
               <li key={id}>
                 <p className="text-body-sm text-ink-900 mb-2">{q}</p>
-                <div role="radiogroup" aria-label={q} className="flex gap-1.5">
+                <div role="group" aria-label={q} className="flex gap-1.5">
                   {(["yes", "no", "unsure"] as Answer[]).map((v) => {
                     const on = answers[id] === v;
                     return (
                       <button
                         key={v}
-                        role="radio"
-                        aria-checked={on}
+                        aria-pressed={on}
                         onClick={() =>
                           setAnswers((prev) => ({ ...prev, [id]: prev[id] === v ? undefined! : v }))
                         }
@@ -217,6 +216,7 @@ export function IncentiveFinder() {
                   >
                     {p.name}
                     <ExternalLink aria-hidden className="h-3.5 w-3.5 shrink-0 self-center opacity-50 group-hover:opacity-100" />
+                        <span className="sr-only"> (opens in a new tab)</span>
                   </a>
                   {p.status === "ended" && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-paper-200 px-2 py-0.5 text-caption text-ink-600">

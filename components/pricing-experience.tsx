@@ -131,7 +131,7 @@ export function PricingExperience() {
               </p>
               <div
                 className="grid grid-cols-1 sm:grid-cols-3 gap-2"
-                role="radiogroup"
+                role="group"
                 aria-label="How much charge"
               >
                 {distances.map((d) => {
@@ -139,8 +139,7 @@ export function PricingExperience() {
                   return (
                     <button
                       key={d.id}
-                      role="radio"
-                      aria-checked={active}
+                      aria-pressed={active}
                       onClick={() => setDistance(d.id)}
                       className={`rounded-lg border px-3 py-3 text-center transition-colors ${
                         active
@@ -167,7 +166,7 @@ export function PricingExperience() {
               <p className="text-overline text-ink-500 mb-3">2 · Your car</p>
               <div
                 className="flex flex-wrap gap-2"
-                role="radiogroup"
+                role="group"
                 aria-label="Your car"
               >
                 {cars.map((c) => {
@@ -175,8 +174,7 @@ export function PricingExperience() {
                   return (
                     <button
                       key={c.id}
-                      role="radio"
-                      aria-checked={active}
+                      aria-pressed={active}
                       onClick={() => setCarId(c.id)}
                       className={`rounded-full border px-4 py-2 text-body-sm font-medium transition-all ${
                         active

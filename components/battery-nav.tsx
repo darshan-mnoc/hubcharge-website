@@ -246,6 +246,7 @@ export function BatteryNav() {
             >
               <Zap className="h-4 w-4" strokeWidth={2.5} />
               <span>Login</span>
+              <span className="sr-only"> (opens in a new tab)</span>
             </motion.a>
           </div>
 
@@ -261,6 +262,7 @@ export function BatteryNav() {
           >
             <Zap className="h-3 w-3" strokeWidth={2.5} />
             <span>Login</span>
+            <span className="sr-only"> (opens in a new tab)</span>
           </motion.a>
 
           {/* Mobile Menu Button */}
