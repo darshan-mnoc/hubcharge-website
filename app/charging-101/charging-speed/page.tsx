@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { Term } from "@/components/term";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
 import { ChargingCurveChart } from "@/components/charging-curve-chart";
 import { ReadingProgress } from "@/components/reading-progress";
 import { RANGE_FOOTNOTE } from "@/lib/ev-models";
@@ -43,11 +44,13 @@ export default function ChargingSpeedPage() {
         ]}
       />
 
+      <GuideShort slug="charging-speed" />
+
       <Prose>
         <h2 id="curve">Charging isn&rsquo;t a straight line — it&rsquo;s a curve</h2>
         <p>
           A battery doesn&rsquo;t accept power at one constant rate. Speed
-          ramps up from a low state of charge, peaks somewhere in the{" "}
+          ramps up from a low <Term id="soc">state of charge</Term>, peaks somewhere in the{" "}
           <strong>20–60% window</strong>, then tapers — the last 20% of a
           charge can take as long as the first 60–70%. That&rsquo;s your
           car&rsquo;s battery management system protecting the cells, and
@@ -58,8 +61,8 @@ export default function ChargingSpeedPage() {
 
         <h2 id="top-up">Which is why the quick top-up wins</h2>
         <p>
-          Because the curve is fastest in the middle, the smartest use of a DC
-          fast charger is usually a short session in that sweet spot — grab
+          Because the curve is fastest in the middle, the smartest use of a <Term id="dcfc">DC
+          fast charger</Term> is usually a short session in that sweet spot — grab
           the miles you need and go. That&rsquo;s exactly how HubCharge is
           designed: a ~10-minute top-up that adds roughly 50–135 miles for most
           popular EVs, with quick extensions if you want more. Charging to
@@ -83,11 +86,11 @@ export default function ChargingSpeedPage() {
           <li>
             <strong>Vehicle size and efficiency</strong> — a big electric
             truck adds miles more slowly than an efficient sedan, even at the
-            same kW.
+            same <Term id="kw">kW</Term>.
           </li>
         </ul>
 
-        <h2 id="preconditioning">The one trick worth knowing: preconditioning</h2>
+        <h2 id="preconditioning">The one trick worth knowing: <Term id="preconditioning">preconditioning</Term></h2>
         <p>
           Most EVs warm their battery automatically when you{" "}
           <strong>navigate to a fast charger in the car&rsquo;s own

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
 import { evMakes, EV_DATA_UPDATED, RANGE_FOOTNOTE } from "@/lib/ev-models";
 import { makeTenMinuteBand } from "@/lib/charging-math";
 
@@ -39,6 +39,8 @@ export default function VehiclesIndex() {
           ["Your car", "/charging-101/vehicles"],
         ]}
       />
+
+      <GuideShort slug="vehicles" />
 
       <ol className="max-w-measure">
         {makes.map((m, i) => {

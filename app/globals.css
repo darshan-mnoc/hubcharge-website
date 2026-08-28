@@ -411,6 +411,7 @@ summary,
   input,
   select,
   textarea,
+  summary,
   .tap-target,
   a[role="button"] {
     min-height: 44px;

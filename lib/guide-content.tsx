@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Term } from "@/components/term";
 import { WeatherImpact } from "@/components/weather-impact";
 import { RoutinePlanner } from "@/components/routine-planner";
 import { ShiftPlanner } from "@/components/shift-planner";
@@ -142,7 +143,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       heading: "The short answer",
       body: (
         <p>
-          Occasional DC fast charging is not something to worry about. Modern
+          Occasional <Term id="dcfc">DC fast charging</Term> is not something to worry about. Modern
           EVs actively manage temperature and current to protect the pack, and
           large fleet studies have generally found the effect of regular fast
           charging to be small compared with age and total mileage.
@@ -196,7 +197,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       body: (
         <p>
           Topping up in the 20–60% window is both the fastest part of the
-          charging curve and the gentlest on the pack. A short HubCharge stop
+          <Term id="charging-curve">charging curve</Term> and the gentlest on the pack. A short HubCharge stop
           lands squarely in it.
         </p>
       ),
@@ -372,7 +373,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       body: (
         <p>
           Everything else follows from this. Look at your charge port, or check
-          your make in our compatibility guide. If it is NACS or CCS — which
+          your make in our compatibility guide. If it is <Term id="nacs">NACS</Term> or <Term id="ccs">CCS</Term> — which
           covers nearly every EV sold in the US — you can charge at HubCharge
           with no adapter, because both cables are on every charger.
         </p>
@@ -415,7 +416,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       body: (
         <p>
           Keep it roughly between 20% and 80% day to day, charge to full when
-          you need the range, precondition before fast charging in cold
+          you need the range, <Term id="preconditioning">precondition</Term> before fast charging in cold
           weather. That is the whole discipline. Everything else is detail.
         </p>
       ),
@@ -460,7 +461,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       body: (
         <p>
           Workplace Level 2 is the quiet solution to this problem. Eight hours
-          parked at 7&ndash;11 kW covers almost any commute, and it costs you no
+          parked at 7&ndash;11 <Term id="kw">kW</Term> covers almost any commute, and it costs you no
           time at all because you were going to be there anyway. Many California
           employers have chargers they under-publicise; some have them installed
           and unused. It is worth one email to facilities before you rearrange
@@ -545,7 +546,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
           <p>
             <strong>Your car&rsquo;s own ceiling.</strong> Plenty of EVs peak
             well below what a fast charger can deliver. If your car maxes out at
-            55 kW, it will do 55 kW on a 350 kW unit too.
+            55 <Term id="kw">kW</Term>, it will do 55 kW on a 350 kW unit too.
           </p>
         </>
       ),
@@ -630,7 +631,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       body: (
         <p>
           Charging for work is generally deductible, and per-session receipts
-          are considerably easier to reconcile at tax time than per-kWh billing
+          are considerably easier to reconcile at tax time than per-<Term id="kwh">kWh</Term> billing
           spread across four networks and three apps. Whatever you use, get the
           records into one place as you go rather than in April.
         </p>

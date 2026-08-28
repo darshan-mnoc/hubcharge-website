@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { Term } from "@/components/term";
 import { PageShell, Prose } from "@/components/page-shell";
 import { ChargingLevelsCompare } from "@/components/charging-levels-compare";
-import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
 
 export const metadata: Metadata = {
   title: "EV Charging Levels Explained: Level 1, Level 2 & DC Fast | HubCharge",
@@ -30,6 +31,8 @@ export default function ChargingLevelsPage() {
         ]}
       />
 
+      <GuideShort slug="charging-levels" />
+
       <p className="text-quote text-ink-900 max-w-[34ch] mb-8">
         The three levels aren&rsquo;t really about volts. They&rsquo;re about
         how much of your day charging takes.
@@ -40,7 +43,7 @@ export default function ChargingLevelsPage() {
       <Prose>
         <h2>So which one do I need?</h2>
         <p>
-          Most EV life is Level 2 overnight, plus DC fast charging when
+          Most EV life is Level 2 overnight, plus <Term id="dcfc">DC fast charging</Term> when
           you&rsquo;re out and about, on a trip, or just need miles{" "}
           <em>now</em>. That last case is what HubCharge is built for: pull
           in, add roughly 50–135 miles in about 10 minutes, and get on with your
@@ -49,7 +52,7 @@ export default function ChargingLevelsPage() {
         </p>
         <p className="text-body-sm text-ink-400">
           Figures are typical ranges; actual speed varies by vehicle, battery
-          state of charge, and temperature.
+          <Term id="soc">state of charge</Term>, and temperature.
         </p>
       </Prose>
 

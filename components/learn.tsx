@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CtaButton } from "@/components/ui/cta-button";
-import { guideHref, guideNeighbours } from "@/lib/guides";
+import { guideHref, guideNeighbours, getGuide } from "@/lib/guides";
 
 /** Visible breadcrumb + BreadcrumbList JSON-LD for Charging 101 pages. */
 export function GuideBreadcrumb({
@@ -48,6 +48,30 @@ export function GuideBreadcrumb({
         </ol>
       </nav>
     </>
+  );
+}
+
+/**
+ * The answer, before the article.
+ *
+ * Every guide opened straight into explanation written for someone who
+ * already knew the vocabulary — a reader who just wanted to know whether
+ * their car works here had to read four paragraphs about pin counts to find
+ * out. This puts two or three jargon-free sentences at the top of all
+ * eighteen, from one place, and lib/guides.ts documents the rule they have to
+ * satisfy: none of the fourteen glossary terms may appear in one.
+ */
+export function GuideShort({ slug }: { slug: string }) {
+  const guide = getGuide(slug);
+  if (!guide?.short) return null;
+  return (
+    <aside
+      aria-label="The short version"
+      className="not-prose mb-10 rounded-lg border-l-2 border-brass bg-paper-100 px-5 py-5 sm:px-6"
+    >
+      <p className="text-overline text-ink-500">The short version</p>
+      <p className="mt-3 text-body-lg text-ink-800">{guide.short}</p>
+    </aside>
   );
 }
 

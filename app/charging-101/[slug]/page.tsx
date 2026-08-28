@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageShell, Prose } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
 import { ReadingProgress } from "@/components/reading-progress";
 import { getGuide } from "@/lib/guides";
 import { GUIDE_BODIES } from "@/lib/guide-content";
@@ -88,6 +88,8 @@ export default async function ProseGuide({
           [guide.navTitle ?? guide.title, `/charging-101/${slug}`],
         ]}
       />
+
+      <GuideShort slug={slug} />
 
       <Prose>
         {sections.map((s) => (

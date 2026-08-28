@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { Term } from "@/components/term";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
-import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
 import { CostPerMile } from "@/components/cost-per-mile";
 import { ReadingProgress } from "@/components/reading-progress";
 
@@ -41,11 +42,13 @@ export default function ChargingCostPage() {
         ]}
       />
 
+      <GuideShort slug="charging-cost" />
+
       <Prose>
         <h2 id="models">How most networks price charging</h2>
         <ul>
           <li>
-            <strong>Per kWh</strong> — you pay for energy delivered, like a
+            <strong>Per <Term id="kwh">kWh</Term></strong> — you pay for energy delivered, like a
             gas pump. Transparent in theory, but you need to know your
             car&rsquo;s efficiency to guess the final cost, and rates often
             change by time of day.
@@ -75,7 +78,7 @@ export default function ChargingCostPage() {
 
         <h2 id="per-mile">So what does a mile actually cost?</h2>
         <p>
-          Per-kWh pricing is only meaningful once you divide it by your
+          Per-<Term id="kw">kW</Term>h pricing is only meaningful once you divide it by your
           car&rsquo;s efficiency — which is the sum nobody does standing at a
           charger. Here it is, with your own rates:
         </p>

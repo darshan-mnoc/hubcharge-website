@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { Term } from "@/components/term";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
 import { ConnectorDiagram } from "@/components/connector-diagram";
-import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
 
 export const metadata: Metadata = {
   title: "NACS vs CCS: EV Charging Connectors Explained | HubCharge",
@@ -29,12 +30,14 @@ export default function ConnectorsPage() {
         ]}
       />
 
+      <GuideShort slug="connectors" />
+
       <ConnectorDiagram />
 
       <Prose>
         <h2>Why HubCharge carries both cables</h2>
         <p>
-          The industry is mid-transition from CCS to NACS, and it will take
+          The industry is mid-transition from <Term id="ccs">CCS</Term> to <Term id="nacs">NACS</Term>, and it will take
           years. Rather than make you buy a $200+ adapter or hunt for the
           right charger, every HubCharge charger has <strong>both</strong> a
           NACS cable and a CCS cable. You plug in whichever matches your car
@@ -62,7 +65,7 @@ export default function ConnectorsPage() {
           cables are on the charger — so leave the adapter in the trunk.
         </p>
 
-        <h2>What about CHAdeMO?</h2>
+        <h2>What about <Term id="chademo">CHAdeMO</Term>?</h2>
         <p>
           CHAdeMO is the older fast-charging standard used mainly by the
           2011–2025 Nissan Leaf. It&rsquo;s being phased out industry-wide,

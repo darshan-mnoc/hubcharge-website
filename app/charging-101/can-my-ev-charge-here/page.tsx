@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { Term } from "@/components/term";
 import Link from "next/link";
 import { AlertTriangle, Zap } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { VehicleFinder } from "@/components/vehicle-finder";
-import { GuideBreadcrumb, GuideCta, GuideFooter } from "@/components/learn";
+import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
 
 export const metadata: Metadata = {
   title: "Can My EV Charge at HubCharge? Tesla, Ford, Hyundai & More | HubCharge",
@@ -32,6 +33,8 @@ export default function CompatibilityPage() {
         ]}
       />
 
+      <GuideShort slug="can-my-ev-charge-here" />
+
       {/* Headline claim */}
       <div className="card-light p-6 max-w-4xl mb-10 flex items-start gap-4">
         <Zap className="h-6 w-6 text-ink-700 shrink-0 mt-0.5" />
@@ -42,7 +45,7 @@ export default function CompatibilityPage() {
           <p className="text-ink-600 text-body-sm">
             Elsewhere, drivers often need a $200+ adapter to use a
             single-connector charger. At HubCharge you never do — whether your
-            car has a NACS port (like every Tesla) or a CCS port (like most
+            car has a <Term id="nacs">NACS</Term> port (like every Tesla) or a <Term id="ccs">CCS</Term> port (like most
             other EVs), the right cable is already on the charger. And at
             participating locations, our attendant plugs it in for you.
           </p>
@@ -65,7 +68,7 @@ export default function CompatibilityPage() {
               One honest exception: older Nissan Leaf (2011–2025)
             </p>
             <p>
-              Those model years fast-charge only with the older CHAdeMO
+              Those model years fast-charge only with the older <Term id="chademo">CHAdeMO</Term>
               connector, which our stations don&rsquo;t carry — so they
               can&rsquo;t DC fast-charge at HubCharge. The all-new 2026 Leaf
               switched to NACS and works great here. We&rsquo;d rather tell

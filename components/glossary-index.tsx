@@ -3,8 +3,10 @@
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
-export type Term = { term: string; def: string };
-export type Group = { id: string; label: string; terms: string[] };
+import type { GlossaryGroup, GlossaryTerm } from "@/lib/glossary";
+
+export type Term = GlossaryTerm;
+export type Group = GlossaryGroup;
 
 /**
  * A glossary you can actually use.
@@ -84,7 +86,9 @@ export function GlossaryIndex({ terms, groups }: { terms: Term[]; groups: Group[
           {results.map((t) => (
             <div
               key={t.term}
-              className="grid sm:grid-cols-[minmax(0,17ch)_minmax(0,1fr)] gap-x-8 gap-y-1 py-5 border-t border-paper-300 last:border-b"
+              id={t.id}
+              // the anchor <Term>'s "Full glossary" link lands on
+              className="scroll-mt-28 grid sm:grid-cols-[minmax(0,17ch)_minmax(0,1fr)] gap-x-8 gap-y-1 py-5 border-t border-paper-300 last:border-b"
             >
               <dt className="text-h4 text-ink-900">{t.term}</dt>
               <dd className="text-body-sm text-ink-500">{t.def}</dd>

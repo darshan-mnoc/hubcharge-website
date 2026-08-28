@@ -1,11 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { evModels } from "@/lib/ev-models";
+import Image from "next/image";
+import { ChevronRight } from "lucide-react";
+import { evModels, evMakes } from "@/lib/ev-models";
 import { GuideFigure } from "@/components/guide-figure";
 import { ILLO } from "@/lib/illustration";
 
 /**
+ * The connector section of the connectors guide.
+ *
+ * It opens with a photograph of the actual Alhambra unit, because that
+ * answers the only question most people have — "which cable do I grab?" —
+ * better than any drawing can. The machine labels its own holsters CCS1 and
+ * NACS, both plugs are in frame at the same scale, and you can simply see
+ * that CCS1 is the bigger one.
+ *
+ * The schematic below it is now folded away behind a disclosure. It was the
+ * first thing on the page, which meant a nervous first-timer met L1, N/L2,
+ * PP, CP and "unpopulated on a DC cable" before they met an answer.
+ *
+ * ── The schematic, unchanged ──────────────────────────────────────────
  * NACS and CCS1, drawn to relative scale with the real pin layouts.
  *
  * The first version of this got the pins wrong in three ways, which is worth
@@ -150,10 +165,31 @@ function Ccs1Svg() {
 }
 
 const PORTS = {
+  ccs: {
+    marker: 1,
+    label: "CCS1",
+    plain: "The bigger plug",
+    full: "Combined Charging System",
+    also: "SAE J1772 Combo",
+    /** Left-hand holster on the photograph. */
+    mark: { x: 20, y: 68 },
+    body: "A complete J1772 AC connector — five pins, 43mm across — with two more added underneath for DC. That is what the word Combined means, and why it is so much bigger. It has been the non-Tesla standard here for a decade.",
+    Svg: Ccs1Svg,
+    legend: [
+      { kind: "live", n: 2, what: "carry DC — the pair added below the J1772 face" },
+      { kind: "signal", n: 3, what: "ground and signalling" },
+      { kind: "empty", n: 2, what: "AC pins, unpopulated on a DC cable" },
+    ],
+    height: 220,
+  },
   nacs: {
+    marker: 2,
     label: "NACS",
+    plain: "The smaller plug",
     full: "North American Charging Standard",
     also: "Tesla connector · SAE J3400",
+    /** Right-hand holster on the photograph. */
+    mark: { x: 85, y: 60 },
     body: "Five pins: three small ones for ground and signalling across the top, and two large ones below that carry AC at home and DC here. Re-using the same two pins for both jobs is what keeps the connector — and the port on your car — this small.",
     Svg: NacsSvg,
     legend: [
@@ -165,109 +201,200 @@ const PORTS = {
     // units-per-pixel, so the size difference on screen is the real one.
     height: (56 / 86) * 220,
   },
-  ccs: {
-    label: "CCS1",
-    full: "Combined Charging System",
-    also: "SAE J1772 Combo",
-    body: "A complete J1772 AC connector — five pins, 43mm across — with two more added underneath for DC. That is what the word Combined means, and why it is so much bigger. It has been the non-Tesla standard here for a decade.",
-    Svg: Ccs1Svg,
-    legend: [
-      { kind: "live", n: 2, what: "carry DC — the pair added below the J1772 face" },
-      { kind: "signal", n: 3, what: "ground and signalling" },
-      { kind: "empty", n: 2, what: "AC pins, unpopulated on a DC cable" },
-    ],
-    height: 220,
-  },
 } as const;
 
 type PortId = keyof typeof PORTS;
 
+/** Left to right on the photograph, which is also the numbering. */
+const ORDER: PortId[] = ["ccs", "nacs"];
+
 export function ConnectorDiagram() {
-  const [active, setActive] = useState<PortId>("nacs");
+  const [active, setActive] = useState<PortId | null>(null);
 
   const counts = {
     nacs: evModels.filter((m) => m.port === "nacs").length,
     ccs: evModels.filter((m) => m.port === "ccs").length,
   };
 
+  // Brand lists are derived, never typed. A make that switches port in
+  // lib/ev-models.ts moves itself here rather than leaving this page lying.
+  const brands = {
+    ccs: evMakes.filter((m) => m.port === "ccs").map((m) => m.name),
+    nacs: evMakes.filter((m) => m.port === "nacs").map((m) => m.name),
+  };
+  const bothMakes = evMakes.filter((m) => m.port === "transitioning");
+
   return (
     <GuideFigure
-      eyebrow="Side by side"
-      title="Why one is so much bigger than the other"
+      eyebrow="At the charger"
+      title="Which cable do I grab?"
       footnote={
         <>
+          Photographed at HubCharge Alhambra. Every station carries both
+          cables, so if you pick up the wrong one it simply will not fit —
+          put it back and take the other.
+        </>
+      }
+    >
+      {/* The photograph runs full width. Cropped to the holster row: the
+          whole-unit shot rendered both plugs at a few dozen pixels, which
+          defeats the one thing the photo is here to show. Markers sit in
+          percentage coordinates measured against this crop, so they stay on
+          their holsters at every width. */}
+      <div className="relative -mx-5 sm:mx-auto max-w-[720px] overflow-hidden sm:rounded-lg bg-paper-100">
+        <Image
+          src="/images/alhambra-holsters.webp"
+          alt="The two cables on a HubCharge charger at Alhambra. The holster on the left is labelled CCS1 and holds a noticeably chunkier plug; the one on the right is labelled NACS and holds a slimmer plug. A card reader sits between them."
+          width={1302}
+          height={756}
+          sizes="(max-width: 768px) 100vw, 720px"
+          className="h-auto w-full"
+        />
+        {ORDER.map((id) => {
+          const p = PORTS[id];
+          const on = active === id;
+          return (
+            <span
+              key={id}
+              aria-hidden
+              style={{ left: `${p.mark.x}%`, top: `${p.mark.y}%` }}
+              className={`absolute -translate-x-1/2 -translate-y-1/2 grid h-8 w-8 sm:h-9 sm:w-9
+                place-items-center rounded-full text-body-sm font-semibold
+                ring-2 ring-ink-900/70 transition-transform duration-200 ${
+                  on ? "scale-125 bg-white text-ink-900" : "bg-brand text-ink-900"
+                }`}
+            >
+              {p.marker}
+            </span>
+          );
+        })}
+      </div>
+
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        {ORDER.map((id) => {
+          const p = PORTS[id];
+          const on = active === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setActive(on ? null : id)}
+              onMouseEnter={() => setActive(id)}
+              onMouseLeave={() => setActive(null)}
+              onFocus={() => setActive(id)}
+              onBlur={() => setActive(null)}
+              aria-pressed={on}
+              className={`flex gap-4 rounded-lg border p-4 text-left transition-colors ${
+                on ? "border-brand bg-paper-100" : "border-paper-300 hover:bg-paper-100"
+              }`}
+            >
+              <span
+                aria-hidden
+                className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand text-caption font-semibold text-ink-900"
+              >
+                {p.marker}
+              </span>
+              <span className="min-w-0">
+                <span className="flex flex-wrap items-baseline gap-x-2.5">
+                  <span className="text-h4 text-ink-900">{p.label}</span>
+                  <span className="text-body-sm text-ink-500">{p.plain}</span>
+                </span>
+                <span className="mt-1.5 block text-body-sm text-ink-500">
+                  {brands[id].join(" · ")}
+                </span>
+                <span className="mt-2 block text-caption text-brand-ink tabular-nums">
+                  {counts[id]} of the {evModels.length} cars we list
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mt-4 text-body-sm text-ink-500">
+        Not sure which you have? Look at the flap on your car, then at the two
+        plugs in the photo — the shapes match.{" "}
+        {bothMakes.length > 0 && (
+          <>
+            {bothMakes.map((m) => m.name).join(" and ")} sit on both sides
+            depending on the model year, so check the car rather than the
+            badge.{" "}
+          </>
+        )}
+        At staffed hours our attendant does it for you.
+      </p>
+
+      {/* The engineering detail, for anyone who wants it and nobody who
+          doesn't. All the verified pin geometry lives in here now. */}
+      <details className="group mt-6 border-t border-paper-300 pt-5">
+        <summary className="flex cursor-pointer list-none items-center gap-2 text-body-sm text-ink-600 hover:text-ink-900 [&::-webkit-details-marker]:hidden">
+          <ChevronRight
+            aria-hidden
+            className="h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-90"
+          />
+          Why one is bigger — the pins inside
+        </summary>
+
+        <div className="mt-6 grid gap-8 md:grid-cols-2 md:gap-12">
+          {ORDER.map((id) => {
+            const p = PORTS[id];
+            const Svg = p.Svg;
+            return (
+              <div key={id} className="flex flex-col">
+                {/* shared baseline — the scale comparison is the whole point */}
+                <div className="mb-5 flex h-56 items-end justify-center">
+                  <div style={{ height: p.height }} className="[&>svg]:h-full [&>svg]:w-auto">
+                    <Svg />
+                  </div>
+                </div>
+                {/* The pin names used to be set inside the SVG, at 8px — below
+                    anything readable, immune to the reader's font size, and
+                    unselectable. And they labelled four of CCS1's seven pins,
+                    so the drawing implied the rest were unimportant. Same
+                    information, in real text, at a real size, complete. */}
+                <ul className="mb-5 flex flex-col gap-1.5">
+                  {p.legend.map((l) => (
+                    <li key={l.kind} className="flex items-center gap-2.5 text-caption text-ink-500">
+                      <span
+                        aria-hidden
+                        className={`shrink-0 ${
+                          l.kind === "live"
+                            ? "h-2.5 w-2.5 rounded-full bg-brand"
+                            : l.kind === "signal"
+                              ? "h-2.5 w-2.5 rounded-full bg-ink-400"
+                              : l.kind === "empty"
+                                ? "h-2.5 w-2.5 rounded-full border border-dashed border-ink-400"
+                                : // not a pin category — a rule, so it doesn't
+                                  // read as a fourth kind of contact
+                                  "h-px w-2.5 bg-ink-300"
+                        }`}
+                      />
+                      <span>
+                        {l.n !== undefined && (
+                          <span className="font-medium text-ink-900 tabular-nums">{l.n} </span>
+                        )}
+                        {l.what}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-h4 text-ink-900">{p.label}</p>
+                <p className="text-caption text-ink-400 mt-1">{p.full}</p>
+                <p className="text-caption text-ink-400">{p.also}</p>
+                <p className="text-body-sm text-ink-500 mt-3">{p.body}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="mt-5 text-caption text-ink-400">
           A schematic drawn to relative scale: pin count, size and position
           follow the published standards, with the J1772 face at 43mm and its
           pins placed from the specification&rsquo;s own offsets. It is not a
           dimensioned engineering drawing. The two dashed wells on CCS1 are the
           AC pins, drawn empty because a DC cable does not populate them.
-          Every HubCharge station carries both cables, so this is only ever a
-          question of which one you pick up.
-        </>
-      }
-    >
-      <div className="grid gap-8 md:grid-cols-2 md:gap-12">
-        {(Object.keys(PORTS) as PortId[]).map((id) => {
-          const p = PORTS[id];
-          const on = active === id;
-          const Svg = p.Svg;
-          return (
-            <button
-              key={id}
-              onClick={() => setActive(id)}
-              aria-pressed={on}
-              className={`flex flex-col text-left rounded-lg p-4 -m-4 transition-colors ${
-                on ? "bg-paper-100" : "hover:bg-paper-100/60"
-              } group`}
-            >
-              {/* shared baseline — the scale comparison is the whole point */}
-              <div className="flex items-end justify-center h-56 mb-5">
-                <div style={{ height: p.height }} className="[&>svg]:h-full [&>svg]:w-auto">
-                  <Svg />
-                </div>
-              </div>
-              {/* The pin names used to be set inside the SVG, at 8px — below
-                  anything readable, immune to the reader's font size, and
-                  unselectable. And they labelled four of CCS1's seven pins,
-                  so the drawing implied the rest were unimportant. Same
-                  information, in real text, at a real size, complete. */}
-              <ul className="flex flex-col gap-1.5 mb-5">
-                {p.legend.map((l) => (
-                  <li key={l.kind} className="flex items-center gap-2.5 text-caption text-ink-500">
-                    <span
-                      aria-hidden
-                      className={`shrink-0 ${
-                        l.kind === "live"
-                          ? "h-2.5 w-2.5 rounded-full bg-brand"
-                          : l.kind === "signal"
-                            ? "h-2.5 w-2.5 rounded-full bg-ink-400"
-                            : l.kind === "empty"
-                              ? "h-2.5 w-2.5 rounded-full border border-dashed border-ink-400"
-                              : // not a pin category — a rule, so it doesn't
-                                // read as a fourth kind of contact
-                                "h-px w-2.5 bg-ink-300"
-                      }`}
-                    />
-                    <span>
-                      {l.n !== undefined && (
-                        <span className="text-ink-900 font-medium tabular-nums">{l.n} </span>
-                      )}
-                      {l.what}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <p className="text-h3 text-ink-900">{p.label}</p>
-              <p className="text-caption text-ink-400 mt-1">{p.full}</p>
-              <p className="text-caption text-ink-400">{p.also}</p>
-              <p className="text-body-sm text-ink-500 mt-3">{p.body}</p>
-              <p className="text-caption text-brand-ink mt-3">
-                {counts[id]} of the {evModels.length} cars we list use this
-              </p>
-            </button>
-          );
-        })}
-      </div>
+        </p>
+      </details>
     </GuideFigure>
   );
 }
