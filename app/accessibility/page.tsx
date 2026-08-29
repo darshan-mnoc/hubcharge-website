@@ -68,7 +68,7 @@ export default function AccessibilityPage() {
           participating locations, which many drivers with mobility
           disabilities find more accessible than self-service charging. If you
           need assistance at a station, call us at{" "}
-          <a href="tel:+19493914676">(949) 391-4676</a> during station hours.
+          <a href="tel:+19493928755">(949) 392-8755</a> during station hours.
         </p>
 
         <h2>Feedback and help</h2>
@@ -84,7 +84,7 @@ export default function AccessibilityPage() {
             <a href="mailto:info@micronocinc.com">info@micronocinc.com</a>
           </li>
           <li>
-            Phone: <a href="tel:+19493914676">(949) 391-4676</a> (Mon–Fri, 9
+            Phone: <a href="tel:+19493928755">(949) 392-8755</a> (Mon–Fri, 9
             AM – 6 PM PST)
           </li>
         </ul>

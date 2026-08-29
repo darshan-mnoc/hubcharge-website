@@ -109,7 +109,7 @@ export default function PrivacyPage() {
           You may request to review, correct, or delete the personal
           information you have submitted through the Site by emailing{" "}
           <a href="mailto:info@micronocinc.com">info@micronocinc.com</a> or
-          calling <a href="tel:+19493914676">(949) 391-4676</a>. We will
+          calling <a href="tel:+19493928755">(949) 392-8755</a>. We will
           respond within a reasonable time. California residents may have
           additional rights under California law.
         </p>
@@ -133,7 +133,7 @@ export default function PrivacyPage() {
           9383 Charles Smith Avenue, Rancho Cucamonga, CA 91730
           <br />
           <a href="mailto:info@micronocinc.com">info@micronocinc.com</a> ·{" "}
-          <a href="tel:+19493914676">(949) 391-4676</a>
+          <a href="tel:+19493928755">(949) 392-8755</a>
         </p>
       </Prose>
     </PageShell>

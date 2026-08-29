@@ -53,8 +53,8 @@ export function FaqSearch({ groups }: { groups: FaqGroup[] }) {
       {total === 0 ? (
         <p className="text-body text-ink-500 border-t border-paper-300 pt-6">
           Nothing matches &ldquo;{query}&rdquo;. Call{" "}
-          <a href="tel:+19493914676" className="text-brand-ink underline">
-            (949) 391-4676
+          <a href="tel:+19493928755" className="text-brand-ink underline">
+            (949) 392-8755
           </a>{" "}
           or email{" "}
           <a href="mailto:info@micronocinc.com" className="text-brand-ink underline">

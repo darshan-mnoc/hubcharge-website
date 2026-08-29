@@ -151,7 +151,7 @@ const groups: Group[] = [
             Our full-service model means an attendant can handle the entire
             charging process while you stay in your car, which many drivers
             find more accessible than self-service charging. If you need
-            assistance, call (949) 391-4676. More on our{" "}
+            assistance, call (949) 392-8755. More on our{" "}
             <Link href="/accessibility" className="text-brand-ink underline">
               accessibility page
             </Link>
@@ -164,8 +164,8 @@ const groups: Group[] = [
         a: (
           <>
             Call{" "}
-            <a href="tel:+19493914676" className="text-brand-ink underline">
-              (949) 391-4676
+            <a href="tel:+19493928755" className="text-brand-ink underline">
+              (949) 392-8755
             </a>{" "}
             (Mon–Fri, 9 AM – 6 PM PST), email{" "}
             <a href="mailto:info@micronocinc.com" className="text-brand-ink underline">

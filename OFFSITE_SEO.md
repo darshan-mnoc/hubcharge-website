@@ -14,7 +14,7 @@ Canonical values to copy-paste (also in `lib/stations.ts`):
 |---|---|---|
 | Name | HubCharge Alhambra | HubCharge at Fontana Nissan |
 | Address | 108 S Monterey St, Unit 102, Alhambra, CA 91801 | *(confirm exact street address first!)* |
-| Phone | (949) 391-4676 | (949) 391-4676 |
+| Phone | (949) 392-8755 | (949) 392-8755 |
 | Hours | Daily 6:00 AM – 10:00 PM | Daily 6:00 AM – 10:00 PM |
 | URL | https://hubcharge.com/locations/alhambra | https://hubcharge.com/locations/fontana |
 

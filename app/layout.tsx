@@ -120,7 +120,7 @@ const jsonLd = {
   url: "https://hubcharge.com",
   logo: "https://hubcharge.com/images/hubcharge-logo.webp",
   image: "https://hubcharge.com/og.jpg",
-  telephone: "+1-949-391-4676",
+  telephone: "+1-949-392-8755",
   email: "info@micronocinc.com",
   address: {
     "@type": "PostalAddress",

@@ -176,8 +176,8 @@ export function Troubleshooter() {
             {active.call ? (
               <>
                 Call us on{" "}
-                <a href="tel:+19493914676" className="text-brand-ink underline underline-offset-2">
-                  (949) 391-4676
+                <a href="tel:+19493928755" className="text-brand-ink underline underline-offset-2">
+                  (949) 392-8755
                 </a>{" "}
                 during opening hours, or{" "}
                 <Link href="/contact" className="text-brand-ink underline underline-offset-2">

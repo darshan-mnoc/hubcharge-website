@@ -23,7 +23,7 @@ export type ActionResult = { ok: boolean; error?: string };
 const NOT_CONFIGURED: ActionResult = {
   ok: false,
   error:
-    "We couldn't send your message right now. Please email info@micronocinc.com or call (949) 391-4676.",
+    "We couldn't send your message right now. Please email info@micronocinc.com or call (949) 392-8755.",
 };
 
 // ---- light in-memory rate limit (per server instance) ----

@@ -94,7 +94,7 @@ export default function TermsPage() {
           Micronoc Inc. (HubCharge), 9383 Charles Smith Avenue, Rancho
           Cucamonga, CA 91730 ·{" "}
           <a href="mailto:info@micronocinc.com">info@micronocinc.com</a> ·{" "}
-          <a href="tel:+19493914676">(949) 391-4676</a>
+          <a href="tel:+19493928755">(949) 392-8755</a>
         </p>
       </Prose>
     </PageShell>

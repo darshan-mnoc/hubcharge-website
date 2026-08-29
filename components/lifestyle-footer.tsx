@@ -319,12 +319,12 @@ export function LifestyleFooter() {
                 </li>
                 <li>
                   <motion.a
-                    href="tel:+19493914676"
+                    href="tel:+19493928755"
                     whileHover={{ x: 4 }}
                     className="flex items-center gap-2 text-muted-dark hover:text-brand text-body-sm transition-colors"
                   >
                     <Phone className="h-4 w-4" />
-                    (949) 391-4676
+                    (949) 392-8755
                   </motion.a>
                 </li>
                 <li>
