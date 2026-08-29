@@ -140,8 +140,8 @@ export function LifestyleFooter() {
                 <Image
                   src="/images/hubcharge-logo-on-dark.webp"
                   alt="HubCharge"
-                  width={900}
-                  height={143}
+                  width={1200}
+                  height={189}
                   className="h-8 w-auto"
                 />
               </motion.a>

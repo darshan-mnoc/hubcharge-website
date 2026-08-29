@@ -129,8 +129,8 @@ export function BatteryNav() {
             <Image
               src="/images/hubcharge-logo-on-dark.webp"
               alt="HubCharge"
-              width={900}
-              height={143}
+              width={1200}
+              height={189}
               className="h-6 sm:h-7 lg:h-8 w-auto mt-2 sm:mt-0"
               priority
             />
