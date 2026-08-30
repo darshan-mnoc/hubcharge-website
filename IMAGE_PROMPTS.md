@@ -10,19 +10,37 @@ every prompt is the machine you actually own.
 
 ## Before you start — two rules
 
-### 1. Never let the generator write the wordmark
+### 1. Every charger carries the HubCharge logo — the generator does not draw it
 
-This is not a style preference. It is why the current homepage says
-**HUB⊂NARGE**, why the tagline on six guide pages reads *"FTZT CKARGING &
-MITE SAIAVETIVE"*, and why the cable labels on the rideshare guide say
-**CGOL** and **BMPL** instead of CCS1 and NACS.
+**The goal is that every unit in every image is unmistakably a HubCharge
+product.** A driver who has seen the wordmark on the site should recognise the
+machine when they pull up to it. That is what earns the trust.
 
-Every prompt below asks for a **blank front panel**. The real logo gets
-composited on afterwards from `public/images/hubcharge-logo.webp`, which has a
-clean alpha channel. Ask me and I will do that pass.
+The generator cannot be the one to put it there. Ask an image model for
+lettering and you get what is on the site today: **HUB⊂NARGE** on the
+homepage, *"FTZT CKARGING & MITE SAIAVETIVE"* where the tagline should be on
+six guide pages, and cable labels reading **CGOL** and **BMPL** instead of
+CCS1 and NACS. A misspelt company name destroys more trust than an unbranded
+charger ever would.
+
+So it is a two-step job:
+
+**Step 1 — generate.** Every prompt asks for the unit with a **clean blank
+panel** in the place the logo belongs, correctly lit and in correct
+perspective. That panel is a placeholder, not a design decision.
+
+**Step 2 — composite.** The real wordmark goes onto that panel afterwards from
+`public/images/hubcharge-logo.webp`, which has a clean alpha channel, warped
+to match the panel's perspective and dimmed to match its lighting. Every unit
+ends up branded, and correctly spelt every time.
+
+**Ask me and I will do the compositing pass** — I have the logo with alpha and
+can perspective-match it to each panel.
 
 Where a unit sits far enough back that no lettering would be legible anyway,
-the prompt says *"too distant for any text to read"* instead.
+the prompt says *"too distant for any text to read"* — a smudge in the right
+place reads as a logo at that size, and inventing letters there only risks
+gibberish.
 
 **Check every delivered image at 100% zoom on the unit before you accept it.**
 A thumbnail will not show you a mangled company name. That is exactly how the
@@ -43,8 +61,9 @@ below states its target size. Match it.
 > Photographic, not illustrated or 3D-rendered. Southern California, natural
 > daylight. The charger is a freestanding DC fast-charging unit about 2 metres
 > tall in a champagne-beige powder-coated steel cabinet with softly rounded
-> top edges. Its front carries, from top to bottom: a blank unbranded panel
-> where a logo would go, two short horizontal green status bars glowing side
+> top edges. Its front carries, from top to bottom: a clean blank rectangular
+> panel where the brand logo will be added afterwards, two short horizontal
+> green status bars glowing side
 > by side, a portrait-orientation touchscreen, and a small black contactless
 > card reader below that. Two thick black charging cables hang from moulded
 > holsters on the lower front — one on the left, one on the right. Yellow
@@ -62,18 +81,21 @@ below states its target size. Match it.
 > limbs. No cable that does not physically connect to something. No floating
 > UI elements or app screenshots overlaid on the scene.
 
-## Four accuracy rules
+## Five accuracy rules
 
 These come from the claims discipline the rest of the site already follows.
 Breaking them makes the picture contradict the copy next to it.
 
-1. **Both cables must be visible on every unit.** Every page promises the
+1. **Every charger is a HubCharge charger.** If a unit appears, it gets the
+   logo in step 2. An unbranded charger on a HubCharge page is a competitor's
+   machine as far as the reader knows.
+2. **Both cables must be visible on every unit.** Every page promises the
    station carries both. A unit with one cable makes the page a liar.
-2. **No price on the charger screen.** The rate lives in exactly one place on
+3. **No price on the charger screen.** The rate lives in exactly one place on
    this site and an image is not it.
-3. **No Nissan Leaf plugged in.** 2011–2025 Leafs use CHAdeMO and cannot
+4. **No Nissan Leaf plugged in.** 2011–2025 Leafs use CHAdeMO and cannot
    charge here. Five pages say so.
-4. **No invented trust marks.** No review stars, no certification badges, no
+5. **No invented trust marks.** No review stars, no certification badges, no
    "rated #1" anything. There is no fabricated social proof on this site.
 
 ---
@@ -204,8 +226,10 @@ and `3/2` on desktop, so keep the subject centred and leave air top and bottom.
 
 > Split-feel composition: a suburban driveway at dusk with a small wall-mounted
 > home charging box on the garage wall and a car parked in front of it, warm
-> light from the house windows. Domestic, quiet, end of the day. No public
-> charger in this one.
+> light from the house windows. Domestic, quiet, end of the day.
+
+**No HubCharge unit in this one, deliberately** — this half of the comparison
+is home charging. The public half is carried by the other 25 images.
 
 **Alt:** An electric car parked on a suburban driveway beside a home wall charger.
 
@@ -216,7 +240,11 @@ and `3/2` on desktop, so keep the subject centred and leave air top and bottom.
 
 > A residential street at night lined with parked cars outside low-rise
 > apartment buildings, warm windows above, streetlights overhead. One electric
-> car among the parked cars. No charger — this is the problem, not the fix.
+> car among the parked cars. No charger anywhere.
+
+**No HubCharge unit in this one, deliberately** — the guide's point is that
+you have nowhere to plug in at home. Showing a charger here would contradict
+the page.
 
 **Alt:** Cars parked on a residential apartment street at night.
 
@@ -250,7 +278,10 @@ and `3/2` on desktop, so keep the subject centred and leave air top and bottom.
 
 > A wide open highway heading east through dry Southern California scrubland
 > toward distant hazy mountains, an electric car in the middle distance
-> travelling away from camera. Big sky, midday, sense of distance. No charger.
+> travelling away from camera. Big sky, midday, sense of distance. At the
+> roadside in the near foreground, a charging station canopy with two units
+> beneath it, side on — close enough to read as a real station, too distant
+> for any text to be legible.
 
 **Alt:** An electric car on an open highway heading east through dry hills.
 
@@ -261,7 +292,9 @@ and `3/2` on desktop, so keep the subject centred and leave air top and bottom.
 
 > Elevated view of a multi-lane freeway curving through low hills with palm
 > trees along the shoulder, traffic flowing, mountains and a hazy warm sky
-> beyond. Unmistakably Southern California. Late afternoon golden light.
+> beyond. Unmistakably Southern California. Late afternoon golden light. Just
+> off the freeway on the near side, a small charging forecourt with two units
+> under a canopy, clearly part of the scene, too distant for any text to read.
 
 **Alt:** A Southern California freeway curving east through low hills.
 
@@ -274,6 +307,9 @@ and `3/2` on desktop, so keep the subject centred and leave air top and bottom.
 > working through something administrative, an electric car visible through
 > the window behind them on the driveway. Domestic, organised, unhurried.
 > Laptop screen not legible.
+
+**No HubCharge unit in this one** — the subject is paperwork at home, and
+parking a charger in the kitchen window would be an obvious plant.
 
 **Alt:** Someone at a kitchen table with a laptop, their electric car visible outside.
 
@@ -369,7 +405,9 @@ destination should lead and the charging should be secondary.
 ### 23. `lifestyle-food.webp`
 > A casual counter-service restaurant at lunchtime, a tray of fresh food being
 > set down on a table by the window, natural light, people eating in the
-> background. Warm and appetising. No legible menu boards or signage.
+> background. Warm and appetising. Through the window behind, an electric car
+> is charging at a station unit across the forecourt — clearly in shot, softly
+> out of focus. No legible menu boards or signage.
 
 **Alt:** A restaurant a short walk from a HubCharge station.
 

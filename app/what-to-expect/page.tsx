@@ -92,7 +92,7 @@ export default function WhatToExpectPage() {
       />
 
       <p className="text-caption text-ink-500 mt-8 max-w-2xl">
-        *Attendant service at select locations and hours — self-serve is always
+        Attendant service at select locations and hours — self-serve is always
         available. Charging speed and added range vary by vehicle, battery
         state of charge, and temperature.
       </p>

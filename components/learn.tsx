@@ -67,10 +67,23 @@ export function GuideShort({ slug }: { slug: string }) {
   return (
     <aside
       aria-label="The short version"
-      className="not-prose mb-10 rounded-lg border-l-2 border-brass bg-paper-100 px-5 py-5 sm:px-6"
+      // Three devices were doing one job here: a grey fill, a coloured left
+      // edge and a rounded corner. The fill sat a hair off the page ground so
+      // it read as a disabled panel rather than an emphasis, and a single
+      // coloured left edge is the most generic callout shape there is.
+      //
+      // One device now: a hairline box on the page's own ground, with the
+      // eyebrow-and-brass-rule pair the guide figures already use, so this
+      // belongs to the same family as everything else on the page. The measure
+      // is capped because the old block ran the full column width at
+      // text-body-lg, which is a long line to read as an opening statement.
+      className="not-prose mb-10 rounded-lg border border-paper-300 px-5 py-6 sm:px-7 sm:py-7"
     >
       <p className="text-overline text-ink-500">The short version</p>
-      <p className="mt-3 text-body-lg text-ink-800">{guide.short}</p>
+      <span aria-hidden className="mt-3 mb-4 block h-px w-8 bg-brass" />
+      <p className="max-w-[54ch] text-h4 font-normal leading-relaxed text-ink-800">
+        {guide.short}
+      </p>
     </aside>
   );
 }

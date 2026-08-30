@@ -197,7 +197,7 @@ export default function PricingPage() {
           </CtaButton>
         </div>
         <p className="text-caption text-ink-500 mt-8">
-          *Attendant service at select locations and hours. Added range varies
+          Attendant service at select locations and hours. Added range varies
           by vehicle, battery state of charge, and temperature. Your total
           price is always disclosed before your session starts.
         </p>

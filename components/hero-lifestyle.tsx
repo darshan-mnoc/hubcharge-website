@@ -47,7 +47,7 @@ const specs = [
   { value: stations[0].power, label: "DC fast charging, both connectors" },
   {
     value: "10 minutes",
-    label: "Adds 50–135 miles, depending on the car",
+    label: "Adds 50–135 miles*",
     href: "/pricing#plan",
     cta: "Check yours",
   },
@@ -84,7 +84,13 @@ export function HeroLifestyle() {
           className="object-cover"
         />
         {/* Vertical scrim carries the spec bar; the horizontal one carries the
-            left-anchored type where it crosses the bright canopy. */}
+            left-anchored type where it crosses the bright canopy.
+
+            The horizontal one was cut for a hero that had a 44ch paragraph
+            under the headline. With that gone the headline itself runs to 58%
+            of the viewport at 84px, straight across the brightest part of the
+            canopy, and the muted line measured 1.62:1 against it. The falloff
+            now holds past where the type ends rather than fading out at 72%. */}
         <div
           className="absolute inset-0"
           style={{
@@ -96,7 +102,7 @@ export function HeroLifestyle() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to right, rgba(10,25,47,0.78) 0%, rgba(10,25,47,0.45) 42%, rgba(10,25,47,0) 72%)",
+              "linear-gradient(to right, rgba(10,25,47,0.88) 0%, rgba(10,25,47,0.74) 40%, rgba(10,25,47,0.40) 62%, rgba(10,25,47,0) 84%)",
           }}
         />
       </motion.div>
@@ -113,7 +119,7 @@ export function HeroLifestyle() {
         // column to its content width and centring that. The hero type sat
         // ~300px right of the page gutter, aligned with nothing else on the
         // page, including the nav above it and the spec bar below.
-        className="relative z-10 w-full section-container pt-40 pb-12 lg:pb-16"
+        className="relative z-10 w-full section-container pt-32 pb-12 lg:pb-16"
       >
         {/* Both halves at display size, separated by colour rather than scale.
 
@@ -132,24 +138,19 @@ export function HeroLifestyle() {
             Descriptor first, payoff second: the bright line lands last. */}
         <motion.h1
           variants={item}
-          className="text-display max-w-[14ch] text-balance"
+          className="text-display max-w-[15ch] text-balance [text-wrap:balance]"
         >
-          <span className="text-on-dark/60">Full-service EV charging.</span>{" "}
-          <span className="text-white">Reclaim your time.</span>
+          {/* Two blocks, not one wrapped sentence. With the paragraph beneath
+              it gone the headline carries the hero alone, and a couplet that
+              breaks where the meaning breaks reads as composed — where the
+              inline version broke wherever the measure happened to run out. */}
+          <span className="block text-on-dark/70">Full-service EV charging.</span>
+          <span className="block text-white">Reclaim your time.</span>
         </motion.h1>
-
-        <motion.p
-          variants={item}
-          className="text-body-lg text-on-dark/80 max-w-[44ch] mt-6"
-        >
-          Our attendant plugs you in. You stay in your car.
-          <span className="text-brass">*</span> No app needed; it all runs in
-          your browser.
-        </motion.p>
 
         <motion.div
           variants={item}
-          className="flex flex-col sm:flex-row gap-3 mt-10 w-full max-w-sm sm:max-w-none"
+          className="flex flex-col sm:flex-row gap-3 mt-9 w-full max-w-sm sm:max-w-none"
         >
           <CtaButton href="#story" size="lg" fullWidth wrapperClassName="sm:w-auto">
             See how it works
@@ -192,8 +193,8 @@ export function HeroLifestyle() {
         </div>
         <div className="section-container flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 pb-5">
           <p className="text-footnote text-on-dark/55 max-w-[64ch]">
-            *Attendant service at select locations and hours. Range added
-            depends on your car, its state of charge and the temperature.
+            *Range added depends on your car, its state of charge and the
+            temperature.
           </p>
           {/* A quiet cue that there is more below — the hero fills the
               viewport, so without one the fold reads as the end of the page. */}
