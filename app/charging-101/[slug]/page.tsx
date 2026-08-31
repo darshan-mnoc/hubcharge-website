@@ -41,16 +41,16 @@ export async function generateMetadata({
  * sharing an image, which is where a repeat actually gets noticed.
  */
 const GUIDE_IMAGES: Record<string, string> = {
-  etiquette: "/images/charging-service-v2.webp",
+  etiquette: "/images/guide-etiquette-evening.webp",
   weather: "/images/home.webp",
   "battery-health": "/images/guide-parking-garage.webp",
   "home-vs-public": "/images/guide-office-park.webp",
   "apartment-charging": "/images/lifestyle-groceries-v2.webp",
-  "charging-troubleshooting": "/images/charging-service-v2.webp",
+  "charging-troubleshooting": "/images/guide-troubleshooting-plaza.webp",
   "rideshare-drivers": "/images/lifestyle-food-v2.webp",
   "road-trip": "/images/home.webp",
   "socal-charging": "/images/lifestyle-services-v2.webp",
-  "new-ev-owner": "/images/valet-greet-v2.webp",
+  "new-ev-owner": "/images/guide-new-owner-residential.webp",
   "ev-incentives-california": "/images/lifestyle-coffee-v2.webp",
 };
 
@@ -62,7 +62,7 @@ const GUIDE_IMAGES: Record<string, string> = {
  */
 const GUIDE_IMAGE_ALTS: Record<string, string> = {
   etiquette:
-    "An attendant connecting a charging cable to a blue electric car beneath a HubCharge canopy.",
+    "Several cars parked at a HubCharge charger at dusk outside a residential complex, one of them connected.",
   weather:
     "A HubCharge forecourt at dusk, cars charging beneath a lit canopy.",
   "battery-health":
@@ -72,7 +72,7 @@ const GUIDE_IMAGE_ALTS: Record<string, string> = {
   "apartment-charging":
     "An attendant loading grocery bags into the boot of an electric estate car while it charges.",
   "charging-troubleshooting":
-    "An attendant connecting a charging cable to a blue electric car beneath a HubCharge canopy.",
+    "A HubCharge charger on a corporate plaza forecourt with a car connected and office buildings behind.",
   "rideshare-drivers":
     "Electric cars parked at a HubCharge station on a city forecourt, an attendant beside one of them.",
   "road-trip":
@@ -80,7 +80,7 @@ const GUIDE_IMAGE_ALTS: Record<string, string> = {
   "socal-charging":
     "An attendant wiping down a light-coloured electric car while it charges at a HubCharge unit.",
   "new-ev-owner":
-    "A HubCharge attendant leaning to a driver's window beside a charging car.",
+    "A HubCharge charger beside desert landscaping at a residential development, a car connected to it.",
   "ev-incentives-california":
     "A HubCharge station lit at dusk in front of a row of shops and offices.",
 };
