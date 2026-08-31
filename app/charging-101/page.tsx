@@ -17,8 +17,8 @@ export default function Charging101Page() {
     <PageShell
       backTo={{ href: "/", label: "Home" }}
       eyebrow="Guides"
-      image="/images/valet-greet-v2.webp"
-      imageAlt="A HubCharge attendant greeting a driver at the charger"
+      image="/images/guide-index-studio.webp"
+      imageAlt="A HubCharge DC fast charger with both cables out, one connected to a car, its CCS1 and NACS sockets labelled on the front."
       title="Charging 101"
       intro="New to EVs, or just want straight answers? Everything about charging, in plain English — no jargon, no sales pitch."
     >

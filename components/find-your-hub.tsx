@@ -535,7 +535,10 @@ export function FindYourHub() {
               More locations coming soon
             </h3>
             <p className="text-ink-500 mb-6 max-w-[52ch]">
-              We&apos;re expanding across California. Enter your email to be notified
+              {/* This sat directly above a list containing Round Rock, which
+                  is in Texas. The city is a real planned location, so the
+                  sentence was the thing that was wrong. */}
+              We&apos;re opening more locations. Enter your email to be notified
               when we open near you.
             </p>
             <p className="text-caption text-ink-400 mb-3">

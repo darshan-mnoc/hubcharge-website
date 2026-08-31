@@ -32,15 +32,19 @@ export async function generateMetadata({
 }
 
 /**
- * Masthead per guide. Eleven guides against seven photographs means repeats
- * are unavoidable; these are assigned so that no two guides in the same group
- * share one, which is where a repeat actually gets noticed.
+ * Masthead per guide.
+ *
+ * Six of these now point at real HubCharge-branded renders. The ones still on
+ * charging-service-v2 and valet-greet-v2 are carrying known defects — a
+ * gibberish tagline and a wordmark that reads HUB(NARGE respectively — and are
+ * the next slots to replace. Assignments avoid two guides in the same group
+ * sharing an image, which is where a repeat actually gets noticed.
  */
 const GUIDE_IMAGES: Record<string, string> = {
   etiquette: "/images/charging-service-v2.webp",
   weather: "/images/home.webp",
-  "battery-health": "/images/waiting-v3.webp",
-  "home-vs-public": "/images/valet-greet-v2.webp",
+  "battery-health": "/images/guide-parking-garage.webp",
+  "home-vs-public": "/images/guide-office-park.webp",
   "apartment-charging": "/images/lifestyle-groceries-v2.webp",
   "charging-troubleshooting": "/images/charging-service-v2.webp",
   "rideshare-drivers": "/images/lifestyle-food-v2.webp",
@@ -48,6 +52,37 @@ const GUIDE_IMAGES: Record<string, string> = {
   "socal-charging": "/images/lifestyle-services-v2.webp",
   "new-ev-owner": "/images/valet-greet-v2.webp",
   "ev-incentives-california": "/images/lifestyle-coffee-v2.webp",
+};
+
+/**
+ * Alt text per masthead. This was a hardcoded imageAlt="" for all eleven
+ * data-driven guides, so every one of their mastheads was announced as
+ * decorative and skipped — while the seven page-file guides all described
+ * theirs. These are written from what is actually in each frame.
+ */
+const GUIDE_IMAGE_ALTS: Record<string, string> = {
+  etiquette:
+    "An attendant connecting a charging cable to a blue electric car beneath a HubCharge canopy.",
+  weather:
+    "A HubCharge forecourt at dusk, cars charging beneath a lit canopy.",
+  "battery-health":
+    "A HubCharge charger in a concrete parking structure beside bay D12, screen lit and both connectors holstered.",
+  "home-vs-public":
+    "A HubCharge charger on an office-park forecourt with a car connected and others parked nearby.",
+  "apartment-charging":
+    "An attendant loading grocery bags into the boot of an electric estate car while it charges.",
+  "charging-troubleshooting":
+    "An attendant connecting a charging cable to a blue electric car beneath a HubCharge canopy.",
+  "rideshare-drivers":
+    "Electric cars parked at a HubCharge station on a city forecourt, an attendant beside one of them.",
+  "road-trip":
+    "A HubCharge forecourt at dusk, cars charging beneath a lit canopy.",
+  "socal-charging":
+    "An attendant wiping down a light-coloured electric car while it charges at a HubCharge unit.",
+  "new-ev-owner":
+    "A HubCharge attendant leaning to a driver's window beside a charging car.",
+  "ev-incentives-california":
+    "A HubCharge station lit at dusk in front of a row of shops and offices.",
 };
 
 /** Stable anchor from a heading — the scroll-spy and the rail must agree. */
@@ -66,7 +101,7 @@ export default async function ProseGuide({
       eyebrow="Guides"
       backTo={{ href: "/charging-101", label: "All guides" }}
       image={GUIDE_IMAGES[slug]}
-      imageAlt=""
+      imageAlt={GUIDE_IMAGE_ALTS[slug] ?? ""}
       title={guide.title}
       intro={guide.desc}
       meta={<span>{guide.read} read</span>}

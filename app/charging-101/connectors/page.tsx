@@ -17,8 +17,8 @@ export default function ConnectorsPage() {
     <PageShell
       backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
-      image="/images/charging-service-v2.webp"
-      imageAlt="A charging cable connected to an electric car"
+      image="/images/guide-connectors.webp"
+      imageAlt="A HubCharge charger at a retail plaza with both cables hanging, one connected to a car, the CCS1 and NACS sockets labelled beneath the screen."
       title="NACS vs CCS, explained"
       intro="America's EV world runs on two fast-charging plugs. Here's what they are, which cars use which — and why at HubCharge it doesn't matter."
     >
