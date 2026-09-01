@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { Term } from "@/components/term";
 import { PageShell, Prose } from "@/components/page-shell";
@@ -38,6 +39,26 @@ export default function ChargingLevelsPage() {
         The three levels aren&rsquo;t really about volts. They&rsquo;re about
         how much of your day charging takes.
       </p>
+
+      {/* The photographic strip only. The image this came from carried a
+          comparison table underneath claiming "Level 1 — Best for Homes" and
+          "15-45 Minutes", both of which contradict the copy on this page. The
+          three settings are the useful part; the claims are made properly by
+          ChargingLevelsCompare below, from real figures. */}
+      <figure className="breakout not-prose my-8">
+        <Image
+          src="/images/figure-charging-levels.webp"
+          alt="Three charging settings side by side: a HubCharge forecourt outside a retail parade, chargers in an apartment car park, and a wall unit on a suburban garage."
+          width={1400}
+          height={339}
+          sizes="(max-width: 1024px) 100vw, 1000px"
+          className="h-auto w-full rounded-lg"
+        />
+        <figcaption className="mt-3 text-caption text-ink-400">
+          The same three levels, where you actually meet them — out and about,
+          where you park, and at home.
+        </figcaption>
+      </figure>
 
       <ChargingLevelsCompare />
 

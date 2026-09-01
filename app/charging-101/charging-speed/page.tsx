@@ -30,8 +30,8 @@ export default function ChargingSpeedPage() {
     <PageShell
       backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
-      image="/images/guide-speed-office.webp"
-      imageAlt="A car charging at a HubCharge unit in an office-park bay marked for electric vehicles."
+      image="/images/guide-speed-connector.webp"
+      imageAlt="A charging cable seated and locked into the port of a white electric car at a roadside charger."
       title="How long does charging take?"
       intro="Honest answer: it depends — but in a predictable way. Understand the charging curve and you'll charge smarter than most EV owners."
     >

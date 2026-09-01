@@ -6,6 +6,11 @@ const config: Config = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    // lib/guide-content.tsx is a .tsx file full of JSX with classNames on it.
+    // Without this glob Tailwind never sees them and the markup ships
+    // unstyled with no error anywhere — which is exactly what happened to a
+    // max-w-[560px] here that silently computed to 100%.
+    './lib/**/*.{js,ts,jsx,tsx,mdx}',
     '*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {

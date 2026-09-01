@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { GuideFigure } from "@/components/guide-figure";
+import Image from "next/image";
 import { ChargerEtiquette } from "@/components/charger-etiquette";
 import { HomeVsPublic as HomeVsPublicCompare } from "@/components/home-vs-public";
 import { SoCalCorridor } from "@/components/socal-corridor";
@@ -88,12 +90,31 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
     {
       heading: "Cold is the bigger problem",
       body: (
+        <>
+          {/* Shown whole and uncropped. It arrived square, and the 3:2
+              masthead frame would have cut a third of its height — enough to
+              lose the bottom row of labels, which is the whole content. */}
+          <GuideFigure
+            eyebrow="At a glance"
+            title="What weather does to a battery"
+            footnote="Cold slows how fast the battery accepts charge; heat costs you range through cabin cooling. The two are separate effects and they are routinely confused."
+          >
+            <Image
+              src="/images/figure-weather-effects.webp"
+              alt="Four weather conditions shown around a HubCharge charger and an electric car: extreme heat, extreme cold, humidity and precipitation, and varied temperatures."
+              width={1024}
+              height={1024}
+              sizes="(max-width: 768px) 100vw, 720px"
+              className="mx-auto h-auto w-full max-w-[560px] rounded-lg"
+            />
+          </GuideFigure>
         <p>
           A cold battery physically cannot accept charge as quickly. Below
           roughly 10°C you may see half the charging speed you get on a mild
           day, through no fault of the charger. This surprises people far more
           than it should, because nothing on the screen explains it.
         </p>
+        </>
       ),
     },
     {

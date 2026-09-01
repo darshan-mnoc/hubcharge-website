@@ -27,8 +27,8 @@ export default function ChargingCostPage() {
     <PageShell
       backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
-      image="/images/guide-cost-screen.webp"
-      imageAlt="A HubCharge charger against a plain wall with a car connected, its screen showing the session details before charging starts."
+      image="/images/guide-cost-illustration.webp"
+      imageAlt="An illustration of a driver plugging in an orange electric car at a charger, with a city skyline and wind turbines behind."
       title="What does charging cost?"
       intro="Public charging pricing can be genuinely confusing. Here's how the industry's models work — and how we simplified ours."
     >

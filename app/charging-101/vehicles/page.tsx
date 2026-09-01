@@ -27,8 +27,8 @@ export default function VehiclesIndex() {
     <PageShell
       eyebrow="Your car"
       backTo={{ href: "/charging-101", label: "All guides" }}
-      image="/images/guide-by-make.webp"
-      imageAlt="A blue Volkswagen ID.4 charging at a HubCharge unit in a retail car park, with other vehicles parked alongside."
+      image="/images/guide-vehicles-lineup.webp"
+      imageAlt="A HubCharge charger on a plinth surrounded by electric cars from a range of manufacturers."
       title="Charging guides by make"
       intro="Every make below charges at HubCharge. Find yours for the specifics — which cable, how fast, and anything worth knowing."
       meta={<><span>Updated {EV_DATA_UPDATED}</span><span>{makes.length} makes</span></>}

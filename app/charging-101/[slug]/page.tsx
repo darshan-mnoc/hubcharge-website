@@ -44,12 +44,12 @@ const GUIDE_IMAGES: Record<string, string> = {
   etiquette: "/images/guide-etiquette-evening.webp",
   weather: "/images/home.webp",
   "battery-health": "/images/guide-parking-garage.webp",
-  "home-vs-public": "/images/guide-office-park.webp",
-  "apartment-charging": "/images/lifestyle-groceries-v2.webp",
-  "charging-troubleshooting": "/images/guide-troubleshooting-plaza.webp",
+  "home-vs-public": "/images/guide-home-vs-public-split.webp",
+  "apartment-charging": "/images/guide-apartment-forecourt.webp",
+  "charging-troubleshooting": "/images/guide-trouble-banner.webp",
   "rideshare-drivers": "/images/lifestyle-food-v2.webp",
-  "road-trip": "/images/home.webp",
-  "socal-charging": "/images/lifestyle-services-v2.webp",
+  "road-trip": "/images/guide-roadtrip-highway.webp",
+  "socal-charging": "/images/guide-socal-night.webp",
   "new-ev-owner": "/images/guide-new-owner-residential.webp",
   "ev-incentives-california": "/images/lifestyle-coffee-v2.webp",
 };
@@ -68,17 +68,17 @@ const GUIDE_IMAGE_ALTS: Record<string, string> = {
   "battery-health":
     "A HubCharge charger in a concrete parking structure beside bay D12, screen lit and both connectors holstered.",
   "home-vs-public":
-    "A HubCharge charger on an office-park forecourt with a car connected and others parked nearby.",
+    "Split view: an electric car charging from a wall unit in a home garage on the left, and a row of cars at a solar-canopied public forecourt on the right.",
   "apartment-charging":
-    "An attendant loading grocery bags into the boot of an electric estate car while it charges.",
+    "Electric vehicles charging at a HubCharge forecourt beside a retail building at dusk.",
   "charging-troubleshooting":
-    "A HubCharge charger on a corporate plaza forecourt with a car connected and office buildings behind.",
+    "A charging cable connected to a dark electric car, overlaid with the words Troubleshooting Common EV Charging Issues.",
   "rideshare-drivers":
     "Electric cars parked at a HubCharge station on a city forecourt, an attendant beside one of them.",
   "road-trip":
-    "A HubCharge forecourt at dusk, cars charging beneath a lit canopy.",
+    "The driver's view from inside a car on an open road at sunset, with navigation graphics overlaid on the windscreen.",
   "socal-charging":
-    "An attendant wiping down a light-coloured electric car while it charges at a HubCharge unit.",
+    "A lit charging canopy at night with cars parked beneath it.",
   "new-ev-owner":
     "A HubCharge charger beside desert landscaping at a residential development, a car connected to it.",
   "ev-incentives-california":
