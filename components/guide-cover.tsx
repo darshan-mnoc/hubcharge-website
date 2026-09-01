@@ -218,19 +218,24 @@ function Unit({
 }
 
 /**
- * A car in profile — a modern crossover, the shape of the Model Y sitting at
- * the charger in public/images/fontana-station.webp.
+ * A car in profile — a modern EV crossover, drawn to real geometry.
  *
- * What was here was 62 long and 33 tall including its wheels: a 1.87:1 box
- * with the proportion of a small MPV, a hard kink where the A-pillar met the
- * bonnet, and wheels drawn as two flat discs. This is 68 long and 32.5 tall
- * (2.09:1), with a short bonnet, a FLAT roof section and an upright
- * tailgate — the crossover proportion, not the fastback one and the
- * wheels pushed out to 0.63 of the length — a Model Y is 0.61. The single arc
- * and the short overhangs are what make a silhouette read as an EV; there is
- * no engine to make room for.
+ * Two earlier attempts missed for reasons worth recording, because both were
+ * wrong in the same direction. The first was a closed blob with two wheels
+ * laid on top: no arches cut into the silhouette, which is the one detail
+ * that separates a car drawing from a lozenge. The second added the arches
+ * but guessed the proportions, and measuring it against real cars showed how
+ * far off the guess was — 2.10 length-to-height when a Model Y is 2.93, an
+ * Ioniq 5 2.89 and even a minivan 2.91, with wheels 40% oversized. It was
+ * taller than a minivan. That is the whole toy-car look.
  *
- * Detail is kept to what survives s=0.6, the smallest scale it is drawn at.
+ * So this is built from the numbers: length 67, overall height 23.2 (2.89),
+ * wheelbase 0.61 of length and wheel diameter 0.167 — a Model Y is 0.61 and
+ * 0.155. What makes it read as a crossover rather than a sedan is not height
+ * (the ratios barely differ) but shape: cab-forward with a bonnet short enough to be
+ * cab-forward, a flat roof section, an upright tailgate, and daylight above each tyre.
+ *
+ * Detail is held to what survives s=0.6, the smallest scale it is drawn at.
  */
 function CarSide({
   x,
@@ -243,42 +248,72 @@ function CarSide({
   y?: number;
   s?: number;
   flip?: boolean;
-  /** Draw a charge socket on the named wing. Cables must land on one of
+  /** Draw a charge socket on the named flank. Cables must land on one of
    *  these — a cable ending in mid-air is the drawn equivalent of the
    *  floating-cable renders these covers replaced. */
   port?: "front" | "rear";
 }) {
-  const body = "M-34,0 L-34,-7 Q-34,-11 -30,-12.2 C-25,-13.8 -22,-15.5 -18,-19.5 C-14.5,-23 -10,-25.2 -3,-25.5 L8,-25.5 C15,-25.2 19,-23.5 23,-20 C27.5,-16.5 31,-13.5 33,-11.6 Q34,-10.6 34,-7.2 L34,0 Z";
+  const body =
+    "M-33.5,-1.8 L-33.5,-5.4 Q-33.8,-8.4 -30.3,-9.8 " +
+    "C-27,-10.8 -24.5,-11.6 -21.5,-14.2 " +
+    "C-18,-16.6 -14,-17.6 -8,-17.6 L7,-17.6 " +
+    "C13,-17.5 17,-16.6 20.5,-14.2 " +
+    "C24.5,-11.4 28.5,-9 31.5,-7.4 Q33.5,-6.4 33.5,-4 L33.5,-1.8 " +
+    "L27.16,-1.8 A6.8,6.8 0 0 0 14.04,-1.8 " +
+    "L-14.04,-1.8 A6.8,6.8 0 0 0 -27.16,-1.8 Z";
+  const glass =
+    "M-18.6,-13.8 C-16,-16.1 -12.5,-17.1 -8,-17.1 L7,-17.1 " +
+    "C12.4,-17 15.8,-16.2 19,-14 L16,-11.3 L-15,-11.3 Z";
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
-      <ellipse cx={0} cy={2} rx={36} ry={2.3} fill={ILLO.shadow} opacity={0.4} />
+      <ellipse cx={0} cy={6.2} rx={32} ry={2} fill={ILLO.shadow} opacity={0.45} />
       <path d={body} fill={ILLO.carMid} />
-      <path d={body} fill="none" stroke={ILLO.hub} strokeWidth={1.5} strokeOpacity={0.9} strokeLinejoin="round" />
-      {/* glasshouse, flush and following the roof arc */}
-      <path
-        d="M-16.5,-19.8 C-13,-23.3 -9,-24.4 -3,-24.4 L8,-24.4 C14,-24.2 17.5,-22.6 21.4,-19.4 L16,-15.4 L-11.5,-15.4 Z"
-        fill={ILLO.glassMid}
-      />
-      <path d="M-16.5,-19.8 C-13,-23.3 -9,-24.4 -3,-24.4 L-3,-15.4 L-11.5,-15.4 Z" fill={ILLO.glassTop} opacity={0.42} />
-      {/* light bars, front and rear — the modern EV signature. Grey, not
-          orange: on these covers orange means power is moving. */}
-      <rect x={-32.6} y={-9} width={4.4} height={1.4} rx={0.7} fill={ILLO.glassTop} opacity={0.6} />
-      <rect x={28.8} y={-11.5} width={4.4} height={1.4} rx={0.7} fill={ILLO.glassTop} opacity={0.5} />
-      {/* rocker shadow */}
-      <rect x={-34} y={-2.2} width={68} height={2.2} fill={ILLO.carRocker} />
-      {[-21.5, 21.5].map((wx) => (
+      {/* glasshouse, flush and blacked out so the roof reads as floating */}
+      <path d={glass} fill={ILLO.glassLow} />
+      <path d="M-18.6,-13.8 C-16,-16.1 -12.5,-17.1 -8,-17.1 L-8,-11.3 L-15,-11.3 Z" fill={ILLO.glassTop} opacity={0.32} />
+      {/* B-pillar, and the door shut line running down from it */}
+      <path d="M-1,-17.1 L-1,-11.3" stroke={ILLO.carLow} strokeWidth={1.1} strokeOpacity={0.85} />
+      <path d="M-1,-10.5 L-1,-3" stroke={ILLO.carLow} strokeWidth={0.8} strokeOpacity={0.55} strokeLinecap="round" />
+      {/* beltline under the glass, and the shoulder crease along the flank */}
+      <path d="M-15.5,-11 L17.5,-11" stroke={ILLO.hub} strokeWidth={0.7} strokeOpacity={0.38} strokeLinecap="round" />
+      <path d="M-26,-7.6 C-14,-8.4 12,-8.4 29,-7.2" stroke={ILLO.hub} strokeWidth={0.6} strokeOpacity={0.26} fill="none" />
+      {/* door handle */}
+      <rect x={2} y={-9.9} width={3.5} height={1} rx={0.5} fill={ILLO.hub} fillOpacity={0.4} />
+      {/* wing mirror — small, but a silhouette without one reads as a model */}
+      <path d="M-16.5,-14 L-19.6,-13.4 L-19.4,-12.2 L-16.5,-12.6 Z" fill={ILLO.carLow} stroke={ILLO.hub} strokeWidth={0.5} strokeOpacity={0.5} strokeLinejoin="round" />
+      {/* Light bars, raked to follow the bodywork rather than sitting on it as
+          flat rectangles. Grey, not orange: here orange means power moving. */}
+      <path d="M-32.3,-7 L-28.4,-9.2 L-28.4,-8 L-32.3,-5.8 Z" fill={ILLO.glassTop} opacity={0.62} />
+      <path d="M28.8,-9.6 L32.2,-6.9 L32.2,-5.8 L28.8,-8.5 Z" fill={ILLO.glassTop} opacity={0.5} />
+      {/* the outline last, so every crease sits under it */}
+      <path d={body} fill="none" stroke={ILLO.hub} strokeWidth={1.25} strokeOpacity={0.82} strokeLinejoin="round" />
+      {[-20.6, 20.6].map((wx) => (
         <g key={wx}>
-          <circle cx={wx} cy={0} r={7} fill={ILLO.tyre} />
-          <circle cx={wx} cy={0} r={4.2} fill={ILLO.rim} />
-          <circle cx={wx} cy={0} r={4.2} fill="none" stroke={ILLO.hub} strokeWidth={0.7} strokeOpacity={0.55} />
-          <circle cx={wx} cy={0} r={1.2} fill={ILLO.hub} fillOpacity={0.5} />
+          <circle cx={wx} cy={0} r={5.6} fill={ILLO.tyre} />
+          <circle cx={wx} cy={0} r={3.5} fill={ILLO.rim} />
+          {/* aero spokes — the turbine face every current EV wears */}
+          {[0, 72, 144, 216, 288].map((a) => (
+            <rect
+              key={a}
+              x={wx - 0.45}
+              y={-3.3}
+              width={0.9}
+              height={2.5}
+              rx={0.45}
+              fill={ILLO.hub}
+              fillOpacity={0.42}
+              transform={`rotate(${a} ${wx} 0)`}
+            />
+          ))}
+          <circle cx={wx} cy={0} r={3.5} fill="none" stroke={ILLO.hub} strokeWidth={0.6} strokeOpacity={0.5} />
+          <circle cx={wx} cy={0} r={1} fill={ILLO.hub} fillOpacity={0.55} />
         </g>
       ))}
       {port && (
-        <g transform={`translate(${port === "front" ? -24 : 24} -11.5)`}>
-          <rect x={-3.2} y={-4} width={6.4} height={8} rx={1.6} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={0.9} strokeOpacity={0.9} />
+        <g transform={`translate(${port === "front" ? -10.5 : 10.5} -7.3)`}>
+          <rect x={-2.2} y={-2.3} width={4.4} height={4.6} rx={1.1} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={0.8} strokeOpacity={0.9} />
           {/* orange only because power is moving through it */}
-          <circle cx={0} cy={0} r={1.4} fill={ILLO.live} />
+          <circle cx={0} cy={0} r={1.1} fill={ILLO.live} />
         </g>
       )}
     </g>
@@ -469,7 +504,7 @@ export const COVERS: Record<string, Motif> = {
         <CarSide x={190} s={1.15} port="front" />
         {/* over the horn and down to the port — the route it takes on the
             real machine, and the reason the arc starts so high */}
-        <Cable d="M81.9,70.5 C104,74 114,118 136,131 C144,136 154,139 162.4,138.8" live />
+        <Cable d="M81.9,70.5 C106,74 120,120 150,136 C160,141 170,143 177.9,143.6" live />
       </>
     ),
   },
@@ -481,7 +516,7 @@ export const COVERS: Record<string, Motif> = {
       <>
         <Unit id={id} x={222} lit inUse />
         <CarSide x={112} s={1.05} port="rear" />
-        <Cable d="M212.1,70.5 C192,74 182,118 161,131 C153,136 145,139 137.2,139.9" live />
+        <Cable d="M212.1,70.5 C190,74 176,120 147,136 C139,141 131,143 123,144.3" live />
         {[54, 84, 114].map((x, i) => (
           <Pip key={x} x={x} y={176} lit={i === 2} />
         ))}
@@ -639,7 +674,7 @@ export const COVERS: Record<string, Motif> = {
       <>
         <Unit id={id} x={66} lit inUse />
         <CarSide x={140} s={0.86} port="front" />
-        <Cable d="M75.9,70.5 C94,74 100,122 111,135 C114,139 116,141 119.4,142.1" live />
+        <Cable d="M75.9,70.5 C98,74 106,124 122,139 C125,143 128,145 131,145.7" live />
         {/* the free bay: its connector is holstered and its cable stowed, both
             drawn by Unit itself, so there is nothing to draw here */}
         <Unit id={id} x={244} />
