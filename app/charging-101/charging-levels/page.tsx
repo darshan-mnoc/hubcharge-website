@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import Image from "next/image";
 import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { Term } from "@/components/term";
@@ -20,8 +21,7 @@ export default function ChargingLevelsPage() {
     <PageShell
       backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
-      image="/images/guide-levels-retail.webp"
-      imageAlt="A HubCharge storefront with two fast chargers outside a retail parade, cars parked alongside."
+      cover={<GuideCover motif="levels" />}
       title="Charging levels, explained"
       intro="Level 1, Level 2, DC fast — the names sound technical, but the idea is simple: each level delivers power faster than the last."
     >

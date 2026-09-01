@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { CheckCircle2, XCircle, Zap, Clock, Smartphone } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
@@ -72,8 +73,7 @@ export default function PricingPage() {
       backTo={{ href: "/", label: "Home" }}
       eyebrow="Pricing"
       tone="dark"
-      image="/images/coffee-delivery-v3.webp"
-      imageAlt="A driver waiting comfortably in their car while it charges"
+      cover={<GuideCover motif="flat" />}
       title="One flat rate. No surprises."
       intro="You always know exactly what you'll pay before you plug in — that's the whole point."
     >

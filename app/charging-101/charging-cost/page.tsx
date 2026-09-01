@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import { Term } from "@/components/term";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
@@ -27,8 +28,7 @@ export default function ChargingCostPage() {
     <PageShell
       backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
-      image="/images/guide-cost-illustration.webp"
-      imageAlt="An illustration of a driver plugging in an orange electric car at a charger, with a city skyline and wind turbines behind."
+      cover={<GuideCover motif="clock" />}
       title="What does charging cost?"
       intro="Public charging pricing can be genuinely confusing. Here's how the industry's models work — and how we simplified ours."
     >

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover, type CoverMotif } from "@/components/guide-cover";
 import { notFound } from "next/navigation";
 import { PageShell, Prose } from "@/components/page-shell";
 import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
@@ -32,57 +33,25 @@ export async function generateMetadata({
 }
 
 /**
- * Masthead per guide.
+ * Cover per guide.
  *
- * Six of these now point at real HubCharge-branded renders. The ones still on
- * charging-service-v2 and valet-greet-v2 are carrying known defects — a
- * gibberish tagline and a wordmark that reads HUB(NARGE respectively — and are
- * the next slots to replace. Assignments avoid two guides in the same group
- * sharing an image, which is where a repeat actually gets noticed.
+ * These were photographs until they were not worth defending: a 3:2 frame cut
+ * a third off every square one, and several carried claims the page below
+ * them contradicted. A drawn cover is authored at the frame's own ratio and
+ * contains no text, so neither failure is available to it.
  */
-const GUIDE_IMAGES: Record<string, string> = {
-  etiquette: "/images/guide-etiquette-rules.webp",
-  weather: "/images/guide-weather-conditions.webp",
-  "battery-health": "/images/guide-parking-garage.webp",
-  "home-vs-public": "/images/guide-home-vs-public-split.webp",
-  "apartment-charging": "/images/guide-apartment-forecourt.webp",
-  "charging-troubleshooting": "/images/guide-trouble-banner.webp",
-  "rideshare-drivers": "/images/lifestyle-food-v2.webp",
-  "road-trip": "/images/guide-roadtrip-highway.webp",
-  "socal-charging": "/images/guide-socal-night.webp",
-  "new-ev-owner": "/images/guide-new-owner-residential.webp",
-  "ev-incentives-california": "/images/guide-incentives-california.webp",
-};
-
-/**
- * Alt text per masthead. This was a hardcoded imageAlt="" for all eleven
- * data-driven guides, so every one of their mastheads was announced as
- * decorative and skipped — while the seven page-file guides all described
- * theirs. These are written from what is actually in each frame.
- */
-const GUIDE_IMAGE_ALTS: Record<string, string> = {
-  etiquette:
-    "Three charging etiquette rules as illustrated icons: do not unplug someone else's car, 80% is fine, and charge at a charger rather than parking at one.",
-  weather:
-    "Heat, cold, rain and changing temperature shown around an electric car and a HubCharge charger.",
-  "battery-health":
-    "A HubCharge charger in a concrete parking structure beside bay D12, screen lit and both connectors holstered.",
-  "home-vs-public":
-    "Split view: an electric car charging from a wall unit in a home garage on the left, and a row of cars at a solar-canopied public forecourt on the right.",
-  "apartment-charging":
-    "Electric vehicles charging at a HubCharge forecourt beside a retail building at dusk.",
-  "charging-troubleshooting":
-    "A charging cable connected to a dark electric car, overlaid with the words Troubleshooting Common EV Charging Issues.",
-  "rideshare-drivers":
-    "Electric cars parked at a HubCharge station on a city forecourt, an attendant beside one of them.",
-  "road-trip":
-    "The driver's view from inside a car on an open road at sunset, with navigation graphics overlaid on the windscreen.",
-  "socal-charging":
-    "A lit charging canopy at night with cars parked beneath it.",
-  "new-ev-owner":
-    "A HubCharge charger beside desert landscaping at a residential development, a car connected to it.",
-  "ev-incentives-california":
-    "A blue electric car beside a relief map of California, with a gold dollar sign and stacked coins.",
+const GUIDE_COVERS: Record<string, CoverMotif> = {
+  etiquette: "bays",
+  weather: "climate",
+  "battery-health": "band",
+  "home-vs-public": "homeAway",
+  "apartment-charging": "street",
+  "charging-troubleshooting": "fault",
+  "rideshare-drivers": "shift",
+  "road-trip": "highway",
+  "socal-charging": "corridors",
+  "new-ev-owner": "milestones",
+  "ev-incentives-california": "paperwork",
 };
 
 /** Stable anchor from a heading — the scroll-spy and the rail must agree. */
@@ -100,8 +69,7 @@ export default async function ProseGuide({
     <PageShell
       eyebrow="Guides"
       backTo={{ href: "/charging-101", label: "All guides" }}
-      image={GUIDE_IMAGES[slug]}
-      imageAlt={GUIDE_IMAGE_ALTS[slug] ?? ""}
+      cover={<GuideCover motif={GUIDE_COVERS[slug]} />}
       title={guide.title}
       intro={guide.desc}
       meta={<span>{guide.read} read</span>}

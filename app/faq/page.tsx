@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
@@ -189,8 +190,7 @@ export default function FaqPage() {
     <PageShell
       backTo={{ href: "/", label: "Home" }}
       eyebrow="Support"
-      image="/images/valet-greet-v2.webp"
-      imageAlt="A HubCharge attendant at a driver's window"
+      cover={<GuideCover motif="ask" />}
       title="Frequently asked questions"
       intro="Everything about charging with HubCharge — compatibility, pricing, and how full service works."
     >

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import { Term } from "@/components/term";
 import Link from "next/link";
 import { AlertTriangle, Zap } from "lucide-react";
@@ -20,8 +21,7 @@ export default function CompatibilityPage() {
     <PageShell
       backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
-      image="/images/guide-two-makes.webp"
-      imageAlt="Two different electric cars charging side by side at a HubCharge unit — a Hyundai crossover on one cable and a Tesla on the other."
+      cover={<GuideCover motif="fits" />}
       title="Can my EV charge at HubCharge?"
       intro="Almost certainly yes. Every HubCharge charger carries both NACS and CCS cables — the two fast-charging connectors used by nearly every EV sold in the US. Just plug in the cable that matches your car. No adapter needed."
     >

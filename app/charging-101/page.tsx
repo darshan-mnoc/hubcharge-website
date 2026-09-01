@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
@@ -17,8 +18,7 @@ export default function Charging101Page() {
     <PageShell
       backTo={{ href: "/", label: "Home" }}
       eyebrow="Guides"
-      image="/images/guide-index-studio.webp"
-      imageAlt="A HubCharge DC fast charger with both cables out, one connected to a car, its CCS1 and NACS sockets labelled on the front."
+      cover={<GuideCover motif="station" />}
       title="Charging 101"
       intro="New to EVs, or just want straight answers? Everything about charging, in plain English — no jargon, no sales pitch."
     >

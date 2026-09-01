@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import Image from "next/image";
 import { PageShell } from "@/components/page-shell";
@@ -54,8 +55,7 @@ export default function WhatToExpectPage() {
     <PageShell
       backTo={{ href: "/", label: "Home" }}
       eyebrow="First visit"
-      image="/images/valet-greet-v2.webp"
-      imageAlt="A HubCharge attendant greeting a driver at their car window"
+      cover={<GuideCover motif="arrival" />}
       title="Your first visit, step by step"
       intro="Never used a full-service charger before? Almost nobody has — that's the point. Here's exactly how it goes."
     >

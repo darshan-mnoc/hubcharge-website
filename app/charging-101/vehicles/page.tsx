@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import { PortByMake } from "@/components/port-by-make";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -27,8 +28,7 @@ export default function VehiclesIndex() {
     <PageShell
       eyebrow="Your car"
       backTo={{ href: "/charging-101", label: "All guides" }}
-      image="/images/guide-vehicles-lineup.webp"
-      imageAlt="A HubCharge charger on a plinth surrounded by electric cars from a range of manufacturers."
+      cover={<GuideCover motif="fleet" />}
       title="Charging guides by make"
       intro="Every make below charges at HubCharge. Find yours for the specifics — which cable, how fast, and anything worth knowing."
       meta={<><span>Updated {EV_DATA_UPDATED}</span><span>{makes.length} makes</span></>}

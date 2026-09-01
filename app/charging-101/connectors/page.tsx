@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import { Term } from "@/components/term";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
@@ -17,8 +18,7 @@ export default function ConnectorsPage() {
     <PageShell
       backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
-      image="/images/guide-connectors.webp"
-      imageAlt="A HubCharge charger at a retail plaza with both cables hanging, one connected to a car, the CCS1 and NACS sockets labelled beneath the screen."
+      cover={<GuideCover motif="connectors" />}
       title="NACS vs CCS, explained"
       intro="America's EV world runs on two fast-charging plugs. Here's what they are, which cars use which — and why at HubCharge it doesn't matter."
     >

@@ -26,6 +26,7 @@ export function PageShell({
   eyebrow,
   image,
   imageAlt,
+  cover,
   meta,
   toc,
   tone = "light",
@@ -39,6 +40,8 @@ export function PageShell({
   /** Right-column photograph; bleeds to the right viewport edge */
   image?: string;
   imageAlt?: string;
+  /** A drawn cover, used instead of a photograph. */
+  cover?: ReactNode;
   /** Right-column fallback when there is no natural photograph */
   toc?: [label: string, href: string][];
   /** Small facts under the intro — "Updated August 2026" */
@@ -49,7 +52,7 @@ export function PageShell({
   children: ReactNode;
 }) {
   const dark = tone === "dark";
-  const hasAside = Boolean(image || toc?.length);
+  const hasAside = Boolean(image || cover || toc?.length);
 
   const titleCls = dark ? "text-white" : "text-ink-900";
   const introCls = dark ? "text-on-dark/80" : "text-ink-500";
@@ -109,7 +112,7 @@ export function PageShell({
             >
               <div className="col-span-12 lg:col-span-6">{lead}</div>
               <div className="col-span-12 lg:col-span-6 mt-10 lg:mt-0">
-                {image ? (
+                {cover || image ? (
                   /* Framed, not bled.
                    *
                    * This was a bare rectangle running off the right viewport
@@ -133,14 +136,16 @@ export function PageShell({
                       dark ? "border-white/10" : "border-paper-300 shadow-card"
                     }`}
                   >
-                    <Image
-                      src={image}
-                      alt={imageAlt ?? ""}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      priority
-                    />
+                    {cover ?? (
+                      <Image
+                        src={image!}
+                        alt={imageAlt ?? ""}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        priority
+                      />
+                    )}
                   </div>
                 ) : (
                   <nav aria-label="On this page" className="lg:pl-10">

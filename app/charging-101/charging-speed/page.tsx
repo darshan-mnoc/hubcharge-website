@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
 import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { Term } from "@/components/term";
 import Link from "next/link";
@@ -30,8 +31,7 @@ export default function ChargingSpeedPage() {
     <PageShell
       backTo={{ href: "/charging-101", label: "All guides" }}
       eyebrow="Guides"
-      image="/images/guide-speed-connector.webp"
-      imageAlt="A charging cable seated and locked into the port of a white electric car at a roadside charger."
+      cover={<GuideCover motif="curve" />}
       title="How long does charging take?"
       intro="Honest answer: it depends — but in a predictable way. Understand the charging curve and you'll charge smarter than most EV owners."
     >
