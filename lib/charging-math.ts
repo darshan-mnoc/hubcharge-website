@@ -1,6 +1,7 @@
 import {
   type EvModel,
   efficiencyMiPerKwh,
+  evModels,
   modelsForMake,
   getModel,
 } from "@/lib/ev-models";
@@ -168,6 +169,49 @@ export function makeTenMinuteBand(makeId: string): [number, number] | null {
     Math.max(...bands.map((b) => b[1])),
   ];
 }
+
+/**
+ * The span across every model we hold data for, for a session of N minutes.
+ *
+ * The homepage configurator offers eight cars out of the thirty-one in
+ * lib/ev-models.ts, so a driver of an ID.4, an EV6, a Model 3 or an F-150
+ * Lightning finds nothing of theirs and the block stops answering them. This
+ * is what it shows before they narrow it down: the honest outer edges of what
+ * a stop of that length adds, across everything we have curves for.
+ *
+ * Derived rather than typed, like makeTenMinuteBand above it, so it can never
+ * disagree with the per-car figures quoted elsewhere on the site.
+ */
+export function fleetBand(minutes: number): {
+  low: number;
+  high: number;
+  count: number;
+} {
+  const results = evModels.map((m) =>
+    simulateSession(m, STATION_KW, REFERENCE_START_SOC, minutes)
+  );
+  return {
+    low: Math.min(...results.map((r) => r.milesLow)),
+    high: Math.max(...results.map((r) => r.milesHigh)),
+    count: evModels.length,
+  };
+}
+
+/**
+ * The ten-minute range band as it appears in copy.
+ *
+ * Nine places across the site quoted "50-135" as a literal. Neither reading
+ * of the data supports it: across every model here it is 30-135, and even
+ * setting aside the discontinued 2017-2023 Bolt it is 45-135. The floor was
+ * overstated by between five and twenty miles, which for an older Bolt owner
+ * is a figure two-thirds above what they will actually see.
+ *
+ * Exported formatted so the prose and the configurator cannot drift apart.
+ */
+export const TEN_MINUTE_RANGE = (() => {
+  const f = fleetBand(10);
+  return `${f.low}\u2013${f.high}`;
+})();
 
 /** Minutes from 10% to 80% for a model at our stations. */
 export function tenToEighty(model: EvModel): number {

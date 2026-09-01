@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { Term } from "@/components/term";
 import { PageShell, Prose } from "@/components/page-shell";
 import { ChargingLevelsCompare } from "@/components/charging-levels-compare";
@@ -46,7 +47,7 @@ export default function ChargingLevelsPage() {
           Most EV life is Level 2 overnight, plus <Term id="dcfc">DC fast charging</Term> when
           you&rsquo;re out and about, on a trip, or just need miles{" "}
           <em>now</em>. That last case is what HubCharge is built for: pull
-          in, add roughly 50–135 miles in about 10 minutes, and get on with your
+          in, add roughly {TEN_MINUTE_RANGE} miles in about 10 minutes, and get on with your
           day — with an attendant handling the process at participating
           locations.
         </p>

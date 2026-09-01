@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import Image from "next/image";
 import { PageShell } from "@/components/page-shell";
 import { GuideCta } from "@/components/learn";
@@ -35,7 +36,7 @@ const steps = [
   {
     n: "04",
     title: "Relax while you charge",
-    desc: "Stay in your seat — your car is your space. A quick top-up takes about 10 minutes and adds roughly 50–135 miles, depending on your vehicle.*",
+    desc: `Stay in your seat — your car is your space. A quick top-up takes about 10 minutes and adds roughly ${TEN_MINUTE_RANGE} miles, depending on your vehicle.*`,
     image: "/images/charging-service-v2.webp",
     alt: "EV charging while the driver relaxes in the car",
   },

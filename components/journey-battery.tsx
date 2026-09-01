@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, useCallback, memo } from "react";
+import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { ILLO, CABLE_CASING } from "@/lib/illustration";
@@ -1588,7 +1589,7 @@ export function JourneyBattery() {
 
           <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
             {[
-              { v: "10 min", l: "Adds 50–135 miles, by car" },
+              { v: "10 min", l: `Adds ${TEN_MINUTE_RANGE} miles, by car` },
               { v: "Attendant", l: "Plugs in and unplugs for you" },
               { v: "Lifestyle", l: "Delivered to your window" },
             ].map((stat, i) => (

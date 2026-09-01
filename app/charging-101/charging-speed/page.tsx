@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { Term } from "@/components/term";
 import Link from "next/link";
 import { PageShell, Prose } from "@/components/page-shell";
@@ -64,7 +65,7 @@ export default function ChargingSpeedPage() {
           Because the curve is fastest in the middle, the smartest use of a <Term id="dcfc">DC
           fast charger</Term> is usually a short session in that sweet spot — grab
           the miles you need and go. That&rsquo;s exactly how HubCharge is
-          designed: a ~10-minute top-up that adds roughly 50–135 miles for most
+          designed: a ~10-minute top-up that adds roughly {TEN_MINUTE_RANGE} miles for most
           popular EVs, with quick extensions if you want more. Charging to
           100% at a fast charger is almost never worth the time.
         </p>
@@ -105,7 +106,7 @@ export default function ChargingSpeedPage() {
           in car ads. Those usually assume 350kW+ chargers and perfect
           conditions. We&rsquo;d rather set honest expectations: at our
           up-to-180kW chargers, many popular EVs add{" "}
-          <strong>roughly 50–135 miles in about 10 minutes</strong>, and some
+          <strong>roughly {TEN_MINUTE_RANGE} miles in about 10 minutes</strong>, and some
           vehicles charge more slowly. Check{" "}
           <Link href="/charging-101/can-my-ev-charge-here">
             your make&rsquo;s approximate figures

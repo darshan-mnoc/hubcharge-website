@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap,
@@ -15,7 +16,13 @@ import {
 } from "lucide-react";
 import { CtaButton } from "@/components/ui/cta-button";
 import { fadeUp, fadeUpStagger } from "@/lib/motion";
-import { configuratorModels, simulateSession, STATION_KW, REFERENCE_START_SOC } from "@/lib/charging-math";
+import {
+  configuratorModels,
+  fleetBand,
+  simulateSession,
+  STATION_KW,
+  REFERENCE_START_SOC,
+} from "@/lib/charging-math";
 
 /* "Design your stop" — a number-free pricing experience.
    The user picks how far, their car, and what to enjoy; we preview the
@@ -39,6 +46,17 @@ const distances: {
 // rather than a per-make average times a fixed multiplier.
 const cars = configuratorModels();
 
+/**
+ * The picker opens here rather than on a specific car.
+ *
+ * It offers eight models out of the thirty-one we hold curves for, so a
+ * driver of an ID.4, an EV6, a Model 3 or an F-150 Lightning used to scan the
+ * row, find nothing of theirs, and get no answer at all. Starting on the
+ * whole-fleet span means everyone gets a true figure on arrival and picking a
+ * model is a refinement rather than a requirement.
+ */
+const ANY_CAR = "any";
+
 const addons = [
   { id: "coffee", label: "Coffee & drinks", icon: Coffee },
   { id: "food", label: "Food", icon: Utensils },
@@ -58,13 +76,18 @@ const gotchas = [
 
 export function PricingExperience() {
   const [distance, setDistance] = useState<DistanceId>("topup");
-  const [carId, setCarId] = useState("tesla-model-y-lr");
+  const [carId, setCarId] = useState(ANY_CAR);
   const [chosen, setChosen] = useState<Set<AddonId>>(new Set(["coffee"]));
 
   const dist = distances.find((d) => d.id === distance)!;
-  const car = cars.find((c) => c.id === carId) ?? cars[0];
-  // Simulated from the car's real curve against our output, not a multiplier.
-  const sim = simulateSession(car.model, STATION_KW, REFERENCE_START_SOC, dist.minutes);
+  const car = cars.find((c) => c.id === carId) ?? null;
+  // A specific car is simulated from its real curve against our output, not a
+  // multiplier. With none chosen we show the outer edges across every model
+  // in lib/ev-models.ts — the honest answer before you narrow it.
+  const fleet = fleetBand(dist.minutes);
+  const sim = car
+    ? simulateSession(car.model, STATION_KW, REFERENCE_START_SOC, dist.minutes)
+    : { milesLow: fleet.low, milesHigh: fleet.high };
   const chosenList = addons.filter((a) => chosen.has(a.id));
 
   const toggle = (id: AddonId) =>
@@ -169,7 +192,7 @@ export function PricingExperience() {
                 role="group"
                 aria-label="Your car"
               >
-                {cars.map((c) => {
+                {[{ id: ANY_CAR, name: "Most EVs" }, ...cars].map((c) => {
                   const active = c.id === carId;
                   return (
                     <button
@@ -187,6 +210,22 @@ export function PricingExperience() {
                   );
                 })}
               </div>
+              {/* Eight cars out of thirty-one, so this row will miss most
+                  people. The line below is the way out for them rather than a
+                  dead end — the compatibility guide runs the full finder over
+                  every make we hold data for. */}
+              <p className="text-caption text-ink-400 mt-2.5">
+                {carId === ANY_CAR
+                  ? "Pick your model to narrow this, or "
+                  : "Not your car? "}
+                <Link
+                  href="/charging-101/can-my-ev-charge-here"
+                  className="text-brand-ink underline underline-offset-2 hover:no-underline"
+                >
+                  check every make
+                </Link>
+                .
+              </p>
             </div>
 
             {/* 3. addons */}
@@ -248,7 +287,9 @@ export function PricingExperience() {
                 {/* Announces the recalculated result to screen readers when a
                     distance / car / add-on selection changes (WCAG 4.1.3). */}
                 <p aria-live="polite" className="sr-only">
-                  {`About ${sim.milesLow} to ${sim.milesHigh} miles added to your ${car.name} in ${dist.time}.`}
+                  {car
+                    ? `About ${sim.milesLow} to ${sim.milesHigh} miles added to your ${car.name} in ${dist.time}.`
+                    : `About ${sim.milesLow} to ${sim.milesHigh} miles in ${dist.time}, across the ${fleet.count} cars we hold charging data for. Pick your model to narrow this.`}
                 </p>
                 <div className="flex items-center gap-2 mb-2 text-on-dark">
                   <BatteryCharging className="h-5 w-5 text-brand" />
@@ -261,7 +302,10 @@ export function PricingExperience() {
                     {sim.milesLow}–{sim.milesHigh} mi
                   </motion.span>
                   <span className="text-body-sm text-muted-dark">
-                    to your {car.name} · {dist.time}
+                    {car
+                      ? `to your ${car.name}`
+                      : `across the ${fleet.count} cars we list`}{" "}
+                    · {dist.time}
                   </span>
                 </div>
                 <div className="h-3 rounded-full bg-white/10 overflow-hidden">

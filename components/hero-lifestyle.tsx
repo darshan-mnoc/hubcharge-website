@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { ArrowRight, ArrowDown } from "lucide-react";
@@ -47,7 +48,7 @@ const specs = [
   { value: stations[0].power, label: "DC fast charging, both connectors" },
   {
     value: "10 minutes",
-    label: "Adds 50–135 miles*",
+    label: `Adds ${TEN_MINUTE_RANGE} miles*`,
     href: "/pricing#plan",
     cta: "Check yours",
   },

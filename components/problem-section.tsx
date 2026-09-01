@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { motion, useInView, easeOut } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import {
@@ -91,7 +92,10 @@ const LEDGER = [
     k: "You wait",
     icon: Clock,
     them: "30–40 minutes, because the pitch is a full battery.",
-    us: "10 minutes puts roughly 90–135 miles into most popular EVs. Extend in taps if you want more.",
+    // "90-135 into most popular EVs" was true of five of the thirty-one
+    // models in lib/ev-models.ts — 16%, which is not "most" under any
+    // reading. Same derived figure as everywhere else now.
+    us: `10 minutes puts roughly ${TEN_MINUTE_RANGE} miles in, depending on the car. Extend in taps if you want more.`,
   },
   {
     k: "You leave",
@@ -293,7 +297,7 @@ export function ProblemSection() {
             </div>
 
             <h2 className="text-h2 text-white mb-6 max-w-[26ch]">
-              <span className="text-on-dark/60">10 minutes. 50–135 miles.</span>{" "}
+              <span className="text-on-dark/60">10 minutes. {TEN_MINUTE_RANGE} miles.</span>{" "}
               Full-service convenience*
             </h2>
 

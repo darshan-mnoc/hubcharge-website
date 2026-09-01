@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { CheckCircle2, XCircle, Zap, Clock, Smartphone } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { PlanYourStop } from "@/components/plan-your-stop";
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 const included = [
-  "Your full charging session — a quick top-up adds roughly 50–135 miles in about 10 minutes*",
+  `Your full charging session — a quick top-up adds roughly ${TEN_MINUTE_RANGE} miles in about 10 minutes*`,
   "Attendant service — we plug in and unplug for you*",
   "Pay right from your phone's browser — no app, no account required",
   "Need more? Extend your session in quick taps, up to 4 times",
