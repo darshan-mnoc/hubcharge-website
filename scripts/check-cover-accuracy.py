@@ -95,6 +95,51 @@ for m in re.finditer(r"<path\b[^>]*?/>", src, re.S):
     if g and 'fill="none"' in g: continue
     risky.append(d[:40])
 check("no path fills its own corner", not risky, f"{len(risky)} risky")
+# ── colour discipline ────────────────────────────────────────────────
+illo = pathlib.Path("lib/illustration.ts").read_text()
+TOK = dict(re.findall(r'^\s+([a-zA-Z]+): "(#[0-9A-Fa-f]{6})"', illo, re.M))
+
+def lum(h):
+    r, g, b = (int(h[i:i+2], 16) / 255 for i in (1, 3, 5))
+    f_ = lambda c: c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+    return 0.2126 * f_(r) + 0.7152 * f_(g) + 0.0722 * f_(b)
+PLATE = lum(TOK["stage"])
+cr = lambda h: (max(lum(h), PLATE) + 0.05) / (min(lum(h), PLATE) + 0.05)
+
+# every state colour must carry a label on the plate
+for name in ("ok", "fault", "cold", "heat", "live"):
+    check(f"state colour '{name}' is label-safe on the plate",
+          name in TOK and cr(TOK[name]) >= 4.5,
+          f"{TOK.get(name,'?')}  {cr(TOK[name]):.2f}:1" if name in TOK else "missing")
+
+# one meaning, one colour: no two state tokens may collide
+states = {n: TOK[n] for n in ("ok", "fault", "cold", "heat", "live") if n in TOK}
+check("no two state colours are the same", len(set(states.values())) == len(states))
+
+# green means free, orange means charging — never swapped, the way the
+# connector names were
+bars = re.search(r"fill=\{inUse \? ILLO\.(\w+) : lit \? ILLO\.(\w+) : ILLO\.(\w+)\}", src)
+check("charging bars are orange, free bars are green",
+      bool(bars) and bars[1] == "live" and bars[2] == "ok",
+      f"inUse->{bars[1]}, free->{bars[2]}" if bars else "pattern not found")
+
+# no colour may enter the covers except through the palette
+toks_used = set(re.findall(r"ILLO\.([a-zA-Z]+)", src))
+unknown = sorted(t for t in toks_used if t not in TOK)
+check("every ILLO token used actually exists", not unknown, str(unknown))
+raw = set(re.findall(r'"(#[0-9A-Fa-f]{6})"', src))
+ALLOWED_RAW = {"#101E36", "#16233B"}   # two pre-existing gradient stops
+check("no new raw hex literals in the covers", raw <= ALLOWED_RAW,
+      f"unexpected {sorted(raw - ALLOWED_RAW)}")
+
+# the car must not dissolve: every stop of its gradient clears the plate
+stops = re.findall(r'id=\{`\$\{id\}-car`\}.*?</linearGradient>', src, re.S)
+if stops:
+    used = re.findall(r"stopColor=\{ILLO\.(\w+)\}", stops[0])
+    worst = min(cr(TOK[u]) for u in used if u in TOK)
+    check("no stop of the car gradient dissolves into the plate", worst >= 1.6,
+          f"darkest stop {worst:.2f}:1")
+
 print()
 print(f"  {len(fails)} failing" if fails else "  ALL ACCURACY CHECKS PASS")
 sys.exit(1 if fails else 0)

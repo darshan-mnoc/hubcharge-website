@@ -196,7 +196,10 @@ function Unit({
       <rect x={x - w * 0.31} y={bodyTop + 4} width={w * 0.26} height={3.4} rx={1.2} fill={ILLO.hub} />
       <rect x={x - w * 0.02} y={bodyTop + 4} width={w * 0.33} height={3.4} rx={1.2} fill={ILLO.live} />
 
-      {/* twin status bars */}
+      {/* Twin status bars. Green when the bay is free, orange only while
+          power is actually moving — which is both what the real cabinet does
+          and the only way a free bay and a busy one can be told apart. They
+          used to be orange-or-dim, so the two looked the same. */}
       {[-1, 1].map((sgn) => (
         <rect
           key={sgn}
@@ -205,7 +208,7 @@ function Unit({
           width={w * 0.2}
           height={2.2}
           rx={1.1}
-          fill={lit ? ILLO.live : ILLO.idle}
+          fill={inUse ? ILLO.live : lit ? ILLO.ok : ILLO.idle}
         />
       ))}
 
@@ -273,13 +276,16 @@ function Unit({
  * the work.
  */
 function CarSide({
+  id,
   x,
   y = FLOOR,
   s = 1,
   flip = false,
   port,
+  far = false,
   shape = "crossover",
 }: {
+  id: string;
   x: number;
   y?: number;
   s?: number;
@@ -292,6 +298,10 @@ function CarSide({
    *  these — a cable ending in mid-air is the drawn equivalent of the
    *  floating-cable renders these covers replaced. */
   port?: "front" | "rear";
+  /** Sit this one back in the scene. On a dark plate haze LIFTS a distant
+   *  object toward the background; darkening it just makes it vanish, which
+   *  is what happened when the flanking cars were simply drawn dimmer. */
+  far?: boolean;
 }) {
   const NOSE =
     "M-33.5,-2 L-33.5,-6.4 C-33.5,-9 -32.4,-9.7 -29.6,-10 " +
@@ -323,13 +333,28 @@ function CarSide({
   const glass = GLASS[shape];
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
-      <ellipse cx={0} cy={6.2} rx={31} ry={1.9} fill={ILLO.shadow} opacity={0.45} />
-      <path d={body} fill={ILLO.carTop} />
-      <path d={glass} fill={ILLO.stage} fillOpacity={0.55} />
+      {/* Light, not paint. The flat silhouette was the right answer against a
+          sticker rendering; it is the wrong one against a dead scene. The
+          geometry is untouched — only the shading is new. */}
+      <ellipse cx={0} cy={5.6} rx={36} ry={4.6} fill={`url(#${id}-contact)`} />
+      <path d={body} fill={`url(#${id}-car)`} opacity={far ? 0.66 : 1} />
+      {/* the specular streak where light would actually land */}
+      <path
+        d="M-29.6,-10 L-23.2,-10.4 L-21.6,-10.7 L-12.4,-17 C-11.6,-17.5 -10.8,-17.6 -9.8,-17.6 L13,-17.6 C17.6,-17.5 21,-16 24,-13.4"
+        fill="none"
+        stroke={ILLO.hub}
+        strokeWidth={1.1}
+        strokeOpacity={0.5}
+        strokeLinecap="round"
+      />
+      <path d={glass} fill={`url(#${id}-cargla)`} />
+      {/* one reflection across the glass */}
+      <path d="M-14.4,-12.6 L-9.6,-16.8 L-2.2,-16.8 L-7,-12.6 Z" fill={ILLO.glassTop} fillOpacity={0.2} />
       {[-20.6, 20.6].map((wx) => (
         <g key={wx}>
           <circle cx={wx} cy={0} r={5.6} fill={ILLO.tyre} />
-          <circle cx={wx} cy={0} r={2.6} fill={ILLO.carTop} />
+          <circle cx={wx} cy={0} r={2.6} fill={ILLO.carMid} />
+          <circle cx={wx} cy={0} r={2.6} fill="none" stroke={ILLO.hub} strokeWidth={0.6} strokeOpacity={0.45} />
         </g>
       ))}
       {port && (
@@ -561,10 +586,15 @@ function Label({
 /** The band below the horizon — a quarter of every plate, previously empty,
  *  which is most of why the set read as sparse. FLOOR does not move; every
  *  motif is tuned to it. This is the floor those scenes stand on. */
-function Ground({ kind = "plain" }: { kind?: "bay" | "road" | "plain" }) {
+function Ground({ id, kind = "plain", pools = [] }: { id: string; kind?: "bay" | "road" | "plain"; pools?: number[] }) {
   return (
     <g>
-      <rect x={0} y={FLOOR} width={W} height={H - FLOOR} fill={ILLO.shadow} opacity={0.22} />
+      <rect x={0} y={FLOOR} width={W} height={H - FLOOR} fill={`url(#${id}-floor)`} />
+      {/* the pool a lit charger throws on the floor — the one thing that
+          makes these read as lit places rather than flat diagrams */}
+      {pools.map((px) => (
+        <ellipse key={px} cx={px} cy={FLOOR + 8} rx={62} ry={20} fill={`url(#${id}-pool)`} />
+      ))}
       {kind === "bay" &&
         [30, 105, 195, 270].map((x) => (
           <path key={x} d={`M${x},${FLOOR + 6} L${x - 7},${H - 6}`} stroke={ILLO.seam} strokeWidth={1.6} strokeOpacity={0.3} strokeLinecap="round" />
@@ -583,14 +613,14 @@ function Ground({ kind = "plain" }: { kind?: "bay" | "road" | "plain" }) {
 
 /** ✓ and ✕ as paths, not font glyphs — a glyph can fall back to a different
  *  shape on a machine without the face, a path cannot. */
-function Tick({ x, y, r = 9 }: { x: number; y: number; r?: number }) {
+function Tick({ x, y, r = 9, tone = ILLO.ok }: { x: number; y: number; r?: number; tone?: string }) {
   return (
     <g>
-      <circle cx={x} cy={y} r={r} fill={ILLO.live} fillOpacity={0.14} stroke={ILLO.live} strokeWidth={1.4} />
+      <circle cx={x} cy={y} r={r} fill={tone} fillOpacity={0.14} stroke={tone} strokeWidth={1.4} />
       <path
         d={`M${x - r * 0.42},${y} L${x - r * 0.1},${y + r * 0.34} L${x + r * 0.44},${y - r * 0.34}`}
         fill="none"
-        stroke={ILLO.live}
+        stroke={tone}
         strokeWidth={r * 0.22}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -599,9 +629,9 @@ function Tick({ x, y, r = 9 }: { x: number; y: number; r?: number }) {
   );
 }
 
-function Cross({ x, y, r = 9 }: { x: number; y: number; r?: number }) {
+function Cross({ x, y, r = 9, tone = ILLO.fault }: { x: number; y: number; r?: number; tone?: string }) {
   return (
-    <g stroke={ILLO.idle} strokeWidth={r * 0.22} strokeLinecap="round">
+    <g stroke={tone} strokeWidth={r * 0.22} strokeLinecap="round">
       <circle cx={x} cy={y} r={r} fill="none" strokeOpacity={0.7} />
       <line x1={x - r * 0.38} y1={y - r * 0.38} x2={x + r * 0.38} y2={y + r * 0.38} />
       <line x1={x + r * 0.38} y1={y - r * 0.38} x2={x - r * 0.38} y2={y + r * 0.38} />
@@ -641,6 +671,40 @@ function Defs({ id }: { id: string }) {
         <stop offset="45%" stopColor={ILLO.unitTop} />
         <stop offset="100%" stopColor={ILLO.unitMid} />
       </linearGradient>
+      <linearGradient id={`${id}-floor`} x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor={ILLO.shadow} stopOpacity={0.1} />
+        <stop offset="100%" stopColor={ILLO.shadow} stopOpacity={0.5} />
+      </linearGradient>
+      {/* Every stop measured against the plate. A carTop->carMid->carLow ramp
+          bottomed out at 1.17:1 and the car dissolved into the background;
+          this holds 2.73 / 2.31 / 1.69, so light still falls across the body
+          but no part of it disappears. */}
+      <linearGradient id={`${id}-car`} x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor={ILLO.seam} />
+        <stop offset="52%" stopColor={ILLO.carTop} />
+        <stop offset="100%" stopColor={ILLO.carMid} />
+      </linearGradient>
+      <linearGradient id={`${id}-cargla`} x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor={ILLO.glassMid} />
+        <stop offset="100%" stopColor={ILLO.glassLow} />
+      </linearGradient>
+      {/* a soft contact shadow, so the car sits on the ground rather than
+          hovering over a hard grey oval */}
+      <radialGradient id={`${id}-contact`} cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor={ILLO.shadow} stopOpacity={0.62} />
+        <stop offset="60%" stopColor={ILLO.shadow} stopOpacity={0.28} />
+        <stop offset="100%" stopColor={ILLO.shadow} stopOpacity={0} />
+      </radialGradient>
+      {/* the pool of light a lit charger throws on the floor */}
+      <radialGradient id={`${id}-pool`} cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor={ILLO.live} stopOpacity={0.20} />
+        <stop offset="55%" stopColor={ILLO.live} stopOpacity={0.07} />
+        <stop offset="100%" stopColor={ILLO.live} stopOpacity={0} />
+      </radialGradient>
+      <radialGradient id={`${id}-vig`} cx="50%" cy="48%" r="70%">
+        <stop offset="74%" stopColor={ILLO.shadow} stopOpacity={0} />
+        <stop offset="100%" stopColor={ILLO.shadow} stopOpacity={0.22} />
+      </radialGradient>
       <linearGradient id={`${id}-screen`} x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor="#16233B" />
         <stop offset="100%" stopColor={ILLO.glass} />
@@ -660,6 +724,8 @@ type Motif = {
   draw: (id: string) => React.ReactNode;
   /** Floor treatment for the band below the horizon. Omit for "plain". */
   ground?: "bay" | "road" | "plain";
+  /** x positions of lit chargers, which pool light on the floor beneath them. */
+  pools?: number[];
 };
 
 export const COVERS: Record<string, Motif> = {
@@ -667,10 +733,11 @@ export const COVERS: Record<string, Motif> = {
   station: {
     label: "A HubCharge unit with a car connected to it.",
     ground: "bay",
+    pools: [72],
     draw: (id) => (
       <>
         <Unit id={id} x={72} lit inUse />
-        <CarSide x={190} s={1.15} port="front" />
+        <CarSide id={id} x={190} s={1.15} port="front" />
         {/* over the horn and down to the port — the route it takes on the
             real machine, and the reason the arc starts so high */}
         <Cable d="M81.9,70.5 C106,74 120,120 150,136 C160,141 170,143 177.9,143.9" live />
@@ -681,10 +748,11 @@ export const COVERS: Record<string, Motif> = {
   /* what a visit is, as three beats */
   arrival: {
     label: "A car connected to a unit, above the three named steps of a stop.",
+    pools: [222],
     draw: (id) => (
       <>
         <Unit id={id} x={222} lit inUse />
-        <CarSide x={112} s={1.05} port="rear" />
+        <CarSide id={id} x={112} s={1.05} port="rear" />
         <Cable d="M212.1,70.5 C190,74 176,120 147,136 C139,141 131,143 123,144.7" live />
         {/* was three unlabelled dots, which told a first-time visitor
             nothing. Named, it is the whole page in one line. */}
@@ -738,14 +806,14 @@ export const COVERS: Record<string, Motif> = {
   fits: {
     label: "A charging connector, an arrow, and a car whose charge port it fits, confirmed with a tick.",
     ground: "bay",
-    draw: () => (
+    draw: (id) => (
       <>
         <Plug x={54} y={92} r={26} kind="ccs1" lit />
         <path d="M84,96 H118" fill="none" stroke={ILLO.live} strokeWidth={2} strokeOpacity={0.85} strokeLinecap="round" />
         <path d="M112,89 L121,96 L112,103" fill="none" stroke={ILLO.live} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
         {/* the far half is the reader's own car, drawn as one — an abstract
             flank panel read as a television */}
-        <CarSide x={202} y={128} s={1.5} port="front" />
+        <CarSide id={id} x={202} y={128} s={1.5} port="front" />
         {/* ring the port, because it is the thing the arrow points at */}
         <circle cx={186} cy={117} r={15} fill="none" stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.75} strokeDasharray="3 3" />
         <Tick x={150} y={172} r={12} />
@@ -758,6 +826,7 @@ export const COVERS: Record<string, Motif> = {
     label:
       "Three ways to charge, named: a Level 1 wall socket, a Level 2 wallbox and a DC fast charger.",
     ground: "bay",
+    pools: [224],
     draw: (id) => (
       <>
         {/* This used to be three sizes of the same cabinet, which says
@@ -814,6 +883,7 @@ export const COVERS: Record<string, Motif> = {
   clock: {
     label: "A ten-minute segment lit on a clock face, marked with a currency symbol.",
     ground: "bay",
+    pools: [236],
     draw: (id) => (
       <>
         <Unit id={id} x={236} lit />
@@ -862,7 +932,7 @@ export const COVERS: Record<string, Motif> = {
           {[0, 1, 2, 3].map((i) => (
             <rect key={i} x={44 + i * 18} y={102 - i * 14} width={14} height={28 + i * 14} rx={2} fill={ILLO.idle} />
           ))}
-          <Label x={71} y={150} text="METERED" tone={ILLO.seam} size={8} />
+          <Label x={71} y={150} text="METERED" tone={ILLO.fault} size={8} />
         </g>
         <Cross x={71} y={78} r={17} />
         <path d="M138,104 H166" stroke={ILLO.seam} strokeWidth={1.6} strokeOpacity={0.5} strokeLinecap="round" />
@@ -882,13 +952,13 @@ export const COVERS: Record<string, Motif> = {
   fleet: {
     label: "Three different kinds of car — a sedan, a crossover and a pickup — side by side.",
     ground: "bay",
-    draw: () => (
+    draw: (id) => (
       <>
         {/* was the same car three times at three scales, which says "one car,
             three sizes". Three body types says what the guide says. */}
-        <CarSide x={66} y={FLOOR - 20} s={0.62} shape="sedan" />
-        <CarSide x={238} y={FLOOR - 20} s={0.62} shape="pickup" flip />
-        <CarSide x={150} s={1.05} shape="crossover" />
+        <CarSide id={id} x={66} y={FLOOR - 20} s={0.62} shape="sedan" far />
+        <CarSide id={id} x={238} y={FLOOR - 20} s={0.62} shape="pickup" flip far />
+        <CarSide id={id} x={150} s={1.05} shape="crossover" />
       </>
     ),
   },
@@ -897,17 +967,18 @@ export const COVERS: Record<string, Motif> = {
   bays: {
     label: "Two charging bays: one occupied, and one marked free with its cable holstered.",
     ground: "bay",
+    pools: [66, 244],
     draw: (id) => (
       <>
         <Unit id={id} x={66} lit inUse />
-        <CarSide x={140} s={0.86} port="front" />
+        <CarSide id={id} x={140} s={0.86} port="front" />
         <Cable d="M75.9,70.5 C98,74 106,124 122,139 C125,143 128,145 131,146" live />
         {/* the free bay: its connector is holstered and its cable stowed, both
             drawn by Unit itself, so there is nothing to draw here */}
         <Unit id={id} x={244} />
         {/* say which one you can take, rather than leaving the reader to
             notice that one cable is stowed */}
-        <Label x={244} y={182} text="FREE" tone={ILLO.live} size={8} />
+        <Label x={244} y={182} text="FREE" tone={ILLO.ok} size={8} />
       </>
     ),
   },
@@ -922,24 +993,24 @@ export const COVERS: Record<string, Motif> = {
             filled from TEMPERATURE_FACTORS in lib/charging-math.ts — the same
             numbers the calculators use — so the picture cannot drift from
             the arithmetic. */}
-        <Cell x={84} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.cold.factor} tone={ILLO.live} />
-        <Cell x={216} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.hot.factor} tone={ILLO.live} />
-        <g stroke={ILLO.glassTop} strokeWidth={1.6} strokeLinecap="round" opacity={0.85}>
+        <Cell x={84} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.cold.factor} tone={ILLO.cold} />
+        <Cell x={216} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.hot.factor} tone={ILLO.heat} />
+        <g stroke={ILLO.cold} strokeWidth={1.6} strokeLinecap="round" opacity={0.95}>
           {[0, 60, 120].map((a) => (
             <line key={a} x1={84} y1={62} x2={84} y2={46} transform={`rotate(${a} 84 54)`} />
           ))}
           <path d="M81.6,48.4 L84,50.8 L86.4,48.4" fill="none" />
           <path d="M81.6,59.6 L84,57.2 L86.4,59.6" fill="none" />
         </g>
-        <circle cx={84} cy={54} r={1.3} fill={ILLO.glassTop} />
-        <circle cx={216} cy={54} r={7} fill={ILLO.live} opacity={0.9} />
-        <g stroke={ILLO.live} strokeWidth={1.6} strokeLinecap="round" opacity={0.75}>
+        <circle cx={84} cy={54} r={1.3} fill={ILLO.cold} />
+        <circle cx={216} cy={54} r={7} fill={ILLO.heat} opacity={0.95} />
+        <g stroke={ILLO.heat} strokeWidth={1.6} strokeLinecap="round" opacity={0.8}>
           {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
             <line key={a} x1={216} y1={41} x2={216} y2={45.5} transform={`rotate(${a} 216 54)`} />
           ))}
         </g>
-        <Label x={84} y={152} text="COLD" />
-        <Label x={216} y={152} text="HOT" tone={ILLO.live} />
+        <Label x={84} y={152} text="COLD" tone={ILLO.cold} />
+        <Label x={216} y={152} text="HOT" tone={ILLO.heat} />
       </>
     ),
   },
@@ -969,6 +1040,7 @@ export const COVERS: Record<string, Motif> = {
   homeAway: {
     label: "A house with a wall charger on one side and a HubCharge unit on the other, both named.",
     ground: "bay",
+    pools: [214],
     draw: (id) => (
       <>
         <Roof x={78} w={80} h={54} pitch={16} />
@@ -976,7 +1048,7 @@ export const COVERS: Record<string, Motif> = {
         <Cable d="M127,126 C127,136 134,140 142,142" />
         <path d="M150,52 V150" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.45} />
         <Unit id={id} x={214} lit />
-        <CarSide x={262} s={0.6} />
+        <CarSide id={id} x={262} s={0.6} far />
         <Label x={78} y={178} text="HOME" />
         <Label x={222} y={178} text="PUBLIC" tone={ILLO.live} />
       </>
@@ -987,13 +1059,13 @@ export const COVERS: Record<string, Motif> = {
   street: {
     label: "A row of apartment buildings with cars parked along the kerb.",
     ground: "road",
-    draw: () => (
+    draw: (id) => (
       <>
         <Roof x={62} w={62} h={78} pitch={0} />
         <Roof x={132} w={58} h={94} pitch={0} />
         <Roof x={202} w={54} h={66} pitch={0} />
-        <CarSide x={92} y={FLOOR + 14} s={0.62} />
-        <CarSide x={186} y={FLOOR + 14} s={0.62} flip />
+        <CarSide id={id} x={92} y={FLOOR + 14} s={0.62} far />
+        <CarSide id={id} x={186} y={FLOOR + 14} s={0.62} flip far />
         <path d="M0,168 H300" stroke={ILLO.seam} strokeWidth={1} opacity={0.4} />
         <path d="M20,178 h24 M64,178 h24 M108,178 h24 M152,178 h24 M196,178 h24 M240,178 h24" stroke={ILLO.idle} strokeWidth={1.6} opacity={0.5} />
       </>
@@ -1010,18 +1082,18 @@ export const COVERS: Record<string, Motif> = {
         <g>
           <Plug x={70} y={92} r={20} kind="nacs" />
           <Cable d="M90,92 C100,92 104,96 110,98" />
-          <g stroke={ILLO.idle} strokeWidth={2.6} strokeLinecap="round">
+          <g stroke={ILLO.fault} strokeWidth={2.6} strokeLinecap="round">
             <line x1={122} y1={82} x2={140} y2={104} />
             <line x1={140} y1={82} x2={122} y2={104} />
           </g>
-          <Label x={106} y={132} text="STUCK" tone={ILLO.seam} size={8} />
+          <Label x={106} y={132} text="STUCK" tone={ILLO.fault} size={8} />
         </g>
         <path d="M150,50 V140" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.4} />
         <g>
           <Plug x={200} y={92} r={20} kind="nacs" lit />
           <Cable d="M220,92 C232,92 240,94 250,96" live />
           <Tick x={264} y={98} r={12} />
-          <Label x={222} y={132} text="RETRY" tone={ILLO.live} size={8} />
+          <Label x={222} y={132} text="RETRY" tone={ILLO.ok} size={8} />
         </g>
       </>
     ),
@@ -1031,6 +1103,7 @@ export const COVERS: Record<string, Motif> = {
   ask: {
     label: "Two question bubbles beside a HubCharge unit.",
     ground: "bay",
+    pools: [78],
     draw: (id) => (
       <>
         <Unit id={id} x={78} />
@@ -1066,13 +1139,13 @@ export const COVERS: Record<string, Motif> = {
   shift: {
     label: "A car with a roof sign between a clock and a currency symbol, on a short repeating loop.",
     ground: "road",
-    draw: () => (
+    draw: (id) => (
       <>
         <ellipse cx={150} cy={104} rx={96} ry={40} fill="none" stroke={ILLO.seam} strokeWidth={1.6} strokeDasharray="7 7" opacity={0.5} />
         <Pip x={54} y={104} lit />
         <Pip x={246} y={104} lit />
         <g>
-          <CarSide x={150} y={86} s={0.68} />
+          <CarSide id={id} x={150} y={86} s={0.68} />
           {/* roof sign — what makes this a working shift and not a commute */}
           <rect x={143} y={65} width={15} height={6} rx={2} fill={ILLO.live} opacity={0.95} />
         </g>
@@ -1223,9 +1296,11 @@ export function GuideCover({ motif }: { motif: CoverMotif }) {
       <rect width={W} height={H} fill={`url(#${id}-plate)`} />
       {/* the two things every cover shares, so eighteen guides read as one set */}
       <ellipse cx={150} cy={108} rx={124} ry={74} fill={`url(#${id}-bloom)`} />
-      <Ground kind={m.ground} />
+      <Ground id={id} kind={m.ground} pools={m.pools} />
       <path d={`M0,${FLOOR} H${W}`} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.32} />
       {m.draw(id)}
+      {/* holds the eye centre-frame; drawn over the scene, under the mark */}
+      <rect width={W} height={H} fill={`url(#${id}-vig)`} pointerEvents="none" />
       <Wordmark />
     </svg>
   );

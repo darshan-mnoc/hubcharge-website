@@ -7,14 +7,22 @@
  * That is why the charger, the cable and the attendant all looked like they
  * came from different drawings.
  *
- * One rule governs everything here:
+ * Two rules govern everything here:
  *
- *   Hardware is the ink ramp. Energy is brand orange. Nothing else.
+ *   1. Objects are the ink ramp. No object gets a colour of its own.
+ *   2. Orange means power is moving. State gets the state set, below.
  *
- * So a viewer learns the colour code once — orange means power is moving —
- * and it holds across all five steps. Idle hardware is dim; active hardware
- * is orange. There is no green "ready" state, because a second accent means
- * the reader has to learn a second thing to understand a five-second graphic.
+ * Rule 2 replaces an earlier absolute — "energy is brand orange, nothing
+ * else" — which was written for a five-step scene with one variable and did
+ * not survive contact with twenty-one guide covers. Forcing orange to carry
+ * both "power is flowing" and "this is fine" made a free bay and a charging
+ * bay look identical, and it made the drawn cabinet disagree with the real
+ * one, whose status bars are GREEN when the bay is free.
+ *
+ * The state set is deliberately tiny and, apart from the red, is not new:
+ * green and brass already exist in tailwind.config.ts, whose own comments
+ * exist to stop one meaning acquiring six colours. Every value below is
+ * measured against the plate (#0A192F).
  *
  * Values are the design tokens from tailwind.config.ts, restated here because
  * SVG `fill`/`stroke` cannot read Tailwind classes.
@@ -62,6 +70,22 @@ export const ILLO = {
   garment: "#16233D",
 
   /* ── Energy. The only accent in the scene. ─────────────────── */
+  /* ── State ──────────────────────────────────────────────────
+   *
+   * One colour per meaning, contrast measured on the plate:
+   *   ok    12.54:1   brass 5.27:1   cold 7.18:1
+   *   fault  6.36:1   live  6.74:1
+   * All five clear 4.5:1, so any of them can carry a label.
+   */
+  /** Available, correct, working. tailwind ok["on-dark"] — not a new colour. */
+  ok: "#86EFAC",
+  /** Broken, blocked, ruled out. The one value the system did not already have. */
+  fault: "#F87171",
+  /** Cold. Reuses the existing cool glass tone rather than inventing a blue. */
+  cold: "#8FA8C4",
+  /** Heat. tailwind brass, the site's single warm tertiary. */
+  heat: "#A8875C",
+
   live: "#FF7A00",
   liveDim: "#B34D00",
   liveGlow: "#FFB068",
