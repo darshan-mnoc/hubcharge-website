@@ -88,6 +88,24 @@ const CURVE = CURVE_PLOT.d;
 const UW = 34;
 const UH = 76;
 
+/**
+ * One-point perspective, solved rather than eyeballed.
+ *
+ * The front face stays parallel to the picture plane, so it is a true
+ * rectangle; only the side recedes, toward a single vanishing point on the
+ * horizon. Given the near vertical edge (xe, yt..yb) and a far edge at xf,
+ * this returns where that far edge actually lands. Every receding line,
+ * extended, meets VP exactly — which is what makes this a construction and
+ * not a drawing that merely looks three-dimensional.
+ */
+const HORIZON = 92;
+const VP_RIGHT = 366;
+const VP_LEFT = -66;
+function recede(xe: number, yt: number, yb: number, vpx: number, xf: number) {
+  const t = (xf - xe) / (vpx - xe);
+  return { yt: yt + t * (HORIZON - yt), yb: yb + t * (HORIZON - yb) };
+}
+
 /** Where a cable leaves a unit — the top of a cable-management horn, which is
  *  where it leaves the real machine. Computed, so a cable can never drift off
  *  the hardware it is supposed to come out of. */
@@ -146,6 +164,7 @@ function Unit({
   h = UH,
   lit = false,
   inUse = false,
+  depth,
 }: {
   id: string;
   x: number;
@@ -154,6 +173,10 @@ function Unit({
   lit?: boolean;
   /** Leaves the right holster empty — its connector is in a car. */
   inUse?: boolean;
+  /** Show the cabinet's depth, receding to a vanishing point. "right" shows
+   *  the right flank, so use it on units left of frame centre and vice
+   *  versa — the side we see should face the middle of the picture. */
+  depth?: "left" | "right";
 }) {
   const l = x - w / 2;
   const r = x + w / 2;
@@ -182,6 +205,38 @@ function Unit({
           strokeLinejoin="round"
         />
       ))}
+
+      {/* The flank, drawn BEFORE the front face so the front overlaps it. Its
+          corners come from recede(), so both receding edges meet the
+          vanishing point on the horizon rather than being angled by eye. */}
+      {depth &&
+        (() => {
+          const near = depth === "right" ? r : l;
+          const vp = depth === "right" ? VP_RIGHT : VP_LEFT;
+          const far = near + (depth === "right" ? 11 : -11);
+          const body = recede(near, bodyTop, base, vp, far);
+          const cap = recede(near, top, top + capH, vp, far);
+          return (
+            <g>
+              <path
+                d={`M${near},${bodyTop} L${far},${body.yt} L${far},${body.yb} L${near},${base} Z`}
+                fill={ILLO.unitLow}
+                stroke={ILLO.hub}
+                strokeWidth={1}
+                strokeOpacity={0.55}
+                strokeLinejoin="round"
+              />
+              <path
+                d={`M${near + (depth === "right" ? 2.4 : -2.4)},${top} L${far + (depth === "right" ? 2.4 : -2.4)},${cap.yt} L${far + (depth === "right" ? 2.4 : -2.4)},${cap.yb} L${near + (depth === "right" ? 2.4 : -2.4)},${top + capH} Z`}
+                fill={ILLO.unitMid}
+                stroke={ILLO.hub}
+                strokeWidth={1}
+                strokeOpacity={0.6}
+                strokeLinejoin="round"
+              />
+            </g>
+          );
+        })()}
 
       {/* body */}
       <rect x={l} y={bodyTop} width={w} height={base - bodyTop} rx={1.5} fill={`url(#${id}-unit)`} />
@@ -235,11 +290,18 @@ function Unit({
       <Holster x={x - hx} y={holsterY} seated />
       <Holster x={x + hx} y={holsterY} seated={!inUse} />
 
-      {/* An idle unit stows its own cable, so every unconnected unit is
-          complete without the motif drawing one. It drapes down the OUTSIDE
-          of the cabinet and reaches back into the holster, which is how the
-          cables hang in fontana-station.webp — routed across the face it cut
-          straight over the screen. */}
+      {/* The cabinet has TWO connectors and therefore two cables — this drew
+          one, on the right, so the left connector sat in its holster attached
+          to nothing and an in-use unit showed no cable at all. Each cable
+          drapes down the OUTSIDE of its own side and reaches back into its
+          holster, which is how they hang in fontana-station.webp; routed
+          across the face they cut straight over the screen.
+
+          The right one is drawn here only when the bay is free. When it is in
+          use that same cable runs out to the car, and the motif draws it. */}
+      <Cable
+        d={`M${hornL.x},${hornL.y} C${l - 3},${hornL.y + 5} ${l - 4},${holsterY - 26} ${l - 4},${holsterY - 12} C${l - 4},${holsterY - 2} ${x - hx - 4},${holsterY + 3} ${x - hx},${holsterY + 3.5}`}
+      />
       {!inUse && (
         <Cable
           d={`M${horn.x},${horn.y} C${r + 3},${horn.y + 5} ${r + 4},${holsterY - 26} ${r + 4},${holsterY - 12} C${r + 4},${holsterY - 2} ${x + hx + 4},${holsterY + 3} ${x + hx},${holsterY + 3.5}`}
@@ -253,27 +315,20 @@ function Unit({
 }
 
 /**
- * A car in profile — a modern EV crossover, drawn as a flat silhouette.
+ * A car in profile — a Porsche Taycan, without any badge or name.
  *
- * The geometry is measured rather than guessed: length 67, overall height
- * 23.2 (2.89 — a Model Y is 2.93, an Ioniq 5 2.89), wheelbase 0.615 of
- * length, wheel diameter 0.453 of height, beltline 0.665 above ground. Those
- * last two matter most: an earlier version had the beltline 2.5 units low,
- * leaving a 23% glass band against a real 33.5%, which is a shallow slot of
- * glass over a deep slab of door — a panel van.
+ * Built from the real dimensions rather than an idea of a car: 4963 x 1381 mm
+ * is 3.59 length-to-height, wheelbase 0.584 of length, wheel diameter 0.151.
+ * At the frame's length of 67 that puts the roof at -13.6 and the wheels at
+ * +/-19.6 with a 5.06 radius. Six earlier versions sat between 1.87 and 2.89
+ * — crossover and worse — which is what kept reading as "not modern". Nothing
+ * here is eyeballed; scripts/check-cover-accuracy.py asserts all three ratios
+ * against the published figures.
  *
- * The silhouette is faceted rather than smooth, because an Ioniq 5 nearly
- * is: blunt nose, near-flat bonnet, a hard cowl corner into a raked
- * windscreen, a flat roof, a straight-sided trapezoidal glasshouse and an
- * upright tailgate.
- *
- * The TREATMENT is deliberately flat — one solid tone, no outline, no
- * creases, no light bars, glass cut straight out of the body. Four
- * treatments were built and compared side by side at real size and this is
- * the one chosen. Earlier versions failed by adding: a gradient body with a
- * uniform bright outline reads as a clipart sticker, and shut lines, a
- * handle and a mirror are noise at the size this renders. The shape does all
- * the work.
+ * The signatures that make it a Taycan and not a generic low car: a long
+ * bonnet with the cabin set well back, a roof that peaks over the front seats
+ * and falls in one continuous line into a ducktail, a pronounced haunch over
+ * the rear wheel, and a shallow frameless glasshouse.
  */
 function CarSide({
   id,
@@ -283,64 +338,64 @@ function CarSide({
   flip = false,
   port,
   far = false,
-  shape = "crossover",
+  shape = "taycan",
 }: {
   id: string;
   x: number;
   y?: number;
   s?: number;
   flip?: boolean;
-  /** Body type. Crossover keeps the measured geometry; the other two vary
-   *  only the roof and tail, so all three share a wheelbase and ride height
-   *  and still read as the same family of drawing. */
-  shape?: "crossover" | "sedan" | "pickup";
   /** Draw a charge socket on the named flank. Cables must land on one of
    *  these — a cable ending in mid-air is the drawn equivalent of the
    *  floating-cable renders these covers replaced. */
   port?: "front" | "rear";
   /** Sit this one back in the scene. On a dark plate haze LIFTS a distant
-   *  object toward the background; darkening it just makes it vanish, which
-   *  is what happened when the flanking cars were simply drawn dimmer. */
+   *  object toward the background; darkening it just makes it vanish. */
   far?: boolean;
+  /** Body type. Taycan carries the measured geometry; the other two raise the
+   *  roof and square the tail, keeping the wheelbase and ride height so all
+   *  three read as one family. */
+  shape?: "taycan" | "sedan" | "suv";
 }) {
+  /* nose, long bonnet, and the A-pillar rising late — the cab-rearward
+     proportion is the whole reason a Taycan reads as a Taycan */
   const NOSE =
-    "M-33.5,-2 L-33.5,-6.4 C-33.5,-9 -32.4,-9.7 -29.6,-10 " +
-    "L-23.2,-10.4 L-21.6,-10.7 L-12.4,-17 " +
-    "C-11.6,-17.5 -10.8,-17.6 -9.8,-17.6 ";
-  const WHEELS =
-    "L27.1,-2 A6.8,6.8 0 0 0 14.1,-2 " +
-    "L-14.1,-2 A6.8,6.8 0 0 0 -27.1,-2 Z";
+    "M-33.5,0 L-33.5,-3.4 C-33.4,-5.6 -32.2,-6.6 -29.4,-7.2 " +
+    "L-22,-8.4 C-18.6,-9 -16.2,-9.6 -13.4,-11 ";
   const ROOF = {
-    /* flat roof carried well back, then an upright tailgate */
-    crossover:
-      "L13,-17.6 C17.6,-17.5 21,-16 24,-13.4 L26.6,-11.4 " +
-      "C29.6,-9 32,-6 32.9,-4 C33.4,-3 33.5,-2.4 33.5,-2.2 L33.5,-2 ",
-    /* shorter cabin falling into a boot deck */
+    taycan:
+      "C-9.6,-12.6 -5.4,-13.58 1.5,-13.58 " +
+      "C8.5,-13.5 13.6,-12.4 18.4,-10.2 " +
+      "C23.6,-7.9 28.2,-5.6 31.4,-3.9 " +
+      "C33,-3 33.5,-2.2 33.5,-1 L33.5,0 ",
     sedan:
-      "L7,-17.6 C11.4,-17.4 15,-15.6 18.6,-12.4 L26,-10.2 " +
-      "C30,-9.4 32.6,-7.4 33.2,-5 C33.5,-3.8 33.5,-2.6 33.5,-2.2 L33.5,-2 ",
-    /* cab stops early, then an open bed with a tailgate at the back */
-    pickup:
-      "L2,-17.6 C4.4,-17.5 5.6,-16.4 5.6,-14.4 L5.6,-11 L30.6,-11 " +
-      "C32.4,-11 33.5,-9.8 33.5,-8 L33.5,-2 ",
+      "C-10,-13.6 -6,-15.4 0,-15.4 L7,-15.4 " +
+      "C12.6,-15.2 16.6,-13.4 20.4,-10.4 " +
+      "C25,-7.6 29.4,-5.2 31.8,-3.8 " +
+      "C33.1,-3 33.5,-2.2 33.5,-1 L33.5,0 ",
+    suv:
+      "C-10.4,-15.6 -6.6,-17.2 0,-17.2 L10,-17.2 " +
+      "C15.6,-17 19.4,-15.4 22.8,-12.4 L27.4,-9.6 " +
+      "C30.6,-7.4 33,-5 33.5,-3 L33.5,0 ",
   } as const;
+  /* haunch over the rear wheel, then the arches cut into the silhouette */
+  const WHEELS =
+    "L26.07,0 A6.5,6.5 0 0 0 13.07,0 " +
+    "L-13.07,0 A6.5,6.5 0 0 0 -26.07,0 Z";
   const GLASS = {
-    crossover: "M-17.6,-9.9 L-11.4,-16.8 L12.4,-16.8 L21.4,-9.9 Z",
-    sedan: "M-17.6,-9.9 L-11.4,-16.8 L6.4,-16.8 L15.6,-9.9 Z",
-    pickup: "M-17.6,-9.9 L-11.4,-16.8 L1.4,-16.8 L4.4,-9.9 Z",
+    taycan: "M-13.6,-6.5 L-8.6,-12.6 L4,-12.6 L15.4,-6.5 Z",
+    sedan: "M-14.4,-7.6 L-9,-14.4 L5.6,-14.4 L16.6,-7.6 Z",
+    suv: "M-14.8,-8.4 L-9.4,-16.2 L8.2,-16.2 L19,-8.4 Z",
   } as const;
   const body = NOSE + ROOF[shape] + WHEELS;
   const glass = GLASS[shape];
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
-      {/* Light, not paint. The flat silhouette was the right answer against a
-          sticker rendering; it is the wrong one against a dead scene. The
-          geometry is untouched — only the shading is new. */}
-      <ellipse cx={0} cy={5.6} rx={36} ry={4.6} fill={`url(#${id}-contact)`} />
+      <ellipse cx={0} cy={5.06} rx={35} ry={4.2} fill={`url(#${id}-contact)`} />
       <path d={body} fill={`url(#${id}-car)`} opacity={far ? 0.66 : 1} />
-      {/* the specular streak where light would actually land */}
+      {/* the specular streak where light would land: bonnet, roof, shoulder */}
       <path
-        d="M-29.6,-10 L-23.2,-10.4 L-21.6,-10.7 L-12.4,-17 C-11.6,-17.5 -10.8,-17.6 -9.8,-17.6 L13,-17.6 C17.6,-17.5 21,-16 24,-13.4"
+        d={`M-29.4,-7.2 L-22,-8.4 C-18.6,-9 -16.2,-9.6 -13.4,-11 ${ROOF[shape].split(" L")[0]}`}
         fill="none"
         stroke={ILLO.hub}
         strokeWidth={1.1}
@@ -348,17 +403,19 @@ function CarSide({
         strokeLinecap="round"
       />
       <path d={glass} fill={`url(#${id}-cargla)`} />
-      {/* one reflection across the glass */}
-      <path d="M-14.4,-12.6 L-9.6,-16.8 L-2.2,-16.8 L-7,-12.6 Z" fill={ILLO.glassTop} fillOpacity={0.2} />
-      {[-20.6, 20.6].map((wx) => (
+      <path d="M-13.2,-6.5 L-8.4,-12.4 L-2,-12.4 L-6.6,-6.5 Z" fill={ILLO.glassTop} fillOpacity={0.2} />
+      {/* the four-point light signature, without a badge */}
+      <rect x={-32.6} y={-4.4} width={4.2} height={1.2} rx={0.6} fill={ILLO.glassTop} opacity={0.6} />
+      <rect x={29} y={-3.4} width={3.8} height={1.1} rx={0.55} fill={ILLO.glassTop} opacity={0.45} />
+      {[-19.57, 19.57].map((wx) => (
         <g key={wx}>
-          <circle cx={wx} cy={0} r={5.6} fill={ILLO.tyre} />
-          <circle cx={wx} cy={0} r={2.6} fill={ILLO.carMid} />
-          <circle cx={wx} cy={0} r={2.6} fill="none" stroke={ILLO.hub} strokeWidth={0.6} strokeOpacity={0.45} />
+          <circle cx={wx} cy={0} r={5.06} fill={ILLO.tyre} />
+          <circle cx={wx} cy={0} r={2.4} fill={ILLO.carMid} />
+          <circle cx={wx} cy={0} r={2.4} fill="none" stroke={ILLO.hub} strokeWidth={0.55} strokeOpacity={0.45} />
         </g>
       ))}
       {port && (
-        <g transform={`translate(${port === "front" ? -10.5 : 10.5} -7)`}>
+        <g transform={`translate(${port === "front" ? -10.5 : 10.5} -3.4)`}>
           <rect x={-2.1} y={-2.1} width={4.2} height={4.2} rx={1.1} fill={ILLO.stage} fillOpacity={0.6} />
           {/* orange only because power is moving through it */}
           <circle cx={0} cy={0} r={1.1} fill={ILLO.live} />
@@ -736,11 +793,11 @@ export const COVERS: Record<string, Motif> = {
     pools: [72],
     draw: (id) => (
       <>
-        <Unit id={id} x={72} lit inUse />
+        <Unit id={id} x={72} lit inUse depth="right" />
         <CarSide id={id} x={190} s={1.15} port="front" />
         {/* over the horn and down to the port — the route it takes on the
             real machine, and the reason the arc starts so high */}
-        <Cable d="M81.9,70.5 C106,74 120,120 150,136 C160,141 170,143 177.9,143.9" live />
+        <Cable d="M81.9,70.5 C106,74 120,120 150,140 C160,145 170,147 177.9,148.1" live />
       </>
     ),
   },
@@ -753,7 +810,7 @@ export const COVERS: Record<string, Motif> = {
       <>
         <Unit id={id} x={222} lit inUse />
         <CarSide id={id} x={112} s={1.05} port="rear" />
-        <Cable d="M212.1,70.5 C190,74 176,120 147,136 C139,141 131,143 123,144.7" live />
+        <Cable d="M212.1,70.5 C190,74 176,120 147,140 C139,145 131,147 123,148.4" live />
         {/* was three unlabelled dots, which told a first-time visitor
             nothing. Named, it is the whole page in one line. */}
         <g>
@@ -860,21 +917,30 @@ export const COVERS: Record<string, Motif> = {
   /* the curve */
   curve: {
     label:
-      "The delivered charging curve: flat at the station's output while the battery is low, then tapering as it fills.",
+      "The delivered charging curve: full power while the battery is low, tapering as it fills, with a battery gauge tracking beneath.",
     draw: () => (
       <>
-        <path d="M44,44 V136 H266" fill="none" stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.55} strokeLinecap="round" />
-        <path
-          d={`${CURVE} L${CURVE_PLOT.X1},136 L${CURVE_PLOT.X0},136 Z`}
-          fill={ILLO.live}
-          opacity={0.09}
-        />
+        <path d="M40,40 V158 H272" fill="none" stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.5} strokeLinecap="round" />
+        {/* gridlines, so the fall is readable as a quantity not a squiggle */}
+        {[70, 100, 130].map((y) => (
+          <path key={y} d={`M40,${y} H272`} stroke={ILLO.seam} strokeWidth={0.7} strokeOpacity={0.16} strokeDasharray="3 5" />
+        ))}
+        <path d={`${CURVE} L${CURVE_PLOT.X1},158 L${CURVE_PLOT.X0},158 Z`} fill={ILLO.live} opacity={0.1} />
         <path d={CURVE} fill="none" stroke={ILLO.live} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
-        <Label x={CURVE_PLOT.X0 + 6} y={154} text="EMPTY" size={8} anchor="start" />
-        <Label x={CURVE_PLOT.X1} y={154} text="FULL" size={8} anchor="end" />
-        {/* the two things the shape is there to say */}
-        <Label x={92} y={48} text="FULL SPEED" tone={ILLO.live} size={9} />
-        <Label x={232} y={96} text="TAPERS" tone={ILLO.seam} size={9} />
+        {/* the plateau, marked where it actually ends */}
+        <path d="M56,50 H104" stroke={ILLO.live} strokeWidth={1.2} strokeOpacity={0.5} strokeDasharray="3 3" />
+        <Label x={80} y={45} text="FULL SPEED" tone={ILLO.live} size={8.5} />
+        <Label x={214} y={80} text="TAPERS" tone={ILLO.seam} size={8.5} />
+        {/* a battery filling along the axis, so "empty" and "full" are shown
+            rather than only named */}
+        <g transform="translate(0 168)">
+          <rect x={56} y={0} width={188} height={16} rx={3} fill={ILLO.recess} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.5} />
+          <rect x={246} y={5} width={3.4} height={6} rx={1.4} fill={ILLO.seam} opacity={0.6} />
+          <rect x={59} y={3} width={62} height={10} rx={1.6} fill={ILLO.live} opacity={0.85} />
+          <Label x={40} y={12} text="EMPTY" size={7.5} anchor="end" tone={ILLO.seam} />
+          <Label x={258} y={12} text="FULL" size={7.5} anchor="start" tone={ILLO.seam} />
+        </g>
+        <circle cx={CURVE_PLOT.X0} cy={56} r={3.2} fill={ILLO.live} />
       </>
     ),
   },
@@ -957,8 +1023,8 @@ export const COVERS: Record<string, Motif> = {
         {/* was the same car three times at three scales, which says "one car,
             three sizes". Three body types says what the guide says. */}
         <CarSide id={id} x={66} y={FLOOR - 20} s={0.62} shape="sedan" far />
-        <CarSide id={id} x={238} y={FLOOR - 20} s={0.62} shape="pickup" flip far />
-        <CarSide id={id} x={150} s={1.05} shape="crossover" />
+        <CarSide id={id} x={238} y={FLOOR - 20} s={0.62} shape="suv" flip far />
+        <CarSide id={id} x={150} s={1.05} shape="taycan" />
       </>
     ),
   },
@@ -972,7 +1038,7 @@ export const COVERS: Record<string, Motif> = {
       <>
         <Unit id={id} x={66} lit inUse />
         <CarSide id={id} x={140} s={0.86} port="front" />
-        <Cable d="M75.9,70.5 C98,74 106,124 122,139 C125,143 128,145 131,146" live />
+        <Cable d="M75.9,70.5 C98,74 106,124 122,142 C125,146 128,148 131,149.1" live />
         {/* the free bay: its connector is holstered and its cable stowed, both
             drawn by Unit itself, so there is nothing to draw here */}
         <Unit id={id} x={244} />
@@ -1057,44 +1123,107 @@ export const COVERS: Record<string, Motif> = {
 
   /* no driveway */
   street: {
-    label: "A row of apartment buildings with cars parked along the kerb.",
+    label:
+      "Apartment blocks with cars parked nose-to-tail at the kerb and no charger anywhere on the street.",
     ground: "road",
     draw: (id) => (
       <>
-        <Roof x={62} w={62} h={78} pitch={0} />
-        <Roof x={132} w={58} h={94} pitch={0} />
-        <Roof x={202} w={54} h={66} pitch={0} />
-        <CarSide id={id} x={92} y={FLOOR + 14} s={0.62} far />
-        <CarSide id={id} x={186} y={FLOOR + 14} s={0.62} flip far />
-        <path d="M0,168 H300" stroke={ILLO.seam} strokeWidth={1} opacity={0.4} />
-        <path d="M20,178 h24 M64,178 h24 M108,178 h24 M152,178 h24 M196,178 h24 M240,178 h24" stroke={ILLO.idle} strokeWidth={1.6} opacity={0.5} />
+        {/* Three blank rectangles with two squares each, which is what reusing
+            Roof with pitch=0 produced. These are buildings: window grids,
+            balconies, setbacks, an entrance. The guide is about having
+            nowhere at home to plug in, so the kerb is the subject. */}
+        {[
+          { x: 24, w: 74, h: 104, cols: 3, rows: 4 },
+          { x: 110, w: 82, h: 128, cols: 3, rows: 5 },
+          { x: 204, w: 70, h: 88, cols: 3, rows: 3 },
+        ].map(({ x, w, h, cols, rows }) => (
+          <g key={x}>
+            <rect x={x} y={FLOOR - h} width={w} height={h} rx={1.5} fill={ILLO.bodyDark} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.5} />
+            {/* parapet */}
+            <rect x={x - 2} y={FLOOR - h - 3} width={w + 4} height={3.4} rx={1} fill={ILLO.body} stroke={ILLO.seam} strokeWidth={0.8} strokeOpacity={0.45} />
+            {Array.from({ length: rows }).map((_, r) =>
+              Array.from({ length: cols }).map((_, c) => {
+                const ww = (w - 14) / cols - 5;
+                const wx = x + 7 + c * ((w - 14) / cols) + 2.5;
+                const wy = FLOOR - h + 10 + r * ((h - 20) / rows);
+                /* a few windows lit, so the block reads as lived in */
+                const on = (r * cols + c + x) % 5 === 0;
+                return (
+                  <g key={`${r}-${c}`}>
+                    <rect x={wx} y={wy} width={ww} height={9} rx={0.8} fill={on ? ILLO.heat : ILLO.recess} opacity={on ? 0.55 : 1} />
+                    {/* balcony rail under every second row */}
+                    {r % 2 === 1 && (
+                      <rect x={wx - 1.4} y={wy + 10.4} width={ww + 2.8} height={1.2} rx={0.6} fill={ILLO.seam} opacity={0.5} />
+                    )}
+                  </g>
+                );
+              })
+            )}
+            {/* entrance */}
+            <rect x={x + w / 2 - 5} y={FLOOR - 13} width={10} height={13} rx={1} fill={ILLO.recess} stroke={ILLO.seam} strokeWidth={0.7} strokeOpacity={0.5} />
+          </g>
+        ))}
+        {/* street lamp */}
+        <g>
+          <path d="M288,152 V96 q0,-6 -7,-6 h-9" fill="none" stroke={ILLO.seam} strokeWidth={1.6} strokeOpacity={0.6} strokeLinecap="round" />
+          <ellipse cx={270} cy={91} rx={5} ry={2.4} fill={ILLO.heat} opacity={0.5} />
+        </g>
+        {/* the kerb: cars nose-to-tail, nowhere to plug in */}
+        <path d={`M0,${FLOOR + 4} H300`} stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.5} />
+        <CarSide id={id} x={56} y={FLOOR + 20} s={0.56} far />
+        <CarSide id={id} x={150} y={FLOOR + 20} s={0.56} far />
+        <CarSide id={id} x={244} y={FLOOR + 20} s={0.56} far />
       </>
     ),
   },
 
   /* something went wrong */
   fault: {
-    label: "A broken connection beside the same connection working again after a retry.",
+    label:
+      "A connector sitting short of the car's inlet and failing, beside the same connector pushed fully home and charging.",
     draw: () => (
       <>
-        {/* used to show only the fault. A troubleshooting guide should show
-            the fault AND the thing you get back, or it is just bad news. */}
-        <g>
-          <Plug x={70} y={92} r={20} kind="nacs" />
-          <Cable d="M90,92 C100,92 104,96 110,98" />
-          <g stroke={ILLO.fault} strokeWidth={2.6} strokeLinecap="round">
-            <line x1={122} y1={82} x2={140} y2={104} />
-            <line x1={140} y1={82} x2={122} y2={104} />
+        {/* Three beats across 300 units gave each one 100 and they were too
+            small to read. Two, larger, carry the same lesson: nine times in
+            ten the connector simply is not home. */}
+        {[
+          { x: 82, t: "NOT SEATED", tone: ILLO.fault, gap: 11, lit: false },
+          { x: 218, t: "PUSHED HOME", tone: ILLO.ok, gap: 0, lit: true },
+        ].map(({ x, t, tone, gap, lit }) => (
+          <g key={t}>
+            {/* a fragment of the car, so the inlet is clearly ON something */}
+            <path
+              d={`M${x - 40},${40} h80 a4,4 0 0 1 4,4 v40 a4,4 0 0 1 -4,4 h-80 a4,4 0 0 1 -4,-4 v-40 a4,4 0 0 1 4,-4 Z`}
+              fill={ILLO.carMid}
+              opacity={0.55}
+            />
+            {/* the inlet */}
+            <rect x={x - 15} y={50} width={30} height={30} rx={5} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={1.5} strokeOpacity={0.8} />
+            <circle cx={x - 7} cy={68} r={4.4} fill={lit ? ILLO.live : ILLO.seam} />
+            <circle cx={x + 7} cy={68} r={4.4} fill={lit ? ILLO.live : ILLO.seam} />
+            {[-8, 0, 8].map((dx) => (
+              <circle key={dx} cx={x + dx} cy={57} r={1.8} fill={ILLO.seam} />
+            ))}
+            {/* the coupler, short of home by a measured gap */}
+            <g transform={`translate(0 ${gap})`}>
+              <rect x={x - 13} y={84} width={26} height={26} rx={4} fill={ILLO.unitMid} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.85} />
+              <rect x={x - 6} y={110} width={12} height={20} rx={5} fill={ILLO.bodyDark} stroke={ILLO.seam} strokeWidth={1} />
+              <Cable d={`M${x},${130} C${x},${140} ${x + 14},${142} ${x + 22},${146}`} live={lit} />
+            </g>
+            {/* the gap itself, called out */}
+            {gap > 0 && (
+              <>
+                <path d={`M${x + 26},${84 + gap} V${82}`} stroke={tone} strokeWidth={1.6} strokeLinecap="round" />
+                <path d={`M${x + 22},${86} L${x + 26},${81} L${x + 30},${86}`} fill="none" stroke={tone} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+              </>
+            )}
+            <Label x={x} y={166} text={t} tone={tone} size={9} />
           </g>
-          <Label x={106} y={132} text="STUCK" tone={ILLO.fault} size={8} />
-        </g>
-        <path d="M150,50 V140" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.4} />
-        <g>
-          <Plug x={200} y={92} r={20} kind="nacs" lit />
-          <Cable d="M220,92 C232,92 240,94 250,96" live />
-          <Tick x={264} y={98} r={12} />
-          <Label x={222} y={132} text="RETRY" tone={ILLO.ok} size={8} />
-        </g>
+        ))}
+        {/* the instruction between them */}
+        <path d="M136,96 h28" fill="none" stroke={ILLO.hub} strokeWidth={1.6} strokeOpacity={0.7} strokeLinecap="round" />
+        <path d="M158,90 L166,96 L158,102" fill="none" stroke={ILLO.hub} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+        <Label x={150} y={82} text="PUSH IN" size={8} tone={ILLO.hub} />
       </>
     ),
   },
@@ -1137,38 +1266,41 @@ export const COVERS: Record<string, Motif> = {
 
   /* a working day */
   shift: {
-    label: "A car with a roof sign between a clock and a currency symbol, on a short repeating loop.",
+    label:
+      "A driver's shift as a loop, with two charging stops on it and the hours and takings marked.",
     ground: "road",
     draw: (id) => (
       <>
-        <ellipse cx={150} cy={104} rx={96} ry={40} fill="none" stroke={ILLO.seam} strokeWidth={1.6} strokeDasharray="7 7" opacity={0.5} />
-        <Pip x={54} y={104} lit />
-        <Pip x={246} y={104} lit />
+        <ellipse cx={150} cy={100} rx={104} ry={44} fill="none" stroke={ILLO.seam} strokeWidth={1.6} strokeDasharray="7 7" opacity={0.45} />
+        {/* the two stops sit ON the loop, where the ellipse actually passes */}
+        <Pin x={46} y={92} r={8} lit />
+        <Pin x={254} y={92} r={8} lit />
         <g>
-          <CarSide id={id} x={150} y={86} s={0.68} />
+          <CarSide id={id} x={150} y={74} s={0.72} />
           {/* roof sign — what makes this a working shift and not a commute */}
-          <rect x={143} y={65} width={15} height={6} rx={2} fill={ILLO.live} opacity={0.95} />
+          <rect x={143} y={56} width={15} height={5.6} rx={2} fill={ILLO.live} opacity={0.95} />
         </g>
-        <g transform="translate(72 148)">
-          <circle cx={0} cy={0} r={11} fill="none" stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.8} />
-          <path d="M0,0 L0,-6 M0,0 L4.4,2.6" fill="none" stroke={ILLO.hub} strokeWidth={1.4} strokeLinecap="round" />
+        {/* hours and takings, set into the composition rather than floating */}
+        <g transform="translate(150 132)">
+          <rect x={-62} y={0} width={124} height={26} rx={5} fill={ILLO.recess} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.45} />
+          <g transform="translate(-42 13)">
+            <circle cx={0} cy={0} r={8} fill="none" stroke={ILLO.hub} strokeWidth={1.3} strokeOpacity={0.85} />
+            <path d="M0,0 L0,-4.6 M0,0 L3.4,2" fill="none" stroke={ILLO.hub} strokeWidth={1.3} strokeLinecap="round" />
+          </g>
+          <Label x={-22} y={17} text="HOURS" size={7.5} anchor="start" tone={ILLO.seam} />
+          <Label x={40} y={19} text="$" tone={ILLO.live} size={20} />
         </g>
-        <Label x={228} y={155} text="$" tone={ILLO.live} size={24} />
       </>
     ),
   },
 
   /* the long way */
   highway: {
-    label: "A road running to the horizon with three charging stops pinned along it.",
+    label: "A road running to the horizon with three named charging stops pinned along it.",
     draw: () => (
       <>
-        {/* The road now runs off the bottom of the frame rather than stopping
-            at the horizon line, which both fills the lower band and puts the
-            viewer on the road instead of beside it. */}
         <path d="M76,200 L138,58 H162 L224,200 Z" fill={ILLO.bodyDark} />
         <path d="M76,200 L138,58 H162 L224,200 Z" fill="none" stroke={ILLO.seam} strokeWidth={0.9} strokeOpacity={0.45} strokeLinejoin="round" />
-        {/* centre line, shortening and narrowing with distance */}
         {[
           [72, 1.4, 5],
           [92, 1.8, 7],
@@ -1177,43 +1309,47 @@ export const COVERS: Record<string, Motif> = {
         ].map(([y, w, h]) => (
           <rect key={y} x={150 - w / 2} y={y} width={w} height={h} rx={w / 2} fill={ILLO.idle} opacity={0.75} />
         ))}
-        {/* A rear-view car at this scale defeated two attempts and read as a
-            bell on a post both times. Pins say "stops along the way" without
-            asking a 20-pixel shape to be recognisable as a vehicle. */}
-        <Pin x={120} y={72} r={5} />
-        <Pin x={198} y={104} r={7} />
-        <Pin x={70} y={150} r={10} lit />
+        {/* named, because three unlabelled pins on a road could be anything */}
+        <Pin x={118} y={70} r={5} />
+        <Label x={118} y={88} text="THEN" size={7.5} tone={ILLO.seam} />
+        <Pin x={202} y={102} r={7} />
+        <Label x={202} y={124} text="NEXT" size={8} tone={ILLO.seam} />
+        <Pin x={62} y={146} r={10} lit />
+        <Label x={62} y={176} text="START HERE" size={8.5} tone={ILLO.live} />
       </>
     ),
   },
 
   /* two corridors */
   corridors: {
-    label: "Two charging locations pinned on a route running across the region.",
+    label: "Two HubCharge locations pinned on a route across the region, with the nearer one named.",
     ground: "road",
     draw: () => (
       <>
-        {/* was two parallel lines and six dots, which is not a map of
-            anything. Pins say "places you can drive to". */}
+        {/* a route that reads as a route: one drawn line, the travelled part
+            lit, the rest ahead of you */}
         <path
-          d="M18,124 C64,124 78,74 130,74 C186,74 200,116 282,102"
+          d="M20,140 C58,140 74,96 118,92 C158,88 176,58 214,58 C244,58 264,68 282,84"
           fill="none"
           stroke={ILLO.seam}
-          strokeWidth={2.2}
-          strokeOpacity={0.55}
+          strokeWidth={2.4}
+          strokeOpacity={0.45}
           strokeLinecap="round"
+          strokeDasharray="6 6"
         />
         <path
-          d="M18,124 C64,124 78,74 130,74"
+          d="M20,140 C58,140 74,96 118,92"
           fill="none"
           stroke={ILLO.live}
-          strokeWidth={2.4}
-          strokeOpacity={0.85}
+          strokeWidth={2.8}
+          strokeOpacity={0.9}
           strokeLinecap="round"
         />
-        <Pin x={130} y={62} r={10} lit />
-        <Pin x={18} y={112} r={8} />
-        <Pin x={264} y={92} r={8} />
+        <Pin x={118} y={80} r={11} lit />
+        <Label x={118} y={112} text="ALHAMBRA" tone={ILLO.live} size={8.5} />
+        <Pin x={214} y={48} r={9} />
+        <Label x={214} y={76} text="FONTANA" tone={ILLO.seam} size={8.5} />
+        <Pip x={20} y={140} r={3.4} />
       </>
     ),
   },

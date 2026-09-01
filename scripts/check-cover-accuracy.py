@@ -64,7 +64,7 @@ check("curve is derived, not hand-drawn",
 # 6. cables still land on horn and in port
 UW, UH, FLOOR = 34, 76, 152
 horn = lambda x, sd: (x + (1 if sd=="right" else -1)*UW*0.29, FLOOR-UH-5.5)
-port = lambda cx, s, sd: (cx + (-10.5 if sd=="front" else 10.5)*s, FLOOR-7*s)
+port = lambda cx, s, sd: (cx + (-10.5 if sd=="front" else 10.5)*s, FLOOR-3.4*s)
 for n, ux, cx2, cs, ps, hs in [("station",72,190,1.15,"front","right"),
                                ("arrival",222,112,1.05,"rear","left"),
                                ("bays",66,140,0.86,"front","right")]:
@@ -95,6 +95,60 @@ for m in re.finditer(r"<path\b[^>]*?/>", src, re.S):
     if g and 'fill="none"' in g: continue
     risky.append(d[:40])
 check("no path fills its own corner", not risky, f"{len(risky)} risky")
+# ── the cabinet's two cables ─────────────────────────────────────────
+unit = re.search(r"function Unit\(.*?\n\}\n", src, re.S).group(0)
+check("the cabinet draws a cable for each of its two connectors",
+      unit.count("<Cable") == 2,
+      f"{unit.count('<Cable')} cable(s) for {unit.count('<Holster')} holsters")
+check("the left cable is unconditional, the right one only when free",
+      "{!inUse && (" in unit and unit.index("<Cable") < unit.index("{!inUse && ("))
+
+# ── the car matches the real Taycan ──────────────────────────────────
+L_MM, H_MM, WB_MM, WD_MM = 4963, 1381, 2900, 750
+car = re.search(r"function CarSide\(.*?\n\}\n", src, re.S).group(0)
+wx = sorted({abs(float(v)) for v in re.findall(r"\[(-?[\d.]+), [\d.]+\]\.map\(\(wx\)", car)} |
+            {abs(float(v)) for v in re.findall(r"\{\[(-?[\d.]+), ", car)})
+wr = float(re.search(r'r=\{([\d.]+)\} fill=\{ILLO\.tyre\}', car)[1])
+roof = min(float(v) for v in re.findall(r"-?\d+\.?\d*", car.split("taycan:")[1].split("sedan:")[0]))
+LEN = 67.0
+if wx:
+    got = {"wheelbase": (wx[0]*2)/LEN, "wheel dia": (wr*2)/LEN}
+    want = {"wheelbase": WB_MM/L_MM, "wheel dia": WD_MM/L_MM}
+    for k in got:
+        check(f"car {k} matches the Taycan", abs(got[k]-want[k]) < 0.012,
+              f"{got[k]:.3f} vs real {want[k]:.3f}")
+    height = wr - roof
+    check("car length-to-height matches the Taycan",
+          abs(LEN/height - L_MM/H_MM) < 0.15,
+          f"{LEN/height:.2f} vs real {L_MM/H_MM:.2f}")
+
+# ── the perspective is a construction, not a look ────────────────────
+HZ = float(re.search(r"const HORIZON = ([\d.]+)", src)[1])
+VPR = float(re.search(r"const VP_RIGHT = (-?[\d.]+)", src)[1])
+VPL = float(re.search(r"const VP_LEFT = (-?[\d.]+)", src)[1])
+def recede(xe, yt, yb, vpx, xf):
+    t = (xf - xe) / (vpx - xe)
+    return yt + t*(HZ - yt), yb + t*(HZ - yb)
+# take the station cabinet's real numbers and confirm both receding edges,
+# extended, actually strike the vanishing point on the horizon
+UW2, UH2, CAP = 34, 76, 4
+near = 72 + UW2/2
+top_ = FLOOR - UH2
+yt, yb = top_ + CAP, FLOOR - 6
+far = near + 11
+fyt, fyb = recede(near, yt, yb, VPR, far)
+def hits_vp(x0, y0, x1, y1):
+    """extend the edge to the horizon; it must land on the vanishing point"""
+    if abs(y1 - y0) < 1e-9: return abs(HZ - y0) < 1e-9
+    t = (HZ - y0) / (y1 - y0)
+    return abs((x0 + t*(x1 - x0)) - VPR) < 1.0
+check("top receding edge meets the vanishing point", hits_vp(near, yt, far, fyt))
+check("bottom receding edge meets the vanishing point", hits_vp(near, yb, far, fyb))
+check("the horizon sits inside the frame", 0 < HZ < 200, f"y={HZ}")
+check("both vanishing points lie outside the frame", VPL < 0 and VPR > 300,
+      f"L {VPL}, R {VPR}")
+check("a cover actually uses the construction", 'depth="right"' in src or 'depth="left"' in src)
+
 # ── colour discipline ────────────────────────────────────────────────
 illo = pathlib.Path("lib/illustration.ts").read_text()
 TOK = dict(re.findall(r'^\s+([a-zA-Z]+): "(#[0-9A-Fa-f]{6})"', illo, re.M))
