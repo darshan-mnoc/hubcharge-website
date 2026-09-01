@@ -246,25 +246,49 @@ function CarSide({
   s = 1,
   flip = false,
   port,
+  shape = "crossover",
 }: {
   x: number;
   y?: number;
   s?: number;
   flip?: boolean;
+  /** Body type. Crossover keeps the measured geometry; the other two vary
+   *  only the roof and tail, so all three share a wheelbase and ride height
+   *  and still read as the same family of drawing. */
+  shape?: "crossover" | "sedan" | "pickup";
   /** Draw a charge socket on the named flank. Cables must land on one of
    *  these — a cable ending in mid-air is the drawn equivalent of the
    *  floating-cable renders these covers replaced. */
   port?: "front" | "rear";
 }) {
-  const body =
+  const NOSE =
     "M-33.5,-2 L-33.5,-6.4 C-33.5,-9 -32.4,-9.7 -29.6,-10 " +
     "L-23.2,-10.4 L-21.6,-10.7 L-12.4,-17 " +
-    "C-11.6,-17.5 -10.8,-17.6 -9.8,-17.6 L13,-17.6 " +
-    "C17.6,-17.5 21,-16 24,-13.4 L26.6,-11.4 " +
-    "C29.6,-9 32,-6 32.9,-4 C33.4,-3 33.5,-2.4 33.5,-2.2 L33.5,-2 " +
+    "C-11.6,-17.5 -10.8,-17.6 -9.8,-17.6 ";
+  const WHEELS =
     "L27.1,-2 A6.8,6.8 0 0 0 14.1,-2 " +
     "L-14.1,-2 A6.8,6.8 0 0 0 -27.1,-2 Z";
-  const glass = "M-17.6,-9.9 L-11.4,-16.8 L12.4,-16.8 L21.4,-9.9 Z";
+  const ROOF = {
+    /* flat roof carried well back, then an upright tailgate */
+    crossover:
+      "L13,-17.6 C17.6,-17.5 21,-16 24,-13.4 L26.6,-11.4 " +
+      "C29.6,-9 32,-6 32.9,-4 C33.4,-3 33.5,-2.4 33.5,-2.2 L33.5,-2 ",
+    /* shorter cabin falling into a boot deck */
+    sedan:
+      "L7,-17.6 C11.4,-17.4 15,-15.6 18.6,-12.4 L26,-10.2 " +
+      "C30,-9.4 32.6,-7.4 33.2,-5 C33.5,-3.8 33.5,-2.6 33.5,-2.2 L33.5,-2 ",
+    /* cab stops early, then an open bed with a tailgate at the back */
+    pickup:
+      "L2,-17.6 C4.4,-17.5 5.6,-16.4 5.6,-14.4 L5.6,-11 L30.6,-11 " +
+      "C32.4,-11 33.5,-9.8 33.5,-8 L33.5,-2 ",
+  } as const;
+  const GLASS = {
+    crossover: "M-17.6,-9.9 L-11.4,-16.8 L12.4,-16.8 L21.4,-9.9 Z",
+    sedan: "M-17.6,-9.9 L-11.4,-16.8 L6.4,-16.8 L15.6,-9.9 Z",
+    pickup: "M-17.6,-9.9 L-11.4,-16.8 L1.4,-16.8 L4.4,-9.9 Z",
+  } as const;
+  const body = NOSE + ROOF[shape] + WHEELS;
+  const glass = GLASS[shape];
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
       <ellipse cx={0} cy={6.2} rx={31} ry={1.9} fill={ILLO.shadow} opacity={0.45} />
@@ -431,6 +455,102 @@ function Wordmark() {
   );
 }
 
+/** A word set into the drawing. The no-text rule was always about
+ *  *generated* text, which arrived misspelled; authored text renders exactly.
+ *  Naming a thing is the fastest way to make a drawing legible — the real
+ *  cabinet prints CCS1 and NACS beside its holsters for the same reason.
+ *  8.5 units sets at roughly 10px on the narrowest masthead. */
+function Label({
+  x,
+  y,
+  text,
+  tone = ILLO.hub,
+  size = 8.5,
+  anchor = "middle",
+}: {
+  x: number;
+  y: number;
+  text: string;
+  tone?: string;
+  size?: number;
+  anchor?: "start" | "middle" | "end";
+}) {
+  return (
+    <text x={x} y={y} fontSize={size} fontWeight={700} letterSpacing="0.5" fill={tone} textAnchor={anchor}>
+      {text}
+    </text>
+  );
+}
+
+/** The band below the horizon — a quarter of every plate, previously empty,
+ *  which is most of why the set read as sparse. FLOOR does not move; every
+ *  motif is tuned to it. This is the floor those scenes stand on. */
+function Ground({ kind = "plain" }: { kind?: "bay" | "road" | "plain" }) {
+  return (
+    <g>
+      <rect x={0} y={FLOOR} width={W} height={H - FLOOR} fill={ILLO.shadow} opacity={0.22} />
+      {kind === "bay" &&
+        [30, 105, 195, 270].map((x) => (
+          <path key={x} d={`M${x},${FLOOR + 6} L${x - 7},${H - 6}`} stroke={ILLO.seam} strokeWidth={1.6} strokeOpacity={0.3} strokeLinecap="round" />
+        ))}
+      {kind === "road" && (
+        <>
+          <path d={`M0,${FLOOR + 14} H${W}`} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.22} />
+          {[24, 96, 168, 240].map((x) => (
+            <path key={x} d={`M${x},${FLOOR + 28} h26`} stroke={ILLO.seam} strokeWidth={2.4} strokeOpacity={0.32} strokeLinecap="round" />
+          ))}
+        </>
+      )}
+    </g>
+  );
+}
+
+/** ✓ and ✕ as paths, not font glyphs — a glyph can fall back to a different
+ *  shape on a machine without the face, a path cannot. */
+function Tick({ x, y, r = 9 }: { x: number; y: number; r?: number }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill={ILLO.live} fillOpacity={0.14} stroke={ILLO.live} strokeWidth={1.4} />
+      <path
+        d={`M${x - r * 0.42},${y} L${x - r * 0.1},${y + r * 0.34} L${x + r * 0.44},${y - r * 0.34}`}
+        fill="none"
+        stroke={ILLO.live}
+        strokeWidth={r * 0.22}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+  );
+}
+
+function Cross({ x, y, r = 9 }: { x: number; y: number; r?: number }) {
+  return (
+    <g stroke={ILLO.idle} strokeWidth={r * 0.22} strokeLinecap="round">
+      <circle cx={x} cy={y} r={r} fill="none" strokeOpacity={0.7} />
+      <line x1={x - r * 0.38} y1={y - r * 0.38} x2={x + r * 0.38} y2={y + r * 0.38} />
+      <line x1={x + r * 0.38} y1={y - r * 0.38} x2={x - r * 0.38} y2={y + r * 0.38} />
+    </g>
+  );
+}
+
+/** A map pin, for the covers that are about places rather than equipment. */
+function Pin({ x, y, r = 8, lit = false }: { x: number; y: number; r?: number; lit?: boolean }) {
+  const tone = lit ? ILLO.live : ILLO.seam;
+  return (
+    <g>
+      <path
+        d={`M${x},${y + r * 1.9} C${x - r * 0.9},${y + r * 0.75} ${x - r},${y + r * 0.3} ${x - r},${y} a${r},${r} 0 1 1 ${r * 2},0 c0,${r * 0.3} ${-r * 0.1},${r * 0.75} ${-r},${r * 1.9} Z`}
+        fill={lit ? ILLO.live : ILLO.bodyLight}
+        fillOpacity={lit ? 0.22 : 0.5}
+        stroke={tone}
+        strokeWidth={1.5}
+        strokeLinejoin="round"
+      />
+      <circle cx={x} cy={y} r={r * 0.36} fill={tone} />
+    </g>
+  );
+}
+
 /* ── The plate ───────────────────────────────────────────────────── */
 
 function Defs({ id }: { id: string }) {
@@ -459,12 +579,18 @@ function Defs({ id }: { id: string }) {
 
 /* ── Motifs ──────────────────────────────────────────────────────── */
 
-type Motif = { label: string; draw: (id: string) => React.ReactNode };
+type Motif = {
+  label: string;
+  draw: (id: string) => React.ReactNode;
+  /** Floor treatment for the band below the horizon. Omit for "plain". */
+  ground?: "bay" | "road" | "plain";
+};
 
 export const COVERS: Record<string, Motif> = {
   /* the product, whole */
   station: {
     label: "A HubCharge unit with a car connected to it.",
+    ground: "bay",
     draw: (id) => (
       <>
         <Unit id={id} x={72} lit inUse />
@@ -478,45 +604,72 @@ export const COVERS: Record<string, Motif> = {
 
   /* what a visit is, as three beats */
   arrival: {
-    label: "A car arriving at a unit, with the three steps of a stop marked out.",
+    label: "A car connected to a unit, above the three named steps of a stop.",
     draw: (id) => (
       <>
         <Unit id={id} x={222} lit inUse />
         <CarSide x={112} s={1.05} port="rear" />
         <Cable d="M212.1,70.5 C190,74 176,120 147,136 C139,141 131,143 123,144.7" live />
-        {[54, 84, 114].map((x, i) => (
-          <Pip key={x} x={x} y={176} lit={i === 2} />
-        ))}
-        <path d="M54,176 H114" stroke={ILLO.idle} strokeWidth={1.2} opacity={0.6} />
+        {/* was three unlabelled dots, which told a first-time visitor
+            nothing. Named, it is the whole page in one line. */}
+        <g>
+          <path d="M46,172 H254" stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.35} />
+          {[
+            { x: 46, t: "PULL IN", lit: true },
+            { x: 150, t: "WE PLUG IN", lit: true },
+            { x: 254, t: "RELAX", lit: false },
+          ].map(({ x, t, lit }) => (
+            <g key={t}>
+              <circle cx={x} cy={172} r={4.2} fill={lit ? ILLO.live : ILLO.idle} />
+              <Label
+                x={x}
+                y={188}
+                text={t}
+                size={8}
+                tone={lit ? ILLO.hub : ILLO.seam}
+                anchor={x === 46 ? "start" : x === 254 ? "end" : "middle"}
+              />
+            </g>
+          ))}
+        </g>
       </>
     ),
   },
 
   /* two plugs, true relative scale */
   connectors: {
-    label: "Two charging connectors side by side, one visibly larger than the other.",
+    label:
+      "The two connectors this network fits, named: CCS1 on the left and the larger NACS on the right.",
     draw: () => (
       <>
-        <Cable d="M96,138 C96,152 104,158 116,160" />
-        <Cable d="M206,150 C206,162 214,166 226,168" />
-        <Plug x={96} y={94} r={22} lit />
-        <Plug x={206} y={88} r={30} big lit />
+        {/* named, because the whole question this guide answers is WHICH one
+            you have — and the real cabinet prints these two words beside its
+            holsters for exactly the same reason */}
+        <Cable d="M96,132 C96,146 104,152 116,154" />
+        <Cable d="M206,144 C206,156 214,160 226,162" />
+        <Plug x={96} y={88} r={22} lit />
+        <Plug x={206} y={82} r={30} big lit />
+        <Label x={96} y={128} text="CCS1" />
+        <Label x={206} y={128} text="NACS" />
       </>
     ),
   },
 
   /* plug meeting socket */
   fits: {
-    label: "A charging connector aligned with a car's charging port.",
+    label: "A charging connector, an arrow, and a car whose charge port it fits, confirmed with a tick.",
+    ground: "bay",
     draw: () => (
       <>
-        <Plug x={104} y={100} r={24} lit />
-        <g>
-          <rect x={168} y={76} width={54} height={48} rx={7} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={1.2} strokeOpacity={0.85} />
-          <circle cx={195} cy={100} r={15} fill={ILLO.stage} />
-          <circle cx={195} cy={100} r={15} fill="none" stroke={ILLO.live} strokeWidth={1.6} opacity={0.85} />
-        </g>
-        <path d="M132,100 H160" stroke={ILLO.live} strokeWidth={1.6} strokeDasharray="4 4" opacity={0.7} />
+        <Plug x={54} y={96} r={24} lit />
+        <path d="M84,96 H118" fill="none" stroke={ILLO.live} strokeWidth={2} strokeOpacity={0.85} strokeLinecap="round" />
+        <path d="M112,89 L121,96 L112,103" fill="none" stroke={ILLO.live} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        {/* the far half is the reader's own car, drawn as one — an abstract
+            flank panel read as a television */}
+        <CarSide x={202} y={128} s={1.5} port="front" />
+        {/* ring the port, because it is the thing the arrow points at */}
+        <circle cx={186} cy={117} r={15} fill="none" stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.75} strokeDasharray="3 3" />
+        <Tick x={150} y={172} r={12} />
       </>
     ),
   },
@@ -524,119 +677,143 @@ export const COVERS: Record<string, Motif> = {
   /* three speeds */
   levels: {
     label:
-      "A wall socket, a home wallbox and a DC fast charger side by side, rising in size; the fast charger is lit.",
+      "Three ways to charge, named: a Level 1 wall socket, a Level 2 wallbox and a DC fast charger.",
+    ground: "bay",
     draw: (id) => (
       <>
         {/* This used to be three sizes of the same cabinet, which says
             "small, medium, large charger". Level 1 is an ordinary wall
             socket and Level 2 a wallbox — the guide's own copy says exactly
-            that, so the drawing now does too. */}
-        {/* Level 1 — a wall socket on its wall stub */}
+            that, so the drawing now does too, and each is named. */}
         <g>
-          <ellipse cx={79} cy={FLOOR + 1.5} rx={20} ry={2.2} fill={ILLO.shadow} opacity={0.35} />
-          <rect x={62} y={110} width={34} height={42} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
-          <rect x={72} y={118} width={14} height={18} rx={2.6} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={0.8} />
-          <circle cx={76.5} cy={124} r={1.2} fill={ILLO.seam} />
-          <circle cx={81.5} cy={124} r={1.2} fill={ILLO.seam} />
-          <rect x={77.6} y={128.6} width={2.8} height={3.4} rx={1} fill={ILLO.seam} />
+          <rect x={54} y={112} width={34} height={40} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
+          <rect x={64} y={120} width={14} height={18} rx={2.6} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={0.8} />
+          <circle cx={68.5} cy={126} r={1.2} fill={ILLO.seam} />
+          <circle cx={73.5} cy={126} r={1.2} fill={ILLO.seam} />
+          <rect x={69.6} y={130.6} width={2.8} height={3.4} rx={1} fill={ILLO.seam} />
         </g>
-        {/* Level 2 — a wallbox with its own cable */}
         <g>
-          <ellipse cx={151} cy={FLOOR + 1.5} rx={22} ry={2.2} fill={ILLO.shadow} opacity={0.35} />
-          <rect x={132} y={92} width={38} height={60} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
-          <rect x={141} y={100} width={20} height={26} rx={4} fill={`url(#${id}-unit)`} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.9} />
-          <circle cx={151} cy={108} r={3} fill={ILLO.glass} stroke={ILLO.edge} strokeWidth={0.6} />
-          <Cable d="M151,126 C151,135 159,137 158,144" />
+          <rect x={124} y={92} width={38} height={60} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
+          <rect x={133} y={100} width={20} height={26} rx={4} fill={`url(#${id}-unit)`} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.9} />
+          <circle cx={143} cy={108} r={3} fill={ILLO.glass} stroke={ILLO.edge} strokeWidth={0.6} />
+          <Cable d="M143,126 C143,135 151,137 150,144" />
         </g>
-        {/* Level 3 — the kind we run */}
         <Unit id={id} x={224} w={32} h={80} lit />
+        <Label x={71} y={168} text="L1" />
+        <Label x={143} y={168} text="L2" />
+        <Label x={224} y={168} text="DC" tone={ILLO.live} />
       </>
     ),
   },
 
   /* the curve */
   curve: {
-    label: "A charging curve that rises quickly then tapers, over a battery.",
+    label:
+      "A charging curve that climbs fast from a low battery then tapers, with the fast and slow halves named.",
     draw: () => (
       <>
-        <path d={CURVE} fill="none" stroke={ILLO.live} strokeWidth={2.6} strokeLinecap="round" />
-        <path d={`${CURVE} L244,140 L56,140 Z`} fill={ILLO.live} opacity={0.09} />
-        {[[56, 116], [104, 60], [244, 126]].map(([x, y], i) => (
-          <Pip key={x} x={x} y={y} r={3} lit={i === 1} />
-        ))}
-        <path d="M46,44 V142 H254" fill="none" stroke={ILLO.seam} strokeWidth={0.9} opacity={0.45} />
+        {/* fill="none" is load-bearing: an open path with a stroke and no fill
+            still fills, and this one filled its whole axis corner black */}
+        <path d="M44,44 V136 H266" fill="none" stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.55} strokeLinecap="round" />
+        <path d={CURVE} fill="none" stroke={ILLO.live} strokeWidth={3} strokeLinecap="round" />
+        <path d={`${CURVE} L244,136 L56,136 Z`} fill={ILLO.live} opacity={0.09} />
+        <circle cx={104} cy={60} r={4} fill={ILLO.live} />
+        <circle cx={56} cy={116} r={3.2} fill={ILLO.seam} />
+        <circle cx={244} cy={126} r={3.2} fill={ILLO.seam} />
+        {/* naming the two halves is the entire point of the guide: the same
+            ten minutes buys far more range at the bottom than the top */}
+        <Label x={62} y={154} text="10%" size={8} />
+        <Label x={246} y={154} text="80%" size={8} />
+        {/* clear of the curve itself — set on the line they were unreadable */}
+        <Label x={92} y={48} text="FAST" tone={ILLO.live} size={9} />
+        <Label x={224} y={82} text="SLOWER" tone={ILLO.seam} size={9} />
       </>
     ),
   },
 
   /* time, priced */
   clock: {
-    label: "A clock face with one segment lit, beside a charger.",
+    label: "A ten-minute segment lit on a clock face, marked with a currency symbol.",
+    ground: "bay",
     draw: (id) => (
       <>
-        <Unit id={id} x={224} lit />
-        <circle cx={112} cy={98} r={38} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.85} />
+        <Unit id={id} x={236} lit />
+        <circle cx={108} cy={94} r={40} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.85} />
         {Array.from({ length: 12 }).map((_, i) => (
           <line
             key={i}
-            x1={112}
-            y1={64}
-            x2={112}
-            y2={68.5}
+            x1={108}
+            y1={58}
+            x2={108}
+            y2={62.5}
             stroke={ILLO.hub}
             strokeWidth={1.1}
             strokeOpacity={i % 3 === 0 ? 0.85 : 0.45}
-            transform={`rotate(${i * 30} 112 98)`}
+            transform={`rotate(${i * 30} 108 94)`}
           />
         ))}
-        <circle
-          cx={112}
-          cy={98}
-          r={30}
+        <path
+          d="M108,60 A34,34 0 0 1 130.2,68.3"
           fill="none"
           stroke={ILLO.live}
-          strokeWidth={7}
+          strokeWidth={5}
           strokeLinecap="round"
-          strokeDasharray={`${2 * Math.PI * 30 * 0.28} ${2 * Math.PI * 30}`}
-          transform="rotate(-90 112 98)"
         />
-        <circle cx={112} cy={98} r={3} fill={ILLO.edge} />
+        <circle cx={108} cy={94} r={3} fill={ILLO.hub} />
+        <path d="M108,94 L108,64" stroke={ILLO.hub} strokeWidth={1.6} strokeLinecap="round" />
+        {/* This cover heads the COST guide and used to draw only a clock,
+            which says time, not money. The symbol is a category marker: the
+            rate itself appears nowhere but the product screenshot. */}
+        <Label x={108} y={104} text="$" tone={ILLO.live} size={26} />
       </>
     ),
   },
 
   /* one flat block, not a meter */
   flat: {
-    label: "A charger screen showing a single solid block rather than a running meter.",
-    draw: (id) => (
+    label: "A rising metered price ruled out beside one flat price that does not change.",
+    ground: "bay",
+    draw: () => (
       <>
-        <Unit id={id} x={96} lit />
-        <g>
-          <rect x={156} y={64} width={104} height={70} rx={7} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={1.2} strokeOpacity={0.85} />
-          <rect x={168} y={78} width={80} height={16} rx={4} fill={ILLO.live} opacity={0.9} />
-          {[104, 118].map((y) => (
-            <rect key={y} x={168} y={y} width={54} height={6} rx={3} fill={ILLO.idle} opacity={0.7} />
+        <g opacity={0.6}>
+          {[0, 1, 2, 3].map((i) => (
+            <rect key={i} x={44 + i * 18} y={102 - i * 14} width={14} height={28 + i * 14} rx={2} fill={ILLO.idle} />
           ))}
+          <Label x={71} y={150} text="METERED" tone={ILLO.seam} size={8} />
         </g>
+        <Cross x={71} y={78} r={17} />
+        <path d="M138,104 H166" stroke={ILLO.seam} strokeWidth={1.6} strokeOpacity={0.5} strokeLinecap="round" />
+        <path d="M160,98 L167,104 L160,110" fill="none" stroke={ILLO.seam} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+        <g>
+          {[0, 1, 2, 3].map((i) => (
+            <rect key={i} x={186 + i * 18} y={102} width={14} height={28} rx={2} fill={ILLO.live} opacity={0.92} />
+          ))}
+          <Label x={213} y={150} text="FLAT" tone={ILLO.live} size={8} />
+        </g>
+        <Tick x={213} y={78} r={13} />
       </>
     ),
   },
 
   /* a range of cars */
   fleet: {
-    label: "Three different cars side by side.",
+    label: "Three different kinds of car — a sedan, a crossover and a pickup — side by side.",
+    ground: "bay",
     draw: () => (
       <>
-        <CarSide x={72} y={FLOOR - 22} s={0.66} />
-        <CarSide x={228} y={FLOOR - 22} s={0.66} flip />
-        <CarSide x={150} s={1.08} />
+        {/* was the same car three times at three scales, which says "one car,
+            three sizes". Three body types says what the guide says. */}
+        <CarSide x={66} y={FLOOR - 20} s={0.62} shape="sedan" />
+        <CarSide x={238} y={FLOOR - 20} s={0.62} shape="pickup" flip />
+        <CarSide x={150} s={1.05} shape="crossover" />
       </>
     ),
   },
 
   /* one bay busy, one free */
   bays: {
-    label: "Two charging bays, one occupied and one free with its cable holstered.",
+    label: "Two charging bays: one occupied, and one marked free with its cable holstered.",
+    ground: "bay",
     draw: (id) => (
       <>
         <Unit id={id} x={66} lit inUse />
@@ -645,71 +822,76 @@ export const COVERS: Record<string, Motif> = {
         {/* the free bay: its connector is holstered and its cable stowed, both
             drawn by Unit itself, so there is nothing to draw here */}
         <Unit id={id} x={244} />
-        <rect x={186} y={148} width={92} height={2} rx={1} fill={ILLO.idle} opacity={0.5} />
+        {/* say which one you can take, rather than leaving the reader to
+            notice that one cable is stowed */}
+        <Label x={244} y={182} text="FREE" tone={ILLO.live} size={8} />
       </>
     ),
   },
 
   /* cold on one side, heat on the other */
   climate: {
-    label: "A battery shown half in cold conditions and half in heat.",
+    label: "A battery drawn half in cold and half in heat, the two sides named.",
     draw: () => (
       <>
         <Cell x={150} y={104} w={124} h={52} from={0.08} to={0.42} tone={ILLO.live} />
-        {/* cold */}
+        {/* snowflake */}
         <g stroke={ILLO.glassTop} strokeWidth={1.6} strokeLinecap="round" opacity={0.85}>
           {[0, 60, 120].map((a) => (
             <line key={a} x1={64} y1={60} x2={64} y2={42} transform={`rotate(${a} 64 51)`} />
           ))}
-          {/* branch ticks on the vertical arm, so it reads flake not asterisk */}
           <path d="M61.4,45.6 L64,48.2 L66.6,45.6" fill="none" />
           <path d="M61.4,56.4 L64,53.8 L66.6,56.4" fill="none" />
         </g>
         <circle cx={64} cy={51} r={1.3} fill={ILLO.glassTop} />
-        {/* heat */}
-        <circle cx={236} cy={43} r={8} fill={ILLO.live} opacity={0.9} />
-        {[0, 45, 90, 135].map((a) => (
-          <line
-            key={a}
-            x1={236}
-            y1={29}
-            x2={236}
-            y2={24}
-            stroke={ILLO.live}
-            strokeWidth={1.6}
-            strokeLinecap="round"
-            opacity={0.75}
-            transform={`rotate(${a} 236 43)`}
-          />
-        ))}
+        {/* sun */}
+        <circle cx={236} cy={51} r={7} fill={ILLO.live} opacity={0.9} />
+        <g stroke={ILLO.live} strokeWidth={1.6} strokeLinecap="round" opacity={0.75}>
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+            <line key={a} x1={236} y1={38} x2={236} y2={42.5} transform={`rotate(${a} 236 51)`} />
+          ))}
+        </g>
+        <Label x={64} y={76} text="COLD" />
+        <Label x={236} y={76} text="HOT" tone={ILLO.live} />
       </>
     ),
   },
 
   /* the band that matters */
   band: {
-    label: "A battery with the middle band highlighted rather than the ends.",
+    label: "A battery with the middle band lit and the twenty and eighty percent marks named.",
     draw: () => (
       <>
         <Cell x={150} y={100} w={150} h={60} from={0.2} to={0.8} />
-        <path d="M75,146 H105" stroke={ILLO.idle} strokeWidth={1.4} strokeLinecap="round" />
-        <path d="M195,146 H225" stroke={ILLO.idle} strokeWidth={1.4} strokeLinecap="round" />
-        <path d="M108,146 H192" stroke={ILLO.live} strokeWidth={2} strokeLinecap="round" />
+        {/* the window the guide recommends, marked at both ends rather than
+            left for the reader to infer from a highlighted rectangle */}
+        {/* x=105 and x=195 are where the 0.2 and 0.8 fill edges actually fall for
+            a 150-wide cell centred on 150 — derived, not eyeballed */}
+        {[{ x: 105, t: "20" }, { x: 195, t: "80" }].map(({ x, t }) => (
+          <g key={t}>
+            <path d={`M${x},134 V142`} stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.8} />
+            <Label x={x} y={158} text={t} tone={ILLO.live} size={9} />
+          </g>
+        ))}
+        <path d="M105,142 H195" stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.5} />
       </>
     ),
   },
 
   /* home and away */
   homeAway: {
-    label: "A house with a wall charger beside a public charging unit.",
+    label: "A house with a wall charger on one side and a HubCharge unit on the other, both named.",
+    ground: "bay",
     draw: (id) => (
       <>
         <Roof x={78} w={80} h={54} pitch={16} />
         <rect x={122} y={112} width={9} height={14} rx={2} fill={ILLO.unitMid} stroke={ILLO.edge} strokeWidth={0.7} strokeOpacity={0.5} />
         <Cable d="M127,126 C127,136 134,140 142,142" />
-        <path d="M150,58 V150" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.45} />
+        <path d="M150,52 V150" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.45} />
         <Unit id={id} x={214} lit />
         <CarSide x={262} s={0.6} />
+        <Label x={78} y={178} text="HOME" />
+        <Label x={222} y={178} text="PUBLIC" tone={ILLO.live} />
       </>
     ),
   },
@@ -717,6 +899,7 @@ export const COVERS: Record<string, Motif> = {
   /* no driveway */
   street: {
     label: "A row of apartment buildings with cars parked along the kerb.",
+    ground: "road",
     draw: () => (
       <>
         <Roof x={62} w={62} h={78} pitch={0} />
@@ -732,137 +915,202 @@ export const COVERS: Record<string, Motif> = {
 
   /* something went wrong */
   fault: {
-    label: "A charging cable with a break in it and a warning light.",
+    label: "A broken connection beside the same connection working again after a retry.",
     draw: () => (
       <>
-        <Plug x={86} y={104} r={22} />
-        <Cable d="M108,104 C124,104 130,110 140,112" />
-        <Cable d="M182,116 C194,118 202,124 214,126" />
-        <g stroke={ILLO.live} strokeWidth={2.4} strokeLinecap="round">
-          <line x1={150} y1={100} x2={172} y2={128} />
-          <line x1={172} y1={100} x2={150} y2={128} />
+        {/* used to show only the fault. A troubleshooting guide should show
+            the fault AND the thing you get back, or it is just bad news. */}
+        <g>
+          <Plug x={70} y={92} r={20} />
+          <Cable d="M90,92 C100,92 104,96 110,98" />
+          <g stroke={ILLO.idle} strokeWidth={2.6} strokeLinecap="round">
+            <line x1={122} y1={82} x2={140} y2={104} />
+            <line x1={140} y1={82} x2={122} y2={104} />
+          </g>
+          <Label x={106} y={132} text="STUCK" tone={ILLO.seam} size={8} />
         </g>
-        <circle cx={161} cy={114} r={26} fill={ILLO.live} opacity={0.1} />
-        <Pip x={238} y={104} r={4} lit />
+        <path d="M150,50 V140" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.4} />
+        <g>
+          <Plug x={200} y={92} r={20} lit />
+          <Cable d="M220,92 C232,92 240,94 250,96" live />
+          <Tick x={264} y={98} r={12} />
+          <Label x={222} y={132} text="RETRY" tone={ILLO.live} size={8} />
+        </g>
       </>
     ),
   },
 
   /* asking */
   ask: {
-    label: "A charger with a question mark curve beside it.",
+    label: "Two question bubbles beside a HubCharge unit.",
+    ground: "bay",
     draw: (id) => (
       <>
-        <Unit id={id} x={106} />
-        <path
-          d="M186,74 C186,60 214,58 214,74 C214,86 200,86 200,100"
-          fill="none"
-          stroke={ILLO.live}
-          strokeWidth={4.4}
-          strokeLinecap="round"
-        />
-        <circle cx={200} cy={116} r={3.6} fill={ILLO.live} />
+        <Unit id={id} x={78} />
+        {/* a bare glyph floating in space read as decoration; in a bubble it
+            reads as somebody asking */}
+        <g>
+          <path
+            d="M148,52 H262 a10,10 0 0 1 10,10 V110 a10,10 0 0 1 -10,10 H176 l-14,14 v-14 H148 a10,10 0 0 1 -10,-10 V62 a10,10 0 0 1 10,-10 Z"
+            fill={ILLO.recess}
+            stroke={ILLO.edge}
+            strokeWidth={1.3}
+            strokeOpacity={0.8}
+            strokeLinejoin="round"
+          />
+          <Label x={205} y={98} text="?" tone={ILLO.live} size={46} />
+        </g>
+        <g opacity={0.5}>
+          <path
+            d="M158,140 H214 a8,8 0 0 1 8,8 V166 a8,8 0 0 1 -8,8 H176 l-10,10 v-10 H158 a8,8 0 0 1 -8,-8 V148 a8,8 0 0 1 8,-8 Z"
+            fill={ILLO.recess}
+            stroke={ILLO.edge}
+            strokeWidth={1.1}
+            strokeOpacity={0.7}
+            strokeLinejoin="round"
+          />
+          <Label x={186} y={165} text="?" tone={ILLO.hub} size={22} />
+        </g>
       </>
     ),
   },
 
   /* a working day */
   shift: {
-    label: "A car on a looping route with two charging stops marked.",
+    label: "A car with a roof sign between a clock and a currency symbol, on a short repeating loop.",
+    ground: "road",
     draw: () => (
       <>
-        <ellipse cx={150} cy={112} rx={92} ry={46} fill="none" stroke={ILLO.seam} strokeWidth={1.6} strokeDasharray="7 7" opacity={0.55} />
-        <Pip x={58} y={112} lit />
-        <Pip x={242} y={112} lit />
-        <CarSide x={150} y={82} s={0.62} />
+        <ellipse cx={150} cy={104} rx={96} ry={40} fill="none" stroke={ILLO.seam} strokeWidth={1.6} strokeDasharray="7 7" opacity={0.5} />
+        <Pip x={54} y={104} lit />
+        <Pip x={246} y={104} lit />
+        <g>
+          <CarSide x={150} y={86} s={0.68} />
+          {/* roof sign — what makes this a working shift and not a commute */}
+          <rect x={143} y={65} width={15} height={6} rx={2} fill={ILLO.live} opacity={0.95} />
+        </g>
+        <g transform="translate(72 148)">
+          <circle cx={0} cy={0} r={11} fill="none" stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.8} />
+          <path d="M0,0 L0,-6 M0,0 L4.4,2.6" fill="none" stroke={ILLO.hub} strokeWidth={1.4} strokeLinecap="round" />
+        </g>
+        <Label x={228} y={155} text="$" tone={ILLO.live} size={24} />
       </>
     ),
   },
 
   /* the long way */
   highway: {
-    label: "A road running to the horizon with charging stops along it.",
+    label: "A road running to the horizon with three charging stops pinned along it.",
     draw: () => (
       <>
-        <path d="M108,150 L138,58 H162 L192,150 Z" fill={ILLO.bodyDark} />
-        <path d="M108,150 L138,58 H162 L192,150 Z" fill="none" stroke={ILLO.seam} strokeWidth={0.8} strokeOpacity={0.45} />
-        {[[150, 74, 1.6], [150, 96, 2.4], [150, 124, 3.4]].map(([x, y, r]) => (
-          <rect key={y} x={x - r / 2} y={y} width={r} height={r * 3} rx={r / 2} fill={ILLO.idle} opacity={0.7} />
+        {/* The road now runs off the bottom of the frame rather than stopping
+            at the horizon line, which both fills the lower band and puts the
+            viewer on the road instead of beside it. */}
+        <path d="M76,200 L138,58 H162 L224,200 Z" fill={ILLO.bodyDark} />
+        <path d="M76,200 L138,58 H162 L224,200 Z" fill="none" stroke={ILLO.seam} strokeWidth={0.9} strokeOpacity={0.45} strokeLinejoin="round" />
+        {/* centre line, shortening and narrowing with distance */}
+        {[
+          [72, 1.4, 5],
+          [92, 1.8, 7],
+          [120, 2.4, 10],
+          [156, 3.2, 14],
+        ].map(([y, w, h]) => (
+          <rect key={y} x={150 - w / 2} y={y} width={w} height={h} rx={w / 2} fill={ILLO.idle} opacity={0.75} />
         ))}
-        {/* The traveller, seen from behind, in the lane.
-            First attempt floated between two lane dashes, which framed it
-            into a bell-on-a-post; it sits ON the lower dash now, with tyres
-            poking below the body, and that is what makes it read as a car. */}
-        <g>
-          <ellipse cx={150} cy={132.5} rx={12} ry={1.8} fill={ILLO.shadow} opacity={0.55} />
-          {[141.2, 155.4].map((tx) => (
-            <rect key={tx} x={tx} y={128.6} width={3.4} height={4.2} rx={1.2} fill={ILLO.tyre} />
-          ))}
-          <path
-            d="M140,131 L140,120.5 Q140,116.6 145,116 L155,116 Q160,116.6 160,120.5 L160,131 Z"
-            fill={ILLO.carMid}
-            stroke={ILLO.hub}
-            strokeWidth={1}
-            strokeOpacity={0.85}
-            strokeLinejoin="round"
-          />
-          <path d="M143.6,116.2 Q144.4,111.4 148,111 L152,111 Q155.6,111.4 156.4,116.2 Z" fill={ILLO.carMid} stroke={ILLO.hub} strokeWidth={0.9} strokeOpacity={0.75} />
-          <rect x={145.2} y={112.4} width={9.6} height={3.2} rx={1.4} fill={ILLO.glassTop} opacity={0.5} />
-        </g>
-        {/* stops sit on the verge and shrink with the road, so they read as
-            points along the route rather than dots dropped on top of it */}
-        <Pip x={100} y={140} r={4} lit />
-        <Pip x={196} y={104} r={3} />
-        <Pip x={168} y={74} r={2.2} />
+        {/* A rear-view car at this scale defeated two attempts and read as a
+            bell on a post both times. Pins say "stops along the way" without
+            asking a 20-pixel shape to be recognisable as a vehicle. */}
+        <Pin x={120} y={72} r={5} />
+        <Pin x={198} y={104} r={7} />
+        <Pin x={70} y={150} r={10} lit />
       </>
     ),
   },
 
   /* two corridors */
   corridors: {
-    label: "Two parallel routes with charging stations marked on each.",
+    label: "Two charging locations pinned on a route running across the region.",
+    ground: "road",
     draw: () => (
       <>
-        {[86, 124].map((y, row) => (
-          <g key={y}>
-            <path d={`M24,${y} H276`} stroke={ILLO.seam} strokeWidth={2} opacity={0.5} strokeLinecap="round" />
-            {[70, 150, 230].map((x, i) => (
-              <Pip key={x} x={x} y={y} lit={row === 0 ? i === 1 : i === 2} />
-            ))}
-          </g>
-        ))}
-        <path d="M24,150 H276" stroke={ILLO.idle} strokeWidth={1} opacity={0.35} strokeDasharray="6 8" />
+        {/* was two parallel lines and six dots, which is not a map of
+            anything. Pins say "places you can drive to". */}
+        <path
+          d="M18,124 C64,124 78,74 130,74 C186,74 200,116 282,102"
+          fill="none"
+          stroke={ILLO.seam}
+          strokeWidth={2.2}
+          strokeOpacity={0.55}
+          strokeLinecap="round"
+        />
+        <path
+          d="M18,124 C64,124 78,74 130,74"
+          fill="none"
+          stroke={ILLO.live}
+          strokeWidth={2.4}
+          strokeOpacity={0.85}
+          strokeLinecap="round"
+        />
+        <Pin x={130} y={62} r={10} lit />
+        <Pin x={18} y={112} r={8} />
+        <Pin x={264} y={92} r={8} />
       </>
     ),
   },
 
   /* first month */
   milestones: {
-    label: "Three milestones along a path, the last one reached.",
+    label: "Three numbered steps rising along a path, the last one reached.",
     draw: () => (
       <>
-        <path d="M40,132 C90,132 92,96 140,96 C190,96 194,64 260,64" fill="none" stroke={ILLO.seam} strokeWidth={1.8} opacity={0.55} strokeLinecap="round" />
-        <Pip x={40} y={132} r={3} />
-        <Pip x={140} y={96} r={3.6} />
-        <Pip x={260} y={64} r={4.4} lit />
+        <path
+          d="M52,126 C96,126 98,98 142,98 C186,98 190,70 248,70"
+          fill="none"
+          stroke={ILLO.seam}
+          strokeWidth={1.8}
+          opacity={0.55}
+          strokeLinecap="round"
+        />
+        {/* was three unlabelled dots on a line, which could have been
+            anything. Numbering them says "first, then, then". */}
+        {[
+          { x: 52, y: 126, n: "1", lit: false },
+          { x: 142, y: 98, n: "2", lit: false },
+          { x: 248, y: 70, n: "3", lit: true },
+        ].map(({ x, y, n, lit }) => (
+          <g key={n}>
+            <circle
+              cx={x}
+              cy={y}
+              r={13}
+              fill={lit ? ILLO.live : ILLO.recess}
+              fillOpacity={lit ? 0.2 : 1}
+              stroke={lit ? ILLO.live : ILLO.seam}
+              strokeWidth={1.6}
+            />
+            <Label x={x} y={y + 4} text={n} tone={lit ? ILLO.live : ILLO.hub} size={11} />
+          </g>
+        ))}
       </>
     ),
   },
 
   /* paperwork */
   paperwork: {
-    label: "A form with one item approved and others closed.",
+    label: "A rebate form with one line approved, stamped with a tick and a currency symbol.",
     draw: () => (
       <>
-        <rect x={92} y={44} width={116} height={112} rx={7} fill={ILLO.bodyDark} stroke={ILLO.edge} strokeWidth={0.9} strokeOpacity={0.45} />
-        {[64, 84, 104, 124].map((y, i) => (
-          <g key={y}>
-            <rect x={106} y={y} width={i === 1 ? 74 : 60} height={5} rx={2.5} fill={i === 1 ? ILLO.live : ILLO.idle} opacity={i === 1 ? 0.95 : 0.55} />
-            {i !== 1 && <line x1={104} y1={y + 2.5} x2={170} y2={y + 2.5} stroke={ILLO.seam} strokeWidth={1} opacity={0.7} />}
-          </g>
-        ))}
-        <circle cx={196} cy={132} r={17} fill="none" stroke={ILLO.live} strokeWidth={2.2} opacity={0.85} />
-        <path d="M189,132 L194,138 L204,126" fill="none" stroke={ILLO.live} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
+        <g>
+          <rect x={64} y={48} width={128} height={116} rx={7} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={1.3} strokeOpacity={0.85} />
+          <rect x={80} y={66} width={80} height={9} rx={4} fill={ILLO.live} opacity={0.9} />
+          {[88, 104, 120].map((y) => (
+            <rect key={y} x={80} y={y} width={70} height={6} rx={3} fill={ILLO.idle} opacity={0.7} />
+          ))}
+          <rect x={80} y={136} width={44} height={6} rx={3} fill={ILLO.idle} opacity={0.5} />
+        </g>
+        {/* money back, not just a form to fill in */}
+        <Label x={228} y={92} text="$" tone={ILLO.live} size={44} />
+        <Tick x={228} y={130} r={15} />
       </>
     ),
   },
@@ -888,6 +1136,7 @@ export function GuideCover({ motif }: { motif: CoverMotif }) {
       <rect width={W} height={H} fill={`url(#${id}-plate)`} />
       {/* the two things every cover shares, so eighteen guides read as one set */}
       <ellipse cx={150} cy={108} rx={124} ry={74} fill={`url(#${id}-bloom)`} />
+      <Ground kind={m.ground} />
       <path d={`M0,${FLOOR} H${W}`} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.32} />
       {m.draw(id)}
       <Wordmark />
