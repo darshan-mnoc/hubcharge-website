@@ -13,9 +13,14 @@ import { ILLO } from "@/lib/illustration";
  * Best for Homes" sitting directly above copy saying the opposite.
  *
  * A drawing fixes all of that by construction. It is authored at the frame's
- * own ratio, so it cannot be cropped wrong. It contains no text, so it cannot
- * make a claim. And every cover is built from the same parts, so eighteen
- * guides finally look like one publication.
+ * own ratio, so it cannot be cropped wrong. And every cover is built from the
+ * same parts, so eighteen guides finally look like one publication.
+ *
+ * ON TEXT: the original no-text rule was about *generated* text, which kept
+ * arriving misspelled. Authored SVG text has no such failure mode — we type
+ * it, it renders exactly. So every plate now carries the wordmark, set as
+ * real <text> in the site's own sans, split HUB/CHARGE like the logo. It is
+ * the only text allowed here; motifs still make no written claims.
  *
  * THE RULES
  * The palette is already written in lib/illustration.ts and journey-battery
@@ -103,7 +108,22 @@ function Unit({
 
 /** A car in profile. Kept to a clean silhouette — at this size any more
  *  detail turns to mud. */
-function CarSide({ x, y = FLOOR, s = 1, flip = false }: { x: number; y?: number; s?: number; flip?: boolean }) {
+function CarSide({
+  x,
+  y = FLOOR,
+  s = 1,
+  flip = false,
+  port,
+}: {
+  x: number;
+  y?: number;
+  s?: number;
+  flip?: boolean;
+  /** Draw a charge socket on the named wing. Cables must land on one of
+   *  these — a cable ending in mid-air is the drawn equivalent of the
+   *  floating-cable renders these covers replaced. */
+  port?: "front" | "rear";
+}) {
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
       <ellipse cx={0} cy={1.5} rx={34} ry={2.2} fill={ILLO.shadow} opacity={0.4} />
@@ -130,6 +150,13 @@ function CarSide({ x, y = FLOOR, s = 1, flip = false }: { x: number; y?: number;
           <circle cx={wx} cy={0} r={3} fill={ILLO.rim} />
         </g>
       ))}
+      {port && (
+        <g transform={`translate(${port === "front" ? -26.5 : 26.5} -12)`}>
+          <rect x={-3.2} y={-4} width={6.4} height={8} rx={1.6} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={0.9} strokeOpacity={0.9} />
+          {/* orange only because power is moving through it */}
+          <circle cx={0} cy={0} r={1.4} fill={ILLO.live} />
+        </g>
+      )}
     </g>
   );
 }
@@ -258,6 +285,26 @@ function Pip({ x, y, r = 3.4, lit = false }: { x: number; y: number; r?: number;
   );
 }
 
+/** The wordmark, on every plate. Two-tone like the real logo: HUB in the
+ *  brightest structural grey, CHARGE in the energy orange. Inline SVG text
+ *  inherits the page's sans stack, so this sets in the same face as the
+ *  chrome around it. At the smallest masthead (~348px wide) 10.5 viewBox
+ *  units render at ~12px — legible, and impossible to misspell. */
+function Wordmark() {
+  return (
+    <text
+      x={16}
+      y={27}
+      fontSize={10.5}
+      fontWeight={800}
+      letterSpacing="0.4"
+    >
+      <tspan fill={ILLO.hub}>HUB</tspan>
+      <tspan fill={ILLO.live}>CHARGE</tspan>
+    </text>
+  );
+}
+
 /* ── The plate ───────────────────────────────────────────────────── */
 
 function Defs({ id }: { id: string }) {
@@ -295,8 +342,8 @@ export const COVERS: Record<string, Motif> = {
     draw: (id) => (
       <>
         <Unit id={id} x={72} lit />
-        <CarSide x={190} s={1.15} />
-        <Cable d="M87,104 C112,104 122,124 141,126" live />
+        <CarSide x={190} s={1.15} port="front" />
+        <Cable d="M87,104 C112,104 132,132 157,137" live />
       </>
     ),
   },
@@ -307,8 +354,8 @@ export const COVERS: Record<string, Motif> = {
     draw: (id) => (
       <>
         <Unit id={id} x={222} lit />
-        <CarSide x={112} s={1.05} />
-        <Cable d="M208,106 C190,106 178,120 160,124" live />
+        <CarSide x={112} s={1.05} port="rear" />
+        <Cable d="M208,106 C186,106 166,132 142,138" live />
         {[54, 84, 114].map((x, i) => (
           <Pip key={x} x={x} y={176} lit={i === 2} />
         ))}
@@ -348,11 +395,32 @@ export const COVERS: Record<string, Motif> = {
 
   /* three speeds */
   levels: {
-    label: "Three chargers of increasing size, the largest lit.",
+    label:
+      "A wall socket, a home wallbox and a DC fast charger side by side, rising in size; the fast charger is lit.",
     draw: (id) => (
       <>
-        <Unit id={id} x={80} w={20} h={40} />
-        <Unit id={id} x={150} w={25} h={58} />
+        {/* This used to be three sizes of the same cabinet, which says
+            "small, medium, large charger". Level 1 is an ordinary wall
+            socket and Level 2 a wallbox — the guide's own copy says exactly
+            that, so the drawing now does too. */}
+        {/* Level 1 — a wall socket on its wall stub */}
+        <g>
+          <ellipse cx={79} cy={FLOOR + 1.5} rx={20} ry={2.2} fill={ILLO.shadow} opacity={0.35} />
+          <rect x={62} y={110} width={34} height={42} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
+          <rect x={72} y={118} width={14} height={18} rx={2.6} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={0.8} />
+          <circle cx={76.5} cy={124} r={1.2} fill={ILLO.seam} />
+          <circle cx={81.5} cy={124} r={1.2} fill={ILLO.seam} />
+          <rect x={77.6} y={128.6} width={2.8} height={3.4} rx={1} fill={ILLO.seam} />
+        </g>
+        {/* Level 2 — a wallbox with its own cable */}
+        <g>
+          <ellipse cx={151} cy={FLOOR + 1.5} rx={22} ry={2.2} fill={ILLO.shadow} opacity={0.35} />
+          <rect x={132} y={92} width={38} height={60} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
+          <rect x={141} y={100} width={20} height={26} rx={4} fill={`url(#${id}-unit)`} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.9} />
+          <circle cx={151} cy={108} r={3} fill={ILLO.glass} stroke={ILLO.edge} strokeWidth={0.6} />
+          <Cable d="M151,126 C151,135 159,137 158,144" />
+        </g>
+        {/* Level 3 — the kind we run */}
         <Unit id={id} x={224} w={32} h={80} lit />
       </>
     ),
@@ -379,7 +447,20 @@ export const COVERS: Record<string, Motif> = {
     draw: (id) => (
       <>
         <Unit id={id} x={224} lit />
-        <circle cx={112} cy={98} r={38} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={1} strokeOpacity={0.5} />
+        <circle cx={112} cy={98} r={38} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.85} />
+        {Array.from({ length: 12 }).map((_, i) => (
+          <line
+            key={i}
+            x1={112}
+            y1={64}
+            x2={112}
+            y2={68.5}
+            stroke={ILLO.hub}
+            strokeWidth={1.1}
+            strokeOpacity={i % 3 === 0 ? 0.85 : 0.45}
+            transform={`rotate(${i * 30} 112 98)`}
+          />
+        ))}
         <circle
           cx={112}
           cy={98}
@@ -431,8 +512,8 @@ export const COVERS: Record<string, Motif> = {
     draw: (id) => (
       <>
         <Unit id={id} x={66} lit />
-        <CarSide x={140} s={0.86} />
-        <Cable d="M79,104 C96,104 100,120 114,122" live />
+        <CarSide x={140} s={0.86} port="front" />
+        <Cable d="M79,104 C98,104 106,130 117,140" live />
         <Unit id={id} x={244} />
         <Cable d="M254,102 C262,110 262,122 256,132" />
         <rect x={186} y={148} width={92} height={2} rx={1} fill={ILLO.idle} opacity={0.5} />
@@ -449,9 +530,13 @@ export const COVERS: Record<string, Motif> = {
         {/* cold */}
         <g stroke={ILLO.glassTop} strokeWidth={1.6} strokeLinecap="round" opacity={0.85}>
           {[0, 60, 120].map((a) => (
-            <line key={a} x1={64} y1={52} x2={64} y2={34} transform={`rotate(${a} 64 43)`} />
+            <line key={a} x1={64} y1={60} x2={64} y2={42} transform={`rotate(${a} 64 51)`} />
           ))}
+          {/* branch ticks on the vertical arm, so it reads flake not asterisk */}
+          <path d="M61.4,45.6 L64,48.2 L66.6,45.6" fill="none" />
+          <path d="M61.4,56.4 L64,53.8 L66.6,56.4" fill="none" />
         </g>
+        <circle cx={64} cy={51} r={1.3} fill={ILLO.glassTop} />
         {/* heat */}
         <circle cx={236} cy={43} r={8} fill={ILLO.live} opacity={0.9} />
         {[0, 45, 90, 135].map((a) => (
@@ -575,6 +660,26 @@ export const COVERS: Record<string, Motif> = {
         {[[150, 74, 1.6], [150, 96, 2.4], [150, 124, 3.4]].map(([x, y, r]) => (
           <rect key={y} x={x - r / 2} y={y} width={r} height={r * 3} rx={r / 2} fill={ILLO.idle} opacity={0.7} />
         ))}
+        {/* The traveller, seen from behind, in the lane.
+            First attempt floated between two lane dashes, which framed it
+            into a bell-on-a-post; it sits ON the lower dash now, with tyres
+            poking below the body, and that is what makes it read as a car. */}
+        <g>
+          <ellipse cx={150} cy={132.5} rx={12} ry={1.8} fill={ILLO.shadow} opacity={0.55} />
+          {[141.2, 155.4].map((tx) => (
+            <rect key={tx} x={tx} y={128.6} width={3.4} height={4.2} rx={1.2} fill={ILLO.tyre} />
+          ))}
+          <path
+            d="M140,131 L140,120.5 Q140,116.6 145,116 L155,116 Q160,116.6 160,120.5 L160,131 Z"
+            fill={ILLO.carMid}
+            stroke={ILLO.hub}
+            strokeWidth={1}
+            strokeOpacity={0.85}
+            strokeLinejoin="round"
+          />
+          <path d="M143.6,116.2 Q144.4,111.4 148,111 L152,111 Q155.6,111.4 156.4,116.2 Z" fill={ILLO.carMid} stroke={ILLO.hub} strokeWidth={0.9} strokeOpacity={0.75} />
+          <rect x={145.2} y={112.4} width={9.6} height={3.2} rx={1.4} fill={ILLO.glassTop} opacity={0.5} />
+        </g>
         {/* stops sit on the verge and shrink with the road, so they read as
             points along the route rather than dots dropped on top of it */}
         <Pip x={100} y={140} r={4} lit />
@@ -656,6 +761,7 @@ export function GuideCover({ motif }: { motif: CoverMotif }) {
       <ellipse cx={150} cy={108} rx={124} ry={74} fill={`url(#${id}-bloom)`} />
       <path d={`M0,${FLOOR} H${W}`} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.32} />
       {m.draw(id)}
+      <Wordmark />
     </svg>
   );
 }
