@@ -52,62 +52,186 @@ const CURVE = "M56,116 C74,116 86,62 104,60 C128,58 140,64 158,80 C186,104 206,1
 
 /** The charger. Same silhouette language as ChargerSVG: soft crown, inset
  *  screen, plinth wider than the body so it sits rather than hovers. */
+/** Default cabinet size. The real unit's face is about 1:2.1; this is 1:2.24. */
+const UW = 34;
+const UH = 76;
+
+/** Where a cable leaves a unit — the top of a cable-management horn, which is
+ *  where it leaves the real machine. Computed, so a cable can never drift off
+ *  the hardware it is supposed to come out of. */
+function unitCable(x: number, side: "left" | "right", w = UW, h = UH) {
+  return { x: x + (side === "right" ? 1 : -1) * w * 0.29, y: FLOOR - h - 5.5 };
+}
+
+/** A connector seated nose-down in its holster, as CCS1 and NACS sit on the
+ *  real cabinet's face. */
+function Holster({ x, y, seated }: { x: number; y: number; seated: boolean }) {
+  return (
+    <g>
+      {/* the shelf, which stays whether or not the connector is in it */}
+      <path
+        d={`M${x - 3.6},${y} h7.2 v1.5 h-1.5 v1.6 h-4.2 v-1.6 h-1.5 Z`}
+        fill={ILLO.unitLow}
+        stroke={ILLO.hub}
+        strokeWidth={0.7}
+        strokeOpacity={0.55}
+        strokeLinejoin="round"
+      />
+      {seated && (
+        <g>
+          <rect x={x - 2.1} y={y + 2.4} width={4.2} height={5.4} rx={1.3} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={0.7} strokeOpacity={0.7} />
+          <rect x={x - 0.8} y={y + 7.4} width={1.6} height={3.4} rx={0.8} fill={ILLO.shadow} />
+        </g>
+      )}
+    </g>
+  );
+}
+
+/**
+ * A HubCharge cabinet.
+ *
+ * Drawn from public/images/alhambra-unit.webp and fontana-station.webp rather
+ * than from the idea of a charger: flat cap, two cable horns the cables loop
+ * over, brand band, twin status bars, a PORTRAIT screen, card reader, and two
+ * connectors in holsters on the face. What was here before was a rounded-dome
+ * pylon — the silhouette of a petrol pump, which is why it read as dated.
+ *
+ * Two deliberate departures from the photographs, both following the palette
+ * rule in lib/illustration.ts: the real cabinet is warm grey and ours stays on
+ * the blue ink ramp like every other cover, and the real status bars are green
+ * where ours use live/idle — green would be a third colour meaning nothing
+ * anywhere else in the set.
+ *
+ * No text on the cabinet. At 34 units of a 300-wide viewBox it would render
+ * about 5px on a phone masthead, which is the mush that made the photographic
+ * mastheads unusable. The band carries the brand here; the legible wordmark
+ * lives on the plate.
+ */
 function Unit({
   id,
   x,
-  w = 30,
-  h = 74,
+  w = UW,
+  h = UH,
   lit = false,
+  inUse = false,
 }: {
   id: string;
   x: number;
   w?: number;
   h?: number;
   lit?: boolean;
+  /** Leaves the right holster empty — its connector is in a car. */
+  inUse?: boolean;
 }) {
   const l = x - w / 2;
   const r = x + w / 2;
   const top = FLOOR - h;
-  const crown = w * 0.32;
-  const body = `M${l},${top + crown} Q${l},${top} ${x},${top} Q${r},${top} ${r},${top + crown} L${r},${FLOOR - 7} H${l} Z`;
-  const sw = w * 0.6;
+  const capH = 4;
+  const bodyTop = top + capH;
+  const base = FLOOR - 6;
+  const horn = unitCable(x, "right", w, h);
+  const hornL = unitCable(x, "left", w, h);
+  const holsterY = base - 20;
+  const hx = w * 0.27;
+
   return (
     <g>
-      <ellipse cx={x} cy={FLOOR + 1.5} rx={w * 0.66} ry={2.4} fill={ILLO.shadow} opacity={0.42} />
-      <path
-        d={`M${l - 2.5},${FLOOR - 7} H${r + 2.5} a2.4,2.4 0 0 1 0,7.4 H${l - 2.5} a2.4,2.4 0 0 1 0,-7.4 Z`}
-        fill={ILLO.unitLow}
-      />
-      <path d={body} fill={`url(#${id}-unit)`} />
-      <path d={body} fill="none" stroke={ILLO.hub} strokeWidth={1.6} strokeOpacity={0.95} strokeLinejoin="round" />
-      {/* screen, inset behind glass */}
-      <rect x={x - sw / 2} y={top + crown * 0.7} width={sw} height={h * 0.34} rx={2.4} fill={ILLO.shadow} />
-      <rect
-        x={x - sw / 2 + 0.7}
-        y={top + crown * 0.7 + 0.7}
-        width={sw - 1.4}
-        height={h * 0.34 - 1.4}
-        rx={2}
-        fill={`url(#${id}-screen)`}
-      />
-      {/* status pips — the only place a unit shows life */}
-      {[-1, 1].map((s) => (
+      <ellipse cx={x} cy={FLOOR + 1.5} rx={w * 0.72} ry={2.4} fill={ILLO.shadow} opacity={0.42} />
+
+      {/* cable horns, before the cap so they tuck behind it */}
+      {[hornL, horn].map((p) => (
+        <path
+          key={p.x}
+          d={`M${p.x - 1.6},${top} v-3.4 a1.6,1.6 0 0 1 3.2,0 v3.4 Z`}
+          fill={ILLO.unitMid}
+          stroke={ILLO.hub}
+          strokeWidth={1}
+          strokeOpacity={0.8}
+          strokeLinejoin="round"
+        />
+      ))}
+
+      {/* body */}
+      <rect x={l} y={bodyTop} width={w} height={base - bodyTop} rx={1.5} fill={`url(#${id}-unit)`} />
+      <rect x={l} y={bodyTop} width={w} height={base - bodyTop} rx={1.5} fill="none" stroke={ILLO.hub} strokeWidth={1.6} strokeOpacity={0.95} strokeLinejoin="round" />
+
+      {/* flat cap, overhanging a little as it does on the real cabinet */}
+      <rect x={l - 2.4} y={top} width={w + 4.8} height={capH} rx={1.2} fill={ILLO.unitTop} stroke={ILLO.hub} strokeWidth={1.3} strokeOpacity={0.9} strokeLinejoin="round" />
+
+      {/* Brand band, where the wordmark is printed on the real cabinet. Split
+          grey/orange like the logo: a solid orange slab sat above the two
+          status bars and read as a third, brighter status light. */}
+      <rect x={x - w * 0.31} y={bodyTop + 4} width={w * 0.26} height={3.4} rx={1.2} fill={ILLO.hub} />
+      <rect x={x - w * 0.02} y={bodyTop + 4} width={w * 0.33} height={3.4} rx={1.2} fill={ILLO.live} />
+
+      {/* twin status bars */}
+      {[-1, 1].map((sgn) => (
         <rect
-          key={s}
-          x={x + s * 2 - (s < 0 ? 6.5 : -2.5)}
-          y={top + crown * 0.7 + h * 0.34 + 3.5}
-          width={4}
-          height={1.8}
-          rx={0.9}
+          key={sgn}
+          x={x + sgn * w * 0.055 - (sgn < 0 ? w * 0.2 : 0)}
+          y={bodyTop + 11}
+          width={w * 0.2}
+          height={2.2}
+          rx={1.1}
           fill={lit ? ILLO.live : ILLO.idle}
         />
       ))}
+
+      {/* portrait touchscreen */}
+      <rect x={x - w * 0.31} y={bodyTop + 17} width={w * 0.62} height={h * 0.36} rx={2} fill={ILLO.shadow} />
+      <rect x={x - w * 0.31 + 0.8} y={bodyTop + 17.8} width={w * 0.62 - 1.6} height={h * 0.36 - 1.6} rx={1.6} fill={`url(#${id}-screen)`} />
+      {/* the faintest suggestion of a running interface — without it the
+          screen reads as a hole cut in the cabinet */}
+      {[0, 1, 2].map((i) => (
+        <rect
+          key={i}
+          x={x - w * 0.22}
+          y={bodyTop + 22 + i * 4}
+          width={w * (i === 0 ? 0.44 : i === 1 ? 0.3 : 0.36)}
+          height={1.5}
+          rx={0.75}
+          fill={ILLO.seam}
+          opacity={i === 0 ? 0.5 : 0.3}
+        />
+      ))}
+
+      {/* card reader, flanked by the two holsters */}
+      <rect x={x - w * 0.075} y={holsterY - 1} width={w * 0.15} height={6.5} rx={1.4} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={0.7} strokeOpacity={0.5} />
+      <Holster x={x - hx} y={holsterY} seated />
+      <Holster x={x + hx} y={holsterY} seated={!inUse} />
+
+      {/* An idle unit stows its own cable, so every unconnected unit is
+          complete without the motif drawing one. It drapes down the OUTSIDE
+          of the cabinet and reaches back into the holster, which is how the
+          cables hang in fontana-station.webp — routed across the face it cut
+          straight over the screen. */}
+      {!inUse && (
+        <Cable
+          d={`M${horn.x},${horn.y} C${r + 3},${horn.y + 5} ${r + 4},${holsterY - 26} ${r + 4},${holsterY - 12} C${r + 4},${holsterY - 2} ${x + hx + 4},${holsterY + 3} ${x + hx},${holsterY + 3.5}`}
+        />
+      )}
+
+      {/* plinth */}
+      <path d={`M${l - 3},${base} H${r + 3} a2,2 0 0 1 0,6 H${l - 3} a2,2 0 0 1 0,-6 Z`} fill={ILLO.unitLow} stroke={ILLO.seam} strokeWidth={0.8} strokeOpacity={0.5} />
     </g>
   );
 }
 
-/** A car in profile. Kept to a clean silhouette — at this size any more
- *  detail turns to mud. */
+/**
+ * A car in profile — a modern crossover, the shape of the Model Y sitting at
+ * the charger in public/images/fontana-station.webp.
+ *
+ * What was here was 62 long and 33 tall including its wheels: a 1.87:1 box
+ * with the proportion of a small MPV, a hard kink where the A-pillar met the
+ * bonnet, and wheels drawn as two flat discs. This is 68 long and 32.5 tall
+ * (2.09:1), with a short bonnet, a FLAT roof section and an upright
+ * tailgate — the crossover proportion, not the fastback one and the
+ * wheels pushed out to 0.63 of the length — a Model Y is 0.61. The single arc
+ * and the short overhangs are what make a silhouette read as an EV; there is
+ * no engine to make room for.
+ *
+ * Detail is kept to what survives s=0.6, the smallest scale it is drawn at.
+ */
 function CarSide({
   x,
   y = FLOOR,
@@ -124,34 +248,34 @@ function CarSide({
    *  floating-cable renders these covers replaced. */
   port?: "front" | "rear";
 }) {
+  const body = "M-34,0 L-34,-7 Q-34,-11 -30,-12.2 C-25,-13.8 -22,-15.5 -18,-19.5 C-14.5,-23 -10,-25.2 -3,-25.5 L8,-25.5 C15,-25.2 19,-23.5 23,-20 C27.5,-16.5 31,-13.5 33,-11.6 Q34,-10.6 34,-7.2 L34,0 Z";
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
-      <ellipse cx={0} cy={1.5} rx={34} ry={2.2} fill={ILLO.shadow} opacity={0.4} />
+      <ellipse cx={0} cy={2} rx={36} ry={2.3} fill={ILLO.shadow} opacity={0.4} />
+      <path d={body} fill={ILLO.carMid} />
+      <path d={body} fill="none" stroke={ILLO.hub} strokeWidth={1.5} strokeOpacity={0.9} strokeLinejoin="round" />
+      {/* glasshouse, flush and following the roof arc */}
       <path
-        d="M-31,0 L-31,-9 Q-31,-13 -25,-14 L-14,-16 L-6,-24 Q-3,-26.5 3,-26.5 L12,-26.5 Q18,-26.5 21,-23.5 L27,-16.5 Q31,-15.5 31,-11 L31,0 Z"
-        fill={ILLO.carMid}
+        d="M-16.5,-19.8 C-13,-23.3 -9,-24.4 -3,-24.4 L8,-24.4 C14,-24.2 17.5,-22.6 21.4,-19.4 L16,-15.4 L-11.5,-15.4 Z"
+        fill={ILLO.glassMid}
       />
-      <path
-        d="M-31,0 L-31,-9 Q-31,-13 -25,-14 L-14,-16 L-6,-24 Q-3,-26.5 3,-26.5 L12,-26.5 Q18,-26.5 21,-23.5 L27,-16.5 Q31,-15.5 31,-11 L31,0 Z"
-        fill="none"
-        stroke={ILLO.hub}
-        strokeWidth={1.5}
-        strokeOpacity={0.9}
-        strokeLinejoin="round"
-      />
-      {/* glasshouse */}
-      <path d="M-11,-16.5 L-4.5,-23 Q-2.5,-24.6 2,-24.6 L11,-24.6 Q16,-24.6 18.5,-22 L23,-17 Z" fill={ILLO.glassMid} />
-      <path d="M-11,-16.5 L-4.5,-23 Q-2.5,-24.6 2,-24.6 L4,-24.6 L2,-16.5 Z" fill={ILLO.glassTop} opacity={0.5} />
+      <path d="M-16.5,-19.8 C-13,-23.3 -9,-24.4 -3,-24.4 L-3,-15.4 L-11.5,-15.4 Z" fill={ILLO.glassTop} opacity={0.42} />
+      {/* light bars, front and rear — the modern EV signature. Grey, not
+          orange: on these covers orange means power is moving. */}
+      <rect x={-32.6} y={-9} width={4.4} height={1.4} rx={0.7} fill={ILLO.glassTop} opacity={0.6} />
+      <rect x={28.8} y={-11.5} width={4.4} height={1.4} rx={0.7} fill={ILLO.glassTop} opacity={0.5} />
       {/* rocker shadow */}
-      <rect x={-31} y={-2.4} width={62} height={2.4} fill={ILLO.carRocker} />
-      {[-18, 18].map((wx) => (
+      <rect x={-34} y={-2.2} width={68} height={2.2} fill={ILLO.carRocker} />
+      {[-21.5, 21.5].map((wx) => (
         <g key={wx}>
-          <circle cx={wx} cy={0} r={6.6} fill={ILLO.tyre} />
-          <circle cx={wx} cy={0} r={3} fill={ILLO.rim} />
+          <circle cx={wx} cy={0} r={7} fill={ILLO.tyre} />
+          <circle cx={wx} cy={0} r={4.2} fill={ILLO.rim} />
+          <circle cx={wx} cy={0} r={4.2} fill="none" stroke={ILLO.hub} strokeWidth={0.7} strokeOpacity={0.55} />
+          <circle cx={wx} cy={0} r={1.2} fill={ILLO.hub} fillOpacity={0.5} />
         </g>
       ))}
       {port && (
-        <g transform={`translate(${port === "front" ? -26.5 : 26.5} -12)`}>
+        <g transform={`translate(${port === "front" ? -24 : 24} -11.5)`}>
           <rect x={-3.2} y={-4} width={6.4} height={8} rx={1.6} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={0.9} strokeOpacity={0.9} />
           {/* orange only because power is moving through it */}
           <circle cx={0} cy={0} r={1.4} fill={ILLO.live} />
@@ -341,9 +465,11 @@ export const COVERS: Record<string, Motif> = {
     label: "A HubCharge unit with a car connected to it.",
     draw: (id) => (
       <>
-        <Unit id={id} x={72} lit />
+        <Unit id={id} x={72} lit inUse />
         <CarSide x={190} s={1.15} port="front" />
-        <Cable d="M87,104 C112,104 132,132 157,137" live />
+        {/* over the horn and down to the port — the route it takes on the
+            real machine, and the reason the arc starts so high */}
+        <Cable d="M81.9,70.5 C104,74 114,118 136,131 C144,136 154,139 162.4,138.8" live />
       </>
     ),
   },
@@ -353,9 +479,9 @@ export const COVERS: Record<string, Motif> = {
     label: "A car arriving at a unit, with the three steps of a stop marked out.",
     draw: (id) => (
       <>
-        <Unit id={id} x={222} lit />
+        <Unit id={id} x={222} lit inUse />
         <CarSide x={112} s={1.05} port="rear" />
-        <Cable d="M208,106 C186,106 166,132 142,138" live />
+        <Cable d="M212.1,70.5 C192,74 182,118 161,131 C153,136 145,139 137.2,139.9" live />
         {[54, 84, 114].map((x, i) => (
           <Pip key={x} x={x} y={176} lit={i === 2} />
         ))}
@@ -511,11 +637,12 @@ export const COVERS: Record<string, Motif> = {
     label: "Two charging bays, one occupied and one free with its cable holstered.",
     draw: (id) => (
       <>
-        <Unit id={id} x={66} lit />
+        <Unit id={id} x={66} lit inUse />
         <CarSide x={140} s={0.86} port="front" />
-        <Cable d="M79,104 C98,104 106,130 117,140" live />
+        <Cable d="M75.9,70.5 C94,74 100,122 111,135 C114,139 116,141 119.4,142.1" live />
+        {/* the free bay: its connector is holstered and its cable stowed, both
+            drawn by Unit itself, so there is nothing to draw here */}
         <Unit id={id} x={244} />
-        <Cable d="M254,102 C262,110 262,122 256,132" />
         <rect x={186} y={148} width={92} height={2} rx={1} fill={ILLO.idle} opacity={0.5} />
       </>
     ),
@@ -580,7 +707,7 @@ export const COVERS: Record<string, Motif> = {
         <Cable d="M127,126 C127,136 134,140 142,142" />
         <path d="M150,58 V150" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.45} />
         <Unit id={id} x={214} lit />
-        <CarSide x={252} s={0.6} />
+        <CarSide x={262} s={0.6} />
       </>
     ),
   },
