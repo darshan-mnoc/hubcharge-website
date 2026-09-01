@@ -799,6 +799,10 @@ function Defs({ id }: { id: string }) {
 
 type Motif = {
   label: string;
+  /** The heading in this cover's own guide that it illustrates. A check
+   *  asserts the guide's text really contains it, so a cover cannot drift
+   *  away from its page the way `milestones` and `paperwork` had. */
+  teaches?: string;
   draw: (id: string) => React.ReactNode;
   /** Floor treatment for the band below the horizon. Omit for "plain". */
   ground?: "bay" | "road" | "plain";
@@ -876,6 +880,7 @@ export const COVERS: Record<string, Motif> = {
         <Plug x={208} y={84} r={21} kind="nacs" lit />
         <Label x={96} y={146} text="CCS1" />
         <Label x={208} y={122} text="NACS" />
+        <Label x={150} y={176} text="BOTH FITTED" size={8.5} tone={ILLO.ok} />
       </>
     ),
   },
@@ -894,7 +899,8 @@ export const COVERS: Record<string, Motif> = {
         <CarSide id={id} x={202} y={128} s={1.5} port="front" />
         {/* ring the port, because it is the thing the arrow points at */}
         <circle cx={186} cy={117} r={15} fill="none" stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.75} strokeDasharray="3 3" />
-        <Tick x={150} y={172} r={12} />
+        <Tick x={150} y={170} r={12} />
+        <Label x={182} y={174} text="NO ADAPTER" size={8.5} tone={ILLO.ok} anchor="start" />
       </>
     ),
   },
@@ -938,73 +944,73 @@ export const COVERS: Record<string, Motif> = {
   /* the curve */
   curve: {
     label:
-      "The delivered charging curve: full power while the battery is low, tapering as it fills, with a battery gauge tracking beneath.",
+      "The delivered charging curve with the twenty to sixty percent sweet spot marked, where a ten-minute stop buys the most range.",
+    teaches: "the 20\u201360% sweet spot",
     draw: () => (
       <>
-        <path d="M40,40 V158 H272" fill="none" stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.5} strokeLinecap="round" />
-        {/* gridlines, so the fall is readable as a quantity not a squiggle */}
-        {[70, 100, 130].map((y) => (
-          <path key={y} d={`M40,${y} H272`} stroke={ILLO.seam} strokeWidth={0.7} strokeOpacity={0.16} strokeDasharray="3 5" />
+        <path d="M40,36 V132 H272" fill="none" stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.5} strokeLinecap="round" />
+        {[58, 82, 106].map((y) => (
+          <path key={y} d={`M40,${y} H272`} stroke={ILLO.seam} strokeWidth={0.7} strokeOpacity={0.14} strokeDasharray="3 5" />
         ))}
-        <path d={`${CURVE} L${CURVE_PLOT.X1},158 L${CURVE_PLOT.X0},158 Z`} fill={ILLO.live} opacity={0.1} />
+        {/* The sweet spot the guide is actually about. x maps state of charge
+            across the plot, so 20% and 60% land where the data puts them. */}
+        <rect
+          x={CURVE_PLOT.X0 + 0.2 * (CURVE_PLOT.X1 - CURVE_PLOT.X0)}
+          y={36}
+          width={0.4 * (CURVE_PLOT.X1 - CURVE_PLOT.X0)}
+          height={96}
+          fill={ILLO.ok}
+          opacity={0.1}
+        />
+        {[0.2, 0.6].map((f) => (
+          <path
+            key={f}
+            d={`M${CURVE_PLOT.X0 + f * (CURVE_PLOT.X1 - CURVE_PLOT.X0)},36 V132`}
+            stroke={ILLO.ok}
+            strokeWidth={1.2}
+            strokeOpacity={0.55}
+            strokeDasharray="3 3"
+          />
+        ))}
+        <path d={`${CURVE} L${CURVE_PLOT.X1},132 L${CURVE_PLOT.X0},132 Z`} fill={ILLO.live} opacity={0.09} />
         <path d={CURVE} fill="none" stroke={ILLO.live} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
-        {/* the plateau, marked where it actually ends */}
-        <path d="M56,50 H104" stroke={ILLO.live} strokeWidth={1.2} strokeOpacity={0.5} strokeDasharray="3 3" />
-        <Label x={80} y={45} text="FULL SPEED" tone={ILLO.live} size={8.5} />
-        <Label x={214} y={80} text="TAPERS" tone={ILLO.seam} size={8.5} />
-        {/* a battery filling along the axis, so "empty" and "full" are shown
-            rather than only named */}
-        <g transform="translate(0 168)">
-          <rect x={56} y={0} width={188} height={16} rx={3} fill={ILLO.recess} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.5} />
-          <rect x={246} y={5} width={3.4} height={6} rx={1.4} fill={ILLO.seam} opacity={0.6} />
-          <rect x={59} y={3} width={62} height={10} rx={1.6} fill={ILLO.live} opacity={0.85} />
-          <Label x={40} y={12} text="EMPTY" size={7.5} anchor="end" tone={ILLO.seam} />
-          <Label x={258} y={12} text="FULL" size={7.5} anchor="start" tone={ILLO.seam} />
-        </g>
-        <circle cx={CURVE_PLOT.X0} cy={56} r={3.2} fill={ILLO.live} />
+        <Label x={CURVE_PLOT.X0 + 0.4 * (CURVE_PLOT.X1 - CURVE_PLOT.X0)} y={30} text="SWEET SPOT" tone={ILLO.ok} size={9} />
+        <Label x={72} y={148} text="20%" size={8} tone={ILLO.seam} />
+        <Label x={188} y={148} text="60%" size={8} tone={ILLO.seam} />
+        <Label x={252} y={148} text="FULL" size={8} tone={ILLO.seam} />
+        <Label x={218} y={70} text="TAPERS" tone={ILLO.seam} size={8.5} />
       </>
     ),
   },
 
   /* time, priced */
   clock: {
-    label: "A ten-minute segment lit on a clock face, marked with a currency symbol.",
+    label:
+      "Four ways public charging is usually priced, against the single flat charge used here.",
+    teaches: "how public charging pricing works, and how we simplified it",
     ground: "bay",
     pools: [236],
     draw: (id) => (
       <>
-        <Unit id={id} x={236} lit />
-        <circle cx={108} cy={94} r={40} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.85} />
-        {Array.from({ length: 12 }).map((_, i) => (
-          <line
-            key={i}
-            x1={108}
-            y1={58}
-            x2={108}
-            y2={62.5}
-            stroke={ILLO.hub}
-            strokeWidth={1.1}
-            strokeOpacity={i % 3 === 0 ? 0.85 : 0.45}
-            transform={`rotate(${i * 30} 108 94)`}
-          />
-        ))}
-        {/* Ten minutes is 60 degrees of a clock face. The arc used to span
-            40.8, which is 6.8 minutes — a drawing on the cost page quietly
-            stating the wrong length of stop. */}
-        <path
-          d="M108,60 A34,34 0 0 1 137.4,77.0"
-          fill="none"
-          stroke={ILLO.live}
-          strokeWidth={5}
-          strokeLinecap="round"
-        />
-        <circle cx={108} cy={94} r={3} fill={ILLO.hub} />
-        {/* the hand agrees with the end of the arc */}
-        <path d="M108,94 L133.1,79.5" stroke={ILLO.hub} strokeWidth={1.6} strokeLinecap="round" />
-        {/* This cover heads the COST guide and used to draw only a clock,
-            which says time, not money. The symbol is a category marker: the
-            rate itself appears nowhere but the product screenshot. */}
-        <Label x={108} y={104} text="$" tone={ILLO.live} size={26} />
+        {/* The guide compares per-kWh, per-minute, idle fees and memberships
+            against one flat charge. A clock alone said "time", not "price".
+            No figure is printed \u2014 the rate lives only in the product shot. */}
+        <g>
+          {["PER kWh", "PER MINUTE", "IDLE FEE", "MEMBERSHIP"].map((t, i) => (
+            <g key={t} transform={`translate(20 ${52 + i * 22})`}>
+              <Cross x={6} y={0} r={7} />
+              <Label x={20} y={3} text={t} size={7.5} anchor="start" tone={ILLO.seam} />
+            </g>
+          ))}
+        </g>
+        <path d="M146,96 h20" fill="none" stroke={ILLO.hub} strokeWidth={1.5} strokeOpacity={0.6} strokeLinecap="round" />
+        <path d="M160,90 L167,96 L160,102" fill="none" stroke={ILLO.hub} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="translate(200 96)">
+          <rect x={-24} y={-22} width={48} height={44} rx={6} fill={ILLO.recess} stroke={ILLO.ok} strokeWidth={1.5} strokeOpacity={0.8} />
+          <Label x={0} y={-2} text="ONE" size={11} tone={ILLO.ok} />
+          <Label x={0} y={12} text="FLAT" size={11} tone={ILLO.ok} />
+        </g>
+        <Unit id={id} x={266} w={28} h={62} lit />
       </>
     ),
   },
@@ -1044,8 +1050,12 @@ export const COVERS: Record<string, Motif> = {
         {/* was the same car three times at three scales, which says "one car,
             three sizes". Three body types says what the guide says. */}
         <CarSide id={id} x={66} y={FLOOR - 20} s={0.62} shape="sedan" paint="silver" far />
+        <Label x={66} y={FLOOR - 4} text="NACS" size={7.5} tone={ILLO.seam} />
         <CarSide id={id} x={238} y={FLOOR - 20} s={0.62} shape="suv" paint="graphite" flip far />
+        <Label x={238} y={FLOOR - 4} text="CCS1" size={7.5} tone={ILLO.seam} />
         <CarSide id={id} x={150} s={1.05} shape="taycan" />
+        {/* the guide is "what your car plugs into" — so say what each plugs into */}
+        <Label x={150} y={178} text="CCS1" size={9} tone={ILLO.live} />
       </>
     ),
   },
@@ -1053,8 +1063,9 @@ export const COVERS: Record<string, Motif> = {
   /* one bay busy, one free */
   bays: {
     label: "Two charging bays: one occupied, and one marked free with its cable holstered.",
+    teaches: "Move when you're done",
     ground: "bay",
-    pools: [66, 244],
+    pools: [66, 238],
     draw: (id) => (
       <>
         <Unit id={id} x={66} lit inUse />
@@ -1066,6 +1077,8 @@ export const COVERS: Record<string, Motif> = {
         {/* say which one you can take, rather than leaving the reader to
             notice that one cable is stowed */}
         <Label x={244} y={182} text="FREE" tone={ILLO.ok} size={8} />
+        {/* the guide's first rule */}
+        <Label x={110} y={182} text="MOVE WHEN DONE" tone={ILLO.hub} size={8} />
       </>
     ),
   },
@@ -1074,6 +1087,7 @@ export const COVERS: Record<string, Motif> = {
   climate: {
     label:
       "Two batteries, one cold and one hot, filled to the share of normal charging speed each temperature actually allows.",
+    teaches: "Preconditioning is the fix, and you control it",
     draw: () => (
       <>
         {/* One battery with an invented fill said nothing. These two are
@@ -1096,8 +1110,16 @@ export const COVERS: Record<string, Motif> = {
             <line key={a} x1={216} y1={41} x2={216} y2={45.5} transform={`rotate(${a} 216 54)`} />
           ))}
         </g>
-        <Label x={84} y={152} text="COLD" tone={ILLO.cold} />
-        <Label x={216} y={152} text="HOT" tone={ILLO.heat} />
+        {/* clear of the horizon at 152; these used to straddle it */}
+        <Label x={84} y={142} text="COLD" tone={ILLO.cold} />
+        <Label x={216} y={142} text="HOT" tone={ILLO.heat} />
+        {/* the guide's own answer: "preconditioning is the fix, and you
+            control it" — the cover had the problem but not the fix */}
+        <g transform="translate(150 170)">
+          <rect x={-58} y={-13} width={116} height={26} rx={6} fill={ILLO.recess} stroke={ILLO.ok} strokeWidth={1.3} strokeOpacity={0.7} />
+          <path d="M-42,-5 L-38,0 L-33,-8" fill="none" stroke={ILLO.ok} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+          <Label x={8} y={4} text="PRECONDITION" size={8.5} tone={ILLO.ok} />
+        </g>
       </>
     ),
   },
@@ -1105,6 +1127,7 @@ export const COVERS: Record<string, Motif> = {
   /* the band that matters */
   band: {
     label: "A battery with the middle band lit and the twenty and eighty percent marks named.",
+    teaches: "The band that matters",
     draw: () => (
       <>
         <Cell x={150} y={100} w={150} h={60} from={0.2} to={0.8} />
@@ -1114,11 +1137,11 @@ export const COVERS: Record<string, Motif> = {
             a 150-wide cell centred on 150 — derived, not eyeballed */}
         {[{ x: 105, t: "20" }, { x: 195, t: "80" }].map(({ x, t }) => (
           <g key={t}>
-            <path d={`M${x},134 V142`} stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.8} />
-            <Label x={x} y={158} text={t} tone={ILLO.live} size={9} />
+            <path d={`M${x},132 V138`} stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.8} />
+            <Label x={x} y={146} text={t} tone={ILLO.live} size={9} />
           </g>
         ))}
-        <path d="M105,142 H195" stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.5} />
+        <path d="M105,138 H195" stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.5} />
       </>
     ),
   },
@@ -1126,6 +1149,7 @@ export const COVERS: Record<string, Motif> = {
   /* home and away */
   homeAway: {
     label: "A house with a wall charger on one side and a HubCharge unit on the other, both named.",
+    teaches: "If you can charge at home, do",
     ground: "bay",
     pools: [214],
     draw: (id) => (
@@ -1146,6 +1170,7 @@ export const COVERS: Record<string, Motif> = {
   street: {
     label:
       "Apartment blocks with cars parked nose-to-tail at the kerb and no charger anywhere on the street.",
+    teaches: "What it actually takes each week",
     ground: "road",
     draw: (id) => (
       <>
@@ -1201,50 +1226,38 @@ export const COVERS: Record<string, Motif> = {
   /* something went wrong */
   fault: {
     label:
-      "A connector sitting short of the car's inlet and failing, beside the same connector pushed fully home and charging.",
+      "A five-item checklist of what usually goes wrong, with the commonest \u2014 a connector not pushed fully home \u2014 shown solved.",
+    teaches: "Most charging problems are one of five things",
     draw: () => (
       <>
-        {/* Three beats across 300 units gave each one 100 and they were too
-            small to read. Two, larger, carry the same lesson: nine times in
-            ten the connector simply is not home. */}
-        {[
-          { x: 82, t: "NOT SEATED", tone: ILLO.fault, gap: 11, lit: false },
-          { x: 218, t: "PUSHED HOME", tone: ILLO.ok, gap: 0, lit: true },
-        ].map(({ x, t, tone, gap, lit }) => (
-          <g key={t}>
-            {/* a fragment of the car, so the inlet is clearly ON something */}
-            <path
-              d={`M${x - 40},${40} h80 a4,4 0 0 1 4,4 v40 a4,4 0 0 1 -4,4 h-80 a4,4 0 0 1 -4,-4 v-40 a4,4 0 0 1 4,-4 Z`}
-              fill={ILLO.carMid}
-              opacity={0.55}
-            />
-            {/* the inlet */}
-            <rect x={x - 15} y={50} width={30} height={30} rx={5} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={1.5} strokeOpacity={0.8} />
-            <circle cx={x - 7} cy={68} r={4.4} fill={lit ? ILLO.live : ILLO.seam} />
-            <circle cx={x + 7} cy={68} r={4.4} fill={lit ? ILLO.live : ILLO.seam} />
-            {[-8, 0, 8].map((dx) => (
-              <circle key={dx} cx={x + dx} cy={57} r={1.8} fill={ILLO.seam} />
-            ))}
-            {/* the coupler, short of home by a measured gap */}
-            <g transform={`translate(0 ${gap})`}>
-              <rect x={x - 13} y={84} width={26} height={26} rx={4} fill={ILLO.unitMid} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.85} />
-              <rect x={x - 6} y={110} width={12} height={20} rx={5} fill={ILLO.bodyDark} stroke={ILLO.seam} strokeWidth={1} />
-              <Cable d={`M${x},${130} C${x},${140} ${x + 14},${142} ${x + 22},${146}`} live={lit} />
+        {/* The guide's claim is that it is almost always one of five things,
+            so the cover shows five, not one, with the commonest worked. */}
+        <g>
+          <rect x={26} y={40} width={122} height={112} rx={6} fill={ILLO.recess} stroke={ILLO.seam} strokeWidth={1.1} strokeOpacity={0.55} />
+          {[
+            { t: "NOT SEATED", lit: true },
+            { t: "CARD DECLINED", lit: false },
+            { t: "CAR ASLEEP", lit: false },
+            { t: "CABLE LOCKED", lit: false },
+            { t: "APP OUT OF DATE", lit: false },
+          ].map(({ t, lit }, i) => (
+            <g key={t} transform={`translate(40 ${58 + i * 20})`}>
+              <circle cx={0} cy={0} r={5.4} fill={lit ? ILLO.ok : "none"} fillOpacity={lit ? 0.2 : 1} stroke={lit ? ILLO.ok : ILLO.seam} strokeWidth={1.2} />
+              {lit && <path d="M-2.4,0 L-0.6,1.9 L2.6,-2" fill="none" stroke={ILLO.ok} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />}
+              <Label x={12} y={3} text={t} size={7.5} anchor="start" tone={lit ? ILLO.ok : ILLO.seam} />
             </g>
-            {/* the gap itself, called out */}
-            {gap > 0 && (
-              <>
-                <path d={`M${x + 26},${84 + gap} V${82}`} stroke={tone} strokeWidth={1.6} strokeLinecap="round" />
-                <path d={`M${x + 22},${86} L${x + 26},${81} L${x + 30},${86}`} fill="none" stroke={tone} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
-              </>
-            )}
-            <Label x={x} y={166} text={t} tone={tone} size={9} />
-          </g>
-        ))}
-        {/* the instruction between them */}
-        <path d="M136,96 h28" fill="none" stroke={ILLO.hub} strokeWidth={1.6} strokeOpacity={0.7} strokeLinecap="round" />
-        <path d="M158,90 L166,96 L158,102" fill="none" stroke={ILLO.hub} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
-        <Label x={150} y={82} text="PUSH IN" size={8} tone={ILLO.hub} />
+          ))}
+        </g>
+        {/* the commonest one, worked */}
+        <g transform="translate(224 88)">
+          <rect x={-20} y={-46} width={40} height={30} rx={4} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.8} />
+          <circle cx={-8} cy={-31} r={4.4} fill={ILLO.live} />
+          <circle cx={8} cy={-31} r={4.4} fill={ILLO.live} />
+          <rect x={-15} y={-14} width={30} height={26} rx={4} fill={ILLO.unitMid} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.85} />
+          <rect x={-7} y={12} width={14} height={18} rx={5} fill={ILLO.bodyDark} stroke={ILLO.seam} strokeWidth={1} />
+          <Cable d="M0,30 C0,42 16,44 26,48" live />
+          <Label x={0} y={-58} text="PUSH IT HOME" size={8} tone={ILLO.ok} />
+        </g>
       </>
     ),
   },
@@ -1272,14 +1285,14 @@ export const COVERS: Record<string, Motif> = {
         </g>
         <g opacity={0.5}>
           <path
-            d="M158,140 H214 a8,8 0 0 1 8,8 V166 a8,8 0 0 1 -8,8 H176 l-10,10 v-10 H158 a8,8 0 0 1 -8,-8 V148 a8,8 0 0 1 8,-8 Z"
+            d="M158,112 H214 a8,8 0 0 1 8,8 V138 a8,8 0 0 1 -8,8 H176 l-10,10 v-10 H158 a8,8 0 0 1 -8,-8 V120 a8,8 0 0 1 8,-8 Z"
             fill={ILLO.recess}
             stroke={ILLO.edge}
             strokeWidth={1.1}
             strokeOpacity={0.7}
             strokeLinejoin="round"
           />
-          <Label x={186} y={165} text="?" tone={ILLO.hub} size={22} />
+          <Label x={186} y={137} text="?" tone={ILLO.hub} size={22} />
         </g>
       </>
     ),
@@ -1289,6 +1302,7 @@ export const COVERS: Record<string, Motif> = {
   shift: {
     label:
       "A driver's shift as a loop, with two charging stops on it and the hours and takings marked.",
+    teaches: "Charging time is unpaid time",
     ground: "road",
     draw: (id) => (
       <>
@@ -1302,13 +1316,13 @@ export const COVERS: Record<string, Motif> = {
           <rect x={143} y={56} width={15} height={5.6} rx={2} fill={ILLO.live} opacity={0.95} />
         </g>
         {/* hours and takings, set into the composition rather than floating */}
-        <g transform="translate(150 132)">
+        <g transform="translate(150 118)">
           <rect x={-62} y={0} width={124} height={26} rx={5} fill={ILLO.recess} stroke={ILLO.seam} strokeWidth={1} strokeOpacity={0.45} />
           <g transform="translate(-42 13)">
             <circle cx={0} cy={0} r={8} fill="none" stroke={ILLO.hub} strokeWidth={1.3} strokeOpacity={0.85} />
             <path d="M0,0 L0,-4.6 M0,0 L3.4,2" fill="none" stroke={ILLO.hub} strokeWidth={1.3} strokeLinecap="round" />
           </g>
-          <Label x={-22} y={17} text="HOURS" size={7.5} anchor="start" tone={ILLO.seam} />
+          <Label x={-22} y={17} text="UNPAID" size={7.5} anchor="start" tone={ILLO.fault} />
           <Label x={40} y={19} text="$" tone={ILLO.live} size={20} />
         </g>
       </>
@@ -1318,6 +1332,7 @@ export const COVERS: Record<string, Motif> = {
   /* the long way */
   highway: {
     label: "A road running to the horizon with three named charging stops pinned along it.",
+    teaches: "Arrive low, leave early",
     draw: () => (
       <>
         <path d="M76,200 L138,58 H162 L224,200 Z" fill={ILLO.bodyDark} />
@@ -1332,80 +1347,85 @@ export const COVERS: Record<string, Motif> = {
         ))}
         {/* named, because three unlabelled pins on a road could be anything */}
         <Pin x={118} y={70} r={5} />
-        <Label x={118} y={88} text="THEN" size={7.5} tone={ILLO.seam} />
+        <Label x={118} y={88} text="BUFFER" size={7.5} tone={ILLO.seam} />
         <Pin x={202} y={102} r={7} />
-        <Label x={202} y={124} text="NEXT" size={8} tone={ILLO.seam} />
+        <Label x={202} y={124} text="LEAVE EARLY" size={8} tone={ILLO.seam} />
         <Pin x={62} y={146} r={10} lit />
-        <Label x={62} y={176} text="START HERE" size={8.5} tone={ILLO.live} />
+        <Label x={62} y={176} text="ARRIVE LOW" size={8.5} tone={ILLO.live} />
       </>
     ),
   },
 
   /* two corridors */
   corridors: {
-    label: "Two HubCharge locations pinned on a route across the region, with the nearer one named.",
-    ground: "road",
+    label:
+      "The two freeway corridors that matter, I-10 and I-210, with the HubCharge sites on them named.",
+    teaches: "The two corridors that matter",
     draw: () => (
       <>
-        {/* a route that reads as a route: one drawn line, the travelled part
-            lit, the rest ahead of you */}
-        <path
-          d="M20,140 C58,140 74,96 118,92 C158,88 176,58 214,58 C244,58 264,68 282,84"
-          fill="none"
-          stroke={ILLO.seam}
-          strokeWidth={2.4}
-          strokeOpacity={0.45}
-          strokeLinecap="round"
-          strokeDasharray="6 6"
-        />
-        <path
-          d="M20,140 C58,140 74,96 118,92"
-          fill="none"
-          stroke={ILLO.live}
-          strokeWidth={2.8}
-          strokeOpacity={0.9}
-          strokeLinecap="round"
-        />
-        <Pin x={118} y={80} r={11} lit />
-        <Label x={118} y={112} text="ALHAMBRA" tone={ILLO.live} size={8.5} />
-        <Pin x={214} y={48} r={9} />
-        <Label x={214} y={76} text="FONTANA" tone={ILLO.seam} size={8.5} />
-        <Pip x={20} y={140} r={3.4} />
+        {/* the guide's first heading is literally "the two corridors that
+            matter", and it names them; so does this */}
+        <path d="M16,72 C70,68 140,64 288,58" fill="none" stroke={ILLO.seam} strokeWidth={2.4} strokeOpacity={0.4} strokeLinecap="round" strokeDasharray="7 6" />
+        <Label x={40} y={62} text="I-210" size={8.5} tone={ILLO.seam} anchor="start" />
+        <path d="M16,124 C70,122 150,118 288,112" fill="none" stroke={ILLO.live} strokeWidth={2.8} strokeOpacity={0.85} strokeLinecap="round" />
+        <Label x={40} y={140} text="I-10" size={9} tone={ILLO.live} anchor="start" />
+        <Pin x={122} y={108} r={10} lit />
+        <Label x={122} y={92} text="ALHAMBRA" tone={ILLO.live} size={8} />
+        <Pin x={232} y={104} r={10} lit />
+        <Label x={232} y={88} text="FONTANA" tone={ILLO.live} size={8} />
       </>
     ),
   },
 
   /* first month */
   milestones: {
-    label: "Three numbered steps rising along a path, the last one reached.",
+    label:
+      "The first month as three named phases: find your plug in week one, learn the charging curve in week two, stop thinking about it by month one.",
+    teaches: "Week one: find out what plug you have",
     draw: () => (
       <>
+        {/* Three bare numerals told a new owner nothing. The guide's own
+            sections are week one / week two / month one, so the cover shows
+            those, with the thing you actually do in each. */}
         <path
-          d="M52,126 C96,126 98,98 142,98 C186,98 190,70 248,70"
+          d="M46,110 C86,110 92,82 146,82 C200,82 206,54 254,54"
           fill="none"
           stroke={ILLO.seam}
-          strokeWidth={1.8}
-          opacity={0.55}
+          strokeWidth={2}
+          strokeOpacity={0.45}
           strokeLinecap="round"
         />
-        {/* was three unlabelled dots on a line, which could have been
-            anything. Numbering them says "first, then, then". */}
         {[
-          { x: 52, y: 126, n: "1", lit: false },
-          { x: 142, y: 98, n: "2", lit: false },
-          { x: 248, y: 70, n: "3", lit: true },
-        ].map(({ x, y, n, lit }) => (
-          <g key={n}>
-            <circle
-              cx={x}
-              cy={y}
-              r={13}
-              fill={lit ? ILLO.live : ILLO.recess}
-              fillOpacity={lit ? 0.2 : 1}
-              stroke={lit ? ILLO.live : ILLO.seam}
-              strokeWidth={1.6}
-            />
-            <Label x={x} y={y + 4} text={n} tone={lit ? ILLO.live : ILLO.hub} size={11} />
+          { x: 46, y: 110, when: "WEEK 1", what: "YOUR PLUG", lit: false },
+          { x: 146, y: 82, when: "WEEK 2", what: "THE CURVE", lit: false },
+          { x: 254, y: 54, when: "MONTH 1", what: "FORGET IT", lit: true },
+        ].map(({ x, y, when, what, lit }, i) => (
+          <g key={when}>
+            <circle cx={x} cy={y} r={16} fill={lit ? ILLO.live : ILLO.recess} fillOpacity={lit ? 0.18 : 1} stroke={lit ? ILLO.live : ILLO.seam} strokeWidth={1.6} />
+            {/* what you actually do in that phase, drawn */}
+            {i === 0 && (
+              <g>
+                <circle cx={x} cy={y} r={7.5} fill="none" stroke={ILLO.hub} strokeWidth={1.3} />
+                <circle cx={x - 2.6} cy={y + 1.6} r={2} fill={ILLO.hub} />
+                <circle cx={x + 2.6} cy={y + 1.6} r={2} fill={ILLO.hub} />
+                <circle cx={x} cy={y - 3.2} r={1.2} fill={ILLO.hub} />
+              </g>
+            )}
+            {i === 1 && (
+              <path d={`M${x - 8},${y + 5} C${x - 4},${y + 5} ${x - 3},${y - 5} ${x + 1},${y - 5} C${x + 5},${y - 5} ${x + 6},${y + 3} ${x + 8},${y + 5}`} fill="none" stroke={ILLO.hub} strokeWidth={1.6} strokeLinecap="round" />
+            )}
+            {i === 2 && (
+              <path
+                d={`M${x - 6},${y} L${x - 1.6},${y + 4.4} L${x + 6.4},${y - 4}`}
+                fill="none"
+                stroke={ILLO.ok}
+                strokeWidth={2.2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            )}
+            <Label x={x} y={y - 24} text={when} size={8} tone={lit ? ILLO.live : ILLO.seam} />
+            <Label x={x} y={y + 32} text={what} size={8.5} tone={lit ? ILLO.ok : ILLO.hub} />
           </g>
         ))}
       </>
@@ -1414,20 +1434,32 @@ export const COVERS: Record<string, Motif> = {
 
   /* paperwork */
   paperwork: {
-    label: "A rebate form with one line approved, stamped with a tick and a currency symbol.",
+    label:
+      "Three incentive programmes listed, each pointing out to the body that administers it, with no amounts shown.",
+    teaches: "Why this page has no dollar amounts on it",
     draw: () => (
       <>
-        <g>
-          <rect x={64} y={48} width={128} height={116} rx={7} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={1.3} strokeOpacity={0.85} />
-          <rect x={80} y={66} width={80} height={9} rx={4} fill={ILLO.live} opacity={0.9} />
-          {[88, 104, 120].map((y) => (
-            <rect key={y} x={80} y={y} width={70} height={6} rx={3} fill={ILLO.idle} opacity={0.7} />
+        {/* This cover used to lead with a giant currency mark on a page whose
+            first heading is "Why this page has no dollar amounts on it". The
+            page routes rather than quotes, so the cover routes too. */}
+        <rect x={38} y={44} width={168} height={112} rx={7} fill={ILLO.recess} stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.6} />
+        {[62, 90, 118].map((y, i) => (
+          <g key={y}>
+            <rect x={54} y={y} width={i === 0 ? 86 : i === 1 ? 70 : 78} height={7} rx={3.5} fill={i === 0 ? ILLO.hub : ILLO.idle} opacity={i === 0 ? 0.8 : 0.65} />
+            {/* each one points OUT, to whoever administers it */}
+            <path d={`M156,${y + 3.5} h22`} stroke={ILLO.live} strokeWidth={1.6} strokeOpacity={0.85} strokeLinecap="round" />
+            <path d={`M172,${y - 1.5} l5,5 l-5,5`} fill="none" stroke={ILLO.live} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        ))}
+        <Label x={122} y={144} text="CHECK THE SOURCE" size={8} tone={ILLO.seam} />
+        {/* where they point */}
+        <g transform="translate(248 92)">
+          <rect x={-30} y={-34} width={60} height={68} rx={6} fill={ILLO.pane} stroke={ILLO.ok} strokeWidth={1.4} strokeOpacity={0.8} />
+          {[-16, -4, 8].map((y) => (
+            <rect key={y} x={-18} y={y} width={36} height={5} rx={2.5} fill={ILLO.ok} opacity={0.5} />
           ))}
-          <rect x={80} y={136} width={44} height={6} rx={3} fill={ILLO.idle} opacity={0.5} />
+          <Tick x={0} y={24} r={8} />
         </g>
-        {/* money back, not just a form to fill in */}
-        <Label x={228} y={92} text="$" tone={ILLO.live} size={44} />
-        <Tick x={228} y={130} r={15} />
       </>
     ),
   },

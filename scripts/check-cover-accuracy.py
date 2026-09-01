@@ -7,14 +7,42 @@ def check(name, ok, detail=""):
     print(f"  {'PASS' if ok else 'FAIL'}  {name}{('  — ' + detail) if detail else ''}")
     if not ok: fails.append(name)
 
-# 1. clock: the lit arc must be exactly ten minutes = 60 degrees
-m = re.search(r'd="M(\d+),(\d+) A(\d+),\d+ 0 0 1 ([\d.]+),([\d.]+)"', src)
-sx, sy, r, ex, ey = float(m[1]), float(m[2]), float(m[3]), float(m[4]), float(m[5])
-cx, cy = sx, sy + r
-deg = math.degrees(math.atan2(ex - cx, cy - ey))
-check("clock arc is ten minutes", abs(deg - 60) < 0.5, f"{deg:.1f}deg = {deg/6:.1f} min")
+# 1. every guide-backed cover names the idea it draws, and its guide really
+#    says that. This is the check that stops a cover drifting from its page —
+#    `milestones` was three numbered dots and `paperwork` led with a currency
+#    mark on a page whose first heading is "Why this page has no dollar
+#    amounts on it".
+content = pathlib.Path("lib/guide-content.tsx").read_text()
+slugpage = pathlib.Path("app/charging-101/[slug]/page.tsx").read_text()
+mapping = dict(re.findall(r'"?([a-z-]+)"?: "(\w+)",',
+                          re.search(r"GUIDE_COVERS[^{]*\{(.*?)\};", slugpage, re.S).group(1)))
+motifs = {m.group(1): m.group(2)
+          for m in re.finditer(r"^  ([a-zA-Z]+): \{\n(.*?)^  \},", src, re.S | re.M)}
+norm = lambda t: re.sub(r"[^a-z0-9]+", " ", t.lower()).strip()
+missing, wrong = [], []
+for slug, motif in mapping.items():
+    body = motifs.get(motif, "")
+    t = re.search(r'teaches: "((?:[^"\\]|\\.)*)"', body)
+    if not t:
+        missing.append(motif); continue
+    idea = norm(t.group(1).replace("\\u2013", "-").replace("\\u2014", "-"))
+    guide = re.search(rf'"{slug}": \[(.*?)\n  \],', content, re.S)
+    if guide and norm(guide.group(1)).find(idea) < 0:
+        wrong.append((motif, idea[:40]))
+check("every guide-backed cover declares what it teaches", not missing, str(missing))
+check("every declared idea appears in its own guide's text", not wrong, str(wrong))
 
-# 2. connectors: CCS1 must be the larger coupler AND on the left
+# the incentives page exists to avoid quoting amounts, so its cover must not
+# a currency mark means text that RENDERS as one, not a JS template literal
+rendered_text = lambda body: re.findall(r'text="([^"]*)"', body)
+check("the incentives cover shows no currency mark",
+      not any("$" in t for t in rendered_text(motifs.get("paperwork", ""))),
+      str(rendered_text(motifs.get("paperwork", ""))))
+# and the cost cover must still print no figure
+check("the cost cover prints no price",
+      not re.search(r'text="[^"]*\d', motifs.get("clock", "")))
+
+# 2.
 blk = re.search(r"^  connectors: \{.*?^  \},", src, re.S | re.M).group(0)
 plugs = {k: (float(x), float(rr)) for x, rr, k in
          re.findall(r'<Plug x=\{(\d+)\} y=\{\d+\} r=\{(\d+)\} kind="(\w+)"', blk)}
