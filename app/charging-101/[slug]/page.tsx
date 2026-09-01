@@ -41,8 +41,8 @@ export async function generateMetadata({
  * sharing an image, which is where a repeat actually gets noticed.
  */
 const GUIDE_IMAGES: Record<string, string> = {
-  etiquette: "/images/guide-etiquette-evening.webp",
-  weather: "/images/home.webp",
+  etiquette: "/images/guide-etiquette-rules.webp",
+  weather: "/images/guide-weather-conditions.webp",
   "battery-health": "/images/guide-parking-garage.webp",
   "home-vs-public": "/images/guide-home-vs-public-split.webp",
   "apartment-charging": "/images/guide-apartment-forecourt.webp",
@@ -51,7 +51,7 @@ const GUIDE_IMAGES: Record<string, string> = {
   "road-trip": "/images/guide-roadtrip-highway.webp",
   "socal-charging": "/images/guide-socal-night.webp",
   "new-ev-owner": "/images/guide-new-owner-residential.webp",
-  "ev-incentives-california": "/images/lifestyle-coffee-v2.webp",
+  "ev-incentives-california": "/images/guide-incentives-california.webp",
 };
 
 /**
@@ -62,9 +62,9 @@ const GUIDE_IMAGES: Record<string, string> = {
  */
 const GUIDE_IMAGE_ALTS: Record<string, string> = {
   etiquette:
-    "Several cars parked at a HubCharge charger at dusk outside a residential complex, one of them connected.",
+    "Three charging etiquette rules as illustrated icons: do not unplug someone else's car, 80% is fine, and charge at a charger rather than parking at one.",
   weather:
-    "A HubCharge forecourt at dusk, cars charging beneath a lit canopy.",
+    "Heat, cold, rain and changing temperature shown around an electric car and a HubCharge charger.",
   "battery-health":
     "A HubCharge charger in a concrete parking structure beside bay D12, screen lit and both connectors holstered.",
   "home-vs-public":
@@ -82,7 +82,7 @@ const GUIDE_IMAGE_ALTS: Record<string, string> = {
   "new-ev-owner":
     "A HubCharge charger beside desert landscaping at a residential development, a car connected to it.",
   "ev-incentives-california":
-    "A HubCharge station lit at dusk in front of a row of shops and offices.",
+    "A blue electric car beside a relief map of California, with a gold dollar sign and stacked coins.",
 };
 
 /** Stable anchor from a heading — the scroll-spy and the rail must agree. */
