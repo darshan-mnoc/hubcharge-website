@@ -99,11 +99,40 @@ export function PageShell({
       <header className={dark ? "bg-ink-900" : "bg-paper"}>
         <div className="section-container pt-28 pb-12 sm:pt-32 lg:pt-32 lg:pb-16">
           {hasAside ? (
-            <div className="grid grid-cols-12 gap-x-8 lg:items-center">
+            <div
+              // gap-x only from lg. Below that both children are col-span-12
+              // and stack, so the 32px gap has nothing to separate — but a
+              // col-span-12 element still spans all eleven gaps, making it
+              // 352px wide inside a 350px grid. That 2px overflow pushed the
+              // header image past the column everything below it lines up on.
+              className="grid grid-cols-12 lg:gap-x-8 lg:items-center"
+            >
               <div className="col-span-12 lg:col-span-6">{lead}</div>
               <div className="col-span-12 lg:col-span-6 mt-10 lg:mt-0">
                 {image ? (
-                  <div className="relative aspect-[16/10] lg:aspect-[3/2] overflow-hidden -mx-4 sm:-mx-6 lg:mx-0 lg:-mr-[max(0px,calc((100vw-1280px)/2+1.5rem))]">
+                  /* Framed, not bled.
+                   *
+                   * This was a bare rectangle running off the right viewport
+                   * edge: no radius, no border, no shadow. Against a #FBFAF8
+                   * page a light photograph had no boundary at all, so it read
+                   * as floating rather than placed — and it was the only
+                   * element on these pages ignoring the container, which made
+                   * it look unfinished rather than deliberate.
+                   *
+                   * It now wears the same surface the guide figures and cards
+                   * already use: rounded-lg on a paper-300 hairline. The
+                   * shadow is the light-mode one only; on the two dark-toned
+                   * pages a shadow does nothing and a white hairline does the
+                   * separating instead.
+                   *
+                   * 3:2 at every width, because the images are cropped to 3:2
+                   * deliberately and the old 16/10 mobile box was re-cropping
+                   * that work. */
+                  <div
+                    className={`relative aspect-[3/2] overflow-hidden rounded-lg border ${
+                      dark ? "border-white/10" : "border-paper-300 shadow-card"
+                    }`}
+                  >
                     <Image
                       src={image}
                       alt={imageAlt ?? ""}
