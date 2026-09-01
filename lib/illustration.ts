@@ -7,10 +7,21 @@
  * That is why the charger, the cable and the attendant all looked like they
  * came from different drawings.
  *
- * Two rules govern everything here:
+ * Three rules govern everything here:
  *
- *   1. Objects are the ink ramp. No object gets a colour of its own.
- *   2. Orange means power is moving. State gets the state set, below.
+ *   1. Objects take their own colour, sampled from the real thing and taken
+ *      down to night levels. Every ramp's darkest stop is measured so no
+ *      object dissolves into the plate.
+ *   2. Orange means power is moving. Nothing else is ever orange.
+ *   3. State gets the state set, below. Nothing else uses those five.
+ *
+ * Rule 1 has now been wrong twice. It began as "hardware is the ink ramp,
+ * nothing else", which was written for a five-step scene with one variable.
+ * It then became "objects are the ink ramp" plus a state set, which fixed
+ * states but left the cabinet, the car, the tarmac and the sky all rendering
+ * as the same navy — so nothing in a scene separated from anything else. The
+ * values below are measured off public/images/alhambra-unit.webp and
+ * fontana-station.webp rather than invented.
  *
  * Rule 2 replaces an earlier absolute — "energy is brand orange, nothing
  * else" — which was written for a five-step scene with one variable and did
@@ -70,6 +81,38 @@ export const ILLO = {
   garment: "#16233D",
 
   /* ── Energy. The only accent in the scene. ─────────────────── */
+  /* ── Object colour ──────────────────────────────────────────
+   *
+   * Sampled from the photographs, then taken to night levels. The number
+   * after each is its contrast against the plate: the DARKEST stop of every
+   * ramp is the one that matters, because a ramp that bottoms out near the
+   * background makes the object vanish — which is exactly what happened when
+   * the car ran to carLow at 1.17:1.
+   */
+  /** The cabinet, from Alhambra's warm greige #847C65. 7.62 / 4.94 / 3.03 */
+  cabTop: "#B3AA93",
+  cabMid: "#8F8775",
+  cabLow: "#6B6555",
+  /** The flank in shadow. Darker than the front face but still 2.11:1 off the
+   *  plate — a navy flank on a warm cabinet read as a different object. */
+  cabShade: "#4E4A3E",
+  /** Body colour, from the red Model Y in fontana-station.webp. 5.01/3.04/2.02 */
+  paintTop: "#C4707F",
+  paintMid: "#A04A5B",
+  paintLow: "#7C3341",
+  /** Second and third body colours, so a forecourt is not all one car. */
+  silverTop: "#CDD3DB",
+  silverMid: "#9AA3B0",
+  silverLow: "#6E7681",
+  graphiteTop: "#98A0AC",
+  graphiteMid: "#6E7681",
+  graphiteLow: "#4E555E",
+  /** Tarmac. Deliberately DARKER than the sky — ground under a night sky is,
+   *  and it only has to separate from what stands on it. */
+  asphalt: "#262B2F",
+  /** Glass at night: recessive, 3.76:1 against a lit cabinet face. */
+  pane: "#223040",
+
   /* ── State ──────────────────────────────────────────────────
    *
    * One colour per meaning, contrast measured on the plate:

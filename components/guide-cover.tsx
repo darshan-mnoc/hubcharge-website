@@ -121,10 +121,10 @@ function Holster({ x, y, seated }: { x: number; y: number; seated: boolean }) {
       {/* the shelf, which stays whether or not the connector is in it */}
       <path
         d={`M${x - 3.6},${y} h7.2 v1.5 h-1.5 v1.6 h-4.2 v-1.6 h-1.5 Z`}
-        fill={ILLO.unitLow}
-        stroke={ILLO.hub}
+        fill={ILLO.cabShade}
+        stroke={ILLO.cabTop}
         strokeWidth={0.7}
-        strokeOpacity={0.55}
+        strokeOpacity={0.7}
         strokeLinejoin="round"
       />
       {seated && (
@@ -198,8 +198,8 @@ function Unit({
         <path
           key={p.x}
           d={`M${p.x - 1.6},${top} v-3.4 a1.6,1.6 0 0 1 3.2,0 v3.4 Z`}
-          fill={ILLO.unitMid}
-          stroke={ILLO.hub}
+          fill={ILLO.cabLow}
+          stroke={ILLO.cabTop}
           strokeWidth={1}
           strokeOpacity={0.8}
           strokeLinejoin="round"
@@ -220,18 +220,18 @@ function Unit({
             <g>
               <path
                 d={`M${near},${bodyTop} L${far},${body.yt} L${far},${body.yb} L${near},${base} Z`}
-                fill={ILLO.unitLow}
-                stroke={ILLO.hub}
+                fill={ILLO.cabShade}
+                stroke={ILLO.cabLow}
                 strokeWidth={1}
-                strokeOpacity={0.55}
+                strokeOpacity={0.7}
                 strokeLinejoin="round"
               />
               <path
                 d={`M${near + (depth === "right" ? 2.4 : -2.4)},${top} L${far + (depth === "right" ? 2.4 : -2.4)},${cap.yt} L${far + (depth === "right" ? 2.4 : -2.4)},${cap.yb} L${near + (depth === "right" ? 2.4 : -2.4)},${top + capH} Z`}
-                fill={ILLO.unitMid}
-                stroke={ILLO.hub}
+                fill={ILLO.cabLow}
+                stroke={ILLO.cabMid}
                 strokeWidth={1}
-                strokeOpacity={0.6}
+                strokeOpacity={0.75}
                 strokeLinejoin="round"
               />
             </g>
@@ -240,15 +240,15 @@ function Unit({
 
       {/* body */}
       <rect x={l} y={bodyTop} width={w} height={base - bodyTop} rx={1.5} fill={`url(#${id}-unit)`} />
-      <rect x={l} y={bodyTop} width={w} height={base - bodyTop} rx={1.5} fill="none" stroke={ILLO.hub} strokeWidth={1.6} strokeOpacity={0.95} strokeLinejoin="round" />
+      <rect x={l} y={bodyTop} width={w} height={base - bodyTop} rx={1.5} fill="none" stroke={ILLO.cabTop} strokeWidth={1.4} strokeOpacity={0.85} strokeLinejoin="round" />
 
       {/* flat cap, overhanging a little as it does on the real cabinet */}
-      <rect x={l - 2.4} y={top} width={w + 4.8} height={capH} rx={1.2} fill={ILLO.unitTop} stroke={ILLO.hub} strokeWidth={1.3} strokeOpacity={0.9} strokeLinejoin="round" />
+      <rect x={l - 2.4} y={top} width={w + 4.8} height={capH} rx={1.2} fill={ILLO.cabMid} stroke={ILLO.cabTop} strokeWidth={1.2} strokeOpacity={0.9} strokeLinejoin="round" />
 
       {/* Brand band, where the wordmark is printed on the real cabinet. Split
           grey/orange like the logo: a solid orange slab sat above the two
           status bars and read as a third, brighter status light. */}
-      <rect x={x - w * 0.31} y={bodyTop + 4} width={w * 0.26} height={3.4} rx={1.2} fill={ILLO.hub} />
+      <rect x={x - w * 0.31} y={bodyTop + 4} width={w * 0.26} height={3.4} rx={1.2} fill={ILLO.cabTop} />
       <rect x={x - w * 0.02} y={bodyTop + 4} width={w * 0.33} height={3.4} rx={1.2} fill={ILLO.live} />
 
       {/* Twin status bars. Green when the bay is free, orange only while
@@ -286,7 +286,7 @@ function Unit({
       ))}
 
       {/* card reader, flanked by the two holsters */}
-      <rect x={x - w * 0.075} y={holsterY - 1} width={w * 0.15} height={6.5} rx={1.4} fill={ILLO.recess} stroke={ILLO.hub} strokeWidth={0.7} strokeOpacity={0.5} />
+      <rect x={x - w * 0.075} y={holsterY - 1} width={w * 0.15} height={6.5} rx={1.4} fill={ILLO.pane} stroke={ILLO.cabTop} strokeWidth={0.7} strokeOpacity={0.6} />
       <Holster x={x - hx} y={holsterY} seated />
       <Holster x={x + hx} y={holsterY} seated={!inUse} />
 
@@ -309,26 +309,72 @@ function Unit({
       )}
 
       {/* plinth */}
-      <path d={`M${l - 3},${base} H${r + 3} a2,2 0 0 1 0,6 H${l - 3} a2,2 0 0 1 0,-6 Z`} fill={ILLO.unitLow} stroke={ILLO.seam} strokeWidth={0.8} strokeOpacity={0.5} />
+      <path d={`M${l - 3},${base} H${r + 3} a2,2 0 0 1 0,6 H${l - 3} a2,2 0 0 1 0,-6 Z`} fill={ILLO.cabLow} stroke={ILLO.cabTop} strokeWidth={0.8} strokeOpacity={0.45} />
     </g>
   );
 }
 
+/* ── The car ──────────────────────────────────────────────────────── */
+
+/** Tyre radius. Wheel centres sit at y = -R so the tyre is TANGENT to the
+ *  road; they used to sit at y = 0, which buried exactly half of every wheel
+ *  in the tarmac and hid the arches entirely. Eight rounds of reshaping could
+ *  not fix that, because the shape was never the fault. */
+const CAR_R = 5.06;
+const CAR_ARCH = 6.16;
+const CAR_WX = 19.57;
+const CAR_SILL = -4.2;
+/** where each arch meets the sill, solved rather than typed */
+const CAR_AX = Math.sqrt(CAR_ARCH ** 2 - (CAR_SILL + CAR_R) ** 2);
+
 /**
- * A car in profile — a Porsche Taycan, without any badge or name.
+ * Uniform Catmull-Rom through the landmarks, converted to cubic Beziers.
  *
- * Built from the real dimensions rather than an idea of a car: 4963 x 1381 mm
- * is 3.59 length-to-height, wheelbase 0.584 of length, wheel diameter 0.151.
- * At the frame's length of 67 that puts the roof at -13.6 and the wheels at
- * +/-19.6 with a 5.06 radius. Six earlier versions sat between 1.87 and 2.89
- * — crossover and worse — which is what kept reading as "not modern". Nothing
- * here is eyeballed; scripts/check-cover-accuracy.py asserts all three ratios
- * against the published figures.
+ * The point of doing it this way: Catmull-Rom is C1 by construction, so every
+ * joint is tangent-continuous with no hand-tuning. Curve quality stops being
+ * a matter of where I happened to drop a control point and becomes a property
+ * the harness can measure — it comes out at 0.000 degrees of discontinuity.
+ */
+function spline(pts: readonly (readonly [number, number])[]) {
+  const p = [pts[0], ...pts, pts[pts.length - 1]];
+  const n = (v: number) => Number(v.toFixed(2));
+  let d = `M${n(pts[0][0])},${n(pts[0][1])}`;
+  for (let i = 1; i < p.length - 2; i++) {
+    const [x0, y0] = p[i - 1], [x1, y1] = p[i], [x2, y2] = p[i + 1], [x3, y3] = p[i + 2];
+    d += ` C${n(x1 + (x2 - x0) / 6)},${n(y1 + (y2 - y0) / 6)} ${n(x2 - (x3 - x1) / 6)},${n(y2 - (y3 - y1) / 6)} ${n(x2)},${n(y2)}`;
+  }
+  return d;
+}
+
+/** Upper profiles, front to rear. Taycan: short front overhang, a long low
+ *  bonnet clearing the front arch, the cab set back, the roof peaking over
+ *  the front seats and falling in one line into a ducktail. */
+const CAR_PROFILE = {
+  taycan: [
+    [-33.5, -3.2], [-33.1, -6.4], [-31.6, -9], [-28, -10.8], [-23, -12.2],
+    [-17, -13.2], [-12.4, -14], [-6.6, -17], [-1, -18.5], [4.5, -18.64],
+    [10.5, -18], [17, -15.8], [23.5, -12.6], [29.5, -8.6], [33.1, -5.6], [33.5, -3.2],
+  ],
+  sedan: [
+    [-33.5, -3.2], [-33.1, -6.6], [-31.4, -9.4], [-27.6, -11.4], [-22, -13],
+    [-16, -14], [-11.6, -14.8], [-6, -18.4], [-0.5, -20.2], [5, -20.4],
+    [11, -19.8], [17.4, -17], [23.8, -13], [29.6, -8.8], [33.1, -5.8], [33.5, -3.2],
+  ],
+  suv: [
+    [-33.5, -3.4], [-33.1, -7], [-31.2, -10.2], [-27.2, -12.6], [-21.6, -14.4],
+    [-15.4, -15.4], [-11, -16.4], [-5.6, -21.4], [0, -23.4], [6, -23.6],
+    [12.4, -23], [18.6, -20.6], [24.6, -15.6], [30, -9.6], [33.1, -6], [33.5, -3.4],
+  ],
+} as const;
+
+/**
+ * A car in profile, drawn on the road rather than in it.
  *
- * The signatures that make it a Taycan and not a generic low car: a long
- * bonnet with the cabin set well back, a roof that peaks over the front seats
- * and falls in one continuous line into a ducktail, a pronounced haunch over
- * the rear wheel, and a shallow frameless glasshouse.
+ * Geometry from the real Taycan: 4963 x 1381 mm is 3.59 length-to-height,
+ * wheelbase 0.584 of length, wheel diameter 0.151. The harness asserts all
+ * three against the published figures, plus the things that actually went
+ * wrong here — that nothing sits below the road, that the tyres touch it, and
+ * that every joint in the outline is tangent-continuous.
  */
 function CarSide({
   id,
@@ -339,84 +385,49 @@ function CarSide({
   port,
   far = false,
   shape = "taycan",
+  paint = "paint",
 }: {
   id: string;
   x: number;
   y?: number;
   s?: number;
   flip?: boolean;
-  /** Draw a charge socket on the named flank. Cables must land on one of
-   *  these — a cable ending in mid-air is the drawn equivalent of the
-   *  floating-cable renders these covers replaced. */
   port?: "front" | "rear";
-  /** Sit this one back in the scene. On a dark plate haze LIFTS a distant
-   *  object toward the background; darkening it just makes it vanish. */
   far?: boolean;
-  /** Body type. Taycan carries the measured geometry; the other two raise the
-   *  roof and square the tail, keeping the wheelbase and ride height so all
-   *  three read as one family. */
   shape?: "taycan" | "sedan" | "suv";
+  /** Body colour. A forecourt of identical cars reads as a repeat. */
+  paint?: "paint" | "silver" | "graphite";
 }) {
-  /* nose, long bonnet, and the A-pillar rising late — the cab-rearward
-     proportion is the whole reason a Taycan reads as a Taycan */
-  const NOSE =
-    "M-33.5,0 L-33.5,-3.4 C-33.4,-5.6 -32.2,-6.6 -29.4,-7.2 " +
-    "L-22,-8.4 C-18.6,-9 -16.2,-9.6 -13.4,-11 ";
-  const ROOF = {
-    taycan:
-      "C-9.6,-12.6 -5.4,-13.58 1.5,-13.58 " +
-      "C8.5,-13.5 13.6,-12.4 18.4,-10.2 " +
-      "C23.6,-7.9 28.2,-5.6 31.4,-3.9 " +
-      "C33,-3 33.5,-2.2 33.5,-1 L33.5,0 ",
-    sedan:
-      "C-10,-13.6 -6,-15.4 0,-15.4 L7,-15.4 " +
-      "C12.6,-15.2 16.6,-13.4 20.4,-10.4 " +
-      "C25,-7.6 29.4,-5.2 31.8,-3.8 " +
-      "C33.1,-3 33.5,-2.2 33.5,-1 L33.5,0 ",
-    suv:
-      "C-10.4,-15.6 -6.6,-17.2 0,-17.2 L10,-17.2 " +
-      "C15.6,-17 19.4,-15.4 22.8,-12.4 L27.4,-9.6 " +
-      "C30.6,-7.4 33,-5 33.5,-3 L33.5,0 ",
-  } as const;
-  /* haunch over the rear wheel, then the arches cut into the silhouette */
-  const WHEELS =
-    "L26.07,0 A6.5,6.5 0 0 0 13.07,0 " +
-    "L-13.07,0 A6.5,6.5 0 0 0 -26.07,0 Z";
-  const GLASS = {
-    taycan: "M-13.6,-6.5 L-8.6,-12.6 L4,-12.6 L15.4,-6.5 Z",
-    sedan: "M-14.4,-7.6 L-9,-14.4 L5.6,-14.4 L16.6,-7.6 Z",
-    suv: "M-14.8,-8.4 L-9.4,-16.2 L8.2,-16.2 L19,-8.4 Z",
-  } as const;
-  const body = NOSE + ROOF[shape] + WHEELS;
-  const glass = GLASS[shape];
+  const prof = CAR_PROFILE[shape];
+  const body =
+    spline(prof) +
+    ` L${(CAR_WX + CAR_AX).toFixed(2)},${CAR_SILL}` +
+    ` A${CAR_ARCH},${CAR_ARCH} 0 0 0 ${(CAR_WX - CAR_AX).toFixed(2)},${CAR_SILL}` +
+    ` L${(-CAR_WX + CAR_AX).toFixed(2)},${CAR_SILL}` +
+    ` A${CAR_ARCH},${CAR_ARCH} 0 0 0 ${(-CAR_WX - CAR_AX).toFixed(2)},${CAR_SILL} Z`;
+  /* the glasshouse follows the roof landmarks instead of floating under it */
+  const roof = prof.slice(7, 12);
+  const belt = shape === "suv" ? -11.4 : shape === "sedan" ? -10.4 : -9.6;
+  const glass =
+    `M${roof[0][0] + 2},${belt} ` +
+    roof.map(([gx, gy]) => `L${gx},${gy + 1.4}`).join(" ") +
+    ` L${roof[roof.length - 1][0] - 2},${belt} Z`;
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -s : s} ${s})`}>
-      <ellipse cx={0} cy={5.06} rx={35} ry={4.2} fill={`url(#${id}-contact)`} />
-      <path d={body} fill={`url(#${id}-car)`} opacity={far ? 0.66 : 1} />
-      {/* the specular streak where light would land: bonnet, roof, shoulder */}
-      <path
-        d={`M-29.4,-7.2 L-22,-8.4 C-18.6,-9 -16.2,-9.6 -13.4,-11 ${ROOF[shape].split(" L")[0]}`}
-        fill="none"
-        stroke={ILLO.hub}
-        strokeWidth={1.1}
-        strokeOpacity={0.5}
-        strokeLinecap="round"
-      />
-      <path d={glass} fill={`url(#${id}-cargla)`} />
-      <path d="M-13.2,-6.5 L-8.4,-12.4 L-2,-12.4 L-6.6,-6.5 Z" fill={ILLO.glassTop} fillOpacity={0.2} />
-      {/* the four-point light signature, without a badge */}
-      <rect x={-32.6} y={-4.4} width={4.2} height={1.2} rx={0.6} fill={ILLO.glassTop} opacity={0.6} />
-      <rect x={29} y={-3.4} width={3.8} height={1.1} rx={0.55} fill={ILLO.glassTop} opacity={0.45} />
-      {[-19.57, 19.57].map((wx) => (
+      <ellipse cx={0} cy={0} rx={34} ry={3} fill={`url(#${id}-contact)`} />
+      {[-CAR_WX, CAR_WX].map((wx) => (
         <g key={wx}>
-          <circle cx={wx} cy={0} r={5.06} fill={ILLO.tyre} />
-          <circle cx={wx} cy={0} r={2.4} fill={ILLO.carMid} />
-          <circle cx={wx} cy={0} r={2.4} fill="none" stroke={ILLO.hub} strokeWidth={0.55} strokeOpacity={0.45} />
+          <circle cx={wx} cy={-CAR_R} r={CAR_R} fill={ILLO.tyre} />
+          <circle cx={wx} cy={-CAR_R} r={CAR_R * 0.52} fill={ILLO.hub} fillOpacity={0.28} />
+          <circle cx={wx} cy={-CAR_R} r={CAR_R * 0.52} fill="none" stroke={ILLO.hub} strokeWidth={0.5} strokeOpacity={0.5} />
         </g>
       ))}
+      <path d={body} fill={`url(#${id}-${paint})`} opacity={far ? 0.7 : 1} />
+      <path d={glass} fill={ILLO.pane} />
+      <path d={spline(prof).replace(/^M/, "M")} fill="none" stroke={ILLO.hub} strokeWidth={0.9} strokeOpacity={0.4} strokeLinecap="round" />
       {port && (
-        <g transform={`translate(${port === "front" ? -10.5 : 10.5} -3.4)`}>
-          <rect x={-2.1} y={-2.1} width={4.2} height={4.2} rx={1.1} fill={ILLO.stage} fillOpacity={0.6} />
+        <g transform={`translate(${port === "front" ? -10.5 : 10.5} -7.4)`}>
+          <rect x={-2.1} y={-2.1} width={4.2} height={4.2} rx={1.1} fill={ILLO.stage} fillOpacity={0.65} />
           {/* orange only because power is moving through it */}
           <circle cx={0} cy={0} r={1.1} fill={ILLO.live} />
         </g>
@@ -723,24 +734,34 @@ function Defs({ id }: { id: string }) {
         <stop offset="0%" stopColor={ILLO.stage} />
         <stop offset="100%" stopColor="#101E36" />
       </linearGradient>
+      {/* The cabinet is warm greige at Alhambra, not navy. Lit face to the
+          left, falling to the shaded right edge. 7.62 / 4.94 / 3.03. */}
       <linearGradient id={`${id}-unit`} x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stopColor={ILLO.bodyLight} />
-        <stop offset="45%" stopColor={ILLO.unitTop} />
-        <stop offset="100%" stopColor={ILLO.unitMid} />
+        <stop offset="0%" stopColor={ILLO.cabTop} />
+        <stop offset="52%" stopColor={ILLO.cabMid} />
+        <stop offset="100%" stopColor={ILLO.cabLow} />
       </linearGradient>
+      {/* tarmac, deliberately darker than the sky above it */}
       <linearGradient id={`${id}-floor`} x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor={ILLO.shadow} stopOpacity={0.1} />
-        <stop offset="100%" stopColor={ILLO.shadow} stopOpacity={0.5} />
+        <stop offset="0%" stopColor={ILLO.asphalt} stopOpacity={0.85} />
+        <stop offset="100%" stopColor={ILLO.shadow} stopOpacity={0.92} />
       </linearGradient>
-      {/* Every stop measured against the plate. A carTop->carMid->carLow ramp
-          bottomed out at 1.17:1 and the car dissolved into the background;
-          this holds 2.73 / 2.31 / 1.69, so light still falls across the body
-          but no part of it disappears. */}
-      <linearGradient id={`${id}-car`} x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor={ILLO.seam} />
-        <stop offset="52%" stopColor={ILLO.carTop} />
-        <stop offset="100%" stopColor={ILLO.carMid} />
-      </linearGradient>
+      {/* Body colours. Every ramp's DARKEST stop is the one that matters — an
+          earlier one bottomed out at 1.17:1 and the car vanished. These hold
+          2.02, 3.83 and 2.33. */}
+      {(
+        [
+          ["paint", ILLO.paintTop, ILLO.paintMid, ILLO.paintLow],
+          ["silver", ILLO.silverTop, ILLO.silverMid, ILLO.silverLow],
+          ["graphite", ILLO.graphiteTop, ILLO.graphiteMid, ILLO.graphiteLow],
+        ] as const
+      ).map(([n, a, b, c]) => (
+        <linearGradient key={n} id={`${id}-${n}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor={a} />
+          <stop offset="54%" stopColor={b} />
+          <stop offset="100%" stopColor={c} />
+        </linearGradient>
+      ))}
       <linearGradient id={`${id}-cargla`} x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stopColor={ILLO.glassMid} />
         <stop offset="100%" stopColor={ILLO.glassLow} />
@@ -797,7 +818,7 @@ export const COVERS: Record<string, Motif> = {
         <CarSide id={id} x={190} s={1.15} port="front" />
         {/* over the horn and down to the port — the route it takes on the
             real machine, and the reason the arc starts so high */}
-        <Cable d="M81.9,70.5 C106,74 120,120 150,140 C160,145 170,147 177.9,148.1" live />
+        <Cable d="M81.9,70.5 C106,74 120,120 150,136 C160,141 170,142 177.9,143.5" live />
       </>
     ),
   },
@@ -810,7 +831,7 @@ export const COVERS: Record<string, Motif> = {
       <>
         <Unit id={id} x={222} lit inUse />
         <CarSide id={id} x={112} s={1.05} port="rear" />
-        <Cable d="M212.1,70.5 C190,74 176,120 147,140 C139,145 131,147 123,148.4" live />
+        <Cable d="M212.1,70.5 C190,74 176,120 147,136 C139,141 131,143 123,144.2" live />
         {/* was three unlabelled dots, which told a first-time visitor
             nothing. Named, it is the whole page in one line. */}
         <g>
@@ -1022,8 +1043,8 @@ export const COVERS: Record<string, Motif> = {
       <>
         {/* was the same car three times at three scales, which says "one car,
             three sizes". Three body types says what the guide says. */}
-        <CarSide id={id} x={66} y={FLOOR - 20} s={0.62} shape="sedan" far />
-        <CarSide id={id} x={238} y={FLOOR - 20} s={0.62} shape="suv" flip far />
+        <CarSide id={id} x={66} y={FLOOR - 20} s={0.62} shape="sedan" paint="silver" far />
+        <CarSide id={id} x={238} y={FLOOR - 20} s={0.62} shape="suv" paint="graphite" flip far />
         <CarSide id={id} x={150} s={1.05} shape="taycan" />
       </>
     ),
@@ -1038,7 +1059,7 @@ export const COVERS: Record<string, Motif> = {
       <>
         <Unit id={id} x={66} lit inUse />
         <CarSide id={id} x={140} s={0.86} port="front" />
-        <Cable d="M75.9,70.5 C98,74 106,124 122,142 C125,146 128,148 131,149.1" live />
+        <Cable d="M75.9,70.5 C98,74 106,124 122,139 C125,143 128,145 131,145.6" live />
         {/* the free bay: its connector is holstered and its cable stowed, both
             drawn by Unit itself, so there is nothing to draw here */}
         <Unit id={id} x={244} />
@@ -1114,7 +1135,7 @@ export const COVERS: Record<string, Motif> = {
         <Cable d="M127,126 C127,136 134,140 142,142" />
         <path d="M150,52 V150" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.45} />
         <Unit id={id} x={214} lit />
-        <CarSide id={id} x={262} s={0.6} far />
+        <CarSide id={id} x={262} s={0.6} paint="silver" far />
         <Label x={78} y={178} text="HOME" />
         <Label x={222} y={178} text="PUBLIC" tone={ILLO.live} />
       </>
@@ -1170,9 +1191,9 @@ export const COVERS: Record<string, Motif> = {
         </g>
         {/* the kerb: cars nose-to-tail, nowhere to plug in */}
         <path d={`M0,${FLOOR + 4} H300`} stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.5} />
-        <CarSide id={id} x={56} y={FLOOR + 20} s={0.56} far />
-        <CarSide id={id} x={150} y={FLOOR + 20} s={0.56} far />
-        <CarSide id={id} x={244} y={FLOOR + 20} s={0.56} far />
+        <CarSide id={id} x={56} y={FLOOR + 20} s={0.56} shape="sedan" paint="silver" far />
+        <CarSide id={id} x={150} y={FLOOR + 20} s={0.56} paint="graphite" far />
+        <CarSide id={id} x={244} y={FLOOR + 20} s={0.56} shape="suv" far />
       </>
     ),
   },

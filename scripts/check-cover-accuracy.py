@@ -1,4 +1,5 @@
 """Re-derive every geometric claim in the covers from the shipped source."""
+import math
 import re, math, pathlib, subprocess, json, sys
 src = pathlib.Path("components/guide-cover.tsx").read_text()
 fails = []
@@ -64,7 +65,7 @@ check("curve is derived, not hand-drawn",
 # 6. cables still land on horn and in port
 UW, UH, FLOOR = 34, 76, 152
 horn = lambda x, sd: (x + (1 if sd=="right" else -1)*UW*0.29, FLOOR-UH-5.5)
-port = lambda cx, s, sd: (cx + (-10.5 if sd=="front" else 10.5)*s, FLOOR-3.4*s)
+port = lambda cx, s, sd: (cx + (-10.5 if sd=="front" else 10.5)*s, FLOOR-7.4*s)
 for n, ux, cx2, cs, ps, hs in [("station",72,190,1.15,"front","right"),
                                ("arrival",222,112,1.05,"rear","left"),
                                ("bays",66,140,0.86,"front","right")]:
@@ -103,24 +104,55 @@ check("the cabinet draws a cable for each of its two connectors",
 check("the left cable is unconditional, the right one only when free",
       "{!inUse && (" in unit and unit.index("<Cable") < unit.index("{!inUse && ("))
 
+# ── the car sits ON the road, not in it ──────────────────────────────
+CR   = float(re.search(r"const CAR_R = ([\d.]+)", src)[1])
+CA   = float(re.search(r"const CAR_ARCH = ([\d.]+)", src)[1])
+CWX  = float(re.search(r"const CAR_WX = ([\d.]+)", src)[1])
+check("wheel centres sit one radius above the road", "cy={-CAR_R}" in src,
+      "half of every wheel used to be underground")
+check("each arch clears its tyre", CA > CR, f"gap {CA-CR:.2f}")
+
+profs = dict(re.findall(r"(taycan|sedan|suv): \[(.*?)\n  \],", src, re.S))
+pts_of = lambda blob: [(float(a), float(b))
+                       for a, b in re.findall(r"\[(-?[\d.]+), (-?[\d.]+)\]", blob)]
+below = [(n, x, y) for n, blob in profs.items() for x, y in pts_of(blob) if y > 0]
+check("no point of any car profile is below the road", not below, str(below[:3]))
+
+def catmull(pts):
+    p = [pts[0]] + list(pts) + [pts[-1]]
+    return [((p[i][0]+(p[i+1][0]-p[i-1][0])/6, p[i][1]+(p[i+1][1]-p[i-1][1])/6),
+             (p[i+1][0]-(p[i+2][0]-p[i][0])/6, p[i+1][1]-(p[i+2][1]-p[i][1])/6),
+             p[i+1]) for i in range(1, len(p)-2)]
+worst = 0.0
+for n, blob in profs.items():
+    segs = catmull(pts_of(blob))
+    for i in range(len(segs)-1):
+        _, c2, pt = segs[i]
+        nx = segs[i+1][0]
+        a = math.atan2(pt[1]-c2[1], pt[0]-c2[0])
+        b = math.atan2(nx[1]-pt[1], nx[0]-pt[0])
+        worst = max(worst, abs(math.degrees(math.atan2(math.sin(a-b), math.cos(a-b)))))
+check("every joint of every car outline is tangent-continuous", worst < 1.0,
+      f"worst {worst:.4f} deg across {len(profs)} profiles")
+
 # ── the car matches the real Taycan ──────────────────────────────────
 L_MM, H_MM, WB_MM, WD_MM = 4963, 1381, 2900, 750
-car = re.search(r"function CarSide\(.*?\n\}\n", src, re.S).group(0)
-wx = sorted({abs(float(v)) for v in re.findall(r"\[(-?[\d.]+), [\d.]+\]\.map\(\(wx\)", car)} |
-            {abs(float(v)) for v in re.findall(r"\{\[(-?[\d.]+), ", car)})
-wr = float(re.search(r'r=\{([\d.]+)\} fill=\{ILLO\.tyre\}', car)[1])
-roof = min(float(v) for v in re.findall(r"-?\d+\.?\d*", car.split("taycan:")[1].split("sedan:")[0]))
 LEN = 67.0
-if wx:
-    got = {"wheelbase": (wx[0]*2)/LEN, "wheel dia": (wr*2)/LEN}
-    want = {"wheelbase": WB_MM/L_MM, "wheel dia": WD_MM/L_MM}
-    for k in got:
-        check(f"car {k} matches the Taycan", abs(got[k]-want[k]) < 0.012,
-              f"{got[k]:.3f} vs real {want[k]:.3f}")
-    height = wr - roof
-    check("car length-to-height matches the Taycan",
-          abs(LEN/height - L_MM/H_MM) < 0.15,
-          f"{LEN/height:.2f} vs real {L_MM/H_MM:.2f}")
+roof = min(y for _, y in pts_of(profs["taycan"]))
+for k, got, want, tol in [("wheelbase", (CWX*2)/LEN, WB_MM/L_MM, 0.012),
+                          ("wheel dia", (CR*2)/LEN, WD_MM/L_MM, 0.012),
+                          ("length:height", LEN/(0-roof), L_MM/H_MM, 0.15)]:
+    check(f"car {k} matches the Taycan", abs(got-want) < tol,
+          f"{got:.3f} vs real {want:.3f}")
+
+
+# ── the cabinet's two cables ─────────────────────────────────────────
+unit = re.search(r"function Unit\(.*?\n\}\n", src, re.S).group(0)
+check("the cabinet draws a cable for each of its two connectors",
+      unit.count("<Cable") == 2,
+      f"{unit.count('<Cable')} cable(s) for {unit.count('<Holster')} holsters")
+check("the left cable is unconditional, the right one only when free",
+      "{!inUse && (" in unit and unit.index("<Cable") < unit.index("{!inUse && ("))
 
 # ── the perspective is a construction, not a look ────────────────────
 HZ = float(re.search(r"const HORIZON = ([\d.]+)", src)[1])
@@ -165,6 +197,22 @@ for name in ("ok", "fault", "cold", "heat", "live"):
     check(f"state colour '{name}' is label-safe on the plate",
           name in TOK and cr(TOK[name]) >= 4.5,
           f"{TOK.get(name,'?')}  {cr(TOK[name]):.2f}:1" if name in TOK else "missing")
+
+# every object ramp's DARKEST stop must still stand off the plate — the
+# failure mode that made the car vanish, now guarded for all of them
+RAMPS = {
+    "cabinet": ("cabTop", "cabMid", "cabLow", "cabShade"),
+    "paint":   ("paintTop", "paintMid", "paintLow"),
+    "silver":  ("silverTop", "silverMid", "silverLow"),
+    "graphite":("graphiteTop", "graphiteMid", "graphiteLow"),
+}
+for name, keys in RAMPS.items():
+    missing = [k for k in keys if k not in TOK]
+    if missing:
+        check(f"{name} ramp is defined", False, f"missing {missing}"); continue
+    worst = min(cr(TOK[k]) for k in keys)
+    check(f"{name} ramp's darkest stop stays off the plate", worst >= 1.8,
+          f"{worst:.2f}:1")
 
 # one meaning, one colour: no two state tokens may collide
 states = {n: TOK[n] for n in ("ok", "fault", "cold", "heat", "live") if n in TOK}
