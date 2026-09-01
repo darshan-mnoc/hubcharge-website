@@ -1,4 +1,6 @@
 import { ILLO } from "@/lib/illustration";
+import { evModels } from "@/lib/ev-models";
+import { STATION_KW, TEMPERATURE_FACTORS, powerAtSoc } from "@/lib/charging-math";
 
 /**
  * Drawn covers for the guide mastheads.
@@ -42,11 +44,41 @@ const H = 200;
 /** Everything stands on this line, so no cover floats. */
 const FLOOR = 152;
 
-/** A charging curve: quick climb from a low battery, a plateau, then a long
- *  taper. Drawn asymmetric on purpose — a symmetrical hump would say charging
- *  slows as much at the start as at the end, which is the opposite of the
- *  thing the speed guide exists to explain. */
-const CURVE = "M56,116 C74,116 86,62 104,60 C128,58 140,64 158,80 C186,104 206,120 244,126";
+/**
+ * The charging curve, plotted from the site's own data rather than drawn.
+ *
+ * The hand-drawn version rose to a peak around 25% state of charge, which
+ * says charging is slow when the battery is nearly empty. Averaging the 31
+ * curves in lib/ev-models.ts and capping each point at the station's output
+ * says the opposite: power is already at its highest when the battery is
+ * nearly empty, holds a broad plateau to about a fifth full, and then falls
+ * away — 164 kW at 20%, 59 at 80%. That is what the guide underneath says.
+ *
+ * Derived at module load, so if a model's curve changes the drawing follows.
+ */
+const CURVE_PLOT = (() => {
+  const X0 = 56, X1 = 244, Y0 = 56, Y1 = 126;
+  const series: [number, number][] = [];
+  for (let soc = 0; soc <= 100; soc += 2) {
+    const kw =
+      evModels.reduce((a, m) => a + Math.min(powerAtSoc(m, soc), STATION_KW), 0) /
+      evModels.length;
+    series.push([soc, kw]);
+  }
+  /* scaled against the peak of the series being drawn, so the plot uses the
+     full height rather than leaving headroom under a ceiling no average
+     model reaches */
+  const peak = Math.max(...series.map(([, kw]) => kw));
+  const pts: [number, number][] = series.map(([soc, kw]) => [
+    X0 + (soc / 100) * (X1 - X0),
+    Y1 - (kw / peak) * (Y1 - Y0),
+  ]);
+  const d = pts
+    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`)
+    .join(" ");
+  return { d, X0, X1, Y1, pts };
+})();
+const CURVE = CURVE_PLOT.d;
 
 /* ── Primitives ──────────────────────────────────────────────────── */
 
@@ -324,32 +356,76 @@ function Cable({ d, live = false }: { d: string; live?: boolean }) {
 }
 
 /** A connector face. `big` is CCS1's proportions against NACS's. */
-function Plug({ x, y, r, big = false, lit = false }: { x: number; y: number; r: number; big?: boolean; lit?: boolean }) {
+/**
+ * A charging coupler, seen head-on.
+ *
+ * The two are genuinely different objects and the drawing has to say which is
+ * which, because that is the whole question the connectors guide answers:
+ *
+ * - CCS1 is a J1772 face — two large AC pins at the top, one large protective
+ *   earth at bottom centre, two small signal pins — with two large DC pins
+ *   bolted underneath. It is much the bigger coupler.
+ * - NACS is one compact round face: two large power pins that carry both AC
+ *   and DC, with three small pins arched above.
+ *
+ * These were previously one generic "three small over two large" face with an
+ * optional lobe, and the labels naming them were swapped.
+ */
+function Plug({
+  x,
+  y,
+  r,
+  kind = "nacs",
+  lit = false,
+}: {
+  x: number;
+  y: number;
+  r: number;
+  kind?: "ccs1" | "nacs";
+  lit?: boolean;
+}) {
   const pin = lit ? ILLO.live : ILLO.seam;
   return (
     <g>
       <circle cx={x} cy={y} r={r} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={1.3} strokeOpacity={0.9} />
-      {/* three small signal pins over two large power pins — the real layout */}
-      {[-1, 0, 1].map((i) => (
-        <circle key={i} cx={x + i * r * 0.42} cy={y - r * 0.38} r={r * 0.11} fill={ILLO.seam} />
-      ))}
-      {[-1, 1].map((i) => (
-        <circle key={i} cx={x + i * r * 0.3} cy={y + r * 0.22} r={r * 0.22} fill={pin} />
-      ))}
-      {big && (
-        /* CCS1's DC pair, bolted under the AC face */
-        <g>
+      {kind === "ccs1" ? (
+        <>
+          {/* J1772: two large AC pins up top … */}
+          {[-1, 1].map((i) => (
+            <circle key={i} cx={x + i * r * 0.4} cy={y - r * 0.32} r={r * 0.19} fill={pin} />
+          ))}
+          {/* … protective earth, large, at bottom centre … */}
+          <circle cx={x} cy={y + r * 0.36} r={r * 0.19} fill={ILLO.seam} />
+          {/* … and the two small signal pins flanking it */}
+          {[-1, 1].map((i) => (
+            <circle key={i} cx={x + i * r * 0.45} cy={y + r * 0.2} r={r * 0.085} fill={ILLO.seam} />
+          ))}
+          {/* the DC pair, in their own housing below the AC face */}
           <path
-            d={`M${x - r * 0.62},${y + r * 0.5} h${r * 1.24} a${r * 0.55},${r * 0.55} 0 0 1 0,${r * 0.95} h${-r * 1.24} a${r * 0.55},${r * 0.55} 0 0 1 0,${-r * 0.95} Z`}
+            d={`M${x - r * 0.62},${y + r * 0.52} h${r * 1.24} a${r * 0.55},${r * 0.55} 0 0 1 0,${r * 0.95} h${-r * 1.24} a${r * 0.55},${r * 0.55} 0 0 1 0,${-r * 0.95} Z`}
             fill={ILLO.recess}
             stroke={ILLO.edge}
-            strokeWidth={0.7}
-            strokeOpacity={0.45}
+            strokeWidth={0.9}
+            strokeOpacity={0.7}
           />
           {[-1, 1].map((i) => (
-            <circle key={i} cx={x + i * r * 0.33} cy={y + r * 0.98} r={r * 0.26} fill={pin} />
+            <circle key={i} cx={x + i * r * 0.33} cy={y + r * 1} r={r * 0.26} fill={pin} />
           ))}
-        </g>
+        </>
+      ) : (
+        <>
+          {/* NACS: three small pins arched over two large ones */}
+          {[
+            [-0.38, -0.28],
+            [0, -0.42],
+            [0.38, -0.28],
+          ].map(([dx, dy]) => (
+            <circle key={dx} cx={x + dx * r} cy={y + dy * r} r={r * 0.1} fill={ILLO.seam} />
+          ))}
+          {[-1, 1].map((i) => (
+            <circle key={i} cx={x + i * r * 0.32} cy={y + r * 0.2} r={r * 0.25} fill={pin} />
+          ))}
+        </>
       )}
     </g>
   );
@@ -639,18 +715,21 @@ export const COVERS: Record<string, Motif> = {
   /* two plugs, true relative scale */
   connectors: {
     label:
-      "The two connectors this network fits, named: CCS1 on the left and the larger NACS on the right.",
+      "The two connectors this network fits: the larger CCS1 on the left and the compact NACS on the right.",
     draw: () => (
       <>
-        {/* named, because the whole question this guide answers is WHICH one
-            you have — and the real cabinet prints these two words beside its
-            holsters for exactly the same reason */}
-        <Cable d="M96,132 C96,146 104,152 116,154" />
-        <Cable d="M206,144 C206,156 214,160 226,162" />
-        <Plug x={96} y={88} r={22} lit />
-        <Plug x={206} y={82} r={30} big lit />
-        <Label x={96} y={128} text="CCS1" />
-        <Label x={206} y={128} text="NACS" />
+        {/* CCS1 left, NACS right, matching alhambra-holsters.webp — and CCS1
+            drawn larger because it is the larger coupler. The labels used to
+            be on the wrong plugs entirely. */}
+        {/* cables leave from the side of each coupler, so the name can sit
+            directly under its own body instead of being stranded between the
+            body and its own cable */}
+        <Cable d="M114,120 C128,130 134,142 142,152" />
+        <Cable d="M223,96 C236,108 240,120 246,132" />
+        <Plug x={96} y={84} r={30} kind="ccs1" lit />
+        <Plug x={208} y={84} r={21} kind="nacs" lit />
+        <Label x={96} y={146} text="CCS1" />
+        <Label x={208} y={122} text="NACS" />
       </>
     ),
   },
@@ -661,7 +740,7 @@ export const COVERS: Record<string, Motif> = {
     ground: "bay",
     draw: () => (
       <>
-        <Plug x={54} y={96} r={24} lit />
+        <Plug x={54} y={92} r={26} kind="ccs1" lit />
         <path d="M84,96 H118" fill="none" stroke={ILLO.live} strokeWidth={2} strokeOpacity={0.85} strokeLinecap="round" />
         <path d="M112,89 L121,96 L112,103" fill="none" stroke={ILLO.live} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
         {/* the far half is the reader's own car, drawn as one — an abstract
@@ -687,10 +766,13 @@ export const COVERS: Record<string, Motif> = {
             that, so the drawing now does too, and each is named. */}
         <g>
           <rect x={54} y={112} width={34} height={40} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
-          <rect x={64} y={120} width={14} height={18} rx={2.6} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={0.8} />
-          <circle cx={68.5} cy={126} r={1.2} fill={ILLO.seam} />
-          <circle cx={73.5} cy={126} r={1.2} fill={ILLO.seam} />
-          <rect x={69.6} y={130.6} width={2.8} height={3.4} rx={1} fill={ILLO.seam} />
+          {/* NEMA 5-15, the ordinary US household outlet: two vertical
+              slots over a D-shaped earth. Round holes would be a Schuko,
+              which is the wrong continent. */}
+          <rect x={64} y={118} width={14} height={20} rx={2.6} fill={ILLO.recess} stroke={ILLO.edge} strokeWidth={0.8} />
+          <rect x={67.8} y={122.6} width={1.5} height={5} rx={0.5} fill={ILLO.seam} />
+          <rect x={72.7} y={122.6} width={1.5} height={5} rx={0.5} fill={ILLO.seam} />
+          <path d="M69.3,131.4 a1.7,1.7 0 0 1 3.4,0 v1.4 h-3.4 Z" fill={ILLO.seam} />
         </g>
         <g>
           <rect x={124} y={92} width={38} height={60} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
@@ -709,24 +791,21 @@ export const COVERS: Record<string, Motif> = {
   /* the curve */
   curve: {
     label:
-      "A charging curve that climbs fast from a low battery then tapers, with the fast and slow halves named.",
+      "The delivered charging curve: flat at the station's output while the battery is low, then tapering as it fills.",
     draw: () => (
       <>
-        {/* fill="none" is load-bearing: an open path with a stroke and no fill
-            still fills, and this one filled its whole axis corner black */}
         <path d="M44,44 V136 H266" fill="none" stroke={ILLO.seam} strokeWidth={1.2} strokeOpacity={0.55} strokeLinecap="round" />
-        <path d={CURVE} fill="none" stroke={ILLO.live} strokeWidth={3} strokeLinecap="round" />
-        <path d={`${CURVE} L244,136 L56,136 Z`} fill={ILLO.live} opacity={0.09} />
-        <circle cx={104} cy={60} r={4} fill={ILLO.live} />
-        <circle cx={56} cy={116} r={3.2} fill={ILLO.seam} />
-        <circle cx={244} cy={126} r={3.2} fill={ILLO.seam} />
-        {/* naming the two halves is the entire point of the guide: the same
-            ten minutes buys far more range at the bottom than the top */}
-        <Label x={62} y={154} text="10%" size={8} />
-        <Label x={246} y={154} text="80%" size={8} />
-        {/* clear of the curve itself — set on the line they were unreadable */}
-        <Label x={92} y={48} text="FAST" tone={ILLO.live} size={9} />
-        <Label x={224} y={82} text="SLOWER" tone={ILLO.seam} size={9} />
+        <path
+          d={`${CURVE} L${CURVE_PLOT.X1},136 L${CURVE_PLOT.X0},136 Z`}
+          fill={ILLO.live}
+          opacity={0.09}
+        />
+        <path d={CURVE} fill="none" stroke={ILLO.live} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        <Label x={CURVE_PLOT.X0 + 6} y={154} text="EMPTY" size={8} anchor="start" />
+        <Label x={CURVE_PLOT.X1} y={154} text="FULL" size={8} anchor="end" />
+        {/* the two things the shape is there to say */}
+        <Label x={92} y={48} text="FULL SPEED" tone={ILLO.live} size={9} />
+        <Label x={232} y={96} text="TAPERS" tone={ILLO.seam} size={9} />
       </>
     ),
   },
@@ -752,15 +831,19 @@ export const COVERS: Record<string, Motif> = {
             transform={`rotate(${i * 30} 108 94)`}
           />
         ))}
+        {/* Ten minutes is 60 degrees of a clock face. The arc used to span
+            40.8, which is 6.8 minutes — a drawing on the cost page quietly
+            stating the wrong length of stop. */}
         <path
-          d="M108,60 A34,34 0 0 1 130.2,68.3"
+          d="M108,60 A34,34 0 0 1 137.4,77.0"
           fill="none"
           stroke={ILLO.live}
           strokeWidth={5}
           strokeLinecap="round"
         />
         <circle cx={108} cy={94} r={3} fill={ILLO.hub} />
-        <path d="M108,94 L108,64" stroke={ILLO.hub} strokeWidth={1.6} strokeLinecap="round" />
+        {/* the hand agrees with the end of the arc */}
+        <path d="M108,94 L133.1,79.5" stroke={ILLO.hub} strokeWidth={1.6} strokeLinecap="round" />
         {/* This cover heads the COST guide and used to draw only a clock,
             which says time, not money. The symbol is a category marker: the
             rate itself appears nowhere but the product screenshot. */}
@@ -831,28 +914,32 @@ export const COVERS: Record<string, Motif> = {
 
   /* cold on one side, heat on the other */
   climate: {
-    label: "A battery drawn half in cold and half in heat, the two sides named.",
+    label:
+      "Two batteries, one cold and one hot, filled to the share of normal charging speed each temperature actually allows.",
     draw: () => (
       <>
-        <Cell x={150} y={104} w={124} h={52} from={0.08} to={0.42} tone={ILLO.live} />
-        {/* snowflake */}
+        {/* One battery with an invented fill said nothing. These two are
+            filled from TEMPERATURE_FACTORS in lib/charging-math.ts — the same
+            numbers the calculators use — so the picture cannot drift from
+            the arithmetic. */}
+        <Cell x={84} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.cold.factor} tone={ILLO.live} />
+        <Cell x={216} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.hot.factor} tone={ILLO.live} />
         <g stroke={ILLO.glassTop} strokeWidth={1.6} strokeLinecap="round" opacity={0.85}>
           {[0, 60, 120].map((a) => (
-            <line key={a} x1={64} y1={60} x2={64} y2={42} transform={`rotate(${a} 64 51)`} />
+            <line key={a} x1={84} y1={62} x2={84} y2={46} transform={`rotate(${a} 84 54)`} />
           ))}
-          <path d="M61.4,45.6 L64,48.2 L66.6,45.6" fill="none" />
-          <path d="M61.4,56.4 L64,53.8 L66.6,56.4" fill="none" />
+          <path d="M81.6,48.4 L84,50.8 L86.4,48.4" fill="none" />
+          <path d="M81.6,59.6 L84,57.2 L86.4,59.6" fill="none" />
         </g>
-        <circle cx={64} cy={51} r={1.3} fill={ILLO.glassTop} />
-        {/* sun */}
-        <circle cx={236} cy={51} r={7} fill={ILLO.live} opacity={0.9} />
+        <circle cx={84} cy={54} r={1.3} fill={ILLO.glassTop} />
+        <circle cx={216} cy={54} r={7} fill={ILLO.live} opacity={0.9} />
         <g stroke={ILLO.live} strokeWidth={1.6} strokeLinecap="round" opacity={0.75}>
           {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
-            <line key={a} x1={236} y1={38} x2={236} y2={42.5} transform={`rotate(${a} 236 51)`} />
+            <line key={a} x1={216} y1={41} x2={216} y2={45.5} transform={`rotate(${a} 216 54)`} />
           ))}
         </g>
-        <Label x={64} y={76} text="COLD" />
-        <Label x={236} y={76} text="HOT" tone={ILLO.live} />
+        <Label x={84} y={152} text="COLD" />
+        <Label x={216} y={152} text="HOT" tone={ILLO.live} />
       </>
     ),
   },
@@ -921,7 +1008,7 @@ export const COVERS: Record<string, Motif> = {
         {/* used to show only the fault. A troubleshooting guide should show
             the fault AND the thing you get back, or it is just bad news. */}
         <g>
-          <Plug x={70} y={92} r={20} />
+          <Plug x={70} y={92} r={20} kind="nacs" />
           <Cable d="M90,92 C100,92 104,96 110,98" />
           <g stroke={ILLO.idle} strokeWidth={2.6} strokeLinecap="round">
             <line x1={122} y1={82} x2={140} y2={104} />
@@ -931,7 +1018,7 @@ export const COVERS: Record<string, Motif> = {
         </g>
         <path d="M150,50 V140" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.4} />
         <g>
-          <Plug x={200} y={92} r={20} lit />
+          <Plug x={200} y={92} r={20} kind="nacs" lit />
           <Cable d="M220,92 C232,92 240,94 250,96" live />
           <Tick x={264} y={98} r={12} />
           <Label x={222} y={132} text="RETRY" tone={ILLO.live} size={8} />
@@ -1130,7 +1217,7 @@ export function GuideCover({ motif }: { motif: CoverMotif }) {
       className="h-full w-full"
       role="img"
       aria-label={m.label}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio="xMidYMid meet"
     >
       <Defs id={id} />
       <rect width={W} height={H} fill={`url(#${id}-plate)`} />
