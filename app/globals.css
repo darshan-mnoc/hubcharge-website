@@ -386,6 +386,7 @@
 @keyframes hc-draw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
 @keyframes hc-standby { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 @keyframes hc-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes hc-rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 .hc-flow {
   stroke-dasharray: 5 19;
@@ -397,6 +398,8 @@
   animation: hc-draw 1.4s ease-out 0.2s forwards;
 }
 .hc-standby { animation: hc-standby 2.4s ease-in-out infinite; }
+/* one soft arrival, for covers whose subject is a list or a set of marks */
+.hc-rise { animation: hc-rise 0.55s ease-out backwards; }
 .hc-fill {
   transform-origin: left center;
   animation: hc-fill 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.25s backwards;

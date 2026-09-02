@@ -2,6 +2,7 @@
 import math
 import re, math, pathlib, subprocess, json, sys
 src = pathlib.Path("components/guide-cover.tsx").read_text()
+FLOOR = int(re.search(r"const FLOOR = (\d+)", src)[1])
 fails = []
 def check(name, ok, detail=""):
     print(f"  {'PASS' if ok else 'FAIL'}  {name}{('  — ' + detail) if detail else ''}")
@@ -112,6 +113,23 @@ check("the Charger helper's foot matches ChargerSVG's contact shadow",
       abs(ccy - declared_u) < 0.01, f"{ccy} vs declared {declared_u}")
 
 # ── every cable hangs under gravity ───────────────────────────────────
+hol_cx, hol_cy = (float(v) for v in
+    re.search(r'<circle cx="(\d+)" cy="(\d+)" r="7.4" fill=\{ILLO\.shadow\}', prim).groups())
+port_cx, port_cy = (float(v) for v in
+    re.search(r'<circle cx="(\d+)" cy="(\d+)" r="2" fill=\{ILLO\.live\}', prim).groups())
+FOOT_U = float(re.search(r"foot: ([\d.]+) / 88", src)[1])
+FOOT_C = float(re.search(r"foot: ([\d.]+) / 70", src)[1])
+
+def holster(x, h):
+    return (x, FLOOR - h * (FOOT_U - hol_cy) / 88)
+def car_port(x, w, flip):
+    h = w * 70 / 200
+    dx = (port_cx - 100) / 200 * w
+    return (x + (-dx if flip else dx), FLOOR - h * (FOOT_C - port_cy) / 70)
+
+calls = re.findall(
+    r"sagPath\(holsterAt\((\d+), (\d+)\), portAt\((\d+), (\d+)(, true)?\)", src)
+
 def lowest(x0, y0, x1, y1, sag):
     c1 = (x0 + (x1-x0)*0.3, y0 + sag)
     c2 = (x0 + (x1-x0)*0.7, y1 + sag*0.55)
@@ -121,14 +139,61 @@ def lowest(x0, y0, x1, y1, sag):
         ys.append(u**3*y0 + 3*u*u*t*c1[1] + 3*u*t*t*c2[1] + t**3*y1)
     return max(ys)
 calls = re.findall(r"sagPath\((\d+), (\d+), (\d+), (\d+), (\d+)\)", src)
-check("every cable is drawn with the sag helper", len(calls) >= 4, f"{len(calls)} cables")
+anchored = re.findall(
+    r"sagPath\(holsterAt\((\d+), (\d+)\), portAt\((\d+), (\d+)(, true)?\), (\d+)\)", src)
 bad = []
-for x0, y0, x1, y1, sag in calls:
-    v = list(map(float, (x0, y0, x1, y1, sag)))
-    if lowest(*v) <= max(v[1], v[3]) + 0.5:
-        bad.append((x0, y0, x1, y1))
+for hx, hh, cx_, cw, flip, sag in anchored:
+    a = holster(float(hx), float(hh))
+    b = car_port(float(cx_), float(cw), bool(flip))
+    if lowest(a[0], a[1], b[0], b[1], float(sag)) <= max(a[1], b[1]) + 0.5:
+        bad.append((hx, cx_))
 check("every cable sags BELOW both of its endpoints", not bad,
       "a cable that bulges upward is a suspension span, not a hanging cable")
+
+# ── cables begin at a holster and end at a port ───────────────────────
+#
+# This check existed, caught exactly this bug, and I deleted it along with the
+# old primitives — after which every live cable drifted 40-58 units off both
+# anchors again. The anchors are read from primitives.tsx rather than restated
+# here, so the two cannot diverge.
+check("every live cable is anchored, not typed",
+      len(anchored) == src.count("live animated"),
+      f"{len(anchored)} anchored of {src.count('live animated')} live cables")
+off = []
+for hx, hh, cx_, cw, flip in calls:
+    a = holster(float(hx), float(hh))
+    b = car_port(float(cx_), float(cw), bool(flip))
+    if a[1] < 100 or b[1] < 100:      # both must sit low on the scene
+        off.append((hx, cx_))
+check("cable anchors land on the hardware, not in the sky", not off, str(off))
+
+# no <Cable> may simply stop in open air
+loose = [d for d in re.findall(r'<Cable d="(M[^"]+)"', src)]
+check("no cable is left with a typed, unterminated path",
+      all("C" in d for d in loose), f"{len(loose)} literal cable paths, each terminated")
+
+# a lead must reach the nearer flank, not cross the whole car
+crossing = []
+for hx, hh, cx_, cw, flip, sag in anchored:
+    hxv, cxv = float(hx), float(cx_)
+    px = car_port(cxv, float(cw), bool(flip))[0]
+    on_left = px < cxv
+    if (hxv < cxv) != on_left:
+        crossing.append((hx, cx_))
+check("every lead reaches the flank facing the charger", not crossing,
+      "otherwise the cable is drawn straight through the bodywork")
+
+# ── every cover moves, and none of it is SMIL ─────────────────────────
+motifs_all = {m.group(1): m.group(2)
+              for m in re.finditer(r"^  ([a-zA-Z]+): \{\n(.*?)^  \},", src, re.S | re.M)}
+staticc = [n for n, b in motifs_all.items()
+           if not any(k in b for k in ("hc-flow", "hc-draw", "hc-fill", "hc-rise", "animated"))]
+check("every cover has one motion", not staticc, str(staticc))
+cable_fn = re.search(r"function Cable\(.*?\n\}\n", src, re.S).group(0)
+check("the only looping class lives inside Cable, gated on live power",
+      src.count('"hc-flow"') == 1 and '"hc-flow"' in cable_fn
+      and "animated && live" in cable_fn,
+      "everything else plays once, so nothing pulls the eye while reading")
 
 # ── motion can actually be switched off ───────────────────────────────
 check("covers hold the charger's SMIL still", "still />" in src or "still\n" in src,

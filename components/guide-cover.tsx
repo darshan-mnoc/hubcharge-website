@@ -82,6 +82,26 @@ const CURVE_PLOT = (() => {
 const CURVE = CURVE_PLOT.d;
 
 /**
+ * Where a cable is allowed to begin and end.
+ *
+ * Both anchors live in the primitives already — ChargerSVG holsters its cable
+ * at (24, 63) of a 48x88 box, CarSVG puts a charge port at (158, 37) of a
+ * 200x70 box — and last round I typed cable coordinates by hand instead of
+ * reading them. Every live cable ended up leaving the cabinet 40-47 units
+ * above its holster and stopping 43-58 short of the port: out of thin air,
+ * into thin air. Derived here so that cannot recur, and asserted in
+ * scripts/check-cover-accuracy.py so it cannot recur silently.
+ */
+function holsterAt(x: number, h: number): [number, number] {
+  return [x, FLOOR - (h * (UNIT_VB.foot * 88 - 63)) / 88];
+}
+function portAt(x: number, w: number, flip = false): [number, number] {
+  const h = (w * CAR_VB.h) / CAR_VB.w;
+  const dx = ((158 - CAR_VB.w / 2) / CAR_VB.w) * w;
+  return [x + (flip ? -dx : dx), FLOOR - (h * (CAR_VB.foot * 70 - 37)) / 70];
+}
+
+/**
  * A cable hanging between two points.
  *
  * A heavy DC cable sags under its own weight into a shallow catenary; it does
@@ -90,7 +110,11 @@ const CURVE = CURVE_PLOT.d;
  * the chord by `sag`, so the lowest point of the curve sits below both ends —
  * which is the only shape gravity actually produces.
  */
-function sagPath(x0: number, y0: number, x1: number, y1: number, sag = 26) {
+function sagPath(
+  [x0, y0]: [number, number],
+  [x1, y1]: [number, number],
+  sag = 26
+) {
   const c1x = x0 + (x1 - x0) * 0.3;
   const c2x = x0 + (x1 - x0) * 0.7;
   return `M${x0},${y0} C${c1x},${y0 + sag} ${c2x},${y1 + sag * 0.55} ${x1},${y1}`;
@@ -427,18 +451,23 @@ function Car({
   dim?: number;
 }) {
   const h = (w * CAR_VB.h) / CAR_VB.w;
+  /* Mirrored about the car's own centre with an explicit SVG transform. A CSS
+     `transform: scaleX(-1)` with `transform-origin: center` does not resolve
+     against a nested <svg>'s own box, so the car flipped about the wrong axis
+     and the cable ran to where the port wasn't. */
   return (
-    <svg
-      x={x - w / 2}
-      y={FLOOR - h * CAR_VB.foot}
-      width={w}
-      height={h}
-      viewBox={`0 0 ${CAR_VB.w} ${CAR_VB.h}`}
-      opacity={dim}
-      style={flip ? { transform: "scaleX(-1)", transformOrigin: "center" } : undefined}
-    >
-      <CarSVG id={`${id}-car${Math.round(x)}`} />
-    </svg>
+    <g transform={flip ? `translate(${2 * x} 0) scale(-1 1)` : undefined}>
+      <svg
+        x={x - w / 2}
+        y={FLOOR - h * CAR_VB.foot}
+        width={w}
+        height={h}
+        viewBox={`0 0 ${CAR_VB.w} ${CAR_VB.h}`}
+        opacity={dim}
+      >
+        <CarSVG id={`${id}-car${Math.round(x)}`} />
+      </svg>
+    </g>
   );
 }
 
@@ -577,9 +606,11 @@ export const COVERS: Record<string, Motif> = {
             the homepage journey strip. Each lands on FLOOR from its own foot
             fraction, which is what fixes the uneven alignment. */}
         <Charger id={id} x={78} h={84} active />
-        <Car id={id} x={198} w={112} />
-        {/* the cable sags under its own weight between the two */}
-        <Cable d={sagPath(96, 86, 176, 141, 30)} live animated />
+        <Car id={id} x={198} w={112} flip />
+        {/* Parked port-side-to, so the lead reaches the inlet instead of
+            crossing the whole car. Both ends come from the primitives'
+            own anchors, and the curve sags under its own weight. */}
+        <Cable d={sagPath(holsterAt(78, 84), portAt(198, 112, true), 34)} live animated />
       </>
     ),
   },
@@ -591,8 +622,8 @@ export const COVERS: Record<string, Motif> = {
     draw: (id) => (
       <>
         <Charger id={id} x={230} h={82} active />
-        <Car id={id} x={104} w={104} flip />
-        <Cable d={sagPath(212, 84, 132, 141, 30)} live animated />
+        <Car id={id} x={104} w={104} />
+        <Cable d={sagPath(holsterAt(230, 82), portAt(104, 104), 34)} live animated />
         {/* was three unlabelled dots, which told a first-time visitor
             nothing. Named, it is the whole page in one line. */}
         <g>
@@ -631,13 +662,19 @@ export const COVERS: Record<string, Motif> = {
         {/* cables leave from the side of each coupler, so the name can sit
             directly under its own body instead of being stranded between the
             body and its own cable */}
-        <Cable d="M114,120 C128,130 134,142 142,152" />
-        <Cable d="M223,96 C236,108 240,120 246,132" />
+        {/* Each lead used to trail off and stop. They now end on a moulded
+            strain relief, which is what a real coupler's cable does. */}
+        <Cable d="M114,118 C130,128 138,138 144,146" />
+        <rect x={140} y={144} width={10} height={5.5} rx={2.6} fill={ILLO.bodyDark} stroke={ILLO.seam} strokeWidth={0.8} strokeOpacity={0.6} />
+        <Cable d="M223,96 C236,106 242,116 246,126" />
+        <rect x={242} y={124} width={9} height={5} rx={2.4} fill={ILLO.bodyDark} stroke={ILLO.seam} strokeWidth={0.8} strokeOpacity={0.6} />
         <Plug x={96} y={84} r={30} kind="ccs1" lit />
         <Plug x={208} y={84} r={21} kind="nacs" lit />
         <Label x={96} y={146} text="CCS1" />
         <Label x={208} y={122} text="NACS" />
-        <Label x={150} y={176} text="BOTH FITTED" size={8.5} tone={ILLO.ok} />
+        <g className="hc-rise" style={{ animationDelay: "0.3s" }}>
+          <Label x={150} y={176} text="BOTH FITTED" size={8.5} tone={ILLO.ok} />
+        </g>
       </>
     ),
   },
@@ -655,8 +692,10 @@ export const COVERS: Record<string, Motif> = {
             flank panel read as a television */}
         <Car id={id} x={206} w={104} />
         {/* ring the port, because it is the thing the arrow points at */}
-        <circle cx={186} cy={117} r={15} fill="none" stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.75} strokeDasharray="3 3" />
-        <Tick x={150} y={170} r={12} />
+        <circle cx={portAt(206, 104)[0]} cy={portAt(206, 104)[1]} r={14} fill="none" stroke={ILLO.live} strokeWidth={1.4} strokeOpacity={0.75} strokeDasharray="3 3" />
+        <g className="hc-rise" style={{ animationDelay: "0.35s" }}>
+          <Tick x={150} y={170} r={12} />
+        </g>
         <Label x={182} y={174} text="NO ADAPTER" size={8.5} tone={ILLO.ok} anchor="start" />
       </>
     ),
@@ -688,12 +727,16 @@ export const COVERS: Record<string, Motif> = {
           <rect x={124} y={92} width={38} height={60} rx={2} fill={ILLO.bodyDark} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.7} />
           <rect x={133} y={100} width={20} height={26} rx={4} fill={`url(#${id}-unit)`} stroke={ILLO.hub} strokeWidth={1.2} strokeOpacity={0.9} />
           <circle cx={143} cy={108} r={3} fill={ILLO.glass} stroke={ILLO.edge} strokeWidth={0.6} />
-          <Cable d="M143,126 C143,135 151,137 150,144" />
+          {/* the wallbox lead ends in its own holster, not mid-air */}
+          <Cable d="M143,126 C143,134 149,138 152,142" />
+          <circle cx={153} cy={143} r={3.4} fill={ILLO.recess} stroke={ILLO.seam} strokeWidth={0.9} />
         </g>
         <Charger id={id} x={224} h={80} active />
         <Label x={71} y={168} text="L1" />
         <Label x={143} y={168} text="L2" />
-        <Label x={224} y={168} text="DC" tone={ILLO.live} />
+        <g className="hc-rise" style={{ animationDelay: "0.25s" }}>
+          <Label x={224} y={168} text="DC" tone={ILLO.live} />
+        </g>
       </>
     ),
   },
@@ -763,7 +806,7 @@ export const COVERS: Record<string, Motif> = {
             No figure is printed \u2014 the rate lives only in the product shot. */}
         <g>
           {["PER kWh", "PER MINUTE", "IDLE FEE", "MEMBERSHIP"].map((t, i) => (
-            <g key={t} transform={`translate(20 ${52 + i * 22})`}>
+            <g key={t} transform={`translate(20 ${52 + i * 22})`} className="hc-rise" style={{ animationDelay: `${i * 0.08}s` }}>
               <Cross x={6} y={0} r={7} />
               <Label x={20} y={3} text={t} size={7.5} anchor="start" tone={ILLO.seam} />
             </g>
@@ -798,7 +841,7 @@ export const COVERS: Record<string, Motif> = {
         <path d="M160,98 L167,104 L160,110" fill="none" stroke={ILLO.seam} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
         <g>
           {[0, 1, 2, 3].map((i) => (
-            <rect key={i} x={186 + i * 18} y={102} width={14} height={28} rx={2} fill={ILLO.live} opacity={0.92} />
+            <rect key={i} x={186 + i * 18} y={102} width={14} height={28} rx={2} fill={ILLO.live} opacity={0.92} className="hc-rise" style={{ animationDelay: `${0.1 + i * 0.06}s` }} />
           ))}
           <Label x={213} y={150} text="FLAT" tone={ILLO.live} size={8} />
         </g>
@@ -821,7 +864,9 @@ export const COVERS: Record<string, Motif> = {
         <Car id={id} x={250} w={80} dim={0.7} flip />
         <Label x={250} y={166} text="CCS1" size={8} tone={ILLO.seam} />
         <Car id={id} x={150} w={108} />
-        <Label x={150} y={180} text="BOTH FIT HERE" size={9} tone={ILLO.live} />
+        <g className="hc-rise" style={{ animationDelay: "0.25s" }}>
+          <Label x={150} y={180} text="BOTH FIT HERE" size={9} tone={ILLO.live} />
+        </g>
       </>
     ),
   },
@@ -835,8 +880,8 @@ export const COVERS: Record<string, Motif> = {
     draw: (id) => (
       <>
         <Charger id={id} x={66} h={78} active />
-        <Car id={id} x={150} w={86} />
-        <Cable d={sagPath(82, 90, 132, 141, 24)} live animated />
+        <Car id={id} x={150} w={86} flip />
+        <Cable d={sagPath(holsterAt(66, 78), portAt(150, 86, true), 26)} live animated />
         <Charger id={id} x={238} h={78} free />
         <Label x={238} y={178} text="FREE" tone={ILLO.ok} size={8} />
         <Label x={110} y={178} text="MOVE WHEN DONE" tone={ILLO.hub} size={8} />
@@ -855,8 +900,12 @@ export const COVERS: Record<string, Motif> = {
             filled from TEMPERATURE_FACTORS in lib/charging-math.ts — the same
             numbers the calculators use — so the picture cannot drift from
             the arithmetic. */}
-        <Cell x={84} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.cold.factor} tone={ILLO.cold} />
-        <Cell x={216} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.hot.factor} tone={ILLO.heat} />
+        <g className="hc-fill">
+          <Cell x={84} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.cold.factor} tone={ILLO.cold} />
+        </g>
+        <g className="hc-fill" style={{ animationDelay: "0.15s" }}>
+          <Cell x={216} y={104} w={92} h={46} from={0} to={TEMPERATURE_FACTORS.hot.factor} tone={ILLO.heat} />
+        </g>
         <g stroke={ILLO.cold} strokeWidth={1.6} strokeLinecap="round" opacity={0.95}>
           {[0, 60, 120].map((a) => (
             <line key={a} x1={84} y1={62} x2={84} y2={46} transform={`rotate(${a} 84 54)`} />
@@ -895,7 +944,9 @@ export const COVERS: Record<string, Motif> = {
     teaches: "The band that matters",
     draw: () => (
       <>
-        <Cell x={150} y={100} w={150} h={60} from={0.2} to={0.8} />
+        <g className="hc-fill">
+          <Cell x={150} y={100} w={150} h={60} from={0.2} to={0.8} />
+        </g>
         {/* the window the guide recommends, marked at both ends rather than
             left for the reader to infer from a highlighted rectangle */}
         {/* x=105 and x=195 are where the 0.2 and 0.8 fill edges actually fall for
@@ -921,12 +972,16 @@ export const COVERS: Record<string, Motif> = {
       <>
         <Roof x={78} w={80} h={54} pitch={16} />
         <rect x={122} y={112} width={9} height={14} rx={2} fill={ILLO.unitMid} stroke={ILLO.edge} strokeWidth={0.7} strokeOpacity={0.5} />
-        <Cable d="M127,126 C127,136 134,140 142,142" />
+        {/* the home unit's lead ends on its own connector, not in the air */}
+        <Cable d="M127,126 C127,134 133,139 138,142" />
+        <rect x={135} y={140} width={7} height={5} rx={2.2} fill={ILLO.bodyDark} stroke={ILLO.seam} strokeWidth={0.8} strokeOpacity={0.6} />
         <path d="M150,52 V150" stroke={ILLO.seam} strokeWidth={0.9} strokeDasharray="4 5" opacity={0.45} />
         <Charger id={id} x={214} h={72} free />
         <Car id={id} x={266} w={62} dim={0.6} />
         <Label x={78} y={178} text="HOME" />
-        <Label x={222} y={178} text="PUBLIC" tone={ILLO.live} />
+        <g className="hc-rise" style={{ animationDelay: "0.25s" }}>
+          <Label x={222} y={178} text="PUBLIC" tone={ILLO.live} />
+        </g>
       </>
     ),
   },
@@ -954,7 +1009,18 @@ export const COVERS: Record<string, Motif> = {
                 const wy = FLOOR - h + 10 + r * ((h - 20) / rows);
                 const on = (r * cols + c + x) % 5 === 0;
                 return (
-                  <rect key={`${r}-${c}`} x={wx} y={wy} width={ww} height={8} rx={0.8} fill={on ? ILLO.heat : ILLO.recess} opacity={on ? 0.55 : 1} />
+                  <rect
+                    key={`${r}-${c}`}
+                    x={wx}
+                    y={wy}
+                    width={ww}
+                    height={8}
+                    rx={0.8}
+                    fill={on ? ILLO.heat : ILLO.recess}
+                    opacity={on ? 0.55 : 1}
+                    className={on ? "hc-rise" : undefined}
+                    style={on ? { animationDelay: `${0.1 + ((r * cols + c) % 5) * 0.12}s` } : undefined}
+                  />
                 );
               })
             )}
@@ -988,7 +1054,7 @@ export const COVERS: Record<string, Motif> = {
             { t: "CABLE LOCKED", lit: false },
             { t: "APP OUT OF DATE", lit: false },
           ].map(({ t, lit }, i) => (
-            <g key={t} transform={`translate(40 ${58 + i * 20})`}>
+            <g key={t} transform={`translate(40 ${58 + i * 20})`} className="hc-rise" style={{ animationDelay: `${i * 0.07}s` }}>
               <circle cx={0} cy={0} r={5.4} fill={lit ? ILLO.ok : "none"} fillOpacity={lit ? 0.2 : 1} stroke={lit ? ILLO.ok : ILLO.seam} strokeWidth={1.2} />
               {lit && <path d="M-2.4,0 L-0.6,1.9 L2.6,-2" fill="none" stroke={ILLO.ok} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />}
               <Label x={12} y={3} text={t} size={7.5} anchor="start" tone={lit ? ILLO.ok : ILLO.seam} />
@@ -1002,7 +1068,10 @@ export const COVERS: Record<string, Motif> = {
           <circle cx={8} cy={-31} r={4.4} fill={ILLO.live} />
           <rect x={-15} y={-14} width={30} height={26} rx={4} fill={ILLO.unitMid} stroke={ILLO.hub} strokeWidth={1.4} strokeOpacity={0.85} />
           <rect x={-7} y={12} width={14} height={18} rx={5} fill={ILLO.bodyDark} stroke={ILLO.seam} strokeWidth={1} />
-          <Cable d="M0,30 C0,42 16,44 26,48" live />
+          {/* the lead hangs to the floor and coils there, rather than
+              running off the edge of the frame */}
+          <Cable d="M0,30 C0,44 14,52 26,60" live />
+          <ellipse cx={28} cy={62} rx={9} ry={2.6} fill="none" stroke={ILLO.liveDim} strokeWidth={2} strokeOpacity={0.8} />
           <Label x={0} y={-58} text="PUSH IT HOME" size={8} tone={ILLO.ok} />
         </g>
       </>
@@ -1030,7 +1099,7 @@ export const COVERS: Record<string, Motif> = {
           />
           <Label x={205} y={98} text="?" tone={ILLO.live} size={46} />
         </g>
-        <g opacity={0.5}>
+        <g opacity={0.5} className="hc-rise" style={{ animationDelay: "0.4s" }}>
           <path
             d="M158,112 H214 a8,8 0 0 1 8,8 V138 a8,8 0 0 1 -8,8 H176 l-10,10 v-10 H158 a8,8 0 0 1 -8,-8 V120 a8,8 0 0 1 8,-8 Z"
             fill={ILLO.recess}
@@ -1065,7 +1134,7 @@ export const COVERS: Record<string, Motif> = {
         <Label x={142} y={76} text="DRIVING, PAID" size={8} tone={ILLO.ok} />
         <Car id={id} x={96} w={100} />
         <Charger id={id} x={228} h={62} active />
-        <Cable d={sagPath(240, 108, 138, 140, 20)} live animated />
+        <Cable d={sagPath(holsterAt(228, 62), portAt(96, 100), 22)} live animated />
       </>
     ),
   },
@@ -1092,7 +1161,9 @@ export const COVERS: Record<string, Motif> = {
         <Pin x={202} y={102} r={7} />
         <Label x={202} y={124} text="LEAVE EARLY" size={8} tone={ILLO.seam} />
         <Pin x={62} y={146} r={10} lit />
-        <Label x={62} y={176} text="ARRIVE LOW" size={8.5} tone={ILLO.live} />
+        <g className="hc-rise" style={{ animationDelay: "0.25s" }}>
+          <Label x={62} y={176} text="ARRIVE LOW" size={8.5} tone={ILLO.live} />
+        </g>
       </>
     ),
   },
@@ -1108,7 +1179,7 @@ export const COVERS: Record<string, Motif> = {
             matter", and it names them; so does this */}
         <path d="M16,72 C70,68 140,64 288,58" fill="none" stroke={ILLO.seam} strokeWidth={2.4} strokeOpacity={0.4} strokeLinecap="round" strokeDasharray="7 6" />
         <Label x={40} y={62} text="I-210" size={8.5} tone={ILLO.seam} anchor="start" />
-        <path d="M16,124 C70,122 150,118 288,112" fill="none" stroke={ILLO.live} strokeWidth={2.8} strokeOpacity={0.85} strokeLinecap="round" />
+        <path d="M16,124 C70,122 150,118 288,112" fill="none" stroke={ILLO.live} strokeWidth={2.8} strokeOpacity={0.85} strokeLinecap="round" className="hc-draw" style={{ ["--len" as string]: "280" }} />
         <Label x={40} y={140} text="I-10" size={9} tone={ILLO.live} anchor="start" />
         <Pin x={122} y={108} r={10} lit />
         <Label x={122} y={92} text="ALHAMBRA" tone={ILLO.live} size={8} />
@@ -1135,6 +1206,8 @@ export const COVERS: Record<string, Motif> = {
           strokeWidth={2}
           strokeOpacity={0.45}
           strokeLinecap="round"
+          className="hc-draw"
+          style={{ ["--len" as string]: "240" }}
         />
         {[
           { x: 46, y: 110, when: "WEEK 1", what: "YOUR PLUG", lit: false },
@@ -1188,7 +1261,7 @@ export const COVERS: Record<string, Motif> = {
           <g key={y}>
             <rect x={54} y={y} width={i === 0 ? 86 : i === 1 ? 70 : 78} height={7} rx={3.5} fill={i === 0 ? ILLO.hub : ILLO.idle} opacity={i === 0 ? 0.8 : 0.65} />
             {/* each one points OUT, to whoever administers it */}
-            <path d={`M156,${y + 3.5} h22`} stroke={ILLO.live} strokeWidth={1.6} strokeOpacity={0.85} strokeLinecap="round" />
+            <path d={`M156,${y + 3.5} h22`} stroke={ILLO.live} strokeWidth={1.6} strokeOpacity={0.85} strokeLinecap="round" className="hc-draw" style={{ ["--len" as string]: "22", animationDelay: `${0.15 + i * 0.1}s` }} />
             <path d={`M172,${y - 1.5} l5,5 l-5,5`} fill="none" stroke={ILLO.live} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
           </g>
         ))}
