@@ -43,7 +43,7 @@ export const guides: Guide[] = [
     desc: "Make-by-make compatibility — Tesla, Ford, Hyundai, Rivian and more. Almost certainly yes, with no adapter.",
     read: "4 min",
     short:
-      "Almost certainly yes. Our chargers carry both of the two plug types used in America, so nearly every electric car sold here plugs straight in — no adapter, no membership. The one exception is the 2011–2025 Nissan Leaf, which uses an older plug we don't carry.",
+      "Almost certainly yes. Our chargers carry CCS1 and NACS — the two plug types used in America — so nearly every electric car sold here plugs straight in, with no adapter. We do not carry CHAdeMO.",
     group: "start",
     note: "Start here.",
   },

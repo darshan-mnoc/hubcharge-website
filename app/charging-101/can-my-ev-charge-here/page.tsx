@@ -65,11 +65,11 @@ export default function CompatibilityPage() {
           <AlertTriangle className="h-5 w-5 text-note-ink shrink-0 mt-0.5" />
           <div className="text-body-sm text-ink-700">
             <p className="font-semibold mb-1">
-              One honest exception: older Nissan Leaf (2011–2025)
+              One honest exception: CHAdeMO
             </p>
             <p>
-              Those model years fast-charge only with the older <Term id="chademo">CHAdeMO</Term>
-              connector, which our stations don&rsquo;t carry — so they
+              We carry CCS1 and NACS only. If your car fast-charges with the
+              older <Term id="chademo">CHAdeMO</Term> connector, it
               can&rsquo;t DC fast-charge at HubCharge. The all-new 2026 Leaf
               switched to NACS and works great here. We&rsquo;d rather tell
               you before you drive over than after.

@@ -67,11 +67,9 @@ export default function ConnectorsPage() {
 
         <h2>What about <Term id="chademo">CHAdeMO</Term>?</h2>
         <p>
-          CHAdeMO is the older fast-charging standard used mainly by the
-          2011–2025 Nissan Leaf. It&rsquo;s being phased out industry-wide,
-          and our stations don&rsquo;t carry it — so those Leaf model years
-          can&rsquo;t DC fast-charge here (the all-new 2026 Leaf uses NACS
-          and works great). More in{" "}
+          CHAdeMO is an older fast-charging standard being phased out
+          industry-wide. We carry CCS1 and NACS only, so a car that
+          fast-charges on CHAdeMO can&rsquo;t DC fast-charge here. More in{" "}
           <Link href="/charging-101/can-my-ev-charge-here">
             our compatibility guide
           </Link>

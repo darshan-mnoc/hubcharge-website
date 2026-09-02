@@ -144,7 +144,7 @@ export default async function VehicleGuide({
             range
               ? `About ten minutes later you're roughly ${range[0]}–${range[1]} miles better off.`
               : "About ten minutes later you're on your way.",
-            "We unplug. You drive off. No idle fees to race back for.",
+            "We unplug. You drive off. Nothing to race back for.",
           ].map((step, i) => (
             <li
               key={step}

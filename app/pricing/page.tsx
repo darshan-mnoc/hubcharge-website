@@ -14,7 +14,7 @@ import { CtaButton } from "@/components/ui/cta-button";
 export const metadata: Metadata = {
   title: "Flat-Rate EV Charging Pricing | HubCharge",
   description:
-    "One flat rate per charging session — no per-kWh math, no surprise fees, no membership required. Your exact price is shown before you plug in at every HubCharge station.",
+    "One flat rate per charging session — no per-kWh math, no surprise fees, and no membership needed to charge. Your exact price is shown before you plug in at every HubCharge station.",
   alternates: { canonical: "https://hubcharge.com/pricing" },
 };
 
@@ -30,7 +30,7 @@ const neverCharged = [
   "Unexpected final cost",
   "Time-of-use price spikes",
   "Congestion surcharges",
-  "Membership or subscription fees",
+  "A membership before you can charge",
 ];
 
 const PRICING_FAQS = [
@@ -43,15 +43,15 @@ const PRICING_FAQS = [
     a: "Before you plug in. Your exact flat rate appears on your phone at the charger, and you approve it before the session starts.",
   },
   {
-    q: "Are there idle fees?",
-    a: "No. At participating locations our attendant unplugs you, so there is nothing to race back for.",
+    q: "Will my charge price go up while I'm parked?",
+    a: "No. The price you approve before you plug in is the price for the charge. At participating locations our attendant unplugs you, so there is nothing to race back for.",
   },
   {
     q: "Does the price change by time of day?",
     a: "No. There are no time-of-use spikes and no congestion surcharges.",
   },
   {
-    q: "What if I need more range than one session gives me?",
+    q: "What if I need more range than 10 minutes gives me?",
     a: "Extend in quick taps, up to four times per stop.",
   },
 ];
@@ -149,11 +149,15 @@ export default function PricingPage() {
       </div>
 
       <div className="mb-20">
-        <PlanYourStop station={station} />
+        <PlanYourStop stations={stations} />
       </div>
 
       <div className="mb-20">
-        <OperationalTrust stationCount={stations.length} hours={station.hours} />
+        <OperationalTrust
+          stationCount={stations.length}
+          hours={stations.map((s) => s.hours)}
+          states={[...new Set(stations.map((s) => s.state))]}
+        />
       </div>
 
       <div className="mb-20">

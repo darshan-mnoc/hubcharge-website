@@ -47,7 +47,7 @@ function Row({ model }: { model: EvModel }) {
         <span className="whitespace-nowrap">~{lo}–{hi} mi in 10 min</span>{" · "}<span className="whitespace-nowrap">10–80% in {full} min</span>
       </span>
       <span className="hidden md:block text-caption text-ink-400 text-right whitespace-nowrap">
-        {Math.min(model.peakKw, STATION_KW)} kW here
+        up to {Math.min(model.peakKw, STATION_KW)} kW here
       </span>
     </li>
   );
@@ -101,17 +101,30 @@ export function VerifiedCompatibility() {
  * Operational facts — all derived from real station data, none of it claimed
  * uptime or invented volume.
  */
+const STATE_NAMES: Record<string, string> = { CA: "California" };
+
 export function OperationalTrust({
   stationCount,
   hours,
+  states,
 }: {
   stationCount: number;
-  hours: string;
+  /** Every station's hours. One value is only shown when they all agree. */
+  hours: string[];
+  states: string[];
 }) {
+  /* Both of these used to be fixed strings — "Stations live in California"
+     and one site's hours presented as the network's. Derived, they stay true
+     as sites are added or their hours diverge. */
+  const uniformHours = new Set(hours).size === 1 ? hours[0] : null;
+  const where =
+    states.length === 1 ? STATE_NAMES[states[0]] ?? states[0] : "the US";
   const facts = [
-    { v: `${stationCount}`, l: "Stations live in California" },
+    { v: `${stationCount}`, l: `Stations live in ${where}` },
     { v: "NACS + CCS", l: "Both cables on every charger" },
-    { v: hours, l: "Open daily" },
+    uniformHours
+      ? { v: uniformHours, l: "Open daily" }
+      : { v: "By site", l: "Hours vary — check your station" },
     { v: "No app", l: "Runs in your phone's browser" },
   ];
   return (

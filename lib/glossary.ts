@@ -72,8 +72,8 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
   {
     id: "chademo",
     term: "CHAdeMO",
-    def: "An older fast-charging standard used mainly by the 2011–2025 Nissan Leaf; being phased out industry-wide. Our stations don't carry it.",
-    short: "An older plug, mostly on the 2011–2025 Nissan Leaf. We do not carry this cable.",
+    def: "An older fast-charging standard, now being phased out industry-wide. We carry CCS1 and NACS only, and do not carry CHAdeMO.",
+    short: "An older plug we do not carry. Our chargers are CCS1 and NACS.",
   },
   {
     id: "charging-curve",

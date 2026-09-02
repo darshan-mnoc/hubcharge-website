@@ -152,7 +152,7 @@ export function ChargingCurveChart({
         {/* our ceiling */}
         <line x1={PAD.l} x2={W - PAD.r} y1={y(STATION_KW)} y2={y(STATION_KW)} stroke="#B34D00" strokeWidth="1.5" strokeDasharray="5 4" />
         <text x={W - PAD.r} y={y(STATION_KW) - 7} textAnchor="end" fontSize="11" fill="#B34D00" fontWeight="600">
-          {W < 460 ? `${STATION_KW} kW here` : `Our chargers · ${STATION_KW} kW`}
+          {W < 460 ? `up to ${STATION_KW} kW` : `Our chargers · up to ${STATION_KW} kW`}
         </text>
 
         {/* the car */}

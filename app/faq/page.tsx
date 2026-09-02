@@ -144,7 +144,16 @@ const groups: Group[] = [
       },
       {
         q: "What are the hours?",
-        a: "Both stations are open daily, 6 AM – 10 PM.",
+        a: (
+          <>
+            Hours can differ by site, so check the one you&rsquo;re heading to
+            on our{" "}
+            <Link href="/locations" className="text-brand-ink underline">
+              locations page
+            </Link>
+            .
+          </>
+        ),
       },
       {
         q: "Is charging accessible for drivers with disabilities?",

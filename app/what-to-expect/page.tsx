@@ -44,7 +44,7 @@ const steps = [
   {
     n: "05",
     title: "We unplug — you're done",
-    desc: "No idle fees ticking, no cable wrangling. The attendant unplugs, you pull out, and you're back on the road.",
+    desc: "No cable wrangling, and no meter still running on your charge. The attendant unplugs, you pull out, and you're back on the road.",
     image: "/images/coffee-delivery-v3.webp",
     alt: "Attendant finishing a charging session",
   },

@@ -181,6 +181,22 @@ export function BatteryNav() {
                           className="absolute left-1/2 z-50 -translate-x-1/2 top-full pt-4 w-[300px]"
                         >
                           <div className="rounded-lg border border-white/12 bg-ink-900 shadow-card-hover p-2">
+                            {/* Charging 101 itself led the list of nothing —
+                                it was a small link under the fold of the
+                                dropdown, so the hub was the hardest thing in
+                                the menu to find. It goes first. */}
+                            <Link
+                              href="/charging-101"
+                              onClick={() => setGuidesOpen(false)}
+                              className="block rounded px-3 py-2.5 mb-1 border-b border-white/10 hover:bg-white/[0.06] transition-colors"
+                            >
+                              <span className="block text-body-sm font-semibold text-brand">
+                                Charging 101
+                              </span>
+                              <span className="block text-footnote text-on-dark/55 mt-0.5">
+                                All guides
+                              </span>
+                            </Link>
                             {navGuides.map((g) => (
                               <Link
                                 key={g.slug}
@@ -196,13 +212,7 @@ export function BatteryNav() {
                                 </span>
                               </Link>
                             ))}
-                            <Link
-                              href="/charging-101"
-                              onClick={() => setGuidesOpen(false)}
-                              className="block rounded px-3 py-2.5 mt-1 border-t border-white/10 text-caption font-semibold text-brand hover:bg-white/[0.06] transition-colors"
-                            >
-                              All guides →
-                            </Link>
+
                           </div>
                         </motion.div>
                       )}

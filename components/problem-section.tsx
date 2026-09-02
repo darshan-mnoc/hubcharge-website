@@ -5,7 +5,6 @@ import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { motion, useInView, easeOut } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import {
-  ArrowDown,
   ArrowRight,
   Sparkles,
   Check,
@@ -101,7 +100,7 @@ const LEDGER = [
     k: "You leave",
     icon: CarFront,
     them: "You watch the clock to get back before idle fees start.",
-    us: "We unplug. There is no idle fee to race.",
+    us: "We unplug. Nothing to race back for.",
   },
 ];
 
@@ -415,13 +414,17 @@ export function ProblemSection() {
             viewport={{ once: true }}
             className="mt-16"
           >
+            {/* This pointed at #how-it-works, the next section down — so a
+                control promising "the full experience" moved the page a
+                screen and delivered nothing new. It goes to the page that
+                actually walks the five steps. */}
             <motion.a
-              href="#how-it-works"
+              href="/what-to-expect"
               whileHover={{ scale: 1.05 }}
               className="inline-flex items-center gap-3 text-brand hover:text-brand-hover transition-colors text-h4 group"
             >
-              See the full charging experience
-              <ArrowDown className="h-5 w-5 transition-transform group-hover:translate-y-0.5" />
+              Walk through a visit, step by step
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
             </motion.a>
           </motion.div>
         </div>

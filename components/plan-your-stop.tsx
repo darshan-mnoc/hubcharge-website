@@ -59,7 +59,12 @@ function Step({
  * range a short stop adds — a car at 20% charges roughly twice as fast as
  * the same car at 60%.
  */
-export function PlanYourStop({ station }: { station: Station }) {
+export function PlanYourStop({ stations }: { stations: Station[] }) {
+  /* This was hard-wired to stations[0], so the heading said "What Alhambra
+     adds to your car" no matter which site a reader cared about, and the
+     estimate ran against Alhambra's output either way. */
+  const [siteId, setSiteId] = useState(stations[0].slug);
+  const station = stations.find((s) => s.slug === siteId) ?? stations[0];
   const [modelId, setModelId] = useState("hyundai-ioniq-5");
   const [stayId, setStayId] = useState<(typeof STAYS)[number]["id"]>("topup");
   const [startSoc, setStartSoc] = useState<number>(20);
@@ -82,9 +87,30 @@ export function PlanYourStop({ station }: { station: Station }) {
     <section id="plan" className="bg-ink-900 rounded-lg p-5 sm:p-8 scroll-mt-28">
       <p className="text-overline text-white/55">Plan your stop</p>
       <span aria-hidden className="mt-3 mb-5 block h-px w-8 bg-brass" />
-      <h2 className="text-h3 text-white mb-6">
-        What {station.city} adds to your car
-      </h2>
+      <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2">
+        <h2 className="text-h3 text-white">
+          What {station.city} adds to your car
+        </h2>
+        {stations.length > 1 && (
+          <div role="group" aria-label="Choose a station" className="flex gap-1">
+            {stations.map((st) => (
+              <button
+                key={st.slug}
+                type="button"
+                onClick={() => setSiteId(st.slug)}
+                aria-pressed={st.slug === station.slug}
+                className={`rounded px-2.5 py-1 text-caption font-semibold transition-colors ${
+                  st.slug === station.slug
+                    ? "bg-brand text-ink-900"
+                    : "text-on-dark/60 hover:text-on-dark hover:bg-white/[0.08]"
+                }`}
+              >
+                {st.city}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12 items-start">
         <div className="space-y-5 min-w-0">
@@ -183,11 +209,14 @@ export function PlanYourStop({ station }: { station: Station }) {
         {/* Result */}
         <div className="lg:text-right lg:min-w-[17ch] border-t lg:border-t-0 lg:border-l border-white/10 pt-6 lg:pt-0 lg:pl-10">
           <p aria-live="polite" className="sr-only">
-            {`About ${result.milesLow} to ${result.milesHigh} miles added to your ${model.name} in ${stay.minutes} minutes.`}
+            {`About ${result.milesLow} to ${result.milesHigh} miles added to your ${model.name} in ${stay.minutes} minutes, arriving at ${startSoc} percent.`}
           </p>
           <span className="flex items-center gap-2 lg:justify-end text-on-dark/60 text-caption mb-1">
             <BatteryCharging aria-hidden className="h-4 w-4 text-brand" />
-            Estimated range added
+            {/* The starting charge was only in the small print below, so the
+                headline read as true from any state of charge. A ten-minute
+                figure from 20% is not the same figure from 70%. */}
+            Estimated range added, arriving at {startSoc}%
           </span>
 
           <AnimatePresence mode="wait">

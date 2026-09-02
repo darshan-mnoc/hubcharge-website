@@ -89,8 +89,8 @@ export default function ChargingCostPage() {
         <p>
           We charge a <strong>flat rate per session</strong>. Your exact
           price appears on your phone <em>before</em> you plug in — approve
-          it, charge, done. No membership needed, no per-kWh math, no
-          time-of-use surprises, no idle-fee anxiety: when your session ends,
+          it, charge, done. No membership needed to charge, no per-kWh math, no
+          time-of-use surprises, and the price you approved is the price: when your session ends,
           our attendant unplugs you at participating locations.
         </p>
         <p>

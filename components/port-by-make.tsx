@@ -103,9 +103,9 @@ export function PortByMake() {
           we cannot charge — so the one exclusion that matters never appeared
           on the one page about which plug you have. */}
       <p className="mt-6 border-t border-paper-300 pt-4 text-body-sm text-ink-500">
-        One exception worth knowing: the 2011&ndash;2025 Nissan Leaf uses an
-        older plug that is being retired across the industry. We do not carry
-        that cable, so a Leaf of those years cannot fast-charge with us.
+        One exception worth knowing: we carry CCS1 and NACS only. A car that
+        fast-charges on the older CHAdeMO connector, which is being retired
+        across the industry, cannot fast-charge with us.
       </p>
     </GuideFigure>
   );

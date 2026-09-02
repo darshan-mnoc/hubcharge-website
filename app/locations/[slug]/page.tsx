@@ -308,7 +308,8 @@ export default async function StationPage({
       </div>
 
       <div className="mb-16">
-        <PlanYourStop station={station} />
+        {/* one site here — you are already on its page, so no picker */}
+          <PlanYourStop stations={[station]} />
       </div>
 
       <div className="mb-16">
