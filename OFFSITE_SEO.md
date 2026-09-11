@@ -10,16 +10,27 @@ except where noted; most items take under an hour.
 *character-identical* everywhere (site, Google, PlugShare, Apple…).
 Canonical values to copy-paste (also in `lib/stations.ts`):
 
-| | Alhambra | Fontana |
-|---|---|---|
-| Name | HubCharge Alhambra | HubCharge at Fontana Nissan |
-| Address | 108 S Monterey St, Unit 102, Alhambra, CA 91801 | *(confirm exact street address first!)* |
-| Phone | (949) 392-8755 | (949) 392-8755 |
-| Hours | Daily 6:00 AM – 10:00 PM | Daily 6:00 AM – 10:00 PM |
-| URL | https://hubcharge.com/locations/alhambra | https://hubcharge.com/locations/fontana |
+| | Alhambra | Fontana | Round Rock |
+|---|---|---|---|
+| Name | HubCharge Alhambra | HubCharge at Fontana Nissan | HubCharge Round Rock |
+| Address | 188 S Monterey St, Unit 108, Alhambra, CA 91801 | 16444 S Highland Ave, Fontana, CA 92336 | 2081 Double Creek Dr, Round Rock, TX 78664 |
+| Phone | (949) 392-8755 | (949) 392-8755 | (949) 392-8755 |
+| Hours | Daily 6:00 AM – 10:00 PM | Daily 6:00 AM – 10:00 PM | *not open yet* |
+| URL | https://hubcharge.com/locations/alhambra | https://hubcharge.com/locations/fontana | https://hubcharge.com/locations/round-rock |
 
-⚠️ **Do Fontana's street address first** — it's currently listed as just
-"Fontana Nissan" and every listing below needs a real street address.
+**Company office:** Micronoc Inc. (HubCharge), 188 S Monterey St, Unit 108,
+Alhambra, CA 91801 · info@micronocinc.com · (949) 392-8755 — the same building
+as the Alhambra site. Canonical copy lives in `lib/company.ts`.
+
+⚠️ **Round Rock is not open.** List it only where a "coming soon" state
+exists; an aggregator that shows it as live sends someone to a building site.
+
+> This table was stale for a while: it recorded Alhambra as *108 S Monterey
+> St, Unit 102* — wrong street number and wrong unit — and warned that Fontana
+> had no street address long after it had one. It is the copy-paste source for
+> the Google Business Profile, so a wrong value here propagates outward into
+> every listing. Check it against `lib/stations.ts` and `lib/company.ts`
+> whenever either changes.
 
 ---
 

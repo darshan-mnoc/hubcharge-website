@@ -3,11 +3,15 @@ import Link from "next/link";
 import { Phone, MapPin, Clock, Navigation, ArrowUpRight, AlertCircle } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { ContactForm } from "@/components/contact-form";
-import { stations } from "@/lib/stations";
+import { stations, statesWithCoverage } from "@/lib/stations";
 import { stationStatus } from "@/lib/hours";
 import { CONTACT_TOPICS } from "@/lib/contact-topics";
 
-export const metadata: Metadata = {
+export /* Counted from the record rather than retyped. */
+const LIVE_COUNT = statesWithCoverage().reduce((n, g) => n + g.live.length, 0);
+const SOON_COUNT = statesWithCoverage().reduce((n, g) => n + g.soon.length, 0);
+
+const metadata: Metadata = {
   title: "Contact HubCharge | Alhambra & Fontana, CA",
   description:
     "Reach HubCharge: station addresses and phone numbers for Alhambra and Fontana, opening hours, and a contact form routed by what you need — charging problems, billing, hosting a site, accessibility or press.",
@@ -37,12 +41,16 @@ const SELF_SERVE = [
   {
     q: "How does the pricing work?",
     a: "One flat rate per session, shown on your phone for approval before you plug in.",
-    href: "/pricing",
+    href: "/plan-your-charge",
     cta: "See how it works",
   },
   {
     q: "Where are you, and are you open?",
-    a: "Two stations live in Southern California, with live status and directions.",
+    /* Derived. "Two stations" was typed by hand and is a fact that changes the
+       day a site opens — and there is already a third station on the record. */
+    a: `${LIVE_COUNT} station${LIVE_COUNT === 1 ? "" : "s"} live in Southern California, with live status and directions${
+      SOON_COUNT ? `, plus ${SOON_COUNT} opening soon` : ""
+    }.`,
     href: "/locations",
     cta: "Find a station",
   },
@@ -76,12 +84,19 @@ export default function ContactPage() {
           }
         : { areaServed: `${s.city}, ${s.state}` }),
       geo: { "@type": "GeoCoordinates", latitude: s.coords.lat, longitude: s.coords.lng },
-      openingHoursSpecification: {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-        opens: s.hoursSchema.opens,
-        closes: s.hoursSchema.closes,
-      },
+      /* Same guard as app/locations/[slug]/page.tsx: a site that has not
+         opened has no opening hours, and publishing them tells Google it can
+         send someone there today. */
+      ...(s.status === "coming-soon"
+        ? {}
+        : {
+            openingHoursSpecification: {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+              opens: s.hoursSchema.opens,
+              closes: s.hoursSchema.closes,
+            },
+          }),
     })),
   };
 
@@ -141,11 +156,11 @@ export default function ContactPage() {
                 <div className="flex items-center gap-2">
                   <span
                     aria-hidden
-                    className={`h-2 w-2 rounded-full ${status.open ? "bg-ok-ink" : "bg-ink-300"}`}
+                    className={`h-2 w-2 rounded-full ${
+                      status.open ? "bg-ok-ink" : status.soon ? "bg-brass" : "bg-ink-300"
+                    }`}
                   />
-                  <span className="text-caption text-ink-500">
-                    {status.open ? "Open now" : "Closed"}
-                  </span>
+                  <span className="text-caption text-ink-500">{status.short}</span>
                 </div>
                 <h3 className="text-h3 text-ink-900 mt-2">{s.name.replace("™", "")}</h3>
 
@@ -177,7 +192,7 @@ export default function ContactPage() {
                     <dt className="sr-only">Phone</dt>
                     <Phone aria-hidden className="h-4 w-4 shrink-0 mt-0.5 text-ink-400" />
                     <dd>
-                      <a href={`tel:${s.phoneE164}`} className="text-brand-ink hover:underline underline-offset-2">
+                      <a href={`tel:${s.phoneE164}`} className="tap-target text-brand-ink hover:underline underline-offset-2">
                         {s.phone}
                       </a>
                     </dd>
@@ -185,24 +200,31 @@ export default function ContactPage() {
                   <div className="flex gap-2.5">
                     <dt className="sr-only">Hours</dt>
                     <Clock aria-hidden className="h-4 w-4 shrink-0 mt-0.5 text-ink-400" />
-                    <dd className="text-ink-600">{s.hours}, daily</dd>
+                    <dd className="text-ink-600">
+                      {status.soon ? "Hours to be confirmed" : `${s.hours}, daily`}
+                    </dd>
                   </div>
                 </dl>
 
                 <div className="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-caption">
-                  <a
-                    href={maps}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-brand-ink hover:underline underline-offset-2"
-                  >
-                    <Navigation aria-hidden className="h-3.5 w-3.5" />
-                    Directions
-                    <span className="sr-only"> (opens in a new tab)</span>
-                  </a>
+                  {/* No directions to a site that is not open. Same rule as the
+                      cards on /locations: the things a driver would act on are
+                      exactly the things we cannot promise yet. */}
+                  {!status.soon && (
+                    <a
+                      href={maps}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="tap-target inline-flex items-center gap-1.5 text-brand-ink hover:underline underline-offset-2"
+                    >
+                      <Navigation aria-hidden className="h-3.5 w-3.5" />
+                      Directions
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  )}
                   <Link
                     href={`/locations/${s.slug}`}
-                    className="inline-flex items-center gap-1.5 text-brand-ink hover:underline underline-offset-2"
+                    className="tap-target inline-flex items-center gap-1.5 text-brand-ink hover:underline underline-offset-2"
                   >
                     Station details
                   </Link>

@@ -1,10 +1,14 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { NO_MOTION, SPRING_TRACK } from "@/lib/motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useState } from "react";
 import { getModel, efficiencyMiPerKwh, type EvModel } from "@/lib/ev-models";
 import {
   minutesBetweenSoc,
   rangeTempFactor,
+  chargeTempFactor,
   STATION_KW,
   ESTIMATE_BASIS,
 } from "@/lib/charging-math";
@@ -35,16 +39,42 @@ export function TripPlanner() {
   // Leave with 90%, arrive at each stop with 10%, charge to 80%.
   const firstLeg = fullRange * 0.8;
   const laterLeg = fullRange * 0.7;
-  const stopMinutes = minutesBetweenSoc(model, STATION_KW, 10, 80);
+  const reduced = useReducedMotion();
+  /* THE SAME TEMPERATURE ON BOTH SIDES OF THE TRIP.
+     rangeTempFactor shortened the legs above, but this was computed at the
+     default "mild" — so dragging the temperature slider changed how FAR you
+     drove between stops and never how LONG each stop took, which is the
+     larger of the two effects in real cold. A 20°F trip grew more stops and
+     kept 70°F charging times. chargeTempFactor is the charging-curve half of
+     the same weather the line above already applies to range. */
+  const stopMinutes = minutesBetweenSoc(
+    model,
+    STATION_KW,
+    10,
+    80,
+    chargeTempFactor(temp)
+  );
 
-  const legs: { miles: number; charge: boolean }[] = [];
+  /* A leg's identity is its ORDINAL, not the mile it starts at.
+     This keyed on the starting mile and the comment claimed that was stable.
+     It is stable for the distance slider only: firstLeg and laterLeg are
+     derived from rangeTempFactor(temp), so dragging TEMPERATURE changed every
+     start mile, changed every key, and made AnimatePresence exit the entire
+     row while a whole new row entered — so mid-drag the reader saw up to twice
+     as many legs as the trip has. The same happened on a model change.
+
+     "The third leg of this drive" is the thing that persists across both
+     sliders, so that is what the key has to be. */
+  const legs: { start: number; miles: number; charge: boolean }[] = [];
   let left = distance;
   let first = true;
+  let travelled = 0;
   while (left > 0 && legs.length < 12) {
     const cap = first ? firstLeg : laterLeg;
     const go = Math.min(left, cap);
     left -= go;
-    legs.push({ miles: Math.round(go), charge: left > 0 });
+    legs.push({ start: Math.round(travelled), miles: Math.round(go), charge: left > 0 });
+    travelled += go;
     first = false;
   }
   const stops = legs.filter((l) => l.charge).length;
@@ -102,25 +132,55 @@ export function TripPlanner() {
 
           {/* the drive as a line, stops marked on it */}
           <ol className="flex items-stretch gap-1 h-10">
+            <AnimatePresence initial={false}>
             {legs.map((l, i) => (
-              <li
-                key={i}
-                className="relative flex items-center justify-center rounded bg-ink-100 text-caption text-ink-600"
-                style={{ flexGrow: l.miles }}
+              <motion.li
+                key={`leg-${i}`}
+                className="relative flex items-center justify-center rounded bg-ink-100 text-caption text-ink-600 overflow-hidden"
+                /* flexGrow springs rather than jumping, so a leg getting
+                   longer looks like it is getting longer. The layout pass this
+                   forces is on one flex row of at most twelve items — the
+                   documented exception to keeping width off the animated list.
+
+                   The `layout` prop that used to sit above this comment has
+                   gone. It turned on the projection engine the comment was
+                   arguing against, so framer measured every item and applied a
+                   corrective scale ON TOP of the flexGrow spring — giving the
+                   mileage text inside exactly the distortion described here. */
+                initial={{ opacity: 0, flexGrow: 0.001 }}
+                animate={{ opacity: 1, flexGrow: l.miles }}
+                exit={{ opacity: 0, flexGrow: 0.001 }}
+                transition={reduced ? NO_MOTION : SPRING_TRACK}
                 title={`${l.miles} mi`}
               >
                 {l.miles > distance / 8 && `${l.miles} mi`}
                 {l.charge && (
+                  /* An end-cap, inside the bounds. This was `-right-1 w-2`
+                     on an element whose parent is overflow-hidden, so exactly
+                     half of every marker was clipped away — the half that was
+                     meant to bridge the gap to the next leg never rendered at
+                     all. Sitting flush at the leg's end also says the right
+                     thing: you stop when that leg runs out. */
                   <span
                     aria-hidden
-                    className="absolute -right-1 top-1/2 -translate-y-1/2 h-6 w-2 rounded-full bg-brand"
+                    className="absolute right-0 inset-y-0 w-1.5 rounded-r bg-brand"
                   />
                 )}
-              </li>
+              </motion.li>
             ))}
+            </AnimatePresence>
           </ol>
+          {/* Where the line starts and ends, and what it is measured in. It
+              was an unlabelled row of bars: no origin, no destination, and no
+              scale, so the one number it drew to — total distance — appeared
+              nowhere on the drawing. */}
+          <div className="mt-1.5 flex items-baseline justify-between text-caption text-ink-400">
+            <span>Leave · 0 mi</span>
+            <span className="tabular-nums">Arrive · {distance} mi</span>
+          </div>
           <p className="text-caption text-ink-400 mt-2">
-            Orange marks a stop of about {stopMinutes} minutes.
+            Each block is one leg, drawn to distance. Orange marks a stop of
+            about {stopMinutes} minutes.
           </p>
 
           <p className="text-body-sm text-ink-600 mt-6 max-w-measure">

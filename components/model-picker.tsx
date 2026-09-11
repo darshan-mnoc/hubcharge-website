@@ -53,7 +53,7 @@ export function ModelPicker({
         </select>
         <ChevronDown
           aria-hidden
-          className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 ${dark ? "text-white/50" : "text-ink-400"}`}
+          className={`pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 ${dark ? "text-white/55" : "text-ink-400"}`}
         />
       </div>
     </div>

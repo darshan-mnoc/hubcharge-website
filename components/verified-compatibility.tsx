@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CheckCircle2, Zap } from "lucide-react";
 import { evModels, EV_DATA_UPDATED, type EvModel } from "@/lib/ev-models";
 import { tenMinuteBand, tenToEighty, STATION_KW } from "@/lib/charging-math";
+import { STATE_NAMES } from "@/lib/stations";
 
 /**
  * Verified compatibility.
@@ -101,7 +102,9 @@ export function VerifiedCompatibility() {
  * Operational facts — all derived from real station data, none of it claimed
  * uptime or invented volume.
  */
-const STATE_NAMES: Record<string, string> = { CA: "California" };
+/* Was a private { CA: "California" } — a second copy of a map that already
+   exists in lib/stations.ts, and one that had never heard of Texas, so a
+   two-state network fell through to "the US". */
 
 export function OperationalTrust({
   stationCount,

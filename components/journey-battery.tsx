@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, useCallback, memo } from "react";
 import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { onSmoothScroll } from "@/lib/smooth-scroll-bus";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { ILLO, CABLE_CASING } from "@/lib/illustration";
 import * as Base from "@/components/illustration/primitives";
@@ -576,8 +577,8 @@ export function JourneyBattery() {
           pill.style.color = isCurrent
             ? "#FFFFFF"
             : isActive
-              ? "rgba(255,255,255,0.5)"
-              : "rgba(255,255,255,0.22)";
+              ? "rgba(255,255,255,0.72)"
+              : "rgba(255,255,255,0.55)";
           pill.style.background = "transparent";
           pill.style.boxShadow = "none";
         }
@@ -638,6 +639,18 @@ export function JourneyBattery() {
     // Guarded: below lg the trigger element is display:none, and pinning a
     // zero-height node with end "+=200%" injects ~2 viewport-heights of blank
     // scroll on mobile.
+    /* Lenis moves the page without the browser firing a scroll event that
+       ScrollTrigger would otherwise catch in time, so the pin reads a stale
+       position and the scene lags the page by a frame or two under a fast
+       wheel. SmoothScroll used to wire this up itself, which meant importing
+       GSAP there — and that one import put 113 KB of animation engine into
+       the shared chunk of all 60 routes to serve this one scene on this one
+       page. Now the scene that needs it asks for it, and returns an
+       unsubscribe like any other listener. If the driver never loads (touch,
+       reduced motion) this simply never fires and native scroll events do the
+       job, which is what happens on a phone today. */
+    const offSmooth = onSmoothScroll(ScrollTrigger.update);
+
     const mm = gsap.matchMedia();
     mm.add("(min-width: 1024px)", () => {
     const ctx = gsap.context(() => {
@@ -671,7 +684,10 @@ export function JourneyBattery() {
       return () => ctx.revert();
     });
 
-    return () => mm.revert();
+    return () => {
+      offSmooth();
+      mm.revert();
+    };
   }, [updatePanels, reduced]);
 
   const getStepProgress = useCallback((i: number) => {
@@ -856,15 +872,13 @@ export function JourneyBattery() {
                 {/* Status text */}
                 <div className="ml-4 text-left">
                   <p
-                    className="text-caption font-semibold"
-                    style={{
-                      color:
-                        mobileActiveCard >= 4
-                          ? ILLO.live
-                          : mobileActiveCard >= 2
-                            ? ILLO.liveGlow
-                            : ILLO.seam,
-                    }}
+                    className={`text-caption font-semibold ${
+                      mobileActiveCard >= 4
+                        ? "text-brand"
+                        : mobileActiveCard >= 2
+                          ? "text-brand-on-dark"
+                          : "text-muted-dark"
+                    }`}
                   >
                     {mobileActiveCard >= 4
                       ? "Ready!"
@@ -872,7 +886,10 @@ export function JourneyBattery() {
                         ? "Charging…"
                         : `Step ${mobileActiveCard + 1}`}
                   </p>
-                  <p className="text-[10px] text-white/50">
+                  {/* Real chrome beside the drawing, not type inside it — so
+                      it takes the reading scale and the contrast floor rather
+                      than the illustration's micro-type exemption. */}
+                  <p className="text-footnote text-white/55">
                     {mobileActiveCard + 1} of 5
                   </p>
                 </div>
@@ -993,18 +1010,19 @@ export function JourneyBattery() {
                       key={step.id}
                       onClick={() => handleStepClick(i)}
                       className="flex flex-col items-start gap-2 transition-all duration-300 cursor-pointer group py-2 text-left"
-                      style={{ opacity: isActive ? 1 : 0.4 }}
                     >
                       {/* Pill */}
                       <div
                         data-pill
                         className="text-index transition-colors duration-300"
                         style={{
+                          /* 0.55 is 6.01:1 on ink-900; 0.22 was 2.01:1 before
+                             the button's own 0.4 opacity took it to ~1.3:1. */
                           color: isCurrent
                             ? "#FFFFFF"
                             : isActive
-                              ? "rgba(255,255,255,0.5)"
-                              : "rgba(255,255,255,0.22)",
+                              ? "rgba(255,255,255,0.72)"
+                              : "rgba(255,255,255,0.55)",
                         }}
                       >
                         {String(step.id).padStart(2, "0")}
@@ -1013,7 +1031,7 @@ export function JourneyBattery() {
                       <div className="px-1">
                         <p
                           data-title
-                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand text-body-sm lg:text-base"
+                          className="font-bold tracking-tight transition-all duration-300 group-hover:text-brand text-body-sm lg:text-body"
                           style={{
                             color: isCurrent ? "#FFFFFF" : "rgba(255,255,255,0.55)",
                             marginBottom: "2px",
@@ -1023,7 +1041,7 @@ export function JourneyBattery() {
                         </p>
                         {/* <p
                           data-subtitle
-                          className="text-white/50 leading-snug transition-all duration-300 text-caption lg:text-body-sm"
+                          className="text-white/55 leading-snug transition-all duration-300 text-caption lg:text-body-sm"
                           style={{
                             opacity: isActive ? 0.8 : 0,
                           }}

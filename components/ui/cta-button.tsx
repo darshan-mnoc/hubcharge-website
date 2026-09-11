@@ -9,12 +9,12 @@ type Variant = "primary" | "secondary" | "secondaryOnDark";
 const SIZE: Record<Size, string> = {
   sm: "px-5 py-2.5 text-body-sm",
   md: "px-7 py-3.5 text-body-sm",
-  lg: "px-8 py-4 text-base",
+  lg: "px-8 py-4 text-body",
 };
 
 /** Shape, motion and focus language shared by both variants. */
 const BASE =
-  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold cursor-pointer transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold cursor-pointer transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
 // Focus ring colour is per-variant so the indicator keeps >=3:1 against the
 // surface it actually sits on (WCAG 1.4.11). brand-ink on white is 5.3:1;

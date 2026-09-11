@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_GUIDES, getGuide, guideHref } from "@/lib/guides";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap,
   Utensils,
@@ -23,8 +22,9 @@ const LOGIN_URL = "https://hubcharge.micronocinc.com/login.html";
 
 /**
  * A nav item is EITHER a homepage section (`id`) or a real route (`href`).
- * Previously every item was a section id, so "Pricing" on a sub-page bounced
- * you to /#pricing even though /pricing exists as its own page.
+ * Previously every item was a section id, so the pricing item on a sub-page
+ * bounced you to /#pricing even though the page existed on its own route.
+ * That page is now /plan-your-charge.
  */
 type NavItem = {
   label: string;
@@ -39,7 +39,7 @@ const navLinks: NavItem[] = [
   { id: "how-it-works", label: "Experience", icon: Zap },
   { id: "lifestyle", label: "Lifestyle", icon: Utensils },
   { href: "/charging-101", label: "Guides", icon: BookOpen, guides: true },
-  { href: "/pricing", label: "Pricing", icon: Battery },
+  { href: "/plan-your-charge", label: "Plan Your Charge", icon: Battery },
   { href: "/locations", label: "Locations", icon: MapPin },
   { href: "/contact", label: "Contact", icon: Phone },
 ];
@@ -102,11 +102,12 @@ export function BatteryNav() {
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      {/* hc-drop, not a framer spring. See globals.css: this component and
+          the footer were the only framer-motion in the shared shell, and that
+          put 167 KB on the critical path of all 60 routes — emitted three
+          times — for entrance slides and hover scales. */}
+      <header
+        className={`hc-drop fixed top-0 left-0 right-0 z-50 hc-tint ${
           scrolled || !overDarkHero
             ? "bg-ink-900/95 backdrop-blur-md border-b border-white/[0.07]"
             : "bg-transparent"
@@ -114,17 +115,15 @@ export function BatteryNav() {
       >
         <nav className="section-container h-20 flex items-center justify-between">
           {/* Logo */}
-          <motion.a
+          <Link
             href="/"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             onClick={(e) => {
               if (window.location.pathname === "/") {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }}
-            className="relative z-10"
+            className="hc-press hc-grow relative z-10"
           >
             <Image
               src="/images/hubcharge-logo-on-dark.webp"
@@ -134,7 +133,7 @@ export function BatteryNav() {
               className="h-6 sm:h-7 lg:h-8 w-auto mt-2 sm:mt-0"
               priority
             />
-          </motion.a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-x-8">
@@ -170,16 +169,17 @@ export function BatteryNav() {
                       />
                     </button>
 
-                    <AnimatePresence>
-                      {guidesOpen && (
-                        <motion.div
-                          id="guides-menu"
-                          initial={{ opacity: 0, y: -6 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -6 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute left-1/2 z-50 -translate-x-1/2 top-full pt-4 w-[300px]"
-                        >
+                    {/* Always in the DOM, opened by the attribute. An element
+                        React has removed cannot animate on the way out, and
+                        the exit is the only part of this a library was ever
+                        needed for. `visibility: hidden` in the closed state
+                        keeps it out of the tab order and off the a11y tree. */}
+                    <div
+                      id="guides-menu"
+                      data-open={guidesOpen}
+                      className="hc-reveal absolute left-1/2 z-50 top-full pt-4 w-[300px]"
+                      style={{ marginLeft: "-150px" }}
+                    >
                           <div className="rounded-lg border border-white/12 bg-ink-900 shadow-card-hover p-2">
                             {/* Charging 101 itself led the list of nothing —
                                 it was a small link under the fold of the
@@ -214,9 +214,7 @@ export function BatteryNav() {
                             ))}
 
                           </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    </div>
                   </div>
                 );
               }
@@ -243,83 +241,78 @@ export function BatteryNav() {
 
           {/* CTA Button - Desktop Only */}
           <div className="hidden lg:block">
-            <motion.a
+            <a
               href={LOGIN_URL}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 0 30px rgba(255, 122, 0, 0.5)",
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover"
+              className="hc-press hc-grow hc-tint inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 hover:bg-brand-hover hover:shadow-[0_0_30px_rgba(255,122,0,0.5)]"
             >
               <Zap className="h-4 w-4" strokeWidth={2.5} />
               <span>Login</span>
               <span className="sr-only"> (opens in a new tab)</span>
-            </motion.a>
+            </a>
           </div>
 
           {/* Mobile: Login + hamburger grouped right, so the pill doesn't
               float in the dead centre of the bar at tablet widths. */}
           <div className="flex items-center gap-1.5 lg:hidden">
-          <motion.a
+          <a
             href={LOGIN_URL}
             target="_blank"
             rel="noopener noreferrer"
-            whileTap={{ scale: 0.95 }}
-            className="lg:hidden flex items-center gap-1 px-3 py-2.5 text-caption font-semibold bg-brand text-ink-900 rounded-full"
+            className="hc-press lg:hidden flex items-center gap-1 px-3 py-2.5 text-caption font-semibold bg-brand text-ink-900 rounded-full"
           >
             <Zap className="h-3 w-3" strokeWidth={2.5} />
             <span>Login</span>
             <span className="sr-only"> (opens in a new tab)</span>
-          </motion.a>
+          </a>
 
           {/* Mobile Menu Button */}
-          <motion.button
-            whileTap={{ scale: 0.9 }}
+          <button
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
-            className="lg:hidden p-3 rounded-lg text-[#f4f3f2]/80 hover:text-[#f4f3f2] hover:bg-[#f4f3f2]/[0.06]"
+            className="hc-press-sm hc-press hc-tint lg:hidden p-3 rounded-lg text-on-dark/80 hover:text-white hover:bg-white/[0.06]"
           >
             {mobileOpen ? (
               <X className="h-6 w-6" />
             ) : (
               <Menu className="h-6 w-6" />
             )}
-          </motion.button>
+          </button>
           </div>
         </nav>
-      </motion.header>
+      </header>
 
-      {/* Mobile Full-Screen Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            ref={mobileMenuRef}
-            id="mobile-menu"
-            tabIndex={-1}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Site menu"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-ink-900 lg:hidden"
-          >
+      {/* Mobile Full-Screen Menu.
+          Mounted always, opened by the attribute — the drawer's fade-OUT is
+          the one thing here CSS cannot do to an unmounted element, and it was
+          the entire justification for AnimatePresence. `visibility: hidden`
+          in the closed state keeps every link inside it out of the tab order,
+          which conditional rendering also gave us and a bare opacity:0 would
+          not. `inert` is belt and braces for the dialog role. */}
+      <div
+        ref={mobileMenuRef}
+        id="mobile-menu"
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site menu"
+        data-open={mobileOpen}
+        inert={!mobileOpen}
+        className="hc-sheet fixed inset-0 z-40 bg-ink-900 lg:hidden"
+      >
 
             <div className="relative pt-28 px-6 pb-10 h-full overflow-y-auto">
               <nav aria-label="Mobile" className="space-y-3 mb-10">
                 {navLinks.map((link, i) => (
-                  <motion.button
+                  <button
                     key={link.id ?? link.href}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.06 }}
+                    data-stagger
+                    style={{ "--d": `${i * 0.06}s` } as React.CSSProperties}
                     onClick={() => handleNavItem(link)}
-                    className="w-full flex items-center gap-4 p-5 rounded-lg glass border border-[#f4f3f2]/[0.06] hover:border-brand/30 text-left group"
+                    className="w-full flex items-center gap-4 p-5 rounded-lg glass border border-white/[0.06] hover:border-brand/30 text-left group"
                   >
                     <div className="w-14 h-14 rounded-lg bg-brand/10 group-hover:bg-brand/20 flex items-center justify-center transition-colors">
                       <link.icon
@@ -330,7 +323,7 @@ export function BatteryNav() {
                     <span className="text-on-dark/90 text-h4">
                       {link.label}
                     </span>
-                  </motion.button>
+                  </button>
                 ))}
               </nav>
 
@@ -353,48 +346,44 @@ export function BatteryNav() {
                 </div>
               </div>
 
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
+              <button
+                data-stagger
+                style={{ "--d": "0.36s" } as React.CSSProperties}
                 onClick={() => router.push("/locations")}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover w-full text-body-sm"
+                className="hc-press hc-tint inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 hover:bg-brand-hover w-full text-body-sm"
               >
                 <Zap className="h-4 w-4" strokeWidth={2.5} />
                 Start Charging Now
-              </motion.button>
+              </button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </div>
 
       {/* Mobile Bottom Tab Bar */}
-      <motion.nav
-        initial={{ y: 100 }}
-        animate={{ y: 0 }}
-        className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-ink-900/95 backdrop-blur-md border-t border-[#f4f3f2]/[0.06] safe-area-bottom"
+      <nav
+        className="hc-lift-in fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-ink-900/95 backdrop-blur-md border-t border-white/[0.06] safe-area-bottom"
         aria-label="Quick links"
       >
         <div className="grid grid-cols-5">
           {[
             { id: "how-it-works", icon: Zap, label: "Charge" },
             { href: "/charging-101", icon: BookOpen, label: "Guides" },
-            { href: "/pricing", icon: Battery, label: "Pricing" },
+            /* "Plan" here, not the full name. This is a five-column grid of
+               10px labels; sixteen characters do not go in it. */
+            { href: "/plan-your-charge", icon: Battery, label: "Plan" },
             { href: "/locations", icon: MapPin, label: "Locations" },
             { href: "/contact", icon: Phone, label: "Contact" },
           ].map((item) => (
-            <motion.button
+            <button
               key={item.id ?? item.href}
-              whileTap={{ scale: 0.9 }}
               onClick={() => handleNavItem(item)}
-              className="flex flex-col items-center py-3 text-muted-dark hover:text-brand transition-colors"
+              className="hc-press hc-press-sm hc-tint flex flex-col items-center py-3 text-muted-dark hover:text-brand"
             >
               <item.icon className="h-5 w-5" strokeWidth={1.5} />
-              <span className="text-[10px] mt-1 font-medium">{item.label}</span>
-            </motion.button>
+              <span className="text-footnote mt-1 font-medium">{item.label}</span>
+            </button>
           ))}
         </div>
-      </motion.nav>
+      </nav>
     </>
   );
 }

@@ -15,144 +15,202 @@
  */
 import { ILLO, CABLE_CASING } from "@/lib/illustration";
 
+/**
+ * The car's silhouette, written once.
+ *
+ * It is used three times — the body, its ground reflection, and the haze that
+ * lies over it at distance — and it used to be three copies of the same
+ * literal, which is how a reflection ends up drawing last round's car.
+ *
+ * The shape follows a reference the client supplied: a long low bonnet with
+ * the cab set well back, a domed roof peaking behind the middle and falling
+ * into a fastback, a full haunch over the rear wheel, and — the thing that
+ * most changes the character — WHEELS HALF THE HEIGHT OF THE CAR.
+ */
+const BODY_D =
+  "M10,50 C10,43 12,39 18,37 C30,33.4 42,31.6 56,31 C64,30.6 70,26.4 79,20.8 C88,15.6 96,12.8 106,12.8 C118,13 129,16 140,21 C154,27.4 168,32.8 177,36.6 C180.6,38 181.6,40.4 181.2,44 C180.6,48.4 178,51.4 172,52.8 L155,54 C153.6,44.6 148,37.2 140,37.2 C132,37.2 126.4,44.6 125,54 L68,55 C66.6,45.4 61,37.6 53,37.6 C45,37.6 39.4,45 38,54 L20,53 C14,52.4 10,52 10,50 Z";
+
+/** The greenhouse: shallow, and set well back on that long bonnet. */
+const GLASS_D =
+  "M70,29.6 C77,23.6 84,18.6 92,16 C100,13.8 108,13.2 116,13.8 C126,14.8 134,17.6 142,21.6 C145.6,23.4 147,26.6 148,29.6 Z";
+
+/**
+ * Where the wheels sit, and how big they are.
+ *
+ * The radius went from 9.6 to 12.5 — half again as large — because that is
+ * the single biggest difference between the reference and what this drew
+ * before. A car with small wheels reads as a cartoon; a car with big wheels
+ * reads as a car.
+ *
+ * The one number that cannot move is the SUM: scripts/check-cover-accuracy.py
+ * asserts that cy + r equals the foot fraction declared in guide-cover.tsx, so
+ * the tyre still touches the floor exactly where every cover expects it to.
+ * 50.6 + 12.5 = 63.1, unchanged.
+ *
+ * The axles also moved forward, from 55/147 to 53/140. At 147 the bigger rear
+ * tyre reached x=159.5 and swallowed the charge port — which is pinned at 158
+ * because guide-cover.tsx's portAt() and six cable anchors are derived from
+ * it. The port now sits clear on the rear quarter, where a port belongs.
+ */
+const AXLE = [53, 140] as const;
+
 export function CarSVG({
   id,
   className = "",
   style = {},
+  haze = 0,
 }: {
   /** Namespaces this instance's gradient ids. */
   id: string;
   className?: string;
   style?: React.CSSProperties;
+  /**
+   * Distance, 0 to 1.
+   *
+   * Callers used to fake this by lowering the whole car's opacity, which
+   * against a near-black plate makes a far car DARKER than a near one — the
+   * exact opposite of what distance does. Air between you and an object takes
+   * contrast away and lifts it toward the colour of the sky. So this lays the
+   * sky's own haze over the car's silhouette instead: shape intact, contrast
+   * gone. The near car stays the darkest thing in the frame, as it should.
+   */
+  haze?: number;
 }) {
-
   return (
     <svg viewBox="0 0 200 70" className={className} style={style}>
       <defs>
-        {/* Body: three stops so the flank reads rounded rather than flat. */}
+        {/* Body. The reference is a light car shaded from a bright shoulder
+            down to a dark sill; this is the same ramp in the site's steel. */}
         <linearGradient id={`carBody-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor={ILLO.carTop} />
-          <stop offset="45%" stopColor={ILLO.carMid} />
+          <stop offset="0%" stopColor={ILLO.carSheen} />
+          <stop offset="38%" stopColor={ILLO.carTop} />
+          <stop offset="76%" stopColor={ILLO.carMid} />
           <stop offset="100%" stopColor={ILLO.carLow} />
         </linearGradient>
 
         {/* Greenhouse: darker at the base, as glass reads against a body. */}
         <linearGradient id={`glass-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor={ILLO.glassTop} stopOpacity="0.45" />
-          <stop offset="60%" stopColor={ILLO.glassMid} stopOpacity="0.55" />
-          <stop offset="100%" stopColor={ILLO.glassLow} stopOpacity="0.7" />
+          <stop offset="0%" stopColor={ILLO.glassTop} stopOpacity="0.42" />
+          <stop offset="55%" stopColor={ILLO.glassMid} stopOpacity="0.6" />
+          <stop offset="100%" stopColor={ILLO.glassLow} stopOpacity="0.78" />
         </linearGradient>
 
-        {/* Ground reflection under the car. */}
         <linearGradient id={`reflect-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor={ILLO.carTop} stopOpacity="0.30" />
+          <stop offset="0%" stopColor={ILLO.carTop} stopOpacity="0.28" />
           <stop offset="100%" stopColor={ILLO.carTop} stopOpacity="0" />
         </linearGradient>
 
         <radialGradient id={`contact-${id}`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor={ILLO.shadow} stopOpacity="0.5" />
+          <stop offset="0%" stopColor={ILLO.shadow} stopOpacity="0.55" />
           <stop offset="100%" stopColor={ILLO.shadow} stopOpacity="0" />
         </radialGradient>
+
+        {/* The alloy face. The reference's wheels are the brightest thing on
+            the car after the glass, so the rim gets its own ramp rather than
+            a flat fill. */}
+        <linearGradient id={`rim-${id}`} x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%" stopColor="#5B6E88" />
+          <stop offset="100%" stopColor={ILLO.rim} />
+        </linearGradient>
       </defs>
 
-      {/* Contact shadow, offset right — one light source, upper-left. */}
-      <ellipse cx="104" cy="63.5" rx="78" ry="5" fill={`url(#contact-${id})`} />
+      {/* Contact shadow, offset right — one light source, upper-left. Wide and
+          soft, the way the reference's is. */}
+      <ellipse cx="100" cy="64" rx="88" ry="5.2" fill={`url(#contact-${id})`} />
 
-      {/* Reflection: a squashed mirror of the body, fading down. */}
-      <g transform="translate(0,127) scale(1,-0.34)" opacity="0.5">
-        <path
-          d="M18 47 C24 35 41 29 57 29 L133 29 C151 29 168 35 178 47
-             L182 51 C184 55 181 57 171 57 L29 57 C19 57 16 54 18 51Z"
-          fill={`url(#reflect-${id})`}
-        />
+      {/* Reflection, mirrored about the line the tyres touch: c(1+s) where
+          c = 63.1 and s = 0.34. It used to say 127 — which mirrors about 94.8
+          and sent the sill to y=107.6, outside a box 70 tall, so it had never
+          drawn a single pixel. */}
+      <g transform="translate(0,84.554) scale(1,-0.34)" opacity="0.45">
+        <path d={BODY_D} fill={`url(#reflect-${id})`} />
       </g>
 
-      {/* Lower body / rocker — darkest plane, grounds the car. */}
+      <path d={BODY_D} fill={`url(#carBody-${id})`} />
+
+      {/* The rocker — the darkest plane, and what grounds the car. */}
       <path
-        d="M22 52 L178 52 L180 55 C181 57 178 58 169 58 L31 58 C21 58 19 56 20 54Z"
+        d="M40,53.4 C58,55.4 110,55.6 152,53.8 L154,55.6 C112,57.4 60,57.2 39,55.4 Z"
         fill={ILLO.carRocker}
       />
 
-      {/* Main body. Longer dash-to-axle, faster rear taper — a modern
-          crossover profile rather than the symmetric bubble this had. */}
+      {/* The shoulder. One highlight along the top of the flank is the
+          strongest depth cue at this size, and the reference has exactly one. */}
       <path
-        d="M18 47
-           C24 35 41 29 57 29
-           L133 29
-           C151 29 168 35 178 47
-           L182 51
-           C184 55 181 57 171 57
-           L29 57
-           C19 57 16 54 18 51Z"
-        fill={`url(#carBody-${id})`}
-      />
-
-      {/* Beltline highlight — the single strongest depth cue at this size. */}
-      <path
-        d="M20 46 C26 35 42 30 57 30 L133 30 C151 30 167 35 177 46"
-        stroke="rgba(255,255,255,0.34)"
+        d="M14,41 C32,35 56,32 84,30.8 C116,29.6 152,31.6 178,37"
+        stroke="rgba(255,255,255,0.30)"
         strokeWidth="1"
         fill="none"
         strokeLinecap="round"
       />
-
-      {/* Roof: raked screen, long roofline, fastback rear. */}
+      {/* and the crease along the flank, low and long */}
       <path
-        d="M58 29 C69 15 92 12 108 12 C124 12 132 19 136 29 Z"
-        fill={`url(#carBody-${id})`}
-      />
-      <path
-        d="M58 29 C69 15 92 12 108 12 C124 12 132 19 136 29"
-        stroke="rgba(255,255,255,0.28)"
-        strokeWidth="0.9"
+        d="M26,45.6 C66,43.4 124,43 174,44.4"
+        stroke="rgba(255,255,255,0.10)"
+        strokeWidth="1.1"
         fill="none"
         strokeLinecap="round"
       />
 
-      {/* Glass, inset from the roof so a pillar reads on each side. */}
+      <path d={GLASS_D} fill={`url(#glass-${id})`} />
+      {/* the bright top edge of the window frame */}
       <path
-        d="M64 28.5 C73 17 92 14.5 107 14.5 C121 14.5 128 20.5 131.5 28.5 Z"
-        fill={`url(#glass-${id})`}
+        d="M72,28.6 C80,21.6 90,16.4 102,14.8 C120,13.4 136,17.6 146,28.6"
+        stroke="rgba(255,255,255,0.34)"
+        strokeWidth="0.9"
+        fill="none"
+        strokeLinecap="round"
       />
       {/* B-pillar */}
-      <path d="M99 14.6 L102 14.7 L102 28.5 L99 28.5 Z" fill={ILLO.glassLow} opacity="0.85" />
+      <path d="M106,13.6 L109,13.7 L109,29.4 L106,29.4 Z" fill={ILLO.glassLow} opacity="0.9" />
+      {/* door shut line and handle — small, and what stops a car reading as
+          a solid lozenge */}
+      <path d="M100,30 L100,53.4" stroke={ILLO.carLow} strokeWidth="0.8" strokeOpacity="0.7" />
+      <rect x="114" y="34" width="8" height="2" rx="1" fill={ILLO.carTop} opacity="0.8" />
 
-      {/* Wheel arches, drawn as arches rather than full rings. */}
-      {[60, 141].map((cx) => (
+      {/* Lights: presence, not glow. */}
+      <path d="M10.4,40.6 C13.6,39.4 17,38.8 20.4,38.6 L20.4,41.6 C17,41.8 13.6,42.4 10.6,43.4 Z" fill="rgba(255,255,255,0.7)" />
+      <path d="M181.4,40.4 C179,40 176.6,39.8 174.4,39.8 L174.4,42.8 C176.8,42.8 179.2,43 181.2,43.4 Z" fill={ILLO.fault} opacity="0.72" />
+
+      {/* Wheels. Half the height of the car, with an open five-spoke face —
+          the two things that most separate the reference from a generic
+          side-on car drawing. */}
+      {AXLE.map((cx) => (
         <g key={cx}>
-          <path
-            d={`M${cx - 13} 55 A13 13 0 0 1 ${cx + 13} 55`}
-            fill="none"
-            stroke={ILLO.carRocker}
-            strokeWidth="3.2"
-          />
-          <circle cx={cx} cy={53.5} r="9.6" fill={ILLO.tyre} />
-          <circle
-            cx={cx}
-            cy={53.5}
-            r="9.6"
-            fill="none"
-            stroke="rgba(255,255,255,0.22)"
-            strokeWidth="0.9"
-          />
-          {/* Rim face */}
-          <circle cx={cx} cy={53.5} r="6" fill={ILLO.rim} />
-          <g stroke="rgba(203,213,225,0.55)" strokeWidth="0.85" strokeLinecap="round">
-            <line x1={cx} y1={48} x2={cx} y2={59} />
-            <line x1={cx - 5.5} y1={53.5} x2={cx + 5.5} y2={53.5} />
-            <line x1={cx - 3.9} y1={49.6} x2={cx + 3.9} y2={57.4} />
-            <line x1={cx - 3.9} y1={57.4} x2={cx + 3.9} y2={49.6} />
+          <circle cx={cx} cy={50.6} r="12.5" fill={ILLO.tyre} />
+          <circle cx={cx} cy={50.6} r="12.5" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="0.9" />
+          <circle cx={cx} cy="50.6" r="8.8" fill={`url(#rim-${id})`} />
+          <g transform={`translate(${cx} 50.6)`}>
+            {[0, 72, 144, 216, 288].map((a) => (
+              <path
+                key={a}
+                d="M-1.5,-2.4 L-2.5,-7.9 A 7.9 7.9 0 0 1 2.5,-7.9 L1.5,-2.4 Z"
+                transform={`rotate(${a})`}
+                fill={ILLO.hub}
+                opacity="0.5"
+              />
+            ))}
           </g>
-          <circle cx={cx} cy={53.5} r="1.5" fill={ILLO.hub} />
+          <circle cx={cx} cy="50.6" r="2.4" fill={ILLO.hub} opacity="0.9" />
         </g>
       ))}
 
-      {/* Lights: presence, not glow. */}
-      <path d="M16 44 L23 43.4 L23 46.6 L16 46.4 Z" fill="rgba(255,255,255,0.72)" />
-      <path d="M177 43.6 L183 44.4 L183 46.8 L177 46.6 Z" fill="rgba(255,255,255,0.5)" />
-
-      {/* Charge port — a point of light */}
+      {/* Charge port — a point of light. Held at (158, 37) because
+          guide-cover.tsx's portAt() and six cable anchors are derived from
+          exactly these two numbers. */}
       <circle cx="158" cy="37" r="2" fill={ILLO.live} opacity="0.95" />
+
+      {/* Atmosphere, over the silhouette only. Drawn as the same shapes rather
+          than as a rectangle, because a rectangle of haze would sit visibly
+          across the horizon glow behind it. */}
+      {haze > 0 && (
+        <g fill={ILLO.skyHaze} opacity={haze} aria-hidden>
+          <path d={BODY_D} />
+          {AXLE.map((cx) => (
+            <circle key={cx} cx={cx} cy="50.6" r="12.5" />
+          ))}
+        </g>
+      )}
     </svg>
   );
 }

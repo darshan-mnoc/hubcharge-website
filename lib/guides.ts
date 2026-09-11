@@ -179,19 +179,20 @@ export const guides: Guide[] = [
     group: "trips",
   },
   {
-    slug: "socal-charging",
-    title: "Charging across Southern California",
-    desc: "The I-10 and I-210 corridors, where HubCharge sits on them, and how to route a day of driving around LA.",
+    slug: "charging-corridors",
+    title: "The corridors we charge on",
+    navTitle: "Corridors",
+    desc: "The I-10 and I-210 out of Los Angeles and I-35 through Round Rock — where HubCharge sits on them, and how to route a day around that.",
     read: "5 min",
     short:
       "Two motorways carry most of the driving around here, and we sit on both of them. If you are heading east out of Los Angeles, this covers where to stop and what traffic and heat will cost you on the way.",
     group: "trips",
   },
   {
-    slug: "ev-incentives-california",
-    title: "EV incentives in California",
+    slug: "ev-incentives",
+    title: "EV incentives, by where you live",
     navTitle: "Incentives",
-    desc: "Federal credits, state and utility programmes, HOV access — what exists, who qualifies, and where to verify each one.",
+    desc: "Federal credits, state and utility programmes in California and Texas — what exists, what has closed, who qualifies, and where to verify each one.",
     read: "7 min",
     short:
       "Several of the big programmes people still ask about have ended. This page shows what is genuinely open right now, what has closed and when, and sends you to the body that runs each one rather than quoting amounts that go out of date.",

@@ -9,7 +9,9 @@ import type { Station } from "@/lib/stations";
  * New York a California station is shut.
  */
 
-const TZ = "America/Los_Angeles";
+/* Was the only timezone the site knew. Kept as the fallback for anything
+   that has not declared one; every station in lib/stations.ts now does. */
+const DEFAULT_TZ = "America/Los_Angeles";
 
 function minutesOfDayInTz(date: Date, timeZone: string): number {
   const parts = new Intl.DateTimeFormat("en-US", {
@@ -37,20 +39,33 @@ function label(hhmm: string): string {
 
 export type StationStatus = {
   open: boolean;
-  /** "Open now · closes 10 PM" / "Closed · opens 6 AM" */
+  /** True when the site has not opened yet, whatever the clock says. */
+  soon: boolean;
+  /** "Open now · closes 10 PM" / "Closed · opens 6 AM" / "Opening soon" */
   text: string;
   short: string;
 };
 
 export function stationStatus(station: Station, now: Date = new Date()): StationStatus {
+  /* A site that has not been built cannot be open, and this function used to
+     answer only the clock question — so Round Rock, which carries the same
+     6 AM-10 PM hours as everywhere else, reported "Open now" on the contact
+     page between those hours, with an address and a Directions link beside
+     it. The guard lives here rather than at each call site because there are
+     three call sites and only one of them remembered. */
+  if (station.status === "coming-soon") {
+    return { open: false, soon: true, text: "Opening soon", short: "Opening soon" };
+  }
+
   const { opens, closes } = station.hoursSchema;
-  const cur = minutesOfDayInTz(now, TZ);
+  const cur = minutesOfDayInTz(now, station.tz ?? DEFAULT_TZ);
   const start = toMinutes(opens);
   const end = toMinutes(closes);
   const open = cur >= start && cur < end;
 
   return {
     open,
+    soon: false,
     text: open
       ? `Open now · closes ${label(closes)}`
       : `Closed · opens ${label(opens)}`,

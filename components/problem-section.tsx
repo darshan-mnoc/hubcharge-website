@@ -225,7 +225,7 @@ export function ProblemSection() {
                 <span className="text-brass-ink">*</span> Attendant service at
                 select locations and hours. Range added in ten minutes varies by
                 car, starting battery and temperature —{" "}
-                <Link href="/pricing#plan" className="text-brand-ink underline underline-offset-2">
+                <Link href="/plan-your-charge#plan" className="text-brand-ink underline underline-offset-2">
                   check yours
                 </Link>
                 .

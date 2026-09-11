@@ -1,14 +1,15 @@
 import type { ReactNode } from "react";
 import { ChargerEtiquette } from "@/components/charger-etiquette";
 import { HomeVsPublic as HomeVsPublicCompare } from "@/components/home-vs-public";
-import { SoCalCorridor } from "@/components/socal-corridor";
+import { CorridorMap } from "@/components/corridor-map";
 import { FirstMonth } from "@/components/first-month";
 import { Term } from "@/components/term";
 import { WeatherImpact } from "@/components/weather-impact";
 import { RoutinePlanner } from "@/components/routine-planner";
 import { ShiftPlanner } from "@/components/shift-planner";
 import { Troubleshooter } from "@/components/troubleshooter";
-import { IncentiveFinder, INCENTIVES_CHECKED } from "@/components/incentive-finder";
+import { IncentiveFinder } from "@/components/incentive-finder";
+import { INCENTIVES_CHECKED } from "@/lib/incentives";
 import { SocWindow } from "@/components/soc-window";
 import { TripPlanner } from "@/components/trip-planner";
 
@@ -326,18 +327,24 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
     },
   ],
 
-  "socal-charging": [
+  "charging-corridors": [
     {
-      heading: "The two corridors that matter",
+      heading: "The corridors that matter",
       body: (
         <>
-          <SoCalCorridor />
+          <CorridorMap />
           <p>
-          Most driving around Los Angeles funnels onto the I-10 heading east
-          toward Palm Springs and Arizona, or the I-210 skirting the foothills.
-          HubCharge sits on both: Alhambra just off the I-10 near downtown, and
-          Fontana further east where the Inland Empire begins.
-        </p>
+            Most driving around Los Angeles funnels onto the I-10 heading east
+            toward Palm Springs and Arizona, or the I-210 skirting the
+            foothills. HubCharge sits on both: Alhambra just off the I-10 near
+            downtown, and Fontana further east where the Inland Empire begins.
+          </p>
+          <p>
+            Texas works the same way around a different road. I-35 is the spine
+            from San Antonio through Austin to Dallas, and our Round Rock site
+            sits on it just north of the city — the point where an Austin
+            commute turns into a drive.
+          </p>
         </>
       ),
     },
@@ -362,6 +369,20 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
           highway — regenerative braking recovers energy and low speeds are
           efficient. Sustained 75mph on the open I-10 will cost you far more
           range than the same distance crawling through the basin.
+        </p>
+      ),
+    },
+    {
+      heading: "Round Rock, and the drive north",
+      body: (
+        <p>
+          Our Round Rock site is on Double Creek Drive, a minute off I-35 and
+          about twenty miles north of downtown Austin. Heading north from
+          there, I-35 runs through Georgetown and then opens up toward Waco and
+          Dallas — so it is the natural place to leave Austin full rather than
+          topping up an hour later. It is not open yet; the address is
+          confirmed and the date is not, and we will publish hours here before
+          it takes its first car.
         </p>
       ),
     },
@@ -653,7 +674,7 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
     },
   ],
 
-  "ev-incentives-california": [
+  "ev-incentives": [
     {
       heading: "Why this page has no dollar amounts on it",
       body: (
@@ -680,11 +701,18 @@ export const GUIDE_BODIES: Record<string, GuideSection[]> = {
       body: (
         <>
           <p>
-            Four of the programmes below have closed since 2025 — including
-            both federal credits and California&rsquo;s carpool-lane decal.
-            They stay listed, marked with the date they ended, because being
-            told a thing is over is more useful than finding nothing and
-            assuming the page is broken.
+            Start with where you live. Four of the programmes below have closed
+            since 2025 &mdash; including both federal credits and
+            California&rsquo;s carpool-lane decal &mdash; and they stay listed,
+            marked with the date they ended, because being told a thing is over
+            is more useful than finding nothing and assuming the page is
+            broken.
+          </p>
+          <p>
+            Texas is a third case again. Its state rebate is funded in rounds
+            rather than running continuously, so it is neither open nor gone:
+            it is closed until the next round, and the useful thing is to be on
+            the list that announces one.
           </p>
           <IncentiveFinder />
         </>

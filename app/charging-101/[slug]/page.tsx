@@ -49,9 +49,9 @@ const GUIDE_COVERS: Record<string, CoverMotif> = {
   "charging-troubleshooting": "fault",
   "rideshare-drivers": "shift",
   "road-trip": "highway",
-  "socal-charging": "corridors",
+  "charging-corridors": "corridors",
   "new-ev-owner": "milestones",
-  "ev-incentives-california": "paperwork",
+  "ev-incentives": "paperwork",
 };
 
 /** Stable anchor from a heading — the scroll-spy and the rail must agree. */

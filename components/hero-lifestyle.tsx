@@ -49,7 +49,7 @@ const specs = [
   {
     value: "10 minutes",
     label: `Adds ${TEN_MINUTE_RANGE} miles*`,
-    href: "/pricing#plan",
+    href: "/plan-your-charge#plan",
     cta: "Check yours",
   },
   { value: "No app", label: "It runs in your phone's browser" },

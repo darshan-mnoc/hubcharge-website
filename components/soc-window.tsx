@@ -1,5 +1,8 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { NO_MOTION, SPRING_TRACK } from "@/lib/motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useState } from "react";
 import { getModel, type EvModel } from "@/lib/ev-models";
 import { minutesBetweenSoc, STATION_KW } from "@/lib/charging-math";
@@ -24,6 +27,8 @@ export function SocWindow() {
   const mins = minutesBetweenSoc(model, STATION_KW, lo, Math.max(lo + 5, hi));
   const miles = Math.round((model.epaMiles * (hi - lo)) / 100);
   const strain = hi >= 95 ? "high" : hi >= 90 ? "some" : lo <= 5 ? "some" : "low";
+
+  const reduced = useReducedMotion();
 
   return (
     <GuideFigure
@@ -68,9 +73,31 @@ export function SocWindow() {
         <div>
           {/* the pack, with your window marked on it */}
           <div className="relative h-16 rounded-lg bg-paper-200 overflow-hidden">
-            <div
-              className="absolute inset-y-0 bg-brand/25 border-x-2 border-brand transition-all duration-200"
-              style={{ left: `${lo}%`, width: `${hi - lo}%` }}
+            {/* The window follows the thumb, so it springs rather than
+                tweening — a fixed 200ms duration always resolves from wherever
+                the band was when you last moved, so the further you drag the
+                further behind your finger it runs.
+
+                It was `transition-all`, which also animated the border colour
+                and every other property on the element; only the two edges
+                were ever meant to move. */}
+            {/* ONE spring, not two.
+                This animated `left` and `width` as independent springs, so an
+                interrupted drag — move the low handle, then grab the high one
+                mid-flight — gave the two different velocities. The band's
+                right edge is left+width, so during those frames it reported a
+                state of charge that was neither the old high nor the new one.
+
+                Driving both edges from a single transform makes that
+                impossible by construction, and moves the animation onto the
+                compositor: transform and scale are free, `left` and `width`
+                relayout the bar and its six tick marks every frame. */}
+            <motion.div
+              className="absolute inset-y-0 left-0 w-full origin-left bg-brand/25 border-x-2 border-brand"
+              initial={false}
+              animate={{ x: `${lo}%`, scaleX: (hi - lo) / 100 }}
+              transition={reduced ? NO_MOTION : SPRING_TRACK}
+              style={{ willChange: "transform" }}
             />
             {[0, 20, 40, 60, 80, 100].map((t) => (
               <span

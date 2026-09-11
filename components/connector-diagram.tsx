@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { evModels, evMakes } from "@/lib/ev-models";
 import { GuideFigure } from "@/components/guide-figure";
 import { ILLO } from "@/lib/illustration";
+import { CCS1_PINS, NACS_PINS, J1772_FACE_R } from "@/lib/connector-geometry";
 
 /**
  * The connector section of the connectors guide.
@@ -53,7 +54,9 @@ import { ILLO } from "@/lib/illustration";
    One millimetre = one user unit, so the two SVGs are directly
    comparable and the scale claim in the caption is literally true. */
 const MM = 1;
-const J1772_R = 43.5 / 2; // 43–44mm face
+/* The face radius now comes from lib/connector-geometry.ts, so this file and
+   the cover cannot disagree about how big a J1772 is. */
+const J1772_R = J1772_FACE_R;
 
 function Pin({
   cx,
@@ -110,14 +113,21 @@ function NacsSvg() {
         strokeWidth="1"
       />
 
-      {/* top row — three small: ground centre, CP and PP either side */}
-      <Pin cx={cx - 9} cy={14} r={2.6} fill={ILLO.seam} />
-      <Pin cx={cx} cy={13} r={3.2} fill={ILLO.seam} />
-      <Pin cx={cx + 9} cy={14} r={2.6} fill={ILLO.seam} />
-
-      {/* bottom row — two large, doing both AC and DC */}
-      <Pin cx={cx - 7.4} cy={30} r={6.2} fill={ILLO.live} />
-      <Pin cx={cx + 7.4} cy={30} r={6.2} fill={ILLO.live} />
+      {/* Three small in a row across the top — ground in the centre and
+          slightly larger, CP and PP either side — over two large pins that
+          carry AC at home and DC here. Offsets come from
+          lib/connector-geometry.ts, which guide-cover.tsx also draws from:
+          this face used to exist twice, in two files, in two shapes. */}
+      {NACS_PINS.map((pin) => (
+        <Pin
+          key={pin.id}
+          cx={cx + pin.dx}
+          cy={h / 2 + pin.dy}
+          r={pin.r}
+          fill={pin.power ? ILLO.live : ILLO.seam}
+          empty={pin.empty}
+        />
+      ))}
     </svg>
   );
 }
@@ -145,21 +155,21 @@ function Ccs1Svg() {
       {/* the J1772 face — 43.5mm across */}
       <circle cx={cx} cy={cyTop} r={J1772_R} fill={ILLO.recess} stroke={ILLO.bodyDark} strokeWidth="1" />
 
-      {/* J1772 pins, positioned from the standard's own offsets.
-          L1 / N-L2: large, 6.8mm above centreline, 15.7mm apart.
-          Unpopulated here because this is the DC cable. */}
-      <Pin cx={cx - 15.7 / 2} cy={cyTop - 6.8} r={4.2} fill={ILLO.seam} empty />
-      <Pin cx={cx + 15.7 / 2} cy={cyTop - 6.8} r={4.2} fill={ILLO.seam} empty />
-      {/* PP / CP: small, 5.6mm below centreline, 21.3mm apart — wider than
-          the power pins, which is the detail everyone draws wrong. */}
-      <Pin cx={cx - 21.3 / 2} cy={cyTop + 5.6} r={2.3} fill={ILLO.seam} />
-      <Pin cx={cx + 21.3 / 2} cy={cyTop + 5.6} r={2.3} fill={ILLO.seam} />
-      {/* PE: large, 10.6mm below centreline, centred */}
-      <Pin cx={cx} cy={cyTop + 10.6} r={4.2} fill={ILLO.seam} />
-
-      {/* the two DC pins — the reason the whole thing is this big */}
-      <Pin cx={cx - 13} cy={h - 20} r={8.4} fill={ILLO.live} />
-      <Pin cx={cx + 13} cy={h - 20} r={8.4} fill={ILLO.live} />
+      {/* Every offset from lib/connector-geometry.ts, in millimetres from the
+          centre of the round face: the standard's own numbers, including the
+          detail everyone draws wrong — the small signal pins sit WIDER apart
+          than the large AC ones. The two AC contacts come back `empty`,
+          because this is a DC cable and they are not populated on one. */}
+      {CCS1_PINS.map((pin) => (
+        <Pin
+          key={pin.id}
+          cx={cx + pin.dx}
+          cy={cyTop + pin.dy}
+          r={pin.r}
+          fill={pin.power ? ILLO.live : ILLO.seam}
+          empty={pin.empty}
+        />
+      ))}
     </svg>
   );
 }
@@ -266,7 +276,7 @@ export function ConnectorDiagram() {
               style={{ left: `${p.mark.x}%`, top: `${p.mark.y}%` }}
               className={`absolute -translate-x-1/2 -translate-y-1/2 grid h-8 w-8 sm:h-9 sm:w-9
                 place-items-center rounded-full text-body-sm font-semibold
-                ring-2 ring-ink-900/70 transition-transform duration-200 ${
+                ring-2 ring-ink-900/70 hc-move ${
                   on ? "scale-125 bg-white text-ink-900" : "bg-brand text-ink-900"
                 }`}
             >
@@ -297,7 +307,7 @@ export function ConnectorDiagram() {
               onFocus={() => setActive(id)}
               onBlur={() => setActive(null)}
               aria-pressed={on}
-              className={`flex flex-col rounded-lg border p-4 text-left transition-colors ${
+              className={`flex flex-col rounded-lg border p-4 text-left hc-tint ${
                 on ? "border-brand bg-paper-100" : "border-paper-300 hover:bg-paper-100"
               }`}
             >
@@ -358,7 +368,7 @@ export function ConnectorDiagram() {
         <summary className="flex cursor-pointer list-none items-center gap-2 text-body-sm text-ink-600 hover:text-ink-900 [&::-webkit-details-marker]:hidden">
           <ChevronRight
             aria-hidden
-            className="h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-90"
+            className="hc-move h-4 w-4 shrink-0 group-open:rotate-90"
           />
           Why one is bigger — the pins inside
         </summary>

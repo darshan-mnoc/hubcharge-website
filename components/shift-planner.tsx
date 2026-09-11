@@ -31,7 +31,13 @@ export function ShiftPlanner() {
   const sessions = needed <= 0 ? 0 : Math.ceil(needed / milesPerSession);
   const perSession = minutesBetweenSoc(model, STATION_KW, 20, 80);
   const totalMin = sessions * perSession;
-  const pctOfShift = Math.round((totalMin / (shiftHours * 60)) * 100);
+  /* ONE value, clamped once, read by both the number and the bar.
+     The bar used to clamp at 100 while the readout beside it printed 140% —
+     so the drawing said there was still driving time left and the number said
+     there wasn't. A figure must not contradict itself. */
+  const rawPct = (totalMin / (shiftHours * 60)) * 100;
+  const pctOfShift = Math.round(Math.min(100, rawPct));
+  const overrun = rawPct > 100;
 
   return (
     <GuideFigure
@@ -64,16 +70,33 @@ export function ShiftPlanner() {
         <div>
           <dl className="grid grid-cols-3 gap-x-5 gap-y-5">
             <Readout label="Stops needed" value={sessions} sub={sessions === 0 ? "starts full" : `${perSession} min each`} />
-            <Readout label="Off the road" value={totalMin} unit="min" />
-            <Readout label="Of your shift" value={pctOfShift} unit="%" />
+            {/* step: this is sessions x perSession, so it can only ever be a
+                multiple of perSession. Without the step the spring rendered
+                31, 38 and 44 minutes on its way from 26 to 52 — none of which
+                this model can produce. */}
+            <Readout label="Off the road" value={totalMin} unit="min" step={perSession} />
+            <Readout
+              label="Of your shift"
+              value={pctOfShift}
+              unit="%"
+              sub={overrun ? "more than a full shift" : undefined}
+            />
           </dl>
 
           {/* The shift as a bar — charging time against driving time */}
           <div className="mt-7">
             <div className="flex h-3 rounded-full overflow-hidden bg-paper-200">
+              {/* Twice off Tailwind's transition-[width], which compiles to
+                  its own cubic-bezier at build time and animated on a curve
+                  nothing else here uses. The first fix was a framer spring —
+                  correct, and 49 kB of animation runtime on a route that had
+                  no other reason to load it, to move one bar. [data-track]
+                  does the same on the house curve, from CSS, and animates a
+                  transform rather than a width so it never touches layout. */}
               <div
-                className="bg-brand transition-[width] duration-300"
-                style={{ width: `${Math.min(100, pctOfShift)}%` }}
+                data-track
+                className="h-full w-full bg-brand"
+                style={{ "--v": pctOfShift / 100 } as React.CSSProperties}
               />
             </div>
             <div className="flex justify-between mt-2 text-caption text-ink-400">

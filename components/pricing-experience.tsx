@@ -23,6 +23,7 @@ import {
   STATION_KW,
   REFERENCE_START_SOC,
 } from "@/lib/charging-math";
+import { getService, caveatsFor, services as allServices } from "@/lib/services";
 
 /* "Design your stop" — a number-free pricing experience.
    The user picks how far, their car, and what to enjoy; we preview the
@@ -57,6 +58,10 @@ const cars = configuratorModels();
  */
 const ANY_CAR = "any";
 
+/* The ids match lib/services.ts, which is where availability lives. This
+   picker used to offer all four with no marker at all and fold whatever you
+   chose into a list headed "included in your flat rate" — for services that
+   are not launched anywhere. The icons stay here; the promise does not. */
 const addons = [
   { id: "coffee", label: "Coffee & drinks", icon: Coffee },
   { id: "food", label: "Food", icon: Utensils },
@@ -97,18 +102,32 @@ export function PricingExperience() {
       return next;
     });
 
+  /* "Coffee & drinks delivered" read as a thing you get. It is not one yet,
+     so a chosen add-on is listed as what it actually is. */
   const included = useMemo(
     () => [
-      "Your full charging session",
-      "Pay right from your phone",
-      ...chosenList.map((a) => `${a.label} delivered`),
+      { label: "Your full charging session", soon: false },
+      { label: "Pay right from your phone", soon: false },
+      ...chosenList.map((a) => ({
+        label: `${a.label} delivered`,
+        soon: getService(a.id)?.availability === "soon",
+      })),
     ],
+    [chosenList],
+  );
+
+  /* One hedge for whatever is currently selected, from the same source. */
+  const addonCaveats = useMemo(
+    () =>
+      caveatsFor(
+        allServices.filter((sv) => chosenList.some((a) => a.id === sv.id)),
+      ),
     [chosenList],
   );
 
   return (
     <section
-      id="pricing"
+      id="plan-your-charge"
       data-reveal
       className="relative section-padding bg-paper-100 overflow-hidden"
     >
@@ -126,7 +145,7 @@ export function PricingExperience() {
             variants={fadeUp}
             className="text-overline text-ink-500 mb-4"
           >
-            Pricing, reimagined
+            Plan your charge
           </motion.p>
           <motion.h2 variants={fadeUp} className="text-h2 text-ink-900 mb-4">
             One flat rate. No surprises.
@@ -256,6 +275,17 @@ export function PricingExperience() {
                         className={`text-body-sm font-medium ${active ? "text-white" : "text-ink-600"}`}
                       >
                         {a.label}
+                        {getService(a.id)?.availability === "soon" && (
+                          <span
+                            className={`ml-2 rounded-full px-2 py-0.5 text-footnote font-semibold ${
+                              active
+                                ? "bg-white/15 text-on-dark/70"
+                                : "bg-paper-200 text-ink-500"
+                            }`}
+                          >
+                            coming soon
+                          </span>
+                        )}
                       </span>
                       <span className="ml-auto">
                         {active ? (
@@ -310,7 +340,7 @@ export function PricingExperience() {
                 </div>
                 <div className="h-3 rounded-full bg-white/10 overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-brand to-[#FFB068]"
+                    className="h-full rounded-full bg-gradient-to-r from-brand to-brand-on-dark"
                     animate={{ width: `${dist.fill}%` }}
                     transition={{ type: "spring", stiffness: 90, damping: 18 }}
                   />
@@ -338,21 +368,48 @@ export function PricingExperience() {
                 <AnimatePresence initial={false}>
                   {included.map((item) => (
                     <motion.li
-                      key={item}
+                      key={item.label}
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -8 }}
                       transition={{ duration: 0.2 }}
-                      className="flex items-center gap-2.5 text-body-sm text-on-dark"
+                      className={`flex items-center gap-2.5 text-body-sm ${
+                        item.soon ? "text-on-dark/55" : "text-on-dark"
+                      }`}
                     >
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/20">
-                        <Check className="h-3 w-3 text-brand" />
+                      <span
+                        className={`flex h-5 w-5 items-center justify-center rounded-full ${
+                          item.soon ? "bg-white/10" : "bg-brand/20"
+                        }`}
+                      >
+                        {item.soon ? (
+                          <Clock className="h-3 w-3 text-on-dark/60" />
+                        ) : (
+                          <Check className="h-3 w-3 text-brand" />
+                        )}
                       </span>
-                      {item}
+                      {item.label}
+                      {item.soon && (
+                        <span className="text-footnote text-on-dark/55">
+                          (not yet)
+                        </span>
+                      )}
                     </motion.li>
                   ))}
                 </AnimatePresence>
               </ul>
+
+              {/* The hedge for whatever is selected, from lib/services.ts, so
+                  it cannot drift from what the rest of the site says. */}
+              {addonCaveats.length > 0 && (
+                <ul className="-mt-3 mb-6 space-y-1">
+                  {addonCaveats.map((c) => (
+                    <li key={c} className="text-footnote text-on-dark/55">
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             {/* payoff — the "A finale" */}
@@ -386,7 +443,7 @@ export function PricingExperience() {
                 <Check className="h-3 w-3 text-brand" />
                 Flat, fair, and predictable.{" "}
                 <a
-                  href="/pricing"
+                  href="/plan-your-charge"
                   className="underline underline-offset-2 hover:text-brand"
                 >
                   How our pricing works →

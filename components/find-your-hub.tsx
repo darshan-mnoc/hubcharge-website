@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
@@ -18,6 +18,7 @@ import {
   Coffee,
   Utensils,
   ShoppingBag,
+  ChevronDown,
 } from "lucide-react";
 import { notifyMe } from "@/lib/actions";
 import { haversineMiles, zipToCoords } from "@/lib/geo";
@@ -29,18 +30,48 @@ import {
   stations,
   upcomingLocations,
   nearbyByStation,
+  statesWithCoverage,
 } from "@/lib/stations";
 
 export function FindYourHub() {
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  /* Is the map slot close enough to be worth building. See the slot below. */
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [mapNear, setMapNear] = useState(false);
   const [zipCode, setZipCode] = useState("");
   const [searchResults, setSearchResults] = useState<typeof stations | null>(
     null,
   );
   const [isSearching, setIsSearching] = useState(false);
+
+  /* One observer, once. It never goes back to false: a map that unmounted on
+     scroll-out would re-initialise a WebGL context and re-request every tile
+     the next time the reader came back to it. */
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el || mapNear) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setMapNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "400px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [mapNear]);
   const [selectedId, setSelectedId] = useState(stations[0].id);
+  /* "All" until a reader narrows it. Options come from statesWithCoverage(),
+     which already sorts states you can charge in above states we have only
+     announced — so the filter can never rank Texas above California. */
+  const [stateFilter, setStateFilter] = useState("all");
+
+  const visibleStations =
+    stateFilter === "all" ? stations : stations.filter((s) => s.state === stateFilter);
 
   const selected =
     stations.find((s) => s.id === selectedId) ?? stations[0];
@@ -147,10 +178,15 @@ export function FindYourHub() {
       ref={sectionRef}
       id="locations"
       data-reveal
-      className="relative section-padding bg-paper overflow-hidden"
+      /* NO overflow-hidden. It clipped a decorative background blob that has
+         since been deleted — the two blank lines below are where it was — and
+         an ancestor with overflow:hidden becomes the sticky containing block
+         for everything inside it. So `sticky top-24` on the station list had
+         silently done nothing since the blob went, and the same class on the
+         map did nothing when it was added. Nothing here overflows
+         horizontally; section-container already bounds the width. */
+      className="relative section-padding bg-paper"
     >
-
-
       <div className="section-container relative">
         {/* Header */}
         <motion.div
@@ -257,8 +293,46 @@ export function FindYourHub() {
                   : "Available Stations"}
               </h3>
 
+              {/* A native select, styled as the site's own field.
+                  Native because this is a filter over a handful of options: it
+                  gets keyboard and screen-reader behaviour for free and opens
+                  as the platform picker on a phone, which beats any custom
+                  listbox at that size. The treatment matches
+                  components/charging-curve-chart.tsx — .field with the chevron
+                  laid over it — so it reads as part of the same product. */}
+              <div className="relative mb-5">
+                <label htmlFor="state-filter" className="sr-only">
+                  Filter stations by state
+                </label>
+                <select
+                  id="state-filter"
+                  value={stateFilter}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setStateFilter(next);
+                    /* Move the selection into the state being shown, so the
+                       map and the list never disagree about what is selected. */
+                    const first = next === "all" ? stations[0] : stations.find((s) => s.state === next);
+                    if (first) setSelectedId(first.id);
+                  }}
+                  className="field appearance-none w-full pl-3 pr-9 py-2 text-body-sm"
+                >
+                  <option value="all">All states</option>
+                  {statesWithCoverage().map((g) => (
+                    <option key={g.code} value={g.code} disabled={g.live.length === 0}>
+                      {g.name}
+                      {g.live.length ? ` (${g.live.length})` : " — coming soon"}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  aria-hidden
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400"
+                />
+              </div>
+
               <div className="space-y-4">
-                {(searchResults || stations).map((station) => (
+                {(searchResults || visibleStations).map((station) => (
                   <motion.div
                     key={station.id}
                     onClick={() => setSelectedId(station.id)}
@@ -275,16 +349,21 @@ export function FindYourHub() {
                       }`}
                     />
 
-                    {/* The card listed a station without ever showing it. */}
-                    <div className="relative -mx-5 -mt-5 mb-4 ml-[-1.5rem] aspect-[16/9] overflow-hidden">
-                      <Image
-                        src={station.photos[0].src}
-                        alt={station.photos[0].alt}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        sizes="(max-width: 1024px) 100vw, 420px"
-                      />
-                    </div>
+                    {/* The card listed a station without ever showing it.
+                        Guarded, because a site that has not been built yet has
+                        nothing to photograph and this threw on the homepage
+                        the moment Round Rock got a record. */}
+                    {station.photos[0] && (
+                      <div className="relative -mx-5 -mt-5 mb-4 ml-[-1.5rem] aspect-[16/9] overflow-hidden">
+                        <Image
+                          src={station.photos[0].src}
+                          alt={station.photos[0].alt}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          sizes="(max-width: 1024px) 100vw, 420px"
+                        />
+                      </div>
+                    )}
 
                     <div className="flex items-start justify-between mb-3">
                       <div>
@@ -293,6 +372,18 @@ export function FindYourHub() {
                             {station.name}
                           </h4>
                           {(() => {
+                            /* "Closed · opens 6 AM" is a true sentence about a
+                               site that exists and a false one about a site
+                               that does not. A station with no ribbon cut gets
+                               told apart from one that is merely shut. */
+                            if (station.status === "coming-soon") {
+                              return (
+                                <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-caption font-medium bg-brass/15 text-brass-ink">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-brass-ink" />
+                                  Opening soon
+                                </span>
+                              );
+                            }
                             const st = stationStatus(station);
                             return (
                               <span
@@ -398,15 +489,53 @@ export function FindYourHub() {
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-3 rounded-lg overflow-hidden border border-paper-300 bg-ink-900 min-h-[500px]"
+            /* A DEFINITE HEIGHT, AND IT STICKS.
+               This was `min-h-[500px]` on a grid item, and grid items stretch
+               by default — so the row's height came from the station list
+               beside it and the map grew to about 1,250px. A map that tall is
+               mostly empty ground: you cannot see the pin and the top of the
+               list at the same time, and scrolling moves both.
+
+               `self-start` stops the stretch, a fixed height makes it a normal
+               16:10-ish map, and sticky keeps it in view while the list
+               scrolls past it — which is the whole point of putting a list
+               and a map side by side. */
+            className="lg:col-span-3 self-start lg:sticky lg:top-24 h-[360px] sm:h-[420px] lg:h-[520px] rounded-lg overflow-hidden border border-paper-300 bg-ink-900"
           >
-            <StationMap
-              stations={stations}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
-              userLocation={userLocation}
-              className="h-full min-h-[500px]"
-            />
+            {/* THE REAL MAP, JUST NOT YET.
+                MapLibre is 1,013.8 KB of JavaScript and 68 KB of CSS, and it
+                used to be fetched during homepage hydration — `dynamic` with
+                ssr:false keeps it off the server, but it still loads the
+                moment this section mounts, which is while the hero is still
+                settling, for a section below the fold.
+
+                The answer to that was a drawn stand-in from the same
+                coordinates and road geometry, upgraded on click. It was
+                accurate and it was still a picture of a map: no streets
+                around the sites, nothing to pan, and no answer to "what is
+                near this charger", which is the question someone looking at a
+                station finder actually has. So it is gone.
+
+                Instead the real map is built as the reader arrives at it. An
+                observer with 400px of lead time means the tiles are usually
+                there before the section is, nobody who never scrolls this far
+                pays for it, and what you get when you do is OpenStreetMap
+                rather than a drawing of it. */}
+            <div ref={mapRef} className="h-full">
+              {mapNear ? (
+                <StationMap
+                  stations={searchResults || visibleStations}
+                  selectedId={selectedId}
+                  onSelect={setSelectedId}
+                  userLocation={userLocation}
+                  className="h-full"
+                />
+              ) : (
+                <p className="grid h-full place-items-center text-caption text-white/55">
+                  Map loads as you reach it
+                </p>
+              )}
+            </div>
           </motion.div>
         </div>
 
@@ -417,8 +546,11 @@ export function FindYourHub() {
           viewport={{ once: true }}
           className="mt-12"
         >
+          {/* Was "What's nearby, delivered to your car". Nothing in the list
+              below is delivered — they are independent businesses near the
+              station, and delivery is not a service we run yet anywhere. */}
           <h3 className="text-h3 text-ink-900 mb-1">
-            What&apos;s nearby, delivered to your car
+            What&apos;s nearby
           </h3>
           <p className="text-body-sm text-ink-500 mb-6">
             Near {selected.name} · {selected.city}, {selected.state}
@@ -545,7 +677,12 @@ export function FindYourHub() {
               Which area are you waiting on?
             </p>
             <div className="flex flex-wrap gap-2 mb-6">
-              {upcomingLocations.map((location) => {
+              {upcomingLocations.map(({ city, state }) => {
+                /* Named with its state now. The comment further up this file
+                   already flagged that this list contains Round Rock, which
+                   is in Texas, while the heading above it implied one region —
+                   the data can finally say so itself. */
+                const location = `${city}, ${state}`;
                 const active = wantedLocations.includes(location);
                 return (
                   <button

@@ -65,11 +65,37 @@ export function FirstMonth() {
       footnote="Five things, in the order they matter. Tap any of them to jump to it."
     >
       <ol className="relative grid gap-5 sm:grid-cols-5 sm:gap-3">
-        {/* The through-line. Horizontal on a wide screen, vertical stacked. */}
+        {/* The through-line, drawn rather than declared.
+ *
+ * This was a 1px div, which is the correct amount of ink and the wrong
+ * amount of meaning: the whole claim of the figure is that the first month
+ * GOES somewhere and then ends. A rule that is simply present states the
+ * five stages exist. A rule that draws itself left to right, with each node
+ * appearing as the stroke reaches it, states the order — which is the one
+ * thing the list beneath it cannot say twice.
+ *
+ * An SVG because a stroke is the only thing that can be partially drawn;
+ * preserveAspectRatio="none" lets a 100-unit path stretch to whatever
+ * width the grid ends up, so no measurement is needed. Under 640px the grid
+ * stacks vertically and this hides, because a horizontal line through a
+ * vertical list is just a line. */}
+        <svg
+          aria-hidden
+          viewBox="0 0 100 2"
+          preserveAspectRatio="none"
+          className="pointer-events-none absolute inset-x-0 top-[15px] hidden h-px w-full sm:block"
+        >
+          <line
+            data-draw
+            x1="0" y1="1" x2="100" y2="1"
+            stroke="#E4E0D8" strokeWidth="2" vectorEffect="non-scaling-stroke"
+            style={{ "--len": 100 } as React.CSSProperties}
+          />
+        </svg>
+        {/* Stacked, the line is vertical and stays a plain rule. */}
         <span
           aria-hidden
-          className="absolute left-[15px] top-2 bottom-2 w-px bg-paper-300
-            sm:left-0 sm:right-0 sm:top-[15px] sm:bottom-auto sm:h-px sm:w-auto"
+          className="absolute left-[15px] top-2 bottom-2 w-px bg-paper-300 sm:hidden"
         />
         {STEPS.map((s, i) => {
           const last = i === STEPS.length - 1;
@@ -77,6 +103,11 @@ export function FirstMonth() {
             <li key={s.heading} className="relative flex gap-4 sm:block">
               <span
                 aria-hidden
+                data-pop
+                /* Behind the stroke front, not with it: the line takes 0.9s to
+                   cross five nodes, so a node lands roughly as the ink
+                   reaches it. */
+                style={{ "--d": `${0.18 + i * 0.16}s` } as React.CSSProperties}
                 className={`relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-full
                   ${last ? "bg-brand text-ink-900" : "bg-paper-200 text-ink-600"}`}
               >

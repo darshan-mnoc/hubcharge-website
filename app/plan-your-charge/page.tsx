@@ -1,28 +1,31 @@
 import type { Metadata } from "next";
-import { GuideCover } from "@/components/guide-cover";
 import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { CheckCircle2, XCircle, Zap, Clock, Smartphone } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
-import { PlanYourStop } from "@/components/plan-your-stop";
+import { SessionCalculator } from "@/components/session-calculator";
 import {
   VerifiedCompatibility,
   OperationalTrust,
 } from "@/components/verified-compatibility";
-import { stations } from "@/lib/stations";
+import { stations, maxSessionMinutes } from "@/lib/stations";
 import { CtaButton } from "@/components/ui/cta-button";
 
+/* Every "up to four extensions" claim on this page now comes from the station
+   record rather than being retyped. It was written by hand in five files. */
+const SESSION = stations[0].session;
+
 export const metadata: Metadata = {
-  title: "Flat-Rate EV Charging Pricing | HubCharge",
+  title: "Plan Your Charge — One Flat Rate | HubCharge",
   description:
     "One flat rate per charging session — no per-kWh math, no surprise fees, and no membership needed to charge. Your exact price is shown before you plug in at every HubCharge station.",
-  alternates: { canonical: "https://hubcharge.com/pricing" },
+  alternates: { canonical: "https://hubcharge.com/plan-your-charge" },
 };
 
 const included = [
   `Your full charging session — a quick top-up adds roughly ${TEN_MINUTE_RANGE} miles in about 10 minutes*`,
   "Attendant service — we plug in and unplug for you*",
   "Pay right from your phone's browser — no app, no account required",
-  "Need more? Extend your session in quick taps, up to 4 times",
+  `Need more? Extend in quick taps — up to ${SESSION.maxExtensions} times, for a stop of up to ${maxSessionMinutes(stations[0])} minutes`,
 ];
 
 const neverCharged = [
@@ -52,7 +55,7 @@ const PRICING_FAQS = [
   },
   {
     q: "What if I need more range than 10 minutes gives me?",
-    a: "Extend in quick taps, up to four times per stop.",
+    a: `Extend in quick taps, up to ${SESSION.maxExtensions} times per stop. A stop is the first ${SESSION.baseMinutes} minutes plus up to ${SESSION.maxExtensions} extensions of ${SESSION.extensionMinutes} minutes, so ${maxSessionMinutes(stations[0])} minutes is the longest single session.`,
   },
 ];
 
@@ -66,16 +69,19 @@ const faqLd = {
   })),
 };
 
-export default function PricingPage() {
-  const station = stations[0];
+export default function PlanYourChargePage() {
   return (
     <PageShell
       backTo={{ href: "/", label: "Home" }}
-      eyebrow="Pricing"
+      eyebrow="Plan Your Charge"
       tone="dark"
-      cover={<GuideCover motif="flat" />}
-      title="One flat rate. No surprises."
-      intro="You always know exactly what you'll pay before you plug in — that's the whole point."
+      /* No cover on purpose. With an aside the masthead is a 12-column grid
+         about 480px tall, which pushed the calculator out of the first
+         viewport — and the calculator is the reason to be on this page. With
+         none, PageShell falls to its 760px single column. */
+      title="Work out your charge"
+      intro="Your car, your arrival charge, how long you stay — modelled from your car's own charging curve."
+      primary={<SessionCalculator stations={stations} variant="hero" />}
     >
       <script
         type="application/ld+json"
@@ -133,7 +139,7 @@ export default function PricingPage() {
             {
               icon: Clock,
               title: "Extend if you like",
-              desc: "Want more range? Add time in quick taps — up to 4 extensions per stop.",
+              desc: `Want more range? Add time in quick taps — up to ${SESSION.maxExtensions} extensions of ${SESSION.extensionMinutes} minutes each.`,
             },
           ].map((step, i) => (
             <li key={step.title} className="border-t border-paper-300 pt-5">
@@ -146,10 +152,6 @@ export default function PricingPage() {
             </li>
           ))}
         </ol>
-      </div>
-
-      <div className="mb-20">
-        <PlanYourStop stations={stations} />
       </div>
 
       <div className="mb-20">
@@ -182,7 +184,7 @@ export default function PricingPage() {
         ))}
       </section>
 
-      <div className="max-w-measure">
+      <div id="price" className="max-w-measure scroll-mt-28">
         <h2 className="text-h3 text-ink-900 mb-3">
           Why don&rsquo;t we list a number here?
         </h2>
@@ -198,7 +200,7 @@ export default function PricingPage() {
             Find your hub
           </CtaButton>
           <CtaButton to="/faq" size="lg" variant="secondary">
-            Pricing questions? See the FAQ
+            Questions? See the FAQ
           </CtaButton>
         </div>
         <p className="text-caption text-ink-500 mt-8">

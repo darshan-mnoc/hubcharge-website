@@ -96,7 +96,7 @@ export default function ChargingCostPage() {
         <p>
           Want more range? Extend in quick taps, up to 4 times per stop. The
           full model is on{" "}
-          <Link href="/pricing">our pricing page</Link>.
+          <Link href="/plan-your-charge">our pricing page</Link>.
         </p>
 
         <h2 id="fair-question">A fair question: is flat-rate right for everyone?</h2>

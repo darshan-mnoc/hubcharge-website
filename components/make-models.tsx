@@ -116,7 +116,7 @@ export function MakeModels({ makeId }: { makeId: string }) {
 
       <p className="text-body-sm text-ink-500 mt-6">
         Want to try your own numbers?{" "}
-        <Link href="/pricing#plan" className="text-brand-ink underline underline-offset-2">
+        <Link href="/plan-your-charge#plan" className="text-brand-ink underline underline-offset-2">
           Plan a stop with your starting battery and the weather
         </Link>
         .

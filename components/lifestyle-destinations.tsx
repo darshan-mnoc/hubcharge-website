@@ -9,51 +9,26 @@ import {
   ShoppingBag,
   Sparkles,
   ArrowRight,
-  Gift,
   Zap,
   Clock,
 } from "lucide-react";
 import Image from "next/image";
 import { CtaButton } from "@/components/ui/cta-button";
+import { getService } from "@/lib/services";
 
-const features = [
-  {
-    icon: Coffee,
-    title: "Coffee & Drinks",
-    desc: "Fresh coffee, boba, smoothies delivered hot to your window.",
-    image: "/images/lifestyle-coffee-v2.webp",
-    color: "from-brand",
-  },
-  {
-    icon: Utensils,
-    title: "Food & Meals",
-    desc: "Breakfast, lunch or dinner, brought from local restaurants to your car.",
-    image: "/images/lifestyle-food-v2.webp",
-    color: "from-brand",
-  },
-  {
-    icon: ShoppingBag,
-    title: "Groceries & Errands",
-    desc: "Quick essentials, pharmacy runs, anything you need picked up.",
-    image: "/images/lifestyle-groceries-v2.webp",
-    color: "from-brand",
-  },
-  {
-    icon: Sparkles,
-    title: "Services",
-    desc: "Detailing and dry-cleaning pickup. Make the ten minutes count.",
-    image: "/images/lifestyle-services-v2.webp",
-    color: "from-brand",
-  },
-];
+/* The categories, described by lib/services.ts rather than by this file.
+   A 47-line `features` array of the same copy also used to live here and was
+   never rendered by any JSX in the file — two descriptions of one set of
+   services, one of them invisible and therefore never corrected.
 
-// Categories of services - clear and straightforward
+   "And more — new services added regularly" is gone with it: nothing is being
+   added regularly yet, because none of this has launched. */
 const serviceCategories = [
-  { label: "Food & Drinks", icon: Coffee, desc: "Coffee, meals, snacks" },
-  { label: "Errands", icon: ShoppingBag, desc: "Groceries, packages" },
-  { label: "Car Care", icon: Sparkles, desc: "Detailing, cleaning" },
-  { label: "And more", icon: Gift, desc: "New services added regularly" },
-];
+  { id: "coffee", label: "Coffee & Drinks", icon: Coffee },
+  { id: "food", label: "Food", icon: Utensils },
+  { id: "errands", label: "Errands", icon: ShoppingBag },
+  { id: "carcare", label: "Car Care", icon: Sparkles },
+].map((c) => ({ ...c, desc: getService(c.id)?.desc ?? "" }));
 
 export function LifestyleDestinations() {
   const reduced = useReducedMotion();
@@ -105,12 +80,15 @@ export function LifestyleDestinations() {
             <br />
             get things done.
           </h2>
+          {/* This sat above the "Coming Soon" badge and read as a present-tense
+              offer — the badge was doing the hedging for a paragraph that had
+              already made the promise. The tense now matches the badge. */}
           <p className="text-body-lg text-muted-dark max-w-3xl">
-            Why waste time waiting? Order food, grab coffee, or run errands —
-            all delivered to your car window while your EV charges.
-            <span className="text-[#f4f3f2]/80 font-medium">
+            Why waste the wait? Food, coffee and errands will come to your car
+            window while your EV charges.
+            <span className="text-on-dark/80 font-medium">
               {" "}
-              Stay in your car. We bring it to you.
+              Stay in your car. We&rsquo;ll bring it to you.
             </span>
           </p>
         </motion.div>
@@ -134,7 +112,7 @@ export function LifestyleDestinations() {
                   className="object-cover transition-transform duration-[800ms] group-hover:scale-[1.05]"
                   sizes="(max-width: 1024px) 100vw, 320px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/55 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-900/55 via-transparent to-transparent" />
                 {/* Charging badge */}
                 <div className="absolute top-4 right-4 w-9 h-9 bg-brand rounded-full flex items-center justify-center shadow-card-hover ring-4 ring-[#0A192F]/40">
                   <Zap className="h-4 w-4 text-white" />
@@ -166,7 +144,7 @@ export function LifestyleDestinations() {
                     Coming Soon
                   </motion.span>
                 </div>
-                <h3 className="text-h2 text-[#f4f3f2] mb-4">
+                <h3 className="text-h2 text-white mb-4">
                   Services delivered to your car
                 </h3>
                 <p className="text-muted-dark mb-6 max-w-md">
@@ -184,7 +162,7 @@ export function LifestyleDestinations() {
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 }}
                       whileHover={{ scale: 1.03, y: -2 }}
-                      className="group relative glass rounded-lg p-4 border border-[#334155] hover:border-brand/30 cursor-pointer transition-all overflow-hidden"
+                      className="group relative glass rounded-lg p-4 border border-ink-600 hover:border-brand/30 cursor-pointer transition-all overflow-hidden"
                     >
                       {/* Hover glow */}
                       <motion.div
@@ -198,7 +176,7 @@ export function LifestyleDestinations() {
                           <category.icon className="h-5 w-5 text-brand" />
                         </div>
                         <div>
-                          <p className="text-[#f4f3f2] font-semibold text-body-sm group-hover:text-[#f4f3f2] transition-colors">
+                          <p className="text-white font-semibold text-body-sm group-hover:text-white transition-colors">
                             {category.label}
                           </p>
                           <p className="text-muted-dark text-caption group-hover:text-muted-dark transition-colors">
@@ -247,7 +225,7 @@ export function LifestyleDestinations() {
               href="#newsletter"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="text-brand hover:text-[#FF9433] text-body-sm font-medium underline underline-offset-4 transition-colors"
+              className="text-brand hover:text-brand-on-dark text-body-sm font-medium underline underline-offset-4 transition-colors"
             >
               Get notified when services launch →
             </motion.a>

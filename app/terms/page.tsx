@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageShell, Prose } from "@/components/page-shell";
+import { COMPANY, companyAddressLine } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "Terms of Use | HubCharge",
@@ -91,8 +92,7 @@ export default function TermsPage() {
 
         <h2>Contact</h2>
         <p>
-          Micronoc Inc. (HubCharge), 9383 Charles Smith Avenue, Rancho
-          Cucamonga, CA 91730 ·{" "}
+          {COMPANY.legalName} ({COMPANY.name}), {companyAddressLine} ·{" "}
           <a href="mailto:info@micronocinc.com">info@micronocinc.com</a> ·{" "}
           <a href="tel:+19493928755">(949) 392-8755</a>
         </p>

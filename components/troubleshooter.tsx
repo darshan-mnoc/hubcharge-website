@@ -1,5 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { NO_MOTION, SPRING_LAYOUT, EASE_OUT, DUR } from "@/lib/motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useState } from "react";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -118,13 +121,38 @@ export function Troubleshooter() {
   const [openId, setOpenId] = useState<string | null>(null);
   const active = SYMPTOMS.find((s) => s.id === openId);
 
+  const reduced = useReducedMotion();
+
   return (
     <GuideFigure
+      resizes
       eyebrow="Work it out"
       title={active ? active.label : "What's happening?"}
     >
+      {/* A raw ternary swapped these two views in one frame, and because the
+          two are different heights the whole card jump-cut to a new size at
+          the same moment. Wrapped, the height animates once and the panels
+          cross with a direction: the detail arrives from the right, and going
+          back sends it the other way, so the swap is a place you can be
+          rather than a flash. popLayout, not wait — with wait the exit
+          finishes before the enter starts and the height moves in two visible
+          steps instead of one. */}
+      <motion.div layout={!reduced} style={{ overflow: "hidden" }} transition={reduced ? NO_MOTION : SPRING_LAYOUT}>
+      <AnimatePresence initial={false} mode="popLayout">
       {!active ? (
-        <ul>
+        <motion.ul
+          key="list"
+          /* The parent animates its own height by projection, which is a
+             SCALE — so without a projection node of their own, these children
+             get that scale baked in and the headings visibly squash and
+             stretch through the swap. `layout` here is not a second animation;
+             it is the correction that makes the first one not distort. */
+          layout={!reduced}
+          initial={reduced ? false : { opacity: 0, x: -12 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={reduced ? undefined : { opacity: 0, x: -12 }}
+          transition={reduced ? NO_MOTION : { duration: DUR.base, ease: EASE_OUT }}
+        >
           {SYMPTOMS.map((s) => (
             <li key={s.id}>
               <button
@@ -132,21 +160,29 @@ export function Troubleshooter() {
                 className="w-full flex items-center justify-between gap-4 py-4 text-left border-t border-paper-300 last:border-b group"
               >
                 <span className="min-w-0">
-                  <span className="block text-h4 text-ink-900 group-hover:text-brand-ink transition-colors">
+                  <span className="hc-tint block text-h4 text-ink-900 group-hover:text-brand-ink">
                     {s.label}
                   </span>
                   <span className="block text-body-sm text-ink-500 mt-0.5">{s.sub}</span>
                 </span>
-                <ChevronRight aria-hidden className="h-4 w-4 shrink-0 text-ink-400 transition-transform group-hover:translate-x-1" />
+                <ChevronRight aria-hidden className="hc-move h-4 w-4 shrink-0 text-ink-400 group-hover:translate-x-1" />
               </button>
             </li>
           ))}
-        </ul>
+        </motion.ul>
       ) : (
-        <div>
+        <motion.div
+          key={active.id}
+          /* Same correction as the list above. */
+          layout={!reduced}
+          initial={reduced ? false : { opacity: 0, x: 12 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={reduced ? undefined : { opacity: 0, x: 12 }}
+          transition={reduced ? NO_MOTION : { duration: DUR.base, ease: EASE_OUT }}
+        >
           <button
             onClick={() => setOpenId(null)}
-            className="inline-flex items-center gap-1.5 text-caption text-ink-500 hover:text-ink-900 mb-5 transition-colors"
+            className="hc-tint inline-flex items-center gap-1.5 text-caption text-ink-500 hover:text-ink-900 mb-5"
           >
             <ArrowLeft aria-hidden className="h-3.5 w-3.5" />
             All symptoms
@@ -196,8 +232,10 @@ export function Troubleshooter() {
               </>
             )}
           </p>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
+      </motion.div>
     </GuideFigure>
   );
 }

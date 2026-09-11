@@ -3,22 +3,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
-  Zap,
+  CheckCircle2,
   Clock,
-  Phone,
-  UserRound,
-  Navigation,
   Coffee,
-  Utensils,
+  Navigation,
+  Phone,
   ShoppingBag,
   Smartphone,
-  CheckCircle2,
+  UserRound,
+  Utensils,
+  Zap,
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CtaButton } from "@/components/ui/cta-button";
 import { GuideBreadcrumb } from "@/components/learn";
 import { NearbyPlaces } from "@/components/nearby-places";
-import { PlanYourStop } from "@/components/plan-your-stop";
+import { SessionCalculator } from "@/components/session-calculator";
+import { StationAccess } from "@/components/station-access";
+import { accessFor } from "@/lib/station-access";
+import { getService } from "@/lib/services";
 import { getNearbyPlaces } from "@/lib/places";
 import { stationStatus } from "@/lib/hours";
 import {
@@ -26,6 +29,7 @@ import {
   getStationBySlug,
   directionsUrl,
   mapEmbedUrl,
+  STATE_NAMES,
 } from "@/lib/stations";
 
 export function generateStaticParams() {
@@ -40,10 +44,19 @@ export async function generateMetadata({
   const { slug } = await params;
   const station = getStationBySlug(slug);
   if (!station) return {};
-  const title = `DC Fast EV Charging in ${station.city}, CA | ${station.name}`;
-  const description = `${station.name}: full-service DC fast charging (${station.power}, ${station.connectors.join(
-    " & "
-  )}) in ${station.city}, California. Attendant service, no app needed. Open daily ${station.hours}.`;
+  /* State from the record, not the string "CA". Every one of these read
+     "…, CA | …" and "…, California." regardless of where the site actually
+     is, which was fine for exactly as long as every site was in one state. */
+  const stateName = STATE_NAMES[station.state] ?? station.state;
+  const soon = station.status === "coming-soon";
+  const title = soon
+    ? `HubCharge is coming to ${station.city}, ${station.state}`
+    : `DC Fast EV Charging in ${station.city}, ${station.state} | ${station.name}`;
+  const description = soon
+    ? `${station.name} is opening soon at ${station.address}, ${station.city}, ${stateName}. Full-service DC fast charging, ${station.power}, ${station.connectors.join(" & ")}.`
+    : `${station.name}: full-service DC fast charging (${station.power}, ${station.connectors.join(
+        " & "
+      )}) in ${station.city}, ${stateName}. Attendant service, no app needed. Open daily ${station.hours}.`;
   return {
     title,
     description,
@@ -67,7 +80,10 @@ export default async function StationPage({
   if (!station) notFound();
 
   const places = await getNearbyPlaces(station);
+  const access = accessFor(station.id);
   const status = stationStatus(station);
+  const soon = station.status === "coming-soon";
+  const stateName = STATE_NAMES[station.state] ?? station.state;
 
   // Local-business structured data for this specific station
   const jsonLd = {
@@ -77,7 +93,7 @@ export default async function StationPage({
     name: station.name.replace("™", ""),
     description: `Full-service DC fast EV charging (up to ${station.maxKw}kW, ${station.connectors.join(
       " and "
-    )} connectors) with attendant service in ${station.city}, California.`,
+    )} connectors) with attendant service in ${station.city}, ${stateName}.`,
     url: `https://hubcharge.com/locations/${station.slug}`,
     telephone: station.phoneE164,
     priceRange: "$$",
@@ -95,7 +111,9 @@ export default async function StationPage({
       latitude: station.coords.lat,
       longitude: station.coords.lng,
     },
-    openingHoursSpecification: {
+    /* A site that has not opened has no opening hours, and publishing them
+       tells Google it can send someone there today. */
+    ...(soon ? {} : { openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: [
         "Monday",
@@ -108,7 +126,7 @@ export default async function StationPage({
       ],
       opens: station.hoursSchema.opens,
       closes: station.hoursSchema.closes,
-    },
+    } }),
     parentOrganization: {
       "@type": "Organization",
       name: "HubCharge (Micronoc Inc.)",
@@ -120,16 +138,27 @@ export default async function StationPage({
     <PageShell
       backTo={{ href: "/locations", label: "All locations" }}
       eyebrow={station.city}
-      image={station.photos[0].src}
-      imageAlt={station.photos[0].alt}
+      /* A site with nothing built yet has nothing to photograph. PageShell's
+         image is optional; passing photos[0] unconditionally threw the moment
+         a station shipped with an empty array. */
+      image={station.photos[0]?.src}
+      imageAlt={station.photos[0]?.alt}
       meta={
         <>
-          <span>Open daily, {station.hours}</span>
+          <span>
+            {station.status === "coming-soon"
+              ? "Opening soon"
+              : `Open daily, ${station.hours}`}
+          </span>
           <span>{station.connectors.join(" + ")}</span>
           <span>{station.power}</span>
         </>
       }
-      title={`DC fast EV charging in ${station.city}, California`}
+      title={
+        station.status === "coming-soon"
+          ? `HubCharge is coming to ${station.city}`
+          : `DC fast EV charging in ${station.city}, ${STATE_NAMES[station.state] ?? station.state}`
+      }
       intro={station.blurb}
     >
       <script
@@ -165,15 +194,17 @@ export default async function StationPage({
                 Hours
               </p>
               <p className="text-ink-600 text-body-sm flex items-center gap-2">
-                <Clock className="h-4 w-4 text-ink-700" /> Open daily,{" "}
-                {station.hours}
+                <Clock className="h-4 w-4 text-ink-700" />
+                {soon ? "Hours to be confirmed" : `Open daily, ${station.hours}`}
               </p>
+              {/* stationStatus answers "is it open right now", which is not a
+                  question a site without a ribbon cut can be asked. */}
               <p
                 className={`text-caption mt-1 ${
-                  status.open ? "text-ok-ink" : "text-ink-400"
+                  !soon && status.open ? "text-ok-ink" : "text-ink-400"
                 }`}
               >
-                {status.text}
+                {soon ? "Opening soon" : status.text}
               </p>
             </div>
             <div className="card-light p-4">
@@ -209,6 +240,11 @@ export default async function StationPage({
             </div>
           </div>
 
+          {/* Where the address's unanswered questions land: an address and a
+              map are enough for a forecourt, not for a stall inside a parking
+              structure. Renders nothing when we do not know. */}
+          {access && <StationAccess station={station} access={access} />}
+
           {/* The rest of the photographs. A station page that shows the site
               once and then describes it in prose is asking to be trusted; a
               page that shows the equipment, the connectors and the bay is
@@ -232,29 +268,64 @@ export default async function StationPage({
             </div>
           )}
 
-          {/* Full service explainer */}
+          {/* What this station can do for you.
+              This block used to assert the same three bullets on every page,
+              including Round Rock, which has no building on it yet — so the
+              attendant line is now gated on the station's own flag, and the
+              hedge comes from lib/services.ts rather than being retyped. */}
           <div className="bg-ink-900 rounded-lg p-6 lg:p-8 mb-8">
             <p className="flex items-center gap-2 text-brand text-caption font-bold uppercase tracking-widest mb-3">
-              <UserRound className="h-4 w-4" /> Full-service charging
+              <UserRound className="h-4 w-4" />
+              {soon
+                ? "What this station will offer"
+                : station.hasAttendant
+                  ? "Full-service charging"
+                  : "How charging works here"}
             </p>
             <h3 className="text-h3 text-white mb-3">
-              Stay in your car — we handle it
+              {soon
+                ? "Planned for this site"
+                : station.hasAttendant
+                  ? "Stay in your car — we handle it"
+                  : "Self-serve, and nothing to download"}
             </h3>
             <ul className="space-y-2">
               {[
-                "An attendant plugs in and unplugs for you*",
+                /* A site with nothing built on it cannot be described in the
+                   present tense. The record says hasAttendant for Round Rock,
+                   which is a statement of intent rather than of fact, so the
+                   attendant line and the self-serve line take the tense of the
+                   station's status. The other two are true of the product
+                   rather than of the site, and do not move. */
+                station.hasAttendant &&
+                  (soon
+                    ? "An attendant will plug in and unplug for you*"
+                    : access?.attendantHours
+                      ? `An attendant plugs in and unplugs for you, ${access.attendantHours}`
+                      : "An attendant plugs in and unplugs for you*"),
                 "Pay right from your phone's browser — no app to download",
                 "Flat-rate pricing, shown before you plug in",
-              ].map((line) => (
-                <li
-                  key={line}
-                  className="flex items-start gap-2 text-on-dark text-body-sm"
-                >
-                  <CheckCircle2 className="h-4 w-4 text-brand mt-0.5 shrink-0" />
-                  {line}
-                </li>
-              ))}
+                soon
+                  ? "Self-serve whenever the station is open"
+                  : "Every charger is self-serve capable, whenever the station is open",
+              ]
+                .filter(Boolean)
+                .map((line) => (
+                  <li
+                    key={line as string}
+                    className="flex items-start gap-2 text-on-dark text-body-sm"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-brand mt-0.5 shrink-0" />
+                    {line}
+                  </li>
+                ))}
             </ul>
+            {/* Lifestyle services are not bookable yet anywhere. Saying so
+                here, next to what the station can do today, is the split. */}
+            <p className="mt-4 text-caption text-on-dark/55">
+              {getService("coffee")?.caveat} Food, coffee and errands brought to
+              your car are not available yet.
+            </p>
           </div>
 
           {station.note && (
@@ -309,11 +380,14 @@ export default async function StationPage({
 
       <div className="mb-16">
         {/* one site here — you are already on its page, so no picker */}
-          <PlanYourStop stations={[station]} />
+        <SessionCalculator stations={[station]} variant="section" />
       </div>
 
-      <div className="mb-16">
-        <NearbyPlaces places={places} />
+      {/* Demoted to a closing note. This was ten rows in three columns, the
+          widest block on the page, and it sat where a driver needed to know
+          which level the charger was on. */}
+      <div className="mb-12">
+        <NearbyPlaces places={places} variant="compact" />
       </div>
 
       <p className="text-caption text-ink-400 max-w-2xl">

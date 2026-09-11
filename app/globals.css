@@ -55,6 +55,18 @@
     --destructive: 0 72% 51%;
     --ring: 28 100% 50%;
     --radius: 0.75rem;
+
+    /* The site's motion signature, in one place.
+       Identical to EASE_OUT in lib/motion.ts, which framer-motion, the scroll
+       reveal and the card transitions all already use. The guide covers used
+       to invent their own — plain `ease-out` in two classes and a third
+       cubic-bezier in another — so the one element on a guide page that moves
+       before you scroll was the one element not moving like the site. */
+    --hc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    /* Kept equal to DUR.draw in lib/motion.ts, which the guard asserts.
+       A stroke drawing itself and a spring settling are the same house
+       timing, and they were two numbers until now. */
+    --hc-draw-dur: 0.9s;
   }
 }
 
@@ -75,7 +87,12 @@
     /* Design system: light-default. Sections opt into dark via bg-ink-900. */
     @apply bg-paper text-ink-600 antialiased;
     margin: 0;
+    /* CLIP, NOT HIDDEN. See the html/body rule further down for the whole
+       story: overflow-x:hidden makes this element a scroll container, and
+       every `position: sticky` on the site sticks relative to it instead of
+       to the viewport — which is to say, never. */
     overflow-x: hidden;
+    overflow-x: clip;
     font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   }
 
@@ -204,7 +221,15 @@
   .card-light {
     @apply bg-paper rounded-lg border border-paper-300;
     @apply shadow-card;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Was `all 0.3s cubic-bezier(0.4,0,0.2,1)` — Material's curve, hardcoded
+       in the design system's own most-reused primitive while --hc-ease sat
+       three hundred lines below it and a comment complained about exactly
+       this. Also narrowed from `all`: the only properties that change on
+       hover are the border and the shadow, and `all` was volunteering to
+       transition layout too. */
+    transition:
+      border-color 0.3s var(--hc-ease),
+      box-shadow 0.3s var(--hc-ease);
   }
   .card-light:hover {
     @apply border-paper-400 shadow-card-hover;
@@ -217,18 +242,23 @@
 
   /* Glass Effects */
   .glass {
-    @apply bg-[#f4f3f2]/5 backdrop-blur-md;
+    @apply bg-white/5 backdrop-blur-md;
   }
 
 
   /* Cards - Chargetrip Style */
+  /* The four greys here were off-ramp: #0F172A, #334155, #475569 and #1E293B
+     sit between steps the `ink` ladder already defines, which is how a dark
+     card ended up not matching the dark sections around it. */
   .card {
-    @apply bg-[#0F172A] rounded-lg border border-[#334155];
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    @apply bg-ink-800 rounded-lg border border-ink-600;
+    transition:
+      border-color 0.4s var(--hc-ease),
+      background-color 0.4s var(--hc-ease);
   }
 
   .card:hover {
-    @apply border-[#475569] bg-[#1E293B];
+    @apply border-ink-500 bg-ink-700;
   }
 
   /* Buttons — design-system shape (rounded-lg, matches CtaButton) for consistency */
@@ -294,7 +324,7 @@
   /* Same field on the navy bands. */
   .field-dark {
     @apply w-full rounded-lg border-0 text-white;
-    @apply placeholder:text-on-dark/50 caret-brand;
+    @apply placeholder:text-on-dark/55 caret-brand;
     @apply transition-[background-color,box-shadow] duration-200;
     background-color: rgb(255 255 255 / 0.06);
   }
@@ -327,6 +357,26 @@
     }
   }
 
+  /* WCAG 2.5.8 (AA) asks for a 24x24 CSS-px target. A standalone text link
+     set at the caption size is 19px tall, because that is its line box — so
+     the hit area is grown with an overlay rather than with padding, which
+     would move the layout of every list and breadcrumb these links sit in.
+     Links that sit INLINE inside a sentence are exempt from 2.5.8 and must
+     not get this, or the overlays would tile over the surrounding prose. */
+  .tap-target {
+    position: relative;
+  }
+  .tap-target::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 100%;
+    min-height: 24px;
+    transform: translateY(-50%);
+  }
+
   /* Safe Area */
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
@@ -339,11 +389,11 @@
 
 /* Progress Bar */
 .progress-bar {
-  @apply h-1 bg-[#f4f3f2]/10 rounded-full overflow-hidden;
+  @apply h-1 bg-white/10 rounded-full overflow-hidden;
 }
 
 .progress-fill {
-  @apply h-full bg-[#FF7A00] rounded-full;
+  @apply h-full bg-brand rounded-full;
   transition: width 0.5s ease-out;
 }
 
@@ -378,31 +428,308 @@
  * — so a SMIL cover would keep moving for a reader who asked it not to.
  * Doing it in CSS also keeps the covers server-rendered with no JavaScript.
  *
- * One motion per cover, and only where it mirrors something real: charge
- * moving along a live cable, a standby light on an idle unit, a chart drawing
- * itself once the way you would trace it while reading.
+ * TWO SETS, AND THE DIVISION IS THE WHOLE DESIGN.
+ *
+ * The old rule was "one motion per cover, and it plays once". That bought
+ * quiet honestly, but it meant seventeen of twenty-one covers were a frozen
+ * image 1.6 seconds after load — a still picture with a wind-up. The rule now
+ * says what it always meant, and says it per cover, which is the only scope a
+ * reader ever has:
+ *
+ *   ENTRANCE  plays once, on the house curve, and always carries a fill mode.
+ *             Without one it snaps back to its hidden `from` state and the
+ *             element is invisible forever.
+ *   AMBIENT   loops, on ease-in-out, tiny, and slow. It exists so the plate
+ *             reads as a lit place rather than a diagram of one.
+ *
+ * The ambient budget is a taste limit and a performance limit at the same
+ * number, because SVG children are not compositor-promoted in Blink or WebKit
+ * — an animated <g> repaints its own bounding box every frame. So: at most
+ * two ambient elements per cover, none of them large, none faster than 3s,
+ * and never on type. Everything big and slow — the drifting light, the
+ * breathing floor — happens outside the SVG on the composited planes below,
+ * where it costs no paint at all.
  */
-@keyframes hc-flow { to { stroke-dashoffset: -24; } }
-@keyframes hc-draw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
-@keyframes hc-standby { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
-@keyframes hc-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes hc-rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-.hc-flow {
-  stroke-dasharray: 5 19;
-  animation: hc-flow 1.5s linear infinite;
-}
+/* ── Entrance. Once. ─────────────────────────────────────────────── */
+@keyframes hc-rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes hc-draw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+@keyframes hc-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes hc-pop  { from { opacity: 0; transform: scale(0.82); } to { opacity: 1; transform: scale(1); } }
+
+/* 4 is four USER UNITS inside a 300x200 viewBox, so it lands at 8 CSS px in
+   the 600px masthead and 4.6px on a phone. Already the right amount. */
+.hc-rise { animation: hc-rise 0.6s var(--hc-ease) backwards; }
 .hc-draw {
   stroke-dasharray: var(--len);
   stroke-dashoffset: var(--len);
-  animation: hc-draw 1.4s ease-out 0.2s forwards;
+  animation: hc-draw var(--hc-draw-dur) var(--hc-ease) 0.15s forwards;
 }
-.hc-standby { animation: hc-standby 2.4s ease-in-out infinite; }
-/* one soft arrival, for covers whose subject is a list or a set of marks */
-.hc-rise { animation: hc-rise 0.55s ease-out backwards; }
 .hc-fill {
+  /* Without this the origin is (0,100) of the PLATE, not of the element:
+     transform-box's initial value for SVG is view-box, and transform-origin
+     resolves against it. The climate cover's right-hand cell was sweeping in
+     from 170 units away, which read as a wipe across the frame rather than as
+     a battery filling. */
+  transform-box: fill-box;
   transform-origin: left center;
-  animation: hc-fill 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.25s backwards;
+  animation: hc-fill 1s var(--hc-ease) 0.2s backwards;
+}
+.hc-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hc-pop 0.5s var(--hc-ease) backwards;
+}
+
+/* ── The same vocabulary, inside a guide figure ──────────────────────
+ *
+ * The classes above fire at mount, which is right for a cover: a cover is the
+ * first thing on its page, so mount and arrival are the same moment. A figure
+ * is not. GuideFigure waits for the card to scroll into view before revealing
+ * it, so a drawing that started at mount would have finished before anyone
+ * could see it — you would scroll down to a figure that had already played,
+ * which is worse than no motion at all because you paid for it.
+ *
+ * So the shell adds `.is-in` when the card arrives, and these hold their first
+ * frame until it does. One IntersectionObserver — the one the shell already
+ * runs for the reveal — drives every drawing in the figure. No figure imports
+ * an animation library to fade something in.
+ *
+ * `.hc-fig` is only applied when the reader has NOT asked for reduced motion,
+ * so under that setting there is no held state to get stuck in.
+ *
+ * --d is the per-element stagger; --len the path length for a drawn stroke. */
+.hc-fig [data-draw] {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+}
+.hc-fig [data-fill] {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+.hc-fig [data-pop] {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+.hc-fig [data-rise] { opacity: 0; }
+
+.hc-fig.is-in [data-draw] { animation: hc-draw var(--hc-draw-dur) var(--hc-ease) var(--d, 0s) forwards; }
+.hc-fig.is-in [data-fill] { animation: hc-fill 0.7s var(--hc-ease) var(--d, 0s) forwards; }
+.hc-fig.is-in [data-pop]  { animation: hc-pop 0.45s var(--hc-ease) var(--d, 0s) forwards; }
+.hc-fig.is-in [data-rise] { animation: hc-rise 0.5s var(--hc-ease) var(--d, 0s) forwards; }
+
+
+/* A bar that both ARRIVES and then keeps moving.
+ *
+ * The entrance classes above play once. A bar in a calculator has a second
+ * job: it has to keep up with the slider afterwards, and an entrance-only
+ * class leaves it jumping to each new value the moment the reader touches
+ * anything. Writing that as a Tailwind `transition-[height]` is how five
+ * figures ended up on cubic-bezier(0.4,0,0.2,1) — Material's curve, injected
+ * at build time where no grep for the house curve could see it.
+ *
+ * So: one declaration, both jobs. Held at zero until the card arrives, then
+ * transitioned to --v on the house curve, and every later change of --v takes
+ * the same curve for free. Draw the rect at full height and let --v be the
+ * fraction; the reduced-motion blanket rule collapses the transition. */
+.hc-fig [data-bar] {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  transform: scaleY(0);
+}
+.hc-fig.is-in [data-bar] {
+  transform: scaleY(var(--v, 1));
+  transition: transform 0.55s var(--hc-ease) var(--d, 0s);
+}
+/* Not inside a figure (or reduced motion): just be the right size. */
+[data-bar] { transform-box: fill-box; transform-origin: bottom center; transform: scaleY(var(--v, 1)); }
+
+/* The horizontal one. Same contract: --v is the FRACTION, and the element is
+   drawn at full width. Animating a transform rather than `width` also keeps
+   the bar off the layout thread, which matters when three of them are
+   following the same slider. */
+.hc-fig [data-track] { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); }
+.hc-fig.is-in [data-track] {
+  transform: scaleX(var(--v, 1));
+  transition: transform 0.55s var(--hc-ease) var(--d, 0s);
+}
+[data-track] { transform-box: fill-box; transform-origin: left center; transform: scaleX(var(--v, 1)); }
+
+/* Colour and opacity on the house curve, so no figure needs Tailwind's. */
+.hc-tint { transition: color 180ms var(--hc-ease), background-color 180ms var(--hc-ease), border-color 180ms var(--hc-ease); }
+.hc-move { transition: transform 200ms var(--hc-ease); }
+
+/* ── The site chrome, without an animation library ────────────────────
+ *
+ * The nav and the footer render on all 60 routes, and between them they used
+ * ~60 motion elements. Because they are the only framer-motion in the shared
+ * shell, that one dependency put a 167 KB chunk into every route's critical
+ * path — and Turbopack emits it THREE times (verified: three chunks, same
+ * 171,043 bytes, identical module sets, different only in module order and
+ * therefore in content hash), so the homepage downloads 334 KB of it.
+ *
+ * Not one of those ~60 elements needed a JavaScript animator. There is no
+ * drag, no layout projection, no FLIP, no list that reflows — it is entrance
+ * slides, hover scales and two fades. Every one of those is a CSS transition,
+ * runs on the compositor, is interruptible (which a keyframe is not), and
+ * costs nothing.
+ *
+ * The one thing CSS genuinely cannot do without help is an EXIT animation, so
+ * the two disclosure surfaces stay mounted and animate on a data attribute
+ * instead of being conditionally rendered. Same result, no library.
+ */
+
+/* Entrances. The chrome arrives once, at mount. */
+@keyframes hc-drop { from { transform: translateY(-100%); } to { transform: none; } }
+@keyframes hc-lift-in { from { transform: translateY(100%); } to { transform: none; } }
+.hc-drop { animation: hc-drop 0.55s var(--hc-ease) backwards; }
+.hc-lift-in { animation: hc-lift-in 0.55s var(--hc-ease) backwards; }
+
+/* Press and hover. `transform` only, so nothing reflows under a thumb. */
+.hc-press { transition: transform 140ms var(--hc-ease); }
+.hc-press:active { transform: scale(0.95); }
+.hc-press-sm:active { transform: scale(0.9); }
+.hc-grow:hover { transform: scale(1.05); }
+.hc-grow-sm:hover { transform: scale(1.02); }
+.hc-nudge:hover { transform: translateX(4px); }
+.hc-raise:hover { transform: translateY(-2px); }
+.hc-raise-grow:hover { transform: translateY(-2px) scale(1.1); }
+
+/* A surface that has to animate OUT as well as in. Kept in the DOM and
+   toggled by [data-open], because an element React has already removed
+   cannot animate. `visibility` is what makes the closed state properly
+   inert — delayed on the way out so it lasts until the fade finishes, and
+   immediate on the way in. */
+.hc-reveal {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.16s var(--hc-ease), transform 0.16s var(--hc-ease),
+    visibility 0s linear 0.16s;
+}
+.hc-reveal[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.16s var(--hc-ease), transform 0.16s var(--hc-ease),
+    visibility 0s;
+}
+.hc-sheet {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s var(--hc-ease), visibility 0s linear 0.22s;
+}
+.hc-sheet[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.22s var(--hc-ease), visibility 0s;
+}
+/* Children stagger in behind the sheet, and are held until it opens so they
+   do not play to a closed drawer. */
+.hc-sheet [data-stagger] {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.3s var(--hc-ease), transform 0.3s var(--hc-ease);
+}
+.hc-sheet[data-open="true"] [data-stagger] {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--d, 0s);
+}
+
+/* A <details> that opens instead of jumping.
+ *
+ * The pin-geometry panel in connector-diagram is tall, and a <details>
+ * toggles display, so opening it teleported several hundred pixels of content
+ * into existence and shoved everything below it down in one frame. There is
+ * no JavaScript answer worth 171 kB for a disclosure triangle.
+ *
+ * interpolate-size is what makes `height: auto` animatable at all. Where it
+ * is unsupported the rule is simply ignored and the panel opens the way it
+ * does today — so this is an enhancement, never a dependency. It is scoped to
+ * figures so it cannot change any other disclosure on the site. */
+@supports (interpolate-size: allow-keywords) {
+  .hc-fig { interpolate-size: allow-keywords; }
+  .hc-fig details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 0.4s var(--hc-ease), content-visibility 0.4s allow-discrete;
+  }
+  .hc-fig details[open]::details-content { block-size: auto; }
+}
+
+/* ── Ambient. Forever, quietly. ──────────────────────────────────────
+ *
+ * Every one of these ends at full strength on purpose. Reduced motion parks
+ * an animation on its 100% frame, so 100% has to be the state the cover
+ * should hold for good — otherwise the reader who asked for stillness gets
+ * the half-lit frame of a pulse that never finishes.
+ */
+@keyframes hc-flow    { to { stroke-dashoffset: -24; } }
+@keyframes hc-standby { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes hc-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.72; } }
+@keyframes hc-drift   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4px); } }
+@keyframes hc-meter   { from { transform: translateY(0); } to { transform: translateY(-16px); } }
+
+/* linear, and it stays linear: this is charge moving at a constant rate, and
+   easing a loop makes power look like it stutters. The one loop under 3s. */
+.hc-flow    { stroke-dasharray: 5 19; animation: hc-flow 1.5s linear infinite; }
+.hc-standby { animation: hc-standby 3.6s ease-in-out infinite; }
+.hc-breathe { animation: hc-breathe 6s ease-in-out infinite; }
+.hc-drift   { transform-box: fill-box; animation: hc-drift 9s ease-in-out infinite; }
+/* Travels 16 units through an 8-unit clip window, so its animated area is 128
+   square units — the exception the amplitude rule allows for clipped work. */
+.hc-meter   { animation: hc-meter 4s linear infinite; }
+
+/* ── The cover frame ─────────────────────────────────────────────────
+ *
+ * Three planes at three depths, moved by the pointer. The numbers are written
+ * by components/cover-frame.tsx; the depths are decided here.
+ *
+ * The planes are divs and the <svg> element itself, never an inner <g>:
+ * transforming a group repaints the whole 600x400 drawing every frame, while
+ * transforming a replaced element with will-change gets a real compositor
+ * layer and costs no paint whatsoever. That is also why the large, slow
+ * atmosphere lives out here rather than inside the artwork.
+ */
+.hc-cover {
+  position: absolute;
+  inset: 0;
+  /* Declared, not merely defaulted. Without these two lines the calc() below
+     is invalid at computed-value time and the entire transform is dropped —
+     so a browser with JavaScript off would lose the layout, not just the
+     parallax. */
+  --hc-px: 0;
+  --hc-py: 0;
+}
+.hc-cover > svg,
+.hc-plane {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  /* Re-triggered on every animation frame, this reads as an exponential
+     follow: the planes lag the cursor by about a frame's worth of ease.
+     That lag is the whole sensation of weight. */
+  transition: transform 160ms var(--hc-ease);
+}
+.hc-plane { pointer-events: none; }
+/* Furthest back, so it moves WITH the pointer and most. */
+.hc-atmo  { transform: translate3d(calc(var(--hc-px) * 7px), calc(var(--hc-py) * 4px), 0); }
+/* The artwork, against the pointer and least. scale keeps a 3px shift from
+   ever exposing the frame edge inside the parent's overflow-hidden. */
+.hc-cover > svg { transform: translate3d(calc(var(--hc-px) * -3px), calc(var(--hc-py) * -2px), 0) scale(1.015); }
+/* Nearest, so it travels furthest — a sheen sliding across glass. */
+.hc-sheen { transform: translate3d(calc(var(--hc-px) * 14px), calc(var(--hc-py) * 8px), 0); }
+
+.hc-atmo {
+  background:
+    radial-gradient(58% 46% at 34% 26%, rgba(126, 155, 196, 0.10), transparent 70%),
+    radial-gradient(66% 30% at 50% 100%, rgba(42, 64, 102, 0.16), transparent 72%);
+}
+.hc-sheen {
+  background: radial-gradient(46% 38% at 26% 18%, rgba(180, 205, 240, 0.055), transparent 68%);
 }
 
 /* Reduced Motion */
@@ -420,6 +747,14 @@
   }
   .hc-draw {
     stroke-dashoffset: 0 !important;
+  }
+  /* The blanket rule leaves a 0.01ms transition, which is still motion, and
+     the JS gate in cover-frame.tsx only reads the setting once at mount —
+     a reader who changes it mid-session needs this. */
+  .hc-cover > svg,
+  .hc-plane {
+    transform: none !important;
+    transition: none !important;
   }
 }
 
@@ -471,10 +806,28 @@ summary,
 
 }
 
-/* Prevent horizontal overflow */
+/* Prevent horizontal overflow — WITHOUT breaking position: sticky.
+ *
+ * `overflow-x: hidden` does stop sideways scrolling, and it also makes the
+ * element a scroll container. A sticky descendant then sticks relative to
+ * THAT container rather than to the viewport, and since the container is
+ * exactly as tall as its own content it never has anything to stick against.
+ * So it simply scrolls away.
+ *
+ * Nothing on this site had ever stuck because of these four lines. The
+ * station list on the homepage has carried `sticky top-24` since it was
+ * written and has never once held position; the map beside it did the same
+ * the moment it was given the class.
+ *
+ * `overflow-x: clip` clips the same overflow and creates no scroll container,
+ * so sticky keeps working. The `hidden` line is left above it as the
+ * fallback for anything that does not know `clip` — those browsers keep
+ * today's behaviour rather than gaining a horizontal scrollbar.
+ */
 html,
 body {
   overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
 }
 
@@ -512,21 +865,21 @@ body {
   /* Serif display */
   .text-display {
     font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-    font-variation-settings: "opsz" 120, "SOFT" 0, "WONK" 0;
+    font-variation-settings: "opsz" 120;
     font-size: clamp(2.25rem, 8.5vw, 5.25rem);
     font-weight: 400; line-height: 1.04; letter-spacing: -0.021em;
     text-wrap: balance;
   }
   .text-h1 {
     font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-    font-variation-settings: "opsz" 72, "SOFT" 0, "WONK" 0;
+    font-variation-settings: "opsz" 72;
     font-size: clamp(2rem, 6.2vw, 3.75rem);
     font-weight: 400; line-height: 1.08; letter-spacing: -0.016em;
     text-wrap: balance;
   }
   .text-h2 {
     font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-    font-variation-settings: "opsz" 48, "SOFT" 0, "WONK" 0;
+    font-variation-settings: "opsz" 48;
     font-size: clamp(1.75rem, 4.8vw, 2.875rem);
     font-weight: 400; line-height: 1.12; letter-spacing: -0.013em;
     text-wrap: balance;
@@ -569,20 +922,20 @@ body {
   /* Specials */
   .text-stat {
     font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-    font-variation-settings: "opsz" 72, "SOFT" 0, "WONK" 0;
+    font-variation-settings: "opsz" 72;
     font-size: clamp(2rem, 5.4vw, 3.5rem);
     font-weight: 400; line-height: 1; letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums lining-nums;
   }
   .text-index {
     font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-    font-variation-settings: "opsz" 24, "SOFT" 0, "WONK" 0;
+    font-variation-settings: "opsz" 24;
     font-size: 1.25rem; font-weight: 400; line-height: 1;
     font-variant-numeric: tabular-nums lining-nums;
   }
   .text-quote {
     font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-    font-variation-settings: "opsz" 40, "SOFT" 0, "WONK" 0;
+    font-variation-settings: "opsz" 40;
     font-size: clamp(1.25rem, 3.4vw, 2rem);
     font-weight: 400; font-style: italic; line-height: 1.35;
     letter-spacing: -0.01em;
@@ -611,10 +964,13 @@ body {
     will-change: opacity, transform;
   }
   html.reveal-ready [data-reveal] {
-    transition: opacity .45s cubic-bezier(.16,1,.3,1), transform .45s cubic-bezier(.16,1,.3,1);
+    transition: opacity .45s var(--hc-ease), transform .45s var(--hc-ease);
   }
   /* Once revealed, drop the layer promotion so it doesn't pin GPU memory. */
   html.reveal-ready [data-reveal].reveal-in { opacity: 1; transform: none; will-change: auto; }
+  /* An arbitrary stagger, for lists whose length is data rather than three.
+     The three fixed steps below still work and still win, being later. */
+  html.reveal-ready [data-reveal] { transition-delay: var(--d, 0s); }
   html.reveal-ready [data-reveal][data-reveal-delay="1"] { transition-delay: .09s; }
   html.reveal-ready [data-reveal][data-reveal-delay="2"] { transition-delay: .18s; }
   html.reveal-ready [data-reveal][data-reveal-delay="3"] { transition-delay: .27s; }

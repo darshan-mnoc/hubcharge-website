@@ -89,7 +89,7 @@ const groups: Group[] = [
             hard to predict. Your exact price is shown on your phone before you
             plug in, and it never changes mid-session. Want more range? Extend
             in quick taps, up to 4 times. See{" "}
-            <Link href="/pricing" className="text-brand-ink underline">
+            <Link href="/plan-your-charge" className="text-brand-ink underline">
               our pricing page
             </Link>{" "}
             for the full model.

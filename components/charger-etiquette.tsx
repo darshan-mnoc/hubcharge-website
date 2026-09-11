@@ -13,6 +13,15 @@ import { Car, BatteryMedium, Unplug, Cable, Clock } from "lucide-react";
  * for that; a set of rules you can scan in ten seconds is the right one.
  *
  * Each card links to its own section for the reasoning behind it.
+ *
+ * NO SECOND ILLUSTRATION HERE, ON PURPOSE. The obvious drawing for rule one
+ * — bays in plan, one of them holding a car that has finished — is the exact
+ * subject of the `bays` cover sitting a few hundred pixels above this, so it
+ * would read as the same picture twice rather than as two facts. What this
+ * figure was actually missing was arrival and affordance: five cards that
+ * appeared all at once and gave nothing back when you pointed at them, in the
+ * one guide most likely to be read standing at a charger. So it gets the
+ * stagger and the hover, and the cover keeps the drawing.
  */
 const RULES = [
   {
@@ -55,15 +64,18 @@ export function ChargerEtiquette() {
       footnote="None of this is enforced anywhere. It holds because everyone at the charger is having the same day you are."
     >
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {RULES.map((r) => (
-          <li key={r.rule}>
+        {RULES.map((r, i) => (
+          <li key={r.rule} data-rise style={{ "--d": `${0.06 + i * 0.07}s` } as React.CSSProperties}>
             <a
               href={`#${guideSectionId(r.heading)}`}
-              className="flex h-full gap-3.5 rounded-lg border border-paper-300 p-4 transition-colors hover:bg-paper-100"
+              /* hc-tint rather than Tailwind's colour utility, which compiles
+                 to cubic-bezier(0.4,0,0.2,1) — Material's curve, not ours, and
+                 written by the compiler where the easing guard cannot see it. */
+              className="hc-tint group flex h-full gap-3.5 rounded-lg border border-paper-300 p-4 hover:border-ink-300 hover:bg-paper-100"
             >
               <span
                 aria-hidden
-                className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-paper-200 text-ink-600"
+                className="hc-tint mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-paper-200 text-ink-600 group-hover:bg-brand group-hover:text-ink-900"
               >
                 <r.Icon className="h-4 w-4" strokeWidth={2} />
               </span>

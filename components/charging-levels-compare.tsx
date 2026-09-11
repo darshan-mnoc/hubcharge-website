@@ -1,5 +1,6 @@
 "use client";
 
+import { GuideFigure, RatioBar } from "@/components/guide-figure";
 import { useState } from "react";
 import { Home, Building2, Zap } from "lucide-react";
 import { ModelPicker } from "@/components/model-picker";
@@ -30,6 +31,7 @@ function readable(hours: number): string {
  * the common mistake is buying a wallbox the car can't use — selecting
  * 19.2 kW on a Leaf shows it pinned at 7.2, which is the lesson.
  */
+
 export function ChargingLevelsCompare() {
   const [modelId, setModelId] = useState("hyundai-ioniq-5");
   const [supplyKw, setSupplyKw] = useState<number>(11.5);
@@ -70,7 +72,7 @@ export function ChargingLevelsCompare() {
   const longest = Math.max(l1, l2, dc);
 
   return (
-    <div className="breakout not-prose my-8 rounded-lg border border-paper-300 bg-white p-5 sm:p-6">
+    <GuideFigure>
       <div className="grid gap-5 sm:grid-cols-[minmax(0,15rem)_1fr] sm:items-end mb-7">
         <ModelPicker id="levels-model" value={modelId} onChange={setModelId} />
         <div>
@@ -83,7 +85,7 @@ export function ChargingLevelsCompare() {
                   key={s.kw}
                   aria-pressed={active}
                   onClick={() => setSupplyKw(s.kw)}
-                  className={`rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
+                  className={`rounded-full border px-3.5 py-1.5 text-caption hc-tint ${
                     active
                       ? "border-brand bg-brand text-ink-900"
                       : "border-paper-300 text-ink-600 hover:border-ink-300"
@@ -122,11 +124,21 @@ export function ChargingLevelsCompare() {
                 </span>
                 <span className="text-caption text-ink-400">10 → 80%</span>
               </div>
+              {/* The bar animates the HOURS, and the width is derived from
+                  them on every frame.
+
+                  It used to animate the already-normalised percentage. When
+                  `longest` changed owner — switch supply, switch model — all
+                  three bars tweened their own old percentage to their own new
+                  one independently, so every intermediate frame was a blend of
+                  two different normalisations: a ratio between Level 1, Level 2
+                  and DC that corresponds to no real charging time. Half a
+                  second of a chart showing a relationship that does not exist.
+
+                  Animating the underlying quantity means every frame is a real
+                  set of hours, so every frame is a real ratio. */}
               <div className="mt-2 h-1.5 rounded-full bg-paper-200 overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-[width] duration-500 ${r.highlight ? "bg-brand" : "bg-ink-300"}`}
-                  style={{ width: `${Math.max(1.5, (r.hours / longest) * 100)}%` }}
-                />
+                <RatioBar value={r.hours} worst={longest} floor={1.5} className={r.highlight ? "bg-brand" : "bg-ink-300"} />
               </div>
               <p className="text-body-sm text-ink-500 mt-2.5">{r.body}</p>
             </div>
@@ -140,6 +152,6 @@ export function ChargingLevelsCompare() {
         AC no matter how big the wallbox. The DC figure models this car&rsquo;s
         published charging curve against our {STATION_KW} kW output.
       </p>
-    </div>
+    </GuideFigure>
   );
 }

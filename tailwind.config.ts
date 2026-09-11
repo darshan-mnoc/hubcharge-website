@@ -29,7 +29,17 @@ const config: Config = {
         // brand.ink   = text-only shade for LIGHT backgrounds. #FF7A00 is 2.6:1 on
         //              white, which fails WCAG AA; this is 5.3:1. Use text-brand-ink
         //              for links/labels on white or surface-warm.
-        brand: { DEFAULT: '#FF7A00', hover: '#E66E00', ink: '#B34D00' },
+        // brand.hover DARKENS, which is right on paper and wrong on navy —
+        // it drops 6.74:1 to 5.53:1 and reads as the link going dim. Hover on
+        // a dark ground has to brighten, so `on-dark` is the hover/accent
+        // shade there at 7.99:1. It replaces a hardcoded #FF9433 and a
+        // hardcoded #FFB068 gradient stop.
+        brand: {
+          DEFAULT: '#FF7A00',
+          hover: '#E66E00',
+          ink: '#B34D00',
+          'on-dark': '#FF9433',
+        },
         // NB: `hero`, `midnight-navy`, `surface` and `electric-blue` were
         // removed here. The first three were duplicate names for colours the
         // ink/paper ramps already define (#0A192F reachable three ways,

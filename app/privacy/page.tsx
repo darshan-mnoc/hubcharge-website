@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageShell, Prose } from "@/components/page-shell";
+import { COMPANY, companyAddressLine } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | HubCharge",
@@ -128,9 +129,9 @@ export default function PrivacyPage() {
 
         <h2>Contact us</h2>
         <p>
-          Micronoc Inc. (HubCharge)
+          {COMPANY.legalName} ({COMPANY.name})
           <br />
-          9383 Charles Smith Avenue, Rancho Cucamonga, CA 91730
+          {companyAddressLine}
           <br />
           <a href="mailto:info@micronocinc.com">info@micronocinc.com</a> ·{" "}
           <a href="tel:+19493928755">(949) 392-8755</a>

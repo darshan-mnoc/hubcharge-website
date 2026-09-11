@@ -36,6 +36,30 @@ export const TEMPERATURE_FACTORS = {
 
 export type TemperatureId = keyof typeof TEMPERATURE_FACTORS;
 
+/**
+ * A temperature, either as one of the three named buckets or as the actual
+ * fraction of normal power the pack will take.
+ *
+ * WHY BOTH
+ * The three buckets are right for a cover or a comparison table: they are the
+ * whole vocabulary those surfaces have. They are wrong for a figure with a
+ * temperature slider on it, and weather-impact.tsx showed exactly how wrong.
+ * It ran the simulator at the discrete "mild" bucket and then multiplied the
+ * ANSWER by the continuous chargeTempFactor curve — two temperature models
+ * stacked on each other, one of which had already been applied inside the
+ * integration. A pack at 45°F does not charge at (mild rate) x (45°F factor);
+ * it charges at the 45°F rate, and the only way to get that is to integrate
+ * with it.
+ *
+ * Passing a number here puts the reader's own temperature inside the loop.
+ */
+export type Temperature = TemperatureId | number;
+
+/** The multiplier a Temperature stands for. */
+export function temperatureFactor(t: Temperature): number {
+  return typeof t === "number" ? t : TEMPERATURE_FACTORS[t].factor;
+}
+
 /** Linear interpolation of the vehicle's curve at an arbitrary SoC. */
 export function powerAtSoc(model: EvModel, soc: number): number {
   const c = model.curve;
@@ -57,8 +81,25 @@ export type SessionResult = {
   milesHigh: number;
   /** State of charge reached */
   endSoc: number;
-  /** Average delivered power over the session, kW */
+  /**
+   * Mean delivered power across the time actually spent charging, kW.
+   *
+   * A session average including the taper, NOT a peak — a car that opens at
+   * 235kW and ends at 85kW averages neither figure, and labelling this as
+   * anything but an average invites a reader to expect the plateau for the
+   * whole stop.
+   */
   avgKw: number;
+  /** Energy metered at the plug, kWh — what a per-kWh network would bill. */
+  kwhMetered: number;
+  /**
+   * Energy that reaches the battery, kWh.
+   *
+   * This is the one a driver means by "how much did I get": it is what moved
+   * the state of charge, and it is the figure the range band is derived from.
+   * Lower than `kwhMetered` by the conversion and thermal losses.
+   */
+  kwhToBattery: number;
   /** True when the station is the limit, not the car */
   stationLimited: boolean;
   /** True when the car's own ceiling is below the station's */
@@ -76,9 +117,9 @@ export function simulateSession(
   stationKw: number,
   startSoc: number,
   minutes: number,
-  temperature: TemperatureId = "mild"
+  temperature: Temperature = "mild"
 ): SessionResult {
-  const tempFactor = TEMPERATURE_FACTORS[temperature].factor;
+  const tempFactor = temperatureFactor(temperature);
   const stepSeconds = 10;
   const steps = Math.round((minutes * 60) / stepSeconds);
 
@@ -86,6 +127,11 @@ export function simulateSession(
   let kwhDelivered = 0;
   let powerSum = 0;
   let stationLimitedSteps = 0;
+  /* Counted separately from `steps`, because the loop stops early once the
+     pack is full. Averaging over the requested duration instead of the
+     charging duration reported a power the car never delivered — too low,
+     and the more so the earlier it filled. */
+  let stepsRun = 0;
 
   for (let i = 0; i < steps && soc < 100; i++) {
     const vehicleKw = powerAtSoc(model, soc) * tempFactor;
@@ -95,12 +141,17 @@ export function simulateSession(
     const kwh = (deliveredKw * stepSeconds) / 3600;
     kwhDelivered += kwh;
     powerSum += deliveredKw;
+    stepsRun++;
     soc += (kwh * DELIVERY_EFFICIENCY * 100) / model.usableKwh;
   }
 
+  /* DELIVERY_EFFICIENCY is applied to the total here and inside the loop to
+     the state of charge. That is one loss with two consumers, not a double
+     count: the pack receives 90% of what the plug meters, and both the SoC
+     and the range band need that same pack-side figure. */
   const usableKwh = kwhDelivered * DELIVERY_EFFICIENCY;
   const miles = usableKwh * efficiencyMiPerKwh(model);
-  const avgKw = steps > 0 ? powerSum / steps : 0;
+  const avgKw = stepsRun > 0 ? powerSum / stepsRun : 0;
 
   // ±12% band: efficiency swings with speed, terrain, climate use and how
   // full the pack already is. Rounded to 5s so it doesn't read as precise.
@@ -111,20 +162,59 @@ export function simulateSession(
     milesHigh: round5(miles * 1.12),
     endSoc: Math.min(100, Math.round(soc)),
     avgKw: Math.round(avgKw),
+    /* One decimal. A tenth of a kWh is inside the noise of this model, but
+       whole kilowatt-hours on a ten-minute stop round 4.4 and 5.4 to the
+       same answer, which reads as a stuck number as the slider moves. */
+    kwhMetered: Math.round(kwhDelivered * 10) / 10,
+    kwhToBattery: Math.round(usableKwh * 10) / 10,
     stationLimited: stationLimitedSteps > steps * 0.3,
     vehicleLimited: model.peakKw < stationKw,
   };
 }
 
-/** Minutes to get from one state of charge to another. */
+/**
+ * Minutes to get from one state of charge to another.
+ *
+ * Memoised, because this is a ten-second-step Euler integration — up to 1,440
+ * iterations, each one a linear scan of the model's curve — and eight
+ * components call it, several of them from inside a render that re-runs on
+ * every frame of a dragged slider. The curve chart recomputed its 10-to-80
+ * figure on every pointer pixel, and that figure depends only on the model.
+ *
+ * The result is a pure function of these five arguments, so the cache can
+ * never go stale: thirty-one models against a handful of ranges is a few
+ * hundred entries at most.
+ */
+const timingCache = new Map<string, number>();
+
 export function minutesBetweenSoc(
   model: EvModel,
   stationKw: number,
   fromSoc: number,
   toSoc: number,
-  temperature: TemperatureId = "mild"
+  temperature: Temperature = "mild"
 ): number {
-  const tempFactor = TEMPERATURE_FACTORS[temperature].factor;
+  /* A continuous factor is quantised into the key so a slider dragged across
+     a hundred values cannot mint a hundred cache entries per model. Three
+     decimal places is finer than the curve's own resolution. */
+  const tempKey =
+    typeof temperature === "number" ? temperature.toFixed(3) : temperature;
+  const key = `${model.id}|${stationKw}|${fromSoc}|${toSoc}|${tempKey}`;
+  const hit = timingCache.get(key);
+  if (hit !== undefined) return hit;
+  const result = computeMinutesBetweenSoc(model, stationKw, fromSoc, toSoc, temperature);
+  timingCache.set(key, result);
+  return result;
+}
+
+function computeMinutesBetweenSoc(
+  model: EvModel,
+  stationKw: number,
+  fromSoc: number,
+  toSoc: number,
+  temperature: Temperature
+): number {
+  const tempFactor = temperatureFactor(temperature);
   const stepSeconds = 10;
   let soc = fromSoc;
   let seconds = 0;
@@ -143,6 +233,17 @@ export function minutesBetweenSoc(
 /** The disclosure that must sit beside any figure these functions produce. */
 export const ESTIMATE_BASIS =
   "Estimates model your car's published charging curve against our charger's output, assuming a preconditioned battery and a stall you're not sharing. Real results vary with temperature, starting charge, battery age and driving conditions.";
+
+/**
+ * The disclosure for the energy and average-power figures specifically.
+ *
+ * Separate from ESTIMATE_BASIS because it qualifies different numbers: the
+ * energy figure is what reaches the battery rather than what the meter reads,
+ * and the power figure is a session mean rather than the peak a spec sheet
+ * quotes. Both are routinely misread as the other.
+ */
+export const POWER_BASIS =
+  "Average power is the mean across your whole stop, including the taper as the battery fills — not a peak figure. Energy shown is what reaches the battery; a little more than that passes through the meter, as conversion and thermal losses.";
 
 /** Our stations' output. Every published figure is modelled against this. */
 export const STATION_KW = 180;

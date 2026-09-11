@@ -1,8 +1,23 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { NO_MOTION, SPRING_LAYOUT } from "@/lib/motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useState } from "react";
-import { ExternalLink, Check, X, HelpCircle, CircleSlash } from "lucide-react";
+import { ExternalLink, Check, X, HelpCircle, CircleSlash, Clock } from "lucide-react";
 import { GuideFigure } from "@/components/guide-figure";
+import {
+  INCENTIVES_CHECKED,
+  QUESTIONS,
+  matchingProgrammes,
+  type Answer,
+} from "@/lib/incentives";
+import { STATE_NAMES } from "@/lib/stations";
+
+/* California first, because that is where the open sites are — the same
+   ordering rule statesWithCoverage() uses. "Somewhere else" is appended by
+   the control rather than listed here. */
+const STATE_ORDER = ["CA", "TX"];
 
 /**
  * Incentive eligibility, without asserting amounts.
@@ -16,131 +31,22 @@ import { GuideFigure } from "@/components/guide-figure";
  * your time given your situation, and links each to the body that administers
  * it. Every claim is a link, and the page carries the date it was checked.
  */
-export const INCENTIVES_CHECKED = "27 August 2026";
-
-type Answer = "yes" | "no" | "unsure";
-
-type Programme = {
-  id: string;
-  name: string;
-  body: string;
-  url: string;
-  what: string;
-  relevant: (a: Record<string, Answer>) => boolean;
-  note?: string;
-  /**
-   * Ended programmes stay on the page rather than being deleted.
-   *
-   * Someone searching "federal EV tax credit" needs to be told it ended and
-   * when — finding nothing reads as a broken page and sends them to a blog
-   * post that hasn't been updated either. `ended` carries the date so the
-   * claim is checkable.
-   */
-  status: "live" | "ended";
-  ended?: string;
-};
-
-const PROGRAMMES: Programme[] = [
-  {
-    id: "federal",
-    name: "Federal clean vehicle credit (§30D)",
-    body: "IRS",
-    url: "https://www.irs.gov/credits-deductions/credits-for-new-clean-vehicles-purchased-in-2023-or-after",
-    status: "ended",
-    ended: "30 September 2025",
-    what: "The federal credit against tax for a qualifying new EV. Terminated by the One Big Beautiful Bill Act in July 2025 for any vehicle acquired after 30 September 2025.",
-    relevant: () => true,
-    note: "The cut-off turns on when the vehicle was acquired, not when it was delivered — a binding written contract with a payment made on or before that date can still qualify. That is a question for your tax preparer, not for us.",
-  },
-  {
-    id: "federal-used",
-    name: "Used clean vehicle credit (§25E)",
-    body: "IRS",
-    url: "https://www.irs.gov/credits-deductions/used-clean-vehicle-credit",
-    status: "ended",
-    ended: "30 September 2025",
-    what: "The smaller credit for a qualifying used EV bought from a dealer. Ended on the same date and under the same law as the new-vehicle credit.",
-    relevant: () => true,
-  },
-  {
-    id: "cvrp",
-    name: "Clean Vehicle Rebate Project (CVRP)",
-    body: "California Air Resources Board",
-    url: "https://ww2.arb.ca.gov/our-work/programs/clean-vehicle-rebate-project",
-    status: "ended",
-    ended: "late 2023",
-    what: "California’s long-running purchase rebate, which put close to 600,000 clean vehicles on the road. Closed to new applications and not returning — the state has shifted its money toward income-qualified programmes instead.",
-    relevant: (a) => a.california !== "no",
-  },
-  {
-    id: "hov",
-    name: "HOV lane access (Clean Air Vehicle decal)",
-    body: "California DMV",
-    url: "https://ww2.arb.ca.gov/end-californias-clean-air-vehicle-decal-program",
-    status: "ended",
-    ended: "1 October 2025",
-    what: "Solo access to carpool lanes for zero-emission vehicles. The federal authority that let states run it lapsed on 30 September 2025; every decal expired the next day and the DMV had already stopped issuing them.",
-    relevant: (a) => a.california !== "no",
-    note: "California legislated an extension through 2027, but it needs federal approval under 23 U.S.C. §166 that has not been granted. If that changes, this comes back.",
-  },
-  {
-    id: "ccfa",
-    name: "Clean Cars 4 All",
-    body: "California / regional air districts",
-    url: "https://ww2.arb.ca.gov/our-work/programs/clean-cars-4-all",
-    status: "live",
-    what: "Pays substantially more than the old rebate did to scrap an older, higher-polluting car for a cleaner one. Run regionally, so the terms depend on your air district.",
-    relevant: (a) => a.california !== "no" && a.income !== "no",
-  },
-  {
-    id: "dcap",
-    name: "Driving Clean Assistance Program (DCAP)",
-    body: "California Air Resources Board",
-    url: "https://ww2.arb.ca.gov/our-work/programs/driving-clean-assistance-program",
-    status: "live",
-    what: "The statewide programme that took over after CVRP closed. Aimed at first-time and lower-income buyers, and unlike Clean Cars 4 All it does not require scrapping an old car. Covers used EVs as well as new.",
-    relevant: (a) => a.california !== "no" && a.income !== "no",
-  },
-  {
-    id: "myfirstev",
-    name: "MyFirstEV",
-    body: "California",
-    url: "https://ww2.arb.ca.gov/our-work/programs/driving-clean-assistance-program",
-    status: "live",
-    what: "An instant rebate applied at purchase rather than claimed later, launched in August 2026 and currently offered through a small number of manufacturers.",
-    relevant: (a) => a.california !== "no" && a.buying !== "no",
-    note: "New enough that participating brands are still changing. Confirm with the dealer before you count on it.",
-  },
-  {
-    id: "utility",
-    name: "Utility rates and charger rebates",
-    body: "Your electricity provider",
-    url: "https://www.energy.ca.gov/programs-and-topics/topics/transportation",
-    status: "live",
-    what: "Most California utilities run an EV-specific time-of-use rate, and some pay toward a home charger install. If you can charge where you park, this is usually the largest recurring saving on the list.",
-    relevant: (a) => a.home !== "no",
-  },
-];
-
-const QUESTIONS = [
-  { id: "california", q: "Do you live in California?" },
-  { id: "buying", q: "Are you buying or leasing a car soon?" },
-  { id: "used", q: "Would you consider a used EV?" },
-  { id: "home", q: "Can you charge where you park overnight?" },
-  { id: "income", q: "Would you describe your household as income-qualified?" },
-] as const;
-
 export function IncentiveFinder() {
+  /* A STATE, NOT A YES/NO ABOUT ONE STATE.
+     This asked "Do you live in California?" and five of the eight programmes
+     tested that one answer, so the page could only ever describe one state
+     and a Texan who answered honestly was shown two ended federal credits and
+     nothing else. Where you live is not a boolean. */
+  const [state, setState] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
-  const answered = Object.keys(answers).length;
-  // Live first. An ended programme listed above a claimable one buries the
-  // thing the reader can actually act on.
-  const matching = PROGRAMMES.filter((p) => p.relevant(answers));
-  const shown = [
-    ...matching.filter((p) => p.status === "live"),
-    ...matching.filter((p) => p.status === "ended"),
-  ];
-  const liveCount = matching.filter((p) => p.status === "live").length;
+  /* Object.keys counted a key whose value had been cleared to undefined, so
+     de-selecting an answer still counted as answered. */
+  const answered = Object.values(answers).filter(Boolean).length + (state ? 1 : 0);
+  const shown = matchingProgrammes(state, answers);
+  const liveCount = shown.filter((p) => p.status === "live").length;
+  const closedCount = shown.filter((p) => p.status === "closed").length;
+
+  const reduced = useReducedMotion();
 
   return (
     <GuideFigure
@@ -162,6 +68,34 @@ export function IncentiveFinder() {
           <p className="text-caption text-ink-500 mb-4">
             Answer what you can — the list narrows as you go.
           </p>
+          <div className="mb-5">
+            <p className="text-body-sm text-ink-900 mb-2">Where do you live?</p>
+            <div role="group" aria-label="Where do you live?" className="flex flex-wrap gap-1.5">
+              {[...STATE_ORDER, null].map((code) => {
+                const on = state === code;
+                return (
+                  <button
+                    key={code ?? "elsewhere"}
+                    aria-pressed={on}
+                    onClick={() => setState(on ? null : code)}
+                    className={`rounded-full border px-3 py-1 text-caption hc-tint ${
+                      on
+                        ? "border-brand bg-brand text-ink-900"
+                        : "border-paper-300 text-ink-600 hover:border-ink-300"
+                    }`}
+                  >
+                    {code ? STATE_NAMES[code] : "Somewhere else"}
+                  </button>
+                );
+              })}
+            </div>
+            {state === null && (
+              <p className="text-footnote text-ink-400 mt-2">
+                Everything below applies wherever you are until you pick a
+                state.
+              </p>
+            )}
+          </div>
           <ul className="space-y-4">
             {QUESTIONS.map(({ id, q }) => (
               <li key={id}>
@@ -176,7 +110,7 @@ export function IncentiveFinder() {
                         onClick={() =>
                           setAnswers((prev) => ({ ...prev, [id]: prev[id] === v ? undefined! : v }))
                         }
-                        className={`rounded-full border px-3 py-1 text-caption capitalize transition-colors ${
+                        className={`rounded-full border px-3 py-1 text-caption capitalize hc-tint ${
                           on
                             ? "border-brand bg-brand text-ink-900"
                             : "border-paper-300 text-ink-600 hover:border-ink-300"
@@ -196,19 +130,54 @@ export function IncentiveFinder() {
         <div>
           <p aria-live="polite" className="text-caption text-ink-400 mb-3">
             {liveCount} open {liveCount === 1 ? "programme" : "programmes"}
-            {shown.length - liveCount > 0 &&
-              `, ${shown.length - liveCount} ended`}
+            {closedCount > 0 && `, ${closedCount} between rounds`}
+            {shown.length - liveCount - closedCount > 0 &&
+              `, ${shown.length - liveCount - closedCount} ended`}
             {answered > 0 ? " · matched to your answers" : " — answer to narrow"}
           </p>
           <ul>
+            {/* Answering a question re-filters and re-sorts this list. It used
+                to happen in one frame, so a reader could not tell whether their
+                answer had removed a programme or simply moved it. layout is the
+                right tool here and the only place in the set it is used: these
+                items only translate vertically, so there is no scale distortion
+                on the text to counter. */}
+            <AnimatePresence initial={false}>
             {shown.map((p) => (
-              <li key={p.id} className="py-4 border-t border-paper-300 last:border-b">
+              <motion.li
+                key={p.id}
+                layout={!reduced}
+                initial={reduced ? false : { opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                /* THE EXIT HAS TO TAKE THE PADDING WITH IT.
+                   This animated marginTop and marginBottom, which are already
+                   zero — so those two channels did nothing — while `py-4` and
+                   the top border stayed put. Under border-box, height: 0 sets
+                   the CONTENT box to zero and leaves 16px + 16px + 1px behind,
+                   so a filtered-out programme collapsed to a 33px empty stripe
+                   and then vanished. The reader saw a gap appear where a row
+                   had been, which is the opposite of the thing this animation
+                   exists to communicate. */
+                exit={
+                  reduced
+                    ? undefined
+                    : {
+                        opacity: 0,
+                        height: 0,
+                        paddingTop: 0,
+                        paddingBottom: 0,
+                        borderTopWidth: 0,
+                      }
+                }
+                transition={reduced ? NO_MOTION : SPRING_LAYOUT}
+                className="py-4 border-t border-paper-300 last:border-b overflow-hidden"
+              >
                 <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
                   <a
                     href={p.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`group inline-flex items-baseline gap-1.5 text-h4 transition-colors ${
+                    className={`group inline-flex items-baseline gap-1.5 text-h4 hc-tint ${
                       p.status === "ended"
                         ? "text-ink-500 hover:text-ink-900"
                         : "text-ink-900 hover:text-brand-ink"
@@ -224,6 +193,14 @@ export function IncentiveFinder() {
                       Ended {p.ended}
                     </span>
                   )}
+                  {/* A different badge, because it is a different fact. Ended
+                      means do not wait for it; closed means wait for it. */}
+                  {p.status === "closed" && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-brass/15 px-2 py-0.5 text-caption text-brass-ink">
+                      <Clock aria-hidden className="h-3 w-3" />
+                      Closed between rounds
+                    </span>
+                  )}
                 </span>
                 <p className="text-caption text-ink-400 mt-0.5">{p.body}</p>
                 <p className={`text-body-sm mt-2 ${p.status === "ended" ? "text-ink-400" : "text-ink-500"}`}>
@@ -234,8 +211,9 @@ export function IncentiveFinder() {
                     {p.note}
                   </p>
                 )}
-              </li>
+              </motion.li>
             ))}
+                      </AnimatePresence>
           </ul>
         </div>
       </div>

@@ -31,6 +31,7 @@ export function PageShell({
   toc,
   tone = "light",
   backTo,
+  primary,
   children,
 }: {
   title: string;
@@ -49,6 +50,16 @@ export function PageShell({
   tone?: Tone;
   /** Upward navigation. Every sub-page should offer one. */
   backTo?: { href: string; label: string };
+  /**
+   * Page-primary content, rendered full width directly under the masthead
+   * with no padding above it.
+   *
+   * For a page whose whole job is one interactive thing: the masthead says
+   * what the page is in two lines and then gets out of the way, so the tool
+   * is in the first viewport instead of below a screen of preamble. Pages
+   * that omit it are unaffected.
+   */
+  primary?: ReactNode;
   children: ReactNode;
 }) {
   const dark = tone === "dark";
@@ -64,7 +75,7 @@ export function PageShell({
       {backTo && (
         <Link
           href={backTo.href}
-          className={`group inline-flex items-center gap-1.5 text-caption mb-6 transition-colors ${
+          className={`tap-target group inline-flex items-center gap-1.5 text-caption mb-6 transition-colors ${
             dark
               ? "text-on-dark/60 hover:text-white"
               : "text-ink-400 hover:text-ink-900"
@@ -179,6 +190,10 @@ export function PageShell({
           <hr className={dark ? "border-white/10" : "border-paper-300"} />
         </div>
       </header>
+
+      {primary && (
+        <div className="section-container pt-8 lg:pt-10">{primary}</div>
+      )}
 
       <div className="section-container py-16 lg:py-24">{children}</div>
       <LifestyleFooter />

@@ -106,7 +106,7 @@ export function ChatPopup() {
         }}
         className={`fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-6 lg:bottom-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
           isOpen
-            ? "bg-[#1a1a1a] border border-white/20"
+            ? "bg-ink-800 border border-white/20"
             : "bg-ink-900 border border-white/15"
         }`}
       >
@@ -244,7 +244,7 @@ export function ChatPopup() {
                     <h4 className="text-h3 text-white mb-2">
                       Thank You!
                     </h4>
-                    <p className="text-white/50 text-body-sm">
+                    <p className="text-white/55 text-body-sm">
                       Your feedback helps us bring the best to your area.
                     </p>
                   </motion.div>
@@ -257,7 +257,7 @@ export function ChatPopup() {
                     onSubmit={handleSubmit}
                     className="p-4 sm:p-6"
                   >
-                    <p className="text-white/50 text-caption sm:text-body-sm mb-3 sm:mb-4">
+                    <p className="text-white/55 text-caption sm:text-body-sm mb-3 sm:mb-4">
                       Select what you&apos;d like to see near HubCharge™ stations:
                     </p>
 
@@ -327,7 +327,7 @@ export function ChatPopup() {
                       {sending ? "Sending…" : "Send Feedback"}
                     </motion.button>
 
-                    <p className="text-center text-[10px] sm:text-caption text-white/55 mt-3 sm:mt-4">
+                    <p className="text-center text-footnote sm:text-caption text-white/55 mt-3 sm:mt-4">
                       We read every suggestion
                     </p>
                   </motion.form>

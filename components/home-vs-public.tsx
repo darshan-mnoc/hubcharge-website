@@ -3,18 +3,144 @@
 import { GuideFigure } from "@/components/guide-figure";
 import { House, MapPin } from "lucide-react";
 
-/**
- * Home charging against public charging, on the things people actually decide
- * on. The guide's own last section is called "The honest comparison" and was
- * a wall of prose; this is that section as something you can scan.
+/* ── The day, drawn to scale ──────────────────────────────────────────
  *
- * Deliberately not a winner-takes-all table. The guide's position is that if
- * you can charge where you sleep you should, and that an EV works fine if you
- * cannot — a scorecard with a tick column would flatten exactly that.
+ * Six rows of prose below can tell you home charging happens overnight and
+ * public charging happens in a gap. What they cannot do is show you the
+ * SIZES, and the sizes are the entire argument: eight hours you sleep
+ * through against twenty minutes you are awake for. Written down, "8 hours"
+ * looks like the bigger commitment. Drawn to one scale, it is obviously the
+ * smaller one, because you were not there for it.
  *
- * No costs appear. What a home install runs to varies by house by thousands,
- * and our own rate belongs on the pricing page, not in a comparison graphic.
- */
+ * The axis runs 6am to 6am rather than midnight to midnight, so the night
+ * block is one contiguous shape instead of being cut in half by the frame.
+ * That is a drawing decision, not a data one — the hours are real.
+ *
+ * Both rows share x(), so nothing here can be drawn out of proportion to
+ * anything else. That is the only property this figure has to protect. */
+/* Geometry. A left gutter for the row names, the 24 hours across the rest —
+   so the two rows read as one chart with one axis rather than as two
+   floating shapes, and nothing has to be labelled twice. */
+const GUT = 104;              // row-name gutter
+const PLOT = 720 - GUT;       // 24 hours live here
+const H = PLOT / 24;          // one hour, in user units
+const x = (hour: number) => GUT + hour * H;
+/** Clock hour -> position on an axis that starts at 6am. */
+const from6 = (clock: number) => (clock - 6 + 24) % 24;
+
+const ROW = { home: 30, out: 92 };  // top of each band
+const BAND = 30;
+
+/** Minutes, so the widths below are the claim rather than a shape someone
+ *  liked. A 20-80% DC stop is the same session routine-planner costs. */
+const SESSIONS = {
+  home: { start: 22, mins: 8 * 60, note: "You are asleep for all of it" },
+  /* `label` is the React key and the thing the alt text is written from; it
+     is deliberately not drawn. It sat one line above the hour axis and
+     collided with it, and the axis already says when — the claim this figure
+     makes is how LONG. */
+  out: [
+    { start: 12.75, mins: 20, label: "Lunch" },
+    { start: 17.9, mins: 25, label: "On the way home" },
+  ],
+};
+
+/* Written out rather than computed — the arithmetic version rendered "18pm".
+   Carrying the axis position makes each tick its own thing, so the two "6am"
+   ends are distinguishable and the list has a real key. */
+const TICKS = [
+  { at: 0, label: "6am" },
+  { at: 6, label: "noon" },
+  { at: 12, label: "6pm" },
+  { at: 18, label: "midnight" },
+  { at: 24, label: "6am" },
+];
+
+function DayStrip() {
+  const home = SESSIONS.home;
+  const homeX = x(from6(home.start));
+  const homeW = (home.mins / 60) * H;
+
+  return (
+    <svg
+      viewBox="0 0 720 154"
+      className="mb-7 h-auto w-full"
+      role="img"
+      aria-label="A day drawn to scale: home charging is one eight-hour block overnight while you sleep; public charging is two stops of about twenty minutes each, during the day."
+    >
+      {/* Night, behind both rows, so it reads as the same night for both.
+          Light enough to be ground rather than a panel — at full ink-100 the
+          right third of the chart read as a separate card. */}
+      <rect
+        x={x(from6(21.5))} y="22" width={x(24) - x(from6(21.5))} height="106"
+        fill="#48607F" fillOpacity="0.07"
+      />
+      <text x={x(from6(21.5)) + 8} y="16" fill="#647287" fontSize="10" letterSpacing="0.06em">
+        NIGHT
+      </text>
+
+      {TICKS.map((t) => (
+        <g key={t.at} data-rise style={{ "--d": `${0.3 + (t.at / 6) * 0.03}s` } as React.CSSProperties}>
+          <line x1={x(t.at)} y1="22" x2={x(t.at)} y2="128" stroke="#DCE2E9" strokeWidth="1" />
+          <text
+            x={x(t.at)} y="146"
+            textAnchor={t.at === 0 ? "start" : t.at === 24 ? "end" : "middle"}
+            fill="#647287" fontSize="11"
+          >
+            {t.label}
+          </text>
+        </g>
+      ))}
+
+      {/* ── At home ───────────────────────────────────────────────── */}
+      <text x="0" y={ROW.home + 19} fill="#48607F" fontSize="12" fontWeight="600">
+        At home
+      </text>
+      <rect
+        data-fill
+        x={homeX} y={ROW.home} width={homeW} height={BAND} rx="4"
+        fill="#1B3252"
+        style={{ "--d": "0.1s" } as React.CSSProperties}
+      />
+      <text
+        data-rise
+        x={homeX + 12} y={ROW.home + 19}
+        fill="#e0e3e5" fontSize="12" fontWeight="600"
+        style={{ "--d": "0.6s" } as React.CSSProperties}
+      >
+        {home.mins / 60} hours
+      </text>
+      <text
+        data-rise
+        x={homeX} y={ROW.home + BAND + 16}
+        fill="#647287" fontSize="11"
+        style={{ "--d": "0.66s" } as React.CSSProperties}
+      >
+        {home.note}
+      </text>
+
+      {/* ── Out and about ─────────────────────────────────────────── */}
+      <text x="0" y={ROW.out + 19} fill="#48607F" fontSize="12" fontWeight="600">
+        Out and about
+      </text>
+      {SESSIONS.out.map((o, i) => {
+        const ox = x(from6(o.start));
+        const ow = (o.mins / 60) * H;
+        return (
+          <g key={o.label} data-pop style={{ "--d": `${0.5 + i * 0.12}s` } as React.CSSProperties}>
+            <rect x={ox} y={ROW.out} width={ow} height={BAND} rx="3" fill="#FF7A00" />
+            {/* Above the mark, not below: below is where the hour axis lives,
+                and "20 min" landed straight on top of "noon". */}
+            <text x={ox + ow / 2} y={ROW.out - 7} textAnchor="middle" fill="#B34D00" fontSize="11" fontWeight="600">
+              {o.mins} min
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 const ROWS: { q: string; home: string; out: string }[] = [
   {
     q: "When it happens",
@@ -53,8 +179,10 @@ export function HomeVsPublic() {
     <GuideFigure
       eyebrow="Side by side"
       title="What each one is actually like"
-      footnote="Most people end up doing both — mostly at home, topping up out when a day runs long. The two are not rivals so much as a default and a backstop."
+      footnote="Both rows above are the same 24-hour scale, so the blocks are in true proportion; the day itself is one plausible day, not an average. Most people end up doing both — mostly at home, topping up out when a day runs long. The two are not rivals so much as a default and a backstop."
     >
+      <DayStrip />
+
       <dl className="grid gap-px overflow-hidden rounded-lg bg-paper-300">
         <div className="grid bg-paper sm:grid-cols-[minmax(0,13rem)_1fr_1fr] sm:items-end">
           <span className="hidden sm:block" />

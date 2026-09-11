@@ -1,5 +1,6 @@
 "use client";
 
+import { GuideFigure, GuideSlider, RatioBar } from "@/components/guide-figure";
 import { useState } from "react";
 import { Fuel, Home, Zap, Info } from "lucide-react";
 import Link from "next/link";
@@ -10,36 +11,6 @@ import { getModel, efficiencyMiPerKwh, type EvModel } from "@/lib/ev-models";
 const DC_LOSS = 0.93;
 const AC_LOSS = 0.88;
 
-function Slider({
-  id, label, value, onChange, min, max, step, format, hint,
-}: {
-  id: string; label: string; value: number;
-  onChange: (n: number) => void;
-  min: number; max: number; step: number;
-  format: (n: number) => string; hint?: string;
-}) {
-  return (
-    <div>
-      <div className="flex items-baseline justify-between gap-3">
-        <label htmlFor={id} className="text-caption text-ink-500">{label}</label>
-        <span className="text-body-sm font-semibold text-ink-900 tabular-nums">
-          {format(value)}
-        </span>
-      </div>
-      <input
-        id={id}
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="range-brand mt-2 w-full"
-      />
-      {hint && <p className="text-footnote text-ink-400 mt-1">{hint}</p>}
-    </div>
-  );
-}
 
 /**
  * Cost per mile — theirs, not ours.
@@ -85,29 +56,29 @@ export function CostPerMile() {
   const worst = Math.max(...rows.map((r) => r.cost));
 
   return (
-    <div className="breakout not-prose my-8 rounded-lg border border-paper-300 bg-white p-5 sm:p-6">
+    <GuideFigure>
       <div className="grid gap-6 md:grid-cols-[minmax(0,16rem)_1fr] md:gap-10">
         <div className="space-y-5">
           <ModelPicker id="cost-model" value={modelId} onChange={setModelId} />
           <p className="text-caption text-ink-400 -mt-2">
             {miPerKwh.toFixed(1)} mi/kWh · EPA
           </p>
-          <Slider
+          <GuideSlider
             id="cost-dc" label="Public DC rate" value={dcRate}
             onChange={setDcRate} min={0.25} max={0.85} step={0.01}
             format={(n) => `$${n.toFixed(2)}/kWh`}
           />
-          <Slider
+          <GuideSlider
             id="cost-home" label="Home electricity" value={homeRate}
             onChange={setHomeRate} min={0.1} max={0.6} step={0.01}
             format={(n) => `$${n.toFixed(2)}/kWh`}
           />
-          <Slider
+          <GuideSlider
             id="cost-gas" label="Gasoline" value={gasPrice}
             onChange={setGasPrice} min={2.5} max={7} step={0.05}
             format={(n) => `$${n.toFixed(2)}/gal`}
           />
-          <Slider
+          <GuideSlider
             id="cost-mpg" label="Comparison car" value={mpg}
             onChange={setMpg} min={15} max={55} step={1}
             format={(n) => `${n} mpg`}
@@ -132,11 +103,13 @@ export function CostPerMile() {
                     {(r.cost * 100).toFixed(1)}¢
                   </span>
                 </div>
+                {/* Shared with charging-levels-compare, and it animates the
+                    COST rather than the normalised percentage — `worst`
+                    genuinely changes owner between petrol and DC as you drag,
+                    and blending two normalisations shows a price relationship
+                    that never existed. */}
                 <div className="mt-2 h-1.5 rounded-full bg-paper-200 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-ink-700 transition-[width] duration-300"
-                    style={{ width: `${Math.max(2, (r.cost / worst) * 100)}%` }}
-                  />
+                  <RatioBar value={r.cost} worst={worst} />
                 </div>
                 <p className="text-footnote text-ink-400 mt-1.5">{r.note}</p>
               </li>
@@ -151,7 +124,7 @@ export function CostPerMile() {
                 per kWh. You get a flat rate for the session, shown in full
                 before you plug in — so the sum above is one you never have to
                 do.{" "}
-                <Link href="/pricing" className="text-brand-ink underline underline-offset-2">
+                <Link href="/plan-your-charge" className="text-brand-ink underline underline-offset-2">
                   How our pricing works
                 </Link>
               </span>
@@ -167,6 +140,6 @@ export function CostPerMile() {
         to set; we don&rsquo;t publish other networks&rsquo; prices as fact
         because they change by site and time of day.
       </p>
-    </div>
+    </GuideFigure>
   );
 }

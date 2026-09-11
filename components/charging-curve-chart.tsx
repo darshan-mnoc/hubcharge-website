@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { GuideFigure } from "@/components/guide-figure";
 import { evModels, getModel, type EvModel } from "@/lib/ev-models";
 import {
   powerAtSoc,
@@ -17,7 +18,7 @@ const PAD = { t: 18, r: 16, b: 34, l: 44 };
  * A fixed 720-wide box scaled into a 350px phone renders 11px axis labels at
  * five — legible in the design file, useless on the device.
  */
-function useChartSize() {
+function useChartSize(onResize?: () => void) {
   const ref = useRef<HTMLDivElement>(null);
   const [w, setW] = useState(720);
   useEffect(() => {
@@ -25,10 +26,11 @@ function useChartSize() {
     if (!el) return;
     const ro = new ResizeObserver(([entry]) => {
       setW(Math.max(300, Math.round(entry.contentRect.width)));
+      onResize?.();
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [onResize]);
   const h = Math.round(Math.min(300, Math.max(230, w * 0.42)));
   return { ref, w, h };
 }
@@ -49,7 +51,9 @@ export function ChargingCurveChart({
   const [modelId, setModelId] = useState(defaultModelId);
   const [hoverSoc, setHoverSoc] = useState<number | null>(null);
   const model = getModel(modelId) as EvModel;
-  const { ref, w: W, h: H } = useChartSize();
+  const rectRef = useRef<DOMRect | null>(null);
+  const invalidate = useCallback(() => { rectRef.current = null; }, []);
+  const { ref, w: W, h: H } = useChartSize(invalidate);
   const PLOT_W = W - PAD.l - PAD.r;
   const PLOT_H = H - PAD.t - PAD.b;
 
@@ -57,17 +61,28 @@ export function ChargingCurveChart({
   const x = (soc: number) => PAD.l + (soc / 100) * PLOT_W;
   const y = (kw: number) => PAD.t + PLOT_H - (kw / maxKw) * PLOT_H;
 
-  const { carPath, deliveredPath } = useMemo(() => {
+  const { carPath, deliveredPath, carLen } = useMemo(() => {
     const pts: string[] = [];
     const del: string[] = [];
+    /* Summed here rather than read back with getTotalLength(), which would
+       mean a ref, a layout read, and a second render just to learn the length
+       of a path we are in the middle of building. The curve is a polyline of
+       101 points; its length is the sum of 100 segments and we already have
+       every one of them. */
+    let len = 0;
+    let px = 0, py = 0;
     for (let soc = 0; soc <= 100; soc += 1) {
       const kw = powerAtSoc(model, soc);
-      pts.push(`${x(soc).toFixed(1)},${y(kw).toFixed(1)}`);
+      const cx = x(soc), cy = y(kw);
+      if (soc > 0) len += Math.hypot(cx - px, cy - py);
+      px = cx; py = cy;
+      pts.push(`${cx.toFixed(1)},${cy.toFixed(1)}`);
       del.push(`${x(soc).toFixed(1)},${y(Math.min(kw, STATION_KW)).toFixed(1)}`);
     }
     return {
       carPath: `M${pts.join(" L")}`,
       deliveredPath: `M${del.join(" L")} L${x(100)},${y(0)} L${x(0)},${y(0)} Z`,
+      carLen: Math.ceil(len),
     };
   }, [model, W, H]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -83,8 +98,30 @@ export function ChargingCurveChart({
     return [...by.entries()];
   }, []);
 
+  /* One handler for cursor and thumb alike. The state is quantised to whole
+     percent, so a full-width sweep sets state about a hundred times rather
+     than once per pixel.
+
+     The rect is measured once per interaction, not once per move. Calling
+     getBoundingClientRect() inside pointermove forces a synchronous layout on
+     every frame of a drag, and it did so on the one figure in the set that a
+     reader is most likely to sweep end to end. Only `left` and `width` are
+     used and neither changes under a vertical scroll, so caching at the start
+     of the gesture is exact rather than merely cheaper — and the observer
+     that already watches this element for resizes invalidates it. */
+  const measure = (e: React.PointerEvent<SVGSVGElement>) => {
+    rectRef.current = e.currentTarget.getBoundingClientRect();
+  };
+  const scrub = (e: React.PointerEvent<SVGSVGElement>) => {
+    const r = rectRef.current ?? e.currentTarget.getBoundingClientRect();
+    rectRef.current = r;
+    const px = ((e.clientX - r.left) / r.width) * W;
+    const soc = Math.round(((px - PAD.l) / PLOT_W) * 100);
+    setHoverSoc(Math.max(0, Math.min(100, soc)));
+  };
+
   return (
-    <figure className="breakout not-prose my-8 rounded-lg border border-paper-300 bg-white p-5 sm:p-6">
+    <GuideFigure>
       <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
         <div className="min-w-0">
           <label htmlFor="curve-model" className="block text-caption text-ink-500 mb-1.5">
@@ -127,13 +164,31 @@ export function ChargingCurveChart({
         className="w-full h-auto"
         role="img"
         aria-label={`Charging curve for the ${model.name}: power falls from about ${Math.round(powerAtSoc(model, 20))} kilowatts at 20 percent charge to about ${Math.round(powerAtSoc(model, 80))} at 80 percent. Our chargers deliver up to ${STATION_KW} kilowatts.`}
-        onMouseLeave={() => setHoverSoc(null)}
-        onMouseMove={(e) => {
-          const r = e.currentTarget.getBoundingClientRect();
-          const px = ((e.clientX - r.left) / r.width) * W;
-          const soc = Math.round(((px - PAD.l) / PLOT_W) * 100);
-          setHoverSoc(Math.max(0, Math.min(100, soc)));
+        /* Pointer events, not mouse events.
+           This chart bound onMouseMove and onMouseLeave only, so on any phone
+           it was frozen at its 20% default and nothing on screen said it was
+           interactive at all — the scrub simply did not exist for touch.
+           pan-y keeps a vertical swipe scrolling the article while a
+           horizontal drag scrubs the curve. */
+        style={{ touchAction: "pan-y" }}
+        /* Only a mouse clears the reading. A touch pointer is destroyed the
+           moment the finger lifts, which fires pointerleave immediately — so
+           clearing here unconditionally set the value on tap and wiped it one
+           event later, leaving the chart looking as inert on a phone as it
+           was before pointer events were added at all. Leaving the last value
+           up is also the better behaviour: on touch you cannot hover, so the
+           number you tapped for has to survive letting go. */
+        onPointerLeave={(e) => {
+          if (e.pointerType === "mouse") setHoverSoc(null);
         }}
+        onPointerEnter={measure}
+        onPointerDown={(e) => {
+          e.currentTarget.setPointerCapture(e.pointerId);
+          measure(e);
+          scrub(e);
+        }}
+        onPointerUp={(e) => e.currentTarget.releasePointerCapture(e.pointerId)}
+        onPointerMove={scrub}
       >
         {/* grid */}
         {(W < 460 ? [0, 90, 180, 270] : [0, 45, 90, 135, 180, 225, 270]).filter((k) => k <= maxKw).map((kw) => (
@@ -146,8 +201,10 @@ export function ChargingCurveChart({
           <text key={soc} x={x(soc)} y={H - 12} textAnchor="middle" fontSize="11" fill="#7B8CA3">{soc}%</text>
         ))}
 
-        {/* what we actually deliver */}
-        <path d={deliveredPath} fill="#FF7A00" fillOpacity="0.12" />
+        {/* What actually reaches the battery. It sweeps left to right on
+            arrival, which is the direction charge goes. */}
+        <path data-fill d={deliveredPath} fill="#FF7A00" fillOpacity="0.12"
+          style={{ "--d": "0.35s" } as React.CSSProperties} />
 
         {/* our ceiling */}
         <line x1={PAD.l} x2={W - PAD.r} y1={y(STATION_KW)} y2={y(STATION_KW)} stroke="#B34D00" strokeWidth="1.5" strokeDasharray="5 4" />
@@ -155,8 +212,18 @@ export function ChargingCurveChart({
           {W < 460 ? `up to ${STATION_KW} kW` : `Our chargers · up to ${STATION_KW} kW`}
         </text>
 
-        {/* the car */}
-        <path d={carPath} fill="none" stroke="#0A192F" strokeWidth="2.5" strokeLinejoin="round" />
+        {/* The car's own curve, drawn rather than simply present.
+            The single thing this figure teaches is that the line FALLS, and a
+            stroke that arrives complete states a shape while a stroke that
+            travels states a direction. --len is summed above; the CSS holds it
+            at full offset until the card scrolls into view. */}
+        <path
+          data-draw
+          d={carPath}
+          fill="none" stroke="#0A192F" strokeWidth="2.5"
+          strokeLinejoin="round" strokeLinecap="round"
+          style={{ "--len": carLen } as React.CSSProperties}
+        />
 
         {/* readout */}
         <g>
@@ -183,6 +250,6 @@ export function ChargingCurveChart({
         collapses past 60% — that is why a short top-up beats charging to full.
       </figcaption>
       <p className="mt-2 text-footnote text-ink-400">{ESTIMATE_BASIS}</p>
-    </figure>
+    </GuideFigure>
   );
 }

@@ -56,7 +56,53 @@ export const ILLO = {
   /** Hairline separations inside dark hardware. */
   seam: "#48607F",
 
+  /* ── The plate ──────────────────────────────────────────────
+   *
+   * The stage used to be two stops, #0A192F to #101E36. That is a difference
+   * of six, five and seven levels, spread over four hundred pixels of
+   * masthead: the blue channel steps once every 57px, and on the tablet
+   * layout once every 93px. Those are visible bands, not a theoretical risk,
+   * and no number of extra gradient stops fixes them — the banding is 8-bit
+   * quantisation of the output, not error in the interpolation. Dithering
+   * does. The wider range below plus the grain in guide-cover.tsx is the fix.
+   */
+  skyHigh: "#14263F",
+  skyMid: "#0E1D33",
+  skyLow: "#071426",
+  /** Cool moonlight, upper-left. Every object in these scenes already casts
+   *  its contact shadow to the right and highlights its top edge; until now
+   *  the plate they stand on had no direction at all. */
+  keyLight: "#7E9BC4",
+  /** The band of light behind the horizon, so sky and ground stop being two
+   *  flat fills meeting at a hairline. */
+  horizon: "#2A4066",
+  /** Atmosphere. Distance takes contrast AWAY toward the sky; it does not
+   *  darken. `dim` used to lower opacity against a near-black plate, which
+   *  made a far car darker than a near one — the opposite of depth. */
+  skyHaze: "#1A2C4A",
+
+  /* ── The map ────────────────────────────────────────────────
+   *
+   * components/hub-map.tsx repaints a stock OpenFreeMap style into these, so
+   * the map belongs to the product rather than sitting inside it wearing
+   * somebody else's palette. A hypsometric ladder, which is what every
+   * printed map uses: water darkest, land above it, hairlines lightest.
+   *
+   * What matters here is separation between ADJACENT layers rather than
+   * contrast against the plate — the sea is supposed to be nearly black.
+   */
+  /** Water. Deliberately close to the plate. */
+  sea: "#04101C",
+  /** Land: the basin the roads are drawn on. */
+  basin: "#16294A",
+  /** Coastlines, boundaries, and any hairline the map draws. */
+  graticule: "#4A6690",
+
   /* ── The car ───────────────────────────────────────────────── */
+  /** The sheen along the shoulder. The reference car is a light car on a
+   *  light ground; ours has to be a light car on a dark one, so the ramp
+   *  starts brighter than the old carTop and falls further. 4.02:1. */
+  carSheen: "#6C86A8",
   carTop: "#41556F",
   carMid: "#2E4159",
   carLow: "#1B2739",
