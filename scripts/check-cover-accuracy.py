@@ -309,6 +309,10 @@ check("the cover registry still parses", len(motifs_all) >= 21, f"{len(motifs_al
 css = pathlib.Path("app/globals.css").read_text()
 ENTRANCE = {"hc-rise", "hc-draw", "hc-fill", "hc-pop"}
 AMBIENT  = {"hc-flow", "hc-standby", "hc-breathe", "hc-drift", "hc-meter"}
+# The opposite of ambient: a timeline the scroll wheel drives, held still
+# by its CSS play state so the cascade cannot hand it back to the clock.
+# Applied from components/journey-scroll.tsx, never written in markup.
+SCRUBBED = {"hc-hold"}
 # the parallax frame: layout and compositing, not animation
 FRAME = {"hc-cover", "hc-plane", "hc-atmo", "hc-sheen"}
 # Not animations: a hover changing colour or nudging an icon has no timeline
@@ -344,8 +348,8 @@ MODIFIER = {"hc-press-sm", "hc-lift-in", "hc-grow", "hc-grow-sm", "hc-nudge",
             "hc-raise", "hc-raise-grow"}
 declared -= FRAME | MODIFIER
 check("the hc-* animation vocabulary is exactly what globals.css declares",
-      declared == ENTRANCE | AMBIENT | TRANSITION | SHELL,
-      f"css has {sorted(declared)}, script expects {sorted(ENTRANCE | AMBIENT | TRANSITION | SHELL)}")
+      declared == ENTRANCE | AMBIENT | SCRUBBED | TRANSITION | SHELL,
+      f"css has {sorted(declared)}, script expects {sorted(ENTRANCE | AMBIENT | SCRUBBED | TRANSITION | SHELL)}")
 
 for c in sorted(SHELL):
     r = rule_of(css, c)

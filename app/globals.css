@@ -704,6 +704,18 @@
   --hc-px: 0;
   --hc-py: 0;
 }
+/* A scene whose timeline is driven by the scroll wheel rather than by the
+   clock. The CSS play state has to be what holds it: a Web Animations
+   pause() is silently overridden whenever the cascade re-applies the
+   `animation` shorthand, and ScrollTrigger's pin does exactly that when it
+   re-parents the section into its spacer — after which the scene ran on by
+   itself between scrolls. This cannot be overridden, and seeking a paused
+   animation still works, which is all the scrubbing needs.
+   Applied and removed by components/journey-scroll.tsx. */
+.hc-hold {
+  animation-play-state: paused !important;
+}
+
 .hc-cover > svg,
 /* A kit scene arrives as markup and so needs one wrapper element; it stands
    in for the <svg> in every rule below. See components/kit-illustration.tsx. */

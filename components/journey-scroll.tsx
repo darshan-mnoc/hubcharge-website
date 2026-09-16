@@ -22,8 +22,16 @@ import { onSmoothScroll } from "@/lib/smooth-scroll-bus";
  * Animations API can hold it still and seek it: pause, then set currentTime
  * from the pin's progress. That is the entire mechanism.
  *
- * TWO DETAILS THAT MATTER
- *   - Only the 20s master animations are scrubbed. The short loops inside the
+ * THREE DETAILS THAT MATTER
+ *   - Holding the timeline is CSS's job, not pause()'s. A Web Animations
+ *     pause() is thrown away the moment the cascade re-applies the
+ *     `animation` shorthand, and ScrollTrigger's pin does precisely that when
+ *     it re-parents the section into its spacer. The scene therefore paused
+ *     correctly, pinned, and then ran on by itself between scrolls — each
+ *     scroll yanking it back to where the scroll said it should be. The
+ *     elements carry .hc-hold instead, which is animation-play-state with an
+ *     !important the cascade cannot outrank. Seeking still works while held.
+ *   - Only the 20s master animations are held. The short loops inside the
  *     scene — energy along the cable, the cabinet's light sweep, the standby
  *     breath — keep running on their own clock, because a cable whose energy
  *     only moves while the reader scrolls looks broken, not scrubbed.
@@ -65,28 +73,56 @@ export function JourneyScroll({
     (async () => {
       const svg = host.querySelector("svg");
       if (!svg) return;
+
       /* A CSS animation reports its duration in milliseconds. The kit's master
          timeline is the only 20s one in the file; everything else is a short
          ambient loop and is left alone. */
-      const master = svg
-        .getAnimations({ subtree: true })
-        .filter((a) => Math.round(Number(a.effect?.getComputedTiming().duration ?? 0)) === MASTER_MS);
+      const isMaster = (a: Animation) =>
+        Math.round(Number(a.effect?.getComputedTiming().duration ?? 0)) === MASTER_MS;
+
+      const held = new Set<Element>();
+      const collect = () => {
+        const found = svg.getAnimations({ subtree: true }).filter(isMaster);
+        found.forEach((a) => {
+          const target = (a.effect as KeyframeEffect | null)?.target;
+          if (target && !held.has(target)) {
+            target.classList.add("hc-hold");
+            held.add(target);
+          }
+        });
+        return found;
+      };
+
+      let master = collect();
       if (!master.length) return;
 
+      /* Re-collected, at most four times a second, because the cascade can
+         REPLACE an animation object rather than keep it: re-parenting the
+         pinned section makes the browser rebuild some of them, and seeking
+         the objects we captured at mount would then move nothing while the
+         new ones sat frozen at zero. Cheap, and it self-heals within a
+         quarter-second of the next scroll. */
+      let lastCollect = 0;
       const seek = (p: number) => {
+        const now = performance.now();
+        if (now - lastCollect > 250) {
+          lastCollect = now;
+          master = collect();
+        }
         const t = Math.max(0, Math.min(1, p)) * SCRUB_END * MASTER_MS;
         master.forEach((a) => {
           a.currentTime = t;
         });
       };
-      master.forEach((a) => a.pause());
+      const release = () => held.forEach((el) => el.classList.remove("hc-hold"));
       seek(0);
 
       const { gsap, ScrollTrigger } = await import("@/lib/gsap");
-      if (cancelled) {
-        master.forEach((a) => a.play());
-        return;
-      }
+      /* A cancelled instance leaves the hold in place: in StrictMode's double
+         mount the second instance is already driving these same animations,
+         and releasing here would hand them back to the clock. On a real
+         unmount the nodes go with it. */
+      if (cancelled) return;
 
       /* Lenis moves the page without firing native scroll in a way
          ScrollTrigger reads, so it has to be told. Same wiring the old scene
@@ -112,7 +148,7 @@ export function JourneyScroll({
       cleanup = () => {
         offBus();
         mm.revert();
-        master.forEach((a) => a.play());
+        release();
       };
     })();
 
