@@ -164,7 +164,10 @@ export function JourneyScroll({
         <div className="section-container">{header}</div>
 
         <div ref={stage} className="hidden lg:block section-container">
-          <div className="overflow-x-auto border-y border-white/[0.07]">
+          {/* Top hairline only. A bottom one lands directly under the step
+              labels, where it reads as an underline on the words rather than
+              as the edge of the scene. */}
+          <div className="overflow-x-auto border-t border-white/[0.07]">
             <div className="min-w-[1100px]">{strip}</div>
           </div>
           <p className="text-caption text-white/45 mt-4">Scroll to follow a charge, step by step.</p>
