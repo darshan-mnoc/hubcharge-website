@@ -1,0 +1,62 @@
+<!--
+  The HubCharge monogram.
+
+  WHY IT IS DRAWN AND NOT SET
+  next/font hands the app a CSS variable, not font data, so neither Satori nor
+  a rasteriser can resolve Plus Jakarta Sans from it — and there is no font
+  binary anywhere in the repo. Drawing the letters as geometry removes the
+  dependency entirely, and at 16px it is the better answer anyway: at that size
+  a favicon lives or dies on stroke weight and counter size, not on which
+  typeface it nominally uses.
+
+  THE COLOURS ARE THE WORDMARK'S
+  Every guide cover sets HUB in ILLO.hub #94A3B8 and CHARGE in ILLO.live
+  #FF7A00 on the #0A192F plate. The tab has never looked related to the site
+  because it was an orange tile with a white bolt and nothing else. Same two
+  tones here, same order: H slate, C orange.
+
+  The C is an open arc rather than a letterform with a spine — it reads as a C,
+  and it also reads as the sweep of a cable, which is as much of the old bolt
+  as is worth keeping.
+
+  Generated into app/icon.png and app/apple-icon.png by scripts/build-icons.mjs.
+  Edit this file, re-run that script; do not edit the PNGs.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Ground. 96 is 18.75% of the side — the iOS squircle convention, not the
+       4-8px card radius the rest of the UI uses, because this is a physical
+       tile and every platform masks it further. -->
+  <rect width="512" height="512" rx="96" fill="#0A192F"/>
+
+  <!-- H — three bars. 46 wide on a 512 box is 9%, which survives the downscale
+       to a 16px favicon as a solid stroke rather than a grey smear. -->
+  <g fill="#94A3B8">
+    <rect x="70" y="150" width="46" height="212" rx="10"/>
+    <rect x="172" y="150" width="46" height="212" rx="10"/>
+    <rect x="70" y="233" width="148" height="46" rx="10"/>
+  </g>
+
+  <!-- C — an open arc, struck not filled, so its weight matches the H's stems.
+       Centre (344,256), radius 75: that puts its leftmost edge at 246, a clear
+       28 units off the H, with 70 of margin either side of the pair. The first
+       cut had the arc at radius 78 centred further left, which left barely a
+       unit between the two letters — fine at 512 and a single blurred shape at
+       16. The opening faces right, away from the H, for the same reason.
+
+       THE MOUTH IS 124 DEGREES BECAUSE 80 WAS NOT A C.
+       At a true 16px favicon an 80-degree opening closes up under
+       antialiasing and the letter reads as a ring. The size to test at is 16,
+       not 512 — but so is the PATH: a browser downscales this 512 PNG, and
+       that loses noticeably more of the gap than rasterising the SVG straight
+       to 16 does. Judged on the SVG-direct render 104 looked sufficient; put
+       through the actual 512-PNG-then-downscale route it closes up again. 124
+       survives it. 140 also reads, and starts spending the stroke. -->
+  <path
+    d="M 379.2 189.8
+       A 75 75 0 1 0 379.2 322.2"
+    fill="none"
+    stroke="#FF7A00"
+    stroke-width="46"
+    stroke-linecap="round"
+  />
+</svg>

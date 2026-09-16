@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap,
@@ -15,6 +16,14 @@ import {
 } from "lucide-react";
 import { CtaButton } from "@/components/ui/cta-button";
 import { fadeUp, fadeUpStagger } from "@/lib/motion";
+import {
+  configuratorModels,
+  fleetBand,
+  simulateSession,
+  STATION_KW,
+  REFERENCE_START_SOC,
+} from "@/lib/charging-math";
+import { getService, caveatsFor, services as allServices } from "@/lib/services";
 
 /* "Design your stop" — a number-free pricing experience.
    The user picks how far, their car, and what to enjoy; we preview the
@@ -27,25 +36,32 @@ const distances: {
   label: string;
   time: string;
   fill: number;
-  mult: number;
+  minutes: number;
 }[] = [
-  { id: "topup", label: "Quick top-up", time: "~10 min", fill: 38, mult: 1 },
-  { id: "half", label: "Half charge", time: "~20 min", fill: 68, mult: 1.9 },
-  { id: "full", label: "Full charge", time: "~30 min", fill: 96, mult: 2.7 },
+  { id: "topup", label: "Quick top-up", time: "~10 min", fill: 38, minutes: 10 },
+  { id: "half", label: "Half charge", time: "~20 min", fill: 68, minutes: 20 },
+  { id: "full", label: "Full charge", time: "~30 min", fill: 96, minutes: 30 },
 ];
 
-// Approximate added range for a ~10-min HubCharge session (estimates).
-const cars = [
-  { id: "tesla", name: "Tesla", r: 95 },
-  { id: "rivian", name: "Rivian", r: 72 },
-  { id: "ford", name: "Ford", r: 76 },
-  { id: "hyundai", name: "Hyundai / Kia", r: 98 },
-  { id: "bmw", name: "BMW", r: 82 },
-  { id: "mercedes", name: "Mercedes", r: 78 },
-  { id: "porsche", name: "Porsche", r: 96 },
-  { id: "other", name: "Other EV", r: 85 },
-];
+// Real models with real charging curves — simulated per session length
+// rather than a per-make average times a fixed multiplier.
+const cars = configuratorModels();
 
+/**
+ * The picker opens here rather than on a specific car.
+ *
+ * It offers eight models out of the thirty-one we hold curves for, so a
+ * driver of an ID.4, an EV6, a Model 3 or an F-150 Lightning used to scan the
+ * row, find nothing of theirs, and get no answer at all. Starting on the
+ * whole-fleet span means everyone gets a true figure on arrival and picking a
+ * model is a refinement rather than a requirement.
+ */
+const ANY_CAR = "any";
+
+/* The ids match lib/services.ts, which is where availability lives. This
+   picker used to offer all four with no marker at all and fold whatever you
+   chose into a list headed "included in your flat rate" — for services that
+   are not launched anywhere. The icons stay here; the promise does not. */
 const addons = [
   { id: "coffee", label: "Coffee & drinks", icon: Coffee },
   { id: "food", label: "Food", icon: Utensils },
@@ -65,12 +81,18 @@ const gotchas = [
 
 export function PricingExperience() {
   const [distance, setDistance] = useState<DistanceId>("topup");
-  const [carId, setCarId] = useState("tesla");
+  const [carId, setCarId] = useState(ANY_CAR);
   const [chosen, setChosen] = useState<Set<AddonId>>(new Set(["coffee"]));
 
   const dist = distances.find((d) => d.id === distance)!;
-  const car = cars.find((c) => c.id === carId)!;
-  const miles = Math.round((car.r * dist.mult) / 5) * 5;
+  const car = cars.find((c) => c.id === carId) ?? null;
+  // A specific car is simulated from its real curve against our output, not a
+  // multiplier. With none chosen we show the outer edges across every model
+  // in lib/ev-models.ts — the honest answer before you narrow it.
+  const fleet = fleetBand(dist.minutes);
+  const sim = car
+    ? simulateSession(car.model, STATION_KW, REFERENCE_START_SOC, dist.minutes)
+    : { milesLow: fleet.low, milesHigh: fleet.high };
   const chosenList = addons.filter((a) => chosen.has(a.id));
 
   const toggle = (id: AddonId) =>
@@ -80,22 +102,35 @@ export function PricingExperience() {
       return next;
     });
 
+  /* "Coffee & drinks delivered" read as a thing you get. It is not one yet,
+     so a chosen add-on is listed as what it actually is. */
   const included = useMemo(
     () => [
-      "Your full charging session",
-      "Pay right from your phone",
-      ...chosenList.map((a) => `${a.label} delivered`),
+      { label: "Your full charging session", soon: false },
+      { label: "Pay right from your phone", soon: false },
+      ...chosenList.map((a) => ({
+        label: `${a.label} delivered`,
+        soon: getService(a.id)?.availability === "soon",
+      })),
     ],
+    [chosenList],
+  );
+
+  /* One hedge for whatever is currently selected, from the same source. */
+  const addonCaveats = useMemo(
+    () =>
+      caveatsFor(
+        allServices.filter((sv) => chosenList.some((a) => a.id === sv.id)),
+      ),
     [chosenList],
   );
 
   return (
     <section
-      id="pricing"
+      id="plan-your-charge"
       data-reveal
-      className="relative section-padding bg-surface-warm overflow-hidden"
+      className="relative section-padding bg-paper-100 overflow-hidden"
     >
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#FF7A00]/5 rounded-full blur-[70px]" />
 
       <div className="section-container relative">
         {/* Header */}
@@ -104,23 +139,23 @@ export function PricingExperience() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
           variants={fadeUpStagger}
-          className="text-center mb-12"
+          className="mb-12"
         >
           <motion.p
             variants={fadeUp}
-            className="text-brand text-sm font-semibold uppercase tracking-widest mb-4"
+            className="text-overline text-ink-500 mb-4"
           >
-            Pricing, reimagined
+            Plan your charge
           </motion.p>
-          <motion.h2 variants={fadeUp} className="text-h1 text-gray-900 mb-4">
+          <motion.h2 variants={fadeUp} className="text-h2 text-ink-900 mb-4">
             One flat rate. No surprises.
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="text-body-lg text-gray-600 max-w-xl mx-auto"
+            className="text-body-lg text-ink-600 max-w-xl"
           >
             Design your stop below. Whatever you pick, you&apos;ll{" "}
-            <span className="font-semibold text-gray-800">
+            <span className="font-semibold text-ink-800">
               know your flat rate before you plug in
             </span>
             .
@@ -128,33 +163,38 @@ export function PricingExperience() {
         </motion.div>
 
         {/* Builder */}
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto items-stretch">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
           {/* LEFT — choices */}
-          <div className="rounded-3xl bg-white border border-gray-100 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_12px_28px_-12px_rgba(16,24,40,0.10)] p-6 lg:p-8 space-y-8">
+          <div className="rounded-lg bg-white border border-paper-300 shadow-card p-6 lg:p-8 space-y-8">
             {/* 1. distance */}
             <div>
-              <p className="text-label-md text-gray-500 mb-3">
+              <p className="text-overline text-ink-500 mb-3">
                 1 · How far do you need?
               </p>
-              <div className="grid grid-cols-3 gap-2">
+              <div
+                className="grid grid-cols-1 sm:grid-cols-3 gap-2"
+                role="group"
+                aria-label="How much charge"
+              >
                 {distances.map((d) => {
                   const active = d.id === distance;
                   return (
                     <button
                       key={d.id}
+                      aria-pressed={active}
                       onClick={() => setDistance(d.id)}
-                      className={`rounded-xl border px-3 py-3 text-center transition-all ${
+                      className={`rounded-lg border px-3 py-3 text-center transition-colors ${
                         active
-                          ? "border-brand bg-brand/5 ring-1 ring-brand/30"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-transparent bg-ink-900"
+                          : "border-paper-300 hover:border-paper-400"
                       }`}
                     >
                       <span
-                        className={`block text-sm font-semibold ${active ? "text-brand" : "text-gray-800"}`}
+                        className={`block text-body-sm font-semibold ${active ? "text-white" : "text-ink-800"}`}
                       >
                         {d.label}
                       </span>
-                      <span className="block text-xs text-gray-400 mt-0.5">
+                      <span className={`block text-caption mt-0.5 ${active ? "text-on-dark/70" : "text-ink-500"}`}>
                         {d.time}
                       </span>
                     </button>
@@ -165,18 +205,23 @@ export function PricingExperience() {
 
             {/* 2. car */}
             <div>
-              <p className="text-label-md text-gray-500 mb-3">2 · Your car</p>
-              <div className="flex flex-wrap gap-2">
-                {cars.map((c) => {
+              <p className="text-overline text-ink-500 mb-3">2 · Your car</p>
+              <div
+                className="flex flex-wrap gap-2"
+                role="group"
+                aria-label="Your car"
+              >
+                {[{ id: ANY_CAR, name: "Most EVs" }, ...cars].map((c) => {
                   const active = c.id === carId;
                   return (
                     <button
                       key={c.id}
+                      aria-pressed={active}
                       onClick={() => setCarId(c.id)}
-                      className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                      className={`rounded-full border px-4 py-2 text-body-sm font-medium transition-all ${
                         active
-                          ? "border-brand bg-brand text-white"
-                          : "border-gray-200 text-gray-700 hover:border-gray-300"
+                          ? "border-brand bg-brand text-ink-900"
+                          : "border-paper-300 text-ink-700 hover:border-paper-400"
                       }`}
                     >
                       {c.name}
@@ -184,86 +229,123 @@ export function PricingExperience() {
                   );
                 })}
               </div>
+              {/* Eight cars out of thirty-one, so this row will miss most
+                  people. The line below is the way out for them rather than a
+                  dead end — the compatibility guide runs the full finder over
+                  every make we hold data for. */}
+              <p className="text-caption text-ink-400 mt-2.5">
+                {carId === ANY_CAR
+                  ? "Pick your model to narrow this, or "
+                  : "Not your car? "}
+                <Link
+                  href="/charging-101/can-my-ev-charge-here"
+                  className="text-brand-ink underline underline-offset-2 hover:no-underline"
+                >
+                  check every make
+                </Link>
+                .
+              </p>
             </div>
 
             {/* 3. addons */}
             <div>
-              <p className="text-label-md text-gray-500 mb-3">
+              <p className="text-overline text-ink-500 mb-3">
                 3 · While you charge
               </p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {addons.map((a) => {
                   const active = chosen.has(a.id);
                   return (
                     <button
                       key={a.id}
+                      aria-pressed={active}
                       onClick={() => toggle(a.id)}
-                      className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
+                      className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-colors ${
                         active
-                          ? "border-brand bg-brand/5 ring-1 ring-brand/30"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-transparent bg-ink-900"
+                          : "border-paper-300 hover:border-paper-400"
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? "bg-brand/15 text-brand" : "bg-gray-100 text-gray-400"}`}
+                        className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${active ? "bg-white/10 text-brand" : "bg-paper-200 text-ink-500"}`}
                       >
                         <a.icon className="h-4 w-4" />
                       </span>
                       <span
-                        className={`text-sm font-medium ${active ? "text-gray-900" : "text-gray-600"}`}
+                        className={`text-body-sm font-medium ${active ? "text-white" : "text-ink-600"}`}
                       >
                         {a.label}
+                        {getService(a.id)?.availability === "soon" && (
+                          <span
+                            className={`ml-2 rounded-full px-2 py-0.5 text-footnote font-semibold ${
+                              active
+                                ? "bg-white/15 text-on-dark/70"
+                                : "bg-paper-200 text-ink-500"
+                            }`}
+                          >
+                            coming soon
+                          </span>
+                        )}
                       </span>
                       <span className="ml-auto">
                         {active ? (
                           <Check className="h-4 w-4 text-brand" />
                         ) : (
-                          <span className="h-4 w-4 rounded-full border border-gray-300 block" />
+                          <span className="h-4 w-4 rounded-full border border-paper-400 block" />
                         )}
                       </span>
                     </button>
                   );
                 })}
               </div>
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="text-caption text-ink-500 mt-2">
                 Lifestyle services launching at select hubs.
               </p>
             </div>
           </div>
 
           {/* RIGHT — your stop (dark feature card) */}
-          <div className="relative rounded-3xl bg-hero overflow-hidden p-6 lg:p-8 flex flex-col">
-            <div className="absolute -top-10 -right-10 w-48 h-48 bg-brand/15 rounded-full blur-[60px]" />
+          <div className="relative rounded-lg bg-ink-900 overflow-hidden p-6 lg:p-8 flex flex-col">
 
             <div className="relative">
-              <p className="text-label-md text-muted-dark mb-1">
-                Your HubCharge® stop
+              <p className="text-overline text-muted-dark mb-1">
+                Your HubCharge™ stop
               </p>
 
               {/* battery */}
               <div className="mt-4 mb-5">
+                {/* Announces the recalculated result to screen readers when a
+                    distance / car / add-on selection changes (WCAG 4.1.3). */}
+                <p aria-live="polite" className="sr-only">
+                  {car
+                    ? `About ${sim.milesLow} to ${sim.milesHigh} miles added to your ${car.name} in ${dist.time}.`
+                    : `About ${sim.milesLow} to ${sim.milesHigh} miles in ${dist.time}, across the ${fleet.count} cars we hold charging data for. Pick your model to narrow this.`}
+                </p>
                 <div className="flex items-center gap-2 mb-2 text-on-dark">
                   <BatteryCharging className="h-5 w-5 text-brand" />
                   <motion.span
                     key={`${carId}-${distance}`}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-2xl font-black"
+                    className="text-h2"
                   >
-                    +{miles} mi
+                    {sim.milesLow}–{sim.milesHigh} mi
                   </motion.span>
-                  <span className="text-sm text-muted-dark">
-                    to your {car.name} · {dist.time}
+                  <span className="text-body-sm text-muted-dark">
+                    {car
+                      ? `to your ${car.name}`
+                      : `across the ${fleet.count} cars we list`}{" "}
+                    · {dist.time}
                   </span>
                 </div>
                 <div className="h-3 rounded-full bg-white/10 overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-[#FF7A00] to-[#FFB068]"
+                    className="h-full rounded-full bg-gradient-to-r from-brand to-brand-on-dark"
                     animate={{ width: `${dist.fill}%` }}
                     transition={{ type: "spring", stiffness: 90, damping: 18 }}
                   />
                 </div>
-                <p className="text-[11px] text-muted-dark mt-1">
+                <p className="text-footnote text-muted-dark mt-1">
                   Estimated added range
                 </p>
               </div>
@@ -271,7 +353,7 @@ export function PricingExperience() {
               {/* extensions */}
               <div className="mb-5 flex items-center gap-2 rounded-lg bg-white/[0.04] border border-white/10 px-3 py-2">
                 <Clock className="h-4 w-4 text-brand flex-shrink-0" />
-                <p className="text-xs text-muted-dark">
+                <p className="text-caption text-muted-dark">
                   Need longer? Extend in quick taps —{" "}
                   <span className="text-on-dark font-medium">
                     up to 4 times
@@ -281,36 +363,63 @@ export function PricingExperience() {
               </div>
 
               {/* included */}
-              <p className="text-label-md text-muted-dark mb-2">Your stop</p>
+              <p className="text-overline text-muted-dark mb-2">Your stop</p>
               <ul className="space-y-2 mb-6">
                 <AnimatePresence initial={false}>
                   {included.map((item) => (
                     <motion.li
-                      key={item}
+                      key={item.label}
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -8 }}
                       transition={{ duration: 0.2 }}
-                      className="flex items-center gap-2.5 text-sm text-on-dark"
+                      className={`flex items-center gap-2.5 text-body-sm ${
+                        item.soon ? "text-on-dark/55" : "text-on-dark"
+                      }`}
                     >
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand/20">
-                        <Check className="h-3 w-3 text-brand" />
+                      <span
+                        className={`flex h-5 w-5 items-center justify-center rounded-full ${
+                          item.soon ? "bg-white/10" : "bg-brand/20"
+                        }`}
+                      >
+                        {item.soon ? (
+                          <Clock className="h-3 w-3 text-on-dark/60" />
+                        ) : (
+                          <Check className="h-3 w-3 text-brand" />
+                        )}
                       </span>
-                      {item}
+                      {item.label}
+                      {item.soon && (
+                        <span className="text-footnote text-on-dark/55">
+                          (not yet)
+                        </span>
+                      )}
                     </motion.li>
                   ))}
                 </AnimatePresence>
               </ul>
+
+              {/* The hedge for whatever is selected, from lib/services.ts, so
+                  it cannot drift from what the rest of the site says. */}
+              {addonCaveats.length > 0 && (
+                <ul className="-mt-3 mb-6 space-y-1">
+                  {addonCaveats.map((c) => (
+                    <li key={c} className="text-footnote text-on-dark/55">
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             {/* payoff — the "A finale" */}
-            <div className="relative mt-auto rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+            <div className="relative mt-auto rounded-lg border border-white/10 bg-white/[0.04] p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Zap className="h-5 w-5 text-brand" />
-                <span className="text-lg font-bold text-on-dark">
+                <span className="text-h4 text-on-dark">
                   One flat rate
                 </span>
-                <span className="text-sm text-muted-dark">
+                <span className="text-body-sm text-muted-dark">
                   — known upfront.
                 </span>
               </div>
@@ -318,9 +427,9 @@ export function PricingExperience() {
                 {gotchas.map((g) => (
                   <span
                     key={g}
-                    className="inline-flex items-center gap-1.5 text-xs text-muted-dark"
+                    className="inline-flex items-center gap-1.5 text-caption text-muted-dark"
                   >
-                    <X className="h-3.5 w-3.5 text-error/70" />
+                    <X className="h-3.5 w-3.5 text-error-on-dark/80" />
                     <span className="line-through decoration-error/40">
                       {g}
                     </span>
@@ -330,9 +439,15 @@ export function PricingExperience() {
               <CtaButton href="#locations" size="lg" fullWidth>
                 Find your hub
               </CtaButton>
-              <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-dark mt-3">
+              <p className="flex items-center justify-center gap-1.5 text-footnote text-muted-dark mt-3">
                 <Check className="h-3 w-3 text-brand" />
-                Flat, fair, and predictable.
+                Flat, fair, and predictable.{" "}
+                <a
+                  href="/plan-your-charge"
+                  className="underline underline-offset-2 hover:text-brand"
+                >
+                  How our pricing works →
+                </a>
               </p>
             </div>
           </div>

@@ -20,3 +20,5 @@ image-backups/
 public/images/grocery-delivery.jpg
 public/images/_old_backup/
 
+tsconfig.tsbuildinfo
+.playwright-mcp/

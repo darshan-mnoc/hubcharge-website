@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MessageCircle,
@@ -12,6 +12,9 @@ import {
   ShoppingBag,
   Sparkles,
 } from "lucide-react";
+import { submitFeedback } from "@/lib/actions";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 const quickOptions = [
   { icon: Coffee, label: "Coffee shops", value: "coffee" },
@@ -21,7 +24,9 @@ const quickOptions = [
 ];
 
 export function ChatPopup() {
+  const reduced = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -32,10 +37,36 @@ export function ChatPopup() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useFocusTrap(popupRef, isOpen);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() || selectedOptions.length > 0) {
-      console.log("Feedback submitted:", { message, selectedOptions });
+    if (sending) return;
+    if (!message.trim() && selectedOptions.length === 0) {
+      setError("Pick an option or write a note first.");
+      return;
+    }
+    setSending(true);
+    setError(null);
+    const result = await submitFeedback({
+      options: selectedOptions,
+      message,
+      company: "",
+    });
+    setSending(false);
+    if (result.ok) {
       setSubmitted(true);
       setTimeout(() => {
         setIsOpen(false);
@@ -43,6 +74,8 @@ export function ChatPopup() {
         setMessage("");
         setSelectedOptions([]);
       }, 2500);
+    } else {
+      setError(result.error ?? "Something went wrong — please try again.");
     }
   };
 
@@ -51,10 +84,15 @@ export function ChatPopup() {
       {/* Chat Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Close feedback" : "Share feedback"}
+        aria-expanded={isOpen}
+        aria-controls="feedback-popup"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         animate={{
-          boxShadow: isOpen
+          boxShadow: reduced
+            ? "0 0 0 rgba(244, 130, 69, 0)"
+            : isOpen
             ? "0 0 0 rgba(244, 130, 69, 0)"
             : [
                 "0 0 20px rgba(244, 130, 69, 0.3)",
@@ -66,10 +104,10 @@ export function ChatPopup() {
           boxShadow: { duration: 2, repeat: Infinity },
           scale: { duration: 0.2 },
         }}
-        className={`fixed bottom-20 right-6 lg:bottom-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
+        className={`fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-6 lg:bottom-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
           isOpen
-            ? "bg-[#1a1a1a] border border-white/20"
-            : "bg-gradient-to-br from-brand to-amber-500"
+            ? "bg-ink-800 border border-white/20"
+            : "bg-ink-900 border border-white/15"
         }`}
       >
         <AnimatePresence mode="wait">
@@ -114,11 +152,17 @@ export function ChatPopup() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={popupRef}
+            id="feedback-popup"
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Share feedback"
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed z-50 card shadow-2xl overflow-hidden
+            className="fixed z-50 card shadow-card-hover overflow-hidden
               inset-x-4 top-20 bottom-auto
               sm:inset-auto sm:bottom-36 sm:right-6 sm:top-auto
               lg:bottom-24
@@ -128,7 +172,7 @@ export function ChatPopup() {
           >
             {/* Header */}
             <div className="relative overflow-hidden shrink-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-brand to-amber-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand to-brand-hover" />
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -138,24 +182,25 @@ export function ChatPopup() {
                 {/* Close button - mobile */}
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors sm:hidden"
+                  aria-label="Close feedback"
+                  className="absolute top-2.5 right-2.5 w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors sm:hidden"
                 >
                   <X className="h-4 w-4 text-white" />
                 </button>
                 <div className="flex items-center gap-3">
                   <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
+                    animate={reduced ? undefined : { scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center shrink-0"
                   >
                     <MapPin className="h-5 w-5 text-white" />
                   </motion.div>
                   <div>
-                    <h3 className="font-bold text-base sm:text-lg text-white">
+                    <h3 className="text-h4 text-white">
                       Help Us Grow
                     </h3>
-                    <p className="text-white/80 text-xs sm:text-sm">
-                      What do you want near HubCharge®?
+                    <p className="text-white/80 text-caption sm:text-body-sm">
+                      What do you want near HubCharge™?
                     </p>
                   </div>
                 </div>
@@ -177,10 +222,10 @@ export function ChatPopup() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", delay: 0.2 }}
-                      className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-green-500/20 rounded-full flex items-center justify-center mb-4 border border-green-500/30"
+                      className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-ok-on-dark/20 rounded-full flex items-center justify-center mb-4 border border-ok-on-dark/30"
                     >
                       <motion.svg
-                        className="w-7 h-7 sm:w-8 sm:h-8 text-green-400"
+                        className="w-7 h-7 sm:w-8 sm:h-8 text-ok-on-dark"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -196,10 +241,10 @@ export function ChatPopup() {
                         />
                       </motion.svg>
                     </motion.div>
-                    <h4 className="text-lg sm:text-xl font-bold text-white mb-2">
+                    <h4 className="text-h3 text-white mb-2">
                       Thank You!
                     </h4>
-                    <p className="text-white/50 text-sm">
+                    <p className="text-white/55 text-body-sm">
                       Your feedback helps us bring the best to your area.
                     </p>
                   </motion.div>
@@ -212,8 +257,8 @@ export function ChatPopup() {
                     onSubmit={handleSubmit}
                     className="p-4 sm:p-6"
                   >
-                    <p className="text-white/50 text-xs sm:text-sm mb-3 sm:mb-4">
-                      Select what you'd like to see near HubCharge® stations:
+                    <p className="text-white/55 text-caption sm:text-body-sm mb-3 sm:mb-4">
+                      Select what you&apos;d like to see near HubCharge™ stations:
                     </p>
 
                     {/* Quick Options */}
@@ -228,18 +273,19 @@ export function ChatPopup() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.05 }}
                             whileTap={{ scale: 0.98 }}
+                            aria-pressed={isSelected}
                             onClick={() => toggleOption(option.value)}
-                            className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-xl border-2 transition-all duration-200 ${
+                            className={`flex items-center gap-2 p-2.5 sm:p-3 rounded-lg border transition-colors duration-200 ${
                               isSelected
-                                ? "border-orange-500 bg-orange-500/20"
+                                ? "border-transparent bg-brand"
                                 : "border-white/10 bg-white/5 hover:border-white/20"
                             }`}
                           >
                             <option.icon
-                              className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-orange-400" : "text-white/40"}`}
+                              className={`h-4 w-4 sm:h-5 sm:w-5 shrink-0 ${isSelected ? "text-ink-900" : "text-white/55"}`}
                             />
                             <span
-                              className={`text-xs sm:text-sm font-medium ${isSelected ? "text-orange-400" : "text-white/60"}`}
+                              className={`text-caption sm:text-body-sm font-medium ${isSelected ? "text-ink-900" : "text-white/60"}`}
                             >
                               {option.label}
                             </span>
@@ -250,29 +296,38 @@ export function ChatPopup() {
 
                     {/* Custom Message */}
                     <div className="mb-4">
-                      <label className="text-xs sm:text-sm text-white/40 mb-2 block">
+                      <label
+                        htmlFor="feedback-message"
+                        className="text-caption sm:text-body-sm text-white/60 mb-2 block"
+                      >
                         Or tell us something specific:
                       </label>
                       <textarea
+                        id="feedback-message"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="I'd love to see..."
-                        className="input resize-none h-16 sm:h-20 text-sm"
+                        placeholder="I’d love to see…"
+                        className="field-dark px-3 py-2 resize-none h-16 sm:h-20 text-body-sm"
                       />
                     </div>
 
                     {/* Submit */}
+                    {error && (
+                      <p role="alert" className="text-caption text-error-on-dark mb-2">
+                        {error}
+                      </p>
+                    )}
                     <motion.button
                       type="submit"
-                      disabled={!message.trim() && selectedOptions.length === 0}
+                      disabled={sending}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full btn btn-primary rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base py-2.5 sm:py-3"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-brand-hover w-full rounded-full text-body-sm py-2.5 sm:py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Send className="h-4 w-4 sm:h-5 sm:w-5" />
-                      Send Feedback
+                      {sending ? "Sending…" : "Send Feedback"}
                     </motion.button>
 
-                    <p className="text-center text-[10px] sm:text-xs text-white/30 mt-3 sm:mt-4">
+                    <p className="text-center text-footnote sm:text-caption text-white/55 mt-3 sm:mt-4">
                       We read every suggestion
                     </p>
                   </motion.form>

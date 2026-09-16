@@ -1,0 +1,85 @@
+import type { Metadata } from "next";
+import { GuideCover } from "@/components/guide-cover";
+import { Term } from "@/components/term";
+import Link from "next/link";
+import { PageShell, Prose } from "@/components/page-shell";
+import { ConnectorDiagram } from "@/components/connector-diagram";
+import { GuideBreadcrumb, GuideCta, GuideFooter, GuideShort } from "@/components/learn";
+
+export const metadata: Metadata = {
+  title: "NACS vs CCS: EV Charging Connectors Explained | HubCharge",
+  description:
+    "The two DC fast-charging connectors in America — NACS (the Tesla plug, now SAE J3400) and CCS — explained in plain English, plus why HubCharge chargers carry both cables.",
+  alternates: { canonical: "https://hubcharge.com/charging-101/connectors" },
+};
+
+export default function ConnectorsPage() {
+  return (
+    <PageShell
+      backTo={{ href: "/charging-101", label: "All guides" }}
+      eyebrow="Guides"
+      cover={<GuideCover motif="connectors" />}
+      title="NACS vs CCS, explained"
+      intro="America's EV world runs on two fast-charging plugs. Here's what they are, which cars use which — and why at HubCharge it doesn't matter."
+    >
+      <GuideBreadcrumb
+        trail={[
+          ["Home", "/"],
+          ["Charging 101", "/charging-101"],
+          ["Connectors", "/charging-101/connectors"],
+        ]}
+      />
+
+      <GuideShort slug="connectors" />
+
+      <ConnectorDiagram />
+
+      <Prose>
+        <h2>Why HubCharge carries both cables</h2>
+        <p>
+          The industry is mid-transition from <Term id="ccs">CCS</Term> to <Term id="nacs">NACS</Term>, and it will take
+          years. Rather than make you buy a $200+ adapter or hunt for the
+          right charger, every HubCharge charger has <strong>both</strong> a
+          NACS cable and a CCS cable. You plug in whichever matches your car
+          — or at participating locations, our attendant does it for you.
+        </p>
+
+        <h2>About adapters (you won&rsquo;t need one here)</h2>
+        <p>
+          Two different adapters exist, and both get called &ldquo;the Tesla
+          adapter,&rdquo; which causes confusion:
+        </p>
+        <ul>
+          <li>
+            <strong>CCS car → NACS charger:</strong> lets a CCS-port car (most
+            Fords, VWs, Hondas…) use a NACS-only charger, like a Tesla
+            Supercharger.
+          </li>
+          <li>
+            <strong>NACS car → CCS charger:</strong> lets a Tesla or other
+            NACS-port car use a CCS-only charger.
+          </li>
+        </ul>
+        <p>
+          Adapters matter at single-connector networks. At HubCharge, both
+          cables are on the charger — so leave the adapter in the trunk.
+        </p>
+
+        <h2>What about <Term id="chademo">CHAdeMO</Term>?</h2>
+        <p>
+          CHAdeMO is an older fast-charging standard being phased out
+          industry-wide. We carry CCS1 and NACS only, so a car that
+          fast-charges on CHAdeMO can&rsquo;t DC fast-charge here. More in{" "}
+          <Link href="/charging-101/can-my-ev-charge-here">
+            our compatibility guide
+          </Link>
+          .
+        </p>
+      </Prose>
+
+      <GuideFooter slug="connectors" />
+
+      <GuideCta />
+    </PageShell>
+  );
+}

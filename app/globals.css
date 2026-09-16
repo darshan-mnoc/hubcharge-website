@@ -55,12 +55,27 @@
     --destructive: 0 72% 51%;
     --ring: 28 100% 50%;
     --radius: 0.75rem;
+
+    /* The site's motion signature, in one place.
+       Identical to EASE_OUT in lib/motion.ts, which framer-motion, the scroll
+       reveal and the card transitions all already use. The guide covers used
+       to invent their own — plain `ease-out` in two classes and a third
+       cubic-bezier in another — so the one element on a guide page that moves
+       before you scroll was the one element not moving like the site. */
+    --hc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    /* Kept equal to DUR.draw in lib/motion.ts, which the guard asserts.
+       A stroke drawing itself and a spring settling are the same house
+       timing, and they were two numbers until now. */
+    --hc-draw-dur: 0.9s;
   }
 }
 
 @layer base {
+  /* Anything that sets `border` without a colour used to get slate-700 —
+     a cool grey that belongs to no part of this palette, leaking a dark
+     hairline onto warm paper surfaces. The paper hairline is the default. */
   * {
-    @apply border-[#334155];
+    @apply border-paper-300;
   }
 
   html {
@@ -69,17 +84,24 @@
   }
 
   body {
-    /* Design system: light-default. Sections opt into dark via bg-hero. */
-    @apply bg-surface text-gray-700 antialiased;
+    /* Design system: light-default. Sections opt into dark via bg-ink-900. */
+    @apply bg-paper text-ink-600 antialiased;
     margin: 0;
+    /* CLIP, NOT HIDDEN. See the html/body rule further down for the whole
+       story: overflow-x:hidden makes this element a scroll container, and
+       every `position: sticky` on the site sticks relative to it instead of
+       to the viewport — which is to say, never. */
     overflow-x: hidden;
+    overflow-x: clip;
     font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   }
 
-  /* Design-system heading defaults (dark navy on light) */
+  /* Design-system heading defaults (dark navy on light).
+     Weight and line-height deliberately inherit — the type scale utilities
+     own them. Hardcoding 700 here silently overrode the serif display face. */
   h1, h2, h3, h4 {
-    font-weight: 700;
-    line-height: 1.1;
+    font-weight: inherit;
+    line-height: inherit;
     color: #0a192f;
   }
 
@@ -111,56 +133,6 @@
    ANIMATIONS
    ============================================ */
 
-@keyframes glow-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 20px rgba(255, 122, 0, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(255, 122, 0, 0.6);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.8);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-@keyframes gradient-shift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
 /* ============================================
    UTILITY CLASSES
    ============================================ */
@@ -184,174 +156,225 @@
     @apply max-w-content mx-auto px-6;
   }
 
-  /* Typography */
-  .heading-display {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    @apply font-bold leading-[1.05] tracking-tight;
-    letter-spacing: -0.02em;
+  /* An interactive block inside prose needs width the way a paragraph needs
+     restraint. Breaks the 68ch measure without leaving the page gutter. */
+  .breakout {
+    width: 100%;
   }
 
-  .heading-section {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    @apply font-bold leading-tight;
-    letter-spacing: -0.02em;
+  /* Range inputs. Left to the UA these render a near-black track against our
+     warm paper, and the mobile 44px min-height below stretches the default
+     control instead of its hit area. Both are handled here. */
+  .range-brand {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    min-height: 44px;
+    cursor: pointer;
   }
-
-  .heading-card {
-    @apply text-xl lg:text-2xl font-semibold;
-    letter-spacing: -0.01em;
+  .range-brand::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 9999px;
+    background: theme('colors.paper.300');
   }
-
-  /* Color-neutral so they read correctly on light AND dark sections.
-     Size comes from the design-system type scale (appended below). Color is
-     set by context: body default on light, text-on-dark / muted-dark on dark. */
-  .text-body {
-    @apply leading-relaxed;
+  .range-brand::-moz-range-track {
+    height: 4px;
+    border-radius: 9999px;
+    background: theme('colors.paper.300');
   }
-
-  .text-body-lg {
-    @apply leading-relaxed;
+  .range-brand::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -7px;
+    height: 18px;
+    width: 18px;
+    border-radius: 9999px;
+    background: theme('colors.brand.DEFAULT');
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(10, 25, 47, 0.25);
+  }
+  .range-brand::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 9999px;
+    background: theme('colors.brand.DEFAULT');
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(10, 25, 47, 0.25);
+  }
+  .range-brand:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid theme('colors.brand.ink');
+    outline-offset: 2px;
+  }
+  .range-brand:focus-visible::-moz-range-thumb {
+    outline: 2px solid theme('colors.brand.ink');
+    outline-offset: 2px;
+  }
+  @media (min-width: 1024px) {
+    .breakout {
+      width: min(56rem, calc(100vw - 3rem));
+    }
   }
 
   /* Light-section surfaces (for white/warm sections in the 50/50 rhythm) */
+  /* 8px is the card ceiling this config sets; this was 16px, on the single
+     most-reused surface primitive. */
   .card-light {
-    @apply bg-white rounded-2xl border border-gray-100;
-    box-shadow:
-      0 1px 2px rgba(16, 24, 40, 0.03),
-      0 12px 28px -10px rgba(16, 24, 40, 0.08);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    @apply bg-paper rounded-lg border border-paper-300;
+    @apply shadow-card;
+    /* Was `all 0.3s cubic-bezier(0.4,0,0.2,1)` — Material's curve, hardcoded
+       in the design system's own most-reused primitive while --hc-ease sat
+       three hundred lines below it and a comment complained about exactly
+       this. Also narrowed from `all`: the only properties that change on
+       hover are the border and the shadow, and `all` was volunteering to
+       transition layout too. */
+    transition:
+      border-color 0.3s var(--hc-ease),
+      box-shadow 0.3s var(--hc-ease);
   }
   .card-light:hover {
-    @apply border-gray-200;
-    box-shadow:
-      0 2px 6px rgba(16, 24, 40, 0.05),
-      0 18px 36px -12px rgba(16, 24, 40, 0.12);
+    @apply border-paper-400 shadow-card-hover;
   }
   .glass-light {
-    @apply bg-white/70 backdrop-blur-md border border-gray-200;
-  }
-
-  /* Gradient Text - Chargetrip Orange */
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#FF7A00] via-[#FF9433] to-[#FF7A00];
-  }
-
-  /* Glow removed for a cleaner, professional look (kept as a no-op so existing
-     class usages don't need editing). */
-  .text-glow {
-    text-shadow: none;
+    @apply bg-paper/70 backdrop-blur-md border border-paper-300;
   }
 
   /* Badges */
-  .badge {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium;
-    @apply bg-[#f4f3f2]/5 border border-[#f4f3f2]/10 backdrop-blur-sm;
-  }
-
-  .badge-primary {
-    @apply bg-[#FF7A00]/10 border-[#FF7A00]/20 text-[#FF7A00];
-  }
 
   /* Glass Effects */
   .glass {
-    @apply bg-[#f4f3f2]/5 backdrop-blur-md;
+    @apply bg-white/5 backdrop-blur-md;
   }
 
-  .glass-card {
-    @apply bg-[#f4f3f2]/[0.03] backdrop-blur-md border border-[#f4f3f2]/[0.08] rounded-2xl;
-  }
 
   /* Cards - Chargetrip Style */
+  /* The four greys here were off-ramp: #0F172A, #334155, #475569 and #1E293B
+     sit between steps the `ink` ladder already defines, which is how a dark
+     card ended up not matching the dark sections around it. */
   .card {
-    @apply bg-[#0F172A] rounded-2xl border border-[#334155];
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    @apply bg-ink-800 rounded-lg border border-ink-600;
+    transition:
+      border-color 0.4s var(--hc-ease),
+      background-color 0.4s var(--hc-ease);
   }
 
   .card:hover {
-    @apply border-[#475569] bg-[#1E293B];
-  }
-
-  .card-glow:hover {
-    box-shadow: 0 0 40px rgba(255, 122, 0, 0.1);
+    @apply border-ink-500 bg-ink-700;
   }
 
   /* Buttons — design-system shape (rounded-lg, matches CtaButton) for consistency */
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-300;
-  }
 
-  .btn-primary {
-    @apply bg-[#FF7A00] text-white px-6 py-3;
-    @apply hover:bg-[#E66E00] hover:shadow-lg hover:shadow-[#FF7A00]/25 hover:scale-[1.02];
-    @apply active:scale-[0.98];
-  }
+  /* Navy label, not white: white on #FF7A00 is 2.6:1 and fails AA. Navy on the
+     same untouched orange is 6.7:1. Matches CtaButton's primary variant. */
 
-  .btn-secondary {
-    @apply bg-[#f4f3f2]/10 text-[#f4f3f2] px-6 py-3 border border-[#f4f3f2]/10;
-    @apply hover:bg-[#f4f3f2]/15 hover:border-[#f4f3f2]/20;
-  }
 
-  .btn-outline {
-    @apply border-2 border-[#f4f3f2]/20 text-[#f4f3f2] px-6 py-3;
-    @apply hover:border-[#FF7A00] hover:text-[#FF7A00] hover:bg-[#FF7A00]/10;
-  }
 
-  .btn-lg {
-    @apply px-8 py-4 text-lg;
-  }
 
   /* Icon Containers */
-  .icon-box {
-    @apply w-12 h-12 rounded-xl flex items-center justify-center;
-  }
-
-  .icon-box-primary {
-    @apply bg-[#FF7A00]/20 text-[#FF7A00];
-  }
-
-  /* Glow Effects */
-  .glow-orange {
-    box-shadow: 0 0 30px rgba(255, 122, 0, 0.4);
-  }
-
-  .glow-green {
-    box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
-  }
 
   /* Grid Pattern - Subtler */
-  .grid-pattern {
-    background-image:
-      linear-gradient(rgba(244, 243, 242, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(244, 243, 242, 0.02) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-
-  /* Noise Texture */
-  .noise {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.03;
-  }
 
   /* Interactive Elements */
-  .interactive {
-    @apply transition-all duration-300 cursor-pointer;
-    @apply hover:-translate-y-1 hover:shadow-xl;
-  }
 
-  .magnetic {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
 
   /* Form Elements - Chargetrip Style */
-  .input {
-    @apply w-full px-4 py-3 bg-[#f4f3f2]/5 border border-[#334155] rounded-xl text-[#f4f3f2];
-    @apply placeholder:text-[#475569];
-    @apply focus:outline-none focus:ring-2 focus:ring-[#FF7A00]/30 focus:border-[#FF7A00]/50;
-    @apply transition-all duration-200;
+  /* ── Form fields ───────────────────────────────────────────────
+     No resting border. A box drawn around a field is a convention from an
+     era when a filled ground wasn't reliable; it adds a rectangle of
+     visual noise per control and, on this palette, a cool hairline against
+     warm paper. The field is the fill, plus a single bottom rule so the
+     baseline reads as an input rather than a label.
+
+     Focus is a different question. :focus-visible only fires for keyboard
+     navigation, so a ring here is invisible to anyone using a pointer and
+     essential for anyone who isn't — the resting cleanliness and WCAG
+     2.4.7 do not trade off. Each surface sets its own ring offset so the
+     indicator never sits on a colour it can't be seen against. */
+  /* ── Form fields ───────────────────────────────────────────────
+     No edge at all — not a border, not an underline, not a ring. The fill
+     is the field. Every mainstream system reaches for a ring or a 2px
+     underline on focus (Material's filled input is literally the latter),
+     and both are edges; this doesn't use either.
+
+     Focus is signalled from inside the control instead:
+       · the fill lifts from paper-100 to white
+       · the card shadow appears, so it rises off the page
+       · the leading icon and caret go brand-ink at full strength (5.3:1)
+
+     Honest note on the trade-off: this is a weaker indicator than the ring it
+     replaces. It meets 2.4.7 Focus Visible, which asks for a visible change
+     and does not prescribe a shape. It is arguable under 1.4.11 Non-text
+     Contrast, because a lift and a fill change are harder to measure than a
+     3:1 line — the icon colour shift is what carries that, which is why
+     :focus-within is wired to it and not left decorative. */
+  .field {
+    @apply w-full rounded-lg border-0 bg-paper-100 text-ink-900;
+    @apply placeholder:text-ink-500 caret-brand-ink;
+    @apply transition-[background-color,box-shadow] duration-200;
+    box-shadow: none;
+  }
+  .field:hover {
+    @apply bg-paper-200;
+  }
+  .field:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    @apply bg-white shadow-card-hover;
   }
 
-  .input:hover {
-    @apply border-[#475569];
+  /* Same field on the navy bands. */
+  .field-dark {
+    @apply w-full rounded-lg border-0 text-white;
+    @apply placeholder:text-on-dark/55 caret-brand;
+    @apply transition-[background-color,box-shadow] duration-200;
+    background-color: rgb(255 255 255 / 0.06);
+  }
+  .field-dark:hover {
+    background-color: rgb(255 255 255 / 0.1);
+  }
+  .field-dark:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    background-color: rgb(255 255 255 / 0.16);
+    box-shadow: 0 8px 24px -10px rgb(0 0 0 / 0.5);
+  }
+
+  /* The leading icon carries the high-contrast part of the indicator, so it
+     has to move with focus rather than sit there as decoration. */
+  .field-wrap:focus-within .field-icon {
+    @apply text-brand-ink;
+  }
+  .field-wrap-dark:focus-within .field-icon {
+    @apply text-brand;
+  }
+
+  /* Windows High Contrast discards background and shadow, so everything
+     above would vanish. Restore a real outline there. */
+  @media (forced-colors: active) {
+    .field:focus-visible,
+    .field-dark:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+  }
+
+  /* WCAG 2.5.8 (AA) asks for a 24x24 CSS-px target. A standalone text link
+     set at the caption size is 19px tall, because that is its line box — so
+     the hit area is grown with an overlay rather than with padding, which
+     would move the layout of every list and breadcrumb these links sit in.
+     Links that sit INLINE inside a sentence are exempt from 2.5.8 and must
+     not get this, or the overlays would tile over the surrounding prose. */
+  .tap-target {
+    position: relative;
+  }
+  .tap-target::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 100%;
+    min-height: 24px;
+    transform: translateY(-50%);
   }
 
   /* Safe Area */
@@ -364,89 +387,365 @@
    COMPONENT STYLES
    ============================================ */
 
-/* Animated Gradient Border */
-.gradient-border {
-  position: relative;
-}
-
-.gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, #FF7A00, #FF9433, #FF7A00);
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-/* Energy Lines */
-.energy-line {
-  background: linear-gradient(90deg, transparent, #FF7A00, transparent);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
-
-/* Scan Effect */
-.scan-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 122, 0, 0.5),
-    transparent
-  );
-  animation: scan 4s linear infinite;
-}
-
-@keyframes scan {
-  0% {
-    top: 0;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
-}
-
 /* Progress Bar */
 .progress-bar {
-  @apply h-1 bg-[#f4f3f2]/10 rounded-full overflow-hidden;
+  @apply h-1 bg-white/10 rounded-full overflow-hidden;
 }
 
 .progress-fill {
-  @apply h-full bg-[#FF7A00] rounded-full;
+  @apply h-full bg-brand rounded-full;
   transition: width 0.5s ease-out;
 }
 
-/* Link Styles */
-.link {
-  @apply text-[#FF7A00] font-medium transition-colors duration-200;
-}
+/* Focus States
+   ────────────────────────────────────────────────────────────────
+   This used to be `ring-offset-[#0A192F]` — a hardcoded navy offset on a
+   universal selector. On paper and white surfaces it drew a 2px dark
+   rectangle around every input and select, which is what read as an
+   "outline" on the controls. It is also why the offset can't be set here:
+   the correct colour depends on the surface the control sits on, so each
+   component sets its own via `--tw-ring-offset-color`.
 
-.link:hover {
-  @apply text-[#FF9433];
-}
-
-/* Focus States */
+   The indicator itself stays. :focus-visible only fires for keyboard
+   navigation, so pointer users never see it — the clean resting look and
+   WCAG 2.4.7 are not in conflict. */
 *:focus-visible {
-  @apply outline-none ring-2 ring-[#FF7A00] ring-offset-2 ring-offset-[#0A192F];
+  outline: 2px solid theme('colors.brand.ink');
+  outline-offset: 2px;
+}
+
+/* On the navy bands the default brand-ink outline drops to 2.4:1, so those
+   surfaces switch to brand orange (6.7:1 there). */
+.bg-ink-900 *:focus-visible,
+.bg-ink-900 *:focus-visible {
+  outline-color: theme('colors.brand.DEFAULT');
+}
+
+/* ── Guide-cover motion ──────────────────────────────────────────────
+ *
+ * CSS, deliberately, not SMIL. The reduced-motion block below zeroes
+ * animation-duration, which reaches CSS animation and cannot reach <animate>
+ * — so a SMIL cover would keep moving for a reader who asked it not to.
+ * Doing it in CSS also keeps the covers server-rendered with no JavaScript.
+ *
+ * TWO SETS, AND THE DIVISION IS THE WHOLE DESIGN.
+ *
+ * The old rule was "one motion per cover, and it plays once". That bought
+ * quiet honestly, but it meant seventeen of twenty-one covers were a frozen
+ * image 1.6 seconds after load — a still picture with a wind-up. The rule now
+ * says what it always meant, and says it per cover, which is the only scope a
+ * reader ever has:
+ *
+ *   ENTRANCE  plays once, on the house curve, and always carries a fill mode.
+ *             Without one it snaps back to its hidden `from` state and the
+ *             element is invisible forever.
+ *   AMBIENT   loops, on ease-in-out, tiny, and slow. It exists so the plate
+ *             reads as a lit place rather than a diagram of one.
+ *
+ * The ambient budget is a taste limit and a performance limit at the same
+ * number, because SVG children are not compositor-promoted in Blink or WebKit
+ * — an animated <g> repaints its own bounding box every frame. So: at most
+ * two ambient elements per cover, none of them large, none faster than 3s,
+ * and never on type. Everything big and slow — the drifting light, the
+ * breathing floor — happens outside the SVG on the composited planes below,
+ * where it costs no paint at all.
+ */
+
+/* ── Entrance. Once. ─────────────────────────────────────────────── */
+@keyframes hc-rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes hc-draw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+@keyframes hc-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes hc-pop  { from { opacity: 0; transform: scale(0.82); } to { opacity: 1; transform: scale(1); } }
+
+/* 4 is four USER UNITS inside a 300x200 viewBox, so it lands at 8 CSS px in
+   the 600px masthead and 4.6px on a phone. Already the right amount. */
+.hc-rise { animation: hc-rise 0.6s var(--hc-ease) backwards; }
+.hc-draw {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  animation: hc-draw var(--hc-draw-dur) var(--hc-ease) 0.15s forwards;
+}
+.hc-fill {
+  /* Without this the origin is (0,100) of the PLATE, not of the element:
+     transform-box's initial value for SVG is view-box, and transform-origin
+     resolves against it. The climate cover's right-hand cell was sweeping in
+     from 170 units away, which read as a wipe across the frame rather than as
+     a battery filling. */
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: hc-fill 1s var(--hc-ease) 0.2s backwards;
+}
+.hc-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hc-pop 0.5s var(--hc-ease) backwards;
+}
+
+/* ── The same vocabulary, inside a guide figure ──────────────────────
+ *
+ * The classes above fire at mount, which is right for a cover: a cover is the
+ * first thing on its page, so mount and arrival are the same moment. A figure
+ * is not. GuideFigure waits for the card to scroll into view before revealing
+ * it, so a drawing that started at mount would have finished before anyone
+ * could see it — you would scroll down to a figure that had already played,
+ * which is worse than no motion at all because you paid for it.
+ *
+ * So the shell adds `.is-in` when the card arrives, and these hold their first
+ * frame until it does. One IntersectionObserver — the one the shell already
+ * runs for the reveal — drives every drawing in the figure. No figure imports
+ * an animation library to fade something in.
+ *
+ * `.hc-fig` is only applied when the reader has NOT asked for reduced motion,
+ * so under that setting there is no held state to get stuck in.
+ *
+ * --d is the per-element stagger; --len the path length for a drawn stroke. */
+.hc-fig [data-draw] {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+}
+.hc-fig [data-fill] {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+.hc-fig [data-pop] {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+.hc-fig [data-rise] { opacity: 0; }
+
+.hc-fig.is-in [data-draw] { animation: hc-draw var(--hc-draw-dur) var(--hc-ease) var(--d, 0s) forwards; }
+.hc-fig.is-in [data-fill] { animation: hc-fill 0.7s var(--hc-ease) var(--d, 0s) forwards; }
+.hc-fig.is-in [data-pop]  { animation: hc-pop 0.45s var(--hc-ease) var(--d, 0s) forwards; }
+.hc-fig.is-in [data-rise] { animation: hc-rise 0.5s var(--hc-ease) var(--d, 0s) forwards; }
+
+
+/* A bar that both ARRIVES and then keeps moving.
+ *
+ * The entrance classes above play once. A bar in a calculator has a second
+ * job: it has to keep up with the slider afterwards, and an entrance-only
+ * class leaves it jumping to each new value the moment the reader touches
+ * anything. Writing that as a Tailwind `transition-[height]` is how five
+ * figures ended up on cubic-bezier(0.4,0,0.2,1) — Material's curve, injected
+ * at build time where no grep for the house curve could see it.
+ *
+ * So: one declaration, both jobs. Held at zero until the card arrives, then
+ * transitioned to --v on the house curve, and every later change of --v takes
+ * the same curve for free. Draw the rect at full height and let --v be the
+ * fraction; the reduced-motion blanket rule collapses the transition. */
+.hc-fig [data-bar] {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  transform: scaleY(0);
+}
+.hc-fig.is-in [data-bar] {
+  transform: scaleY(var(--v, 1));
+  transition: transform 0.55s var(--hc-ease) var(--d, 0s);
+}
+/* Not inside a figure (or reduced motion): just be the right size. */
+[data-bar] { transform-box: fill-box; transform-origin: bottom center; transform: scaleY(var(--v, 1)); }
+
+/* The horizontal one. Same contract: --v is the FRACTION, and the element is
+   drawn at full width. Animating a transform rather than `width` also keeps
+   the bar off the layout thread, which matters when three of them are
+   following the same slider. */
+.hc-fig [data-track] { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); }
+.hc-fig.is-in [data-track] {
+  transform: scaleX(var(--v, 1));
+  transition: transform 0.55s var(--hc-ease) var(--d, 0s);
+}
+[data-track] { transform-box: fill-box; transform-origin: left center; transform: scaleX(var(--v, 1)); }
+
+/* Colour and opacity on the house curve, so no figure needs Tailwind's. */
+.hc-tint { transition: color 180ms var(--hc-ease), background-color 180ms var(--hc-ease), border-color 180ms var(--hc-ease); }
+.hc-move { transition: transform 200ms var(--hc-ease); }
+
+/* ── The site chrome, without an animation library ────────────────────
+ *
+ * The nav and the footer render on all 60 routes, and between them they used
+ * ~60 motion elements. Because they are the only framer-motion in the shared
+ * shell, that one dependency put a 167 KB chunk into every route's critical
+ * path — and Turbopack emits it THREE times (verified: three chunks, same
+ * 171,043 bytes, identical module sets, different only in module order and
+ * therefore in content hash), so the homepage downloads 334 KB of it.
+ *
+ * Not one of those ~60 elements needed a JavaScript animator. There is no
+ * drag, no layout projection, no FLIP, no list that reflows — it is entrance
+ * slides, hover scales and two fades. Every one of those is a CSS transition,
+ * runs on the compositor, is interruptible (which a keyframe is not), and
+ * costs nothing.
+ *
+ * The one thing CSS genuinely cannot do without help is an EXIT animation, so
+ * the two disclosure surfaces stay mounted and animate on a data attribute
+ * instead of being conditionally rendered. Same result, no library.
+ */
+
+/* Entrances. The chrome arrives once, at mount. */
+@keyframes hc-drop { from { transform: translateY(-100%); } to { transform: none; } }
+@keyframes hc-lift-in { from { transform: translateY(100%); } to { transform: none; } }
+.hc-drop { animation: hc-drop 0.55s var(--hc-ease) backwards; }
+.hc-lift-in { animation: hc-lift-in 0.55s var(--hc-ease) backwards; }
+
+/* Press and hover. `transform` only, so nothing reflows under a thumb. */
+.hc-press { transition: transform 140ms var(--hc-ease); }
+.hc-press:active { transform: scale(0.95); }
+.hc-press-sm:active { transform: scale(0.9); }
+.hc-grow:hover { transform: scale(1.05); }
+.hc-grow-sm:hover { transform: scale(1.02); }
+.hc-nudge:hover { transform: translateX(4px); }
+.hc-raise:hover { transform: translateY(-2px); }
+.hc-raise-grow:hover { transform: translateY(-2px) scale(1.1); }
+
+/* A surface that has to animate OUT as well as in. Kept in the DOM and
+   toggled by [data-open], because an element React has already removed
+   cannot animate. `visibility` is what makes the closed state properly
+   inert — delayed on the way out so it lasts until the fade finishes, and
+   immediate on the way in. */
+.hc-reveal {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.16s var(--hc-ease), transform 0.16s var(--hc-ease),
+    visibility 0s linear 0.16s;
+}
+.hc-reveal[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.16s var(--hc-ease), transform 0.16s var(--hc-ease),
+    visibility 0s;
+}
+.hc-sheet {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s var(--hc-ease), visibility 0s linear 0.22s;
+}
+.hc-sheet[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.22s var(--hc-ease), visibility 0s;
+}
+/* Children stagger in behind the sheet, and are held until it opens so they
+   do not play to a closed drawer. */
+.hc-sheet [data-stagger] {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.3s var(--hc-ease), transform 0.3s var(--hc-ease);
+}
+.hc-sheet[data-open="true"] [data-stagger] {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--d, 0s);
+}
+
+/* A <details> that opens instead of jumping.
+ *
+ * The pin-geometry panel in connector-diagram is tall, and a <details>
+ * toggles display, so opening it teleported several hundred pixels of content
+ * into existence and shoved everything below it down in one frame. There is
+ * no JavaScript answer worth 171 kB for a disclosure triangle.
+ *
+ * interpolate-size is what makes `height: auto` animatable at all. Where it
+ * is unsupported the rule is simply ignored and the panel opens the way it
+ * does today — so this is an enhancement, never a dependency. It is scoped to
+ * figures so it cannot change any other disclosure on the site. */
+@supports (interpolate-size: allow-keywords) {
+  .hc-fig { interpolate-size: allow-keywords; }
+  .hc-fig details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 0.4s var(--hc-ease), content-visibility 0.4s allow-discrete;
+  }
+  .hc-fig details[open]::details-content { block-size: auto; }
+}
+
+/* ── Ambient. Forever, quietly. ──────────────────────────────────────
+ *
+ * Every one of these ends at full strength on purpose. Reduced motion parks
+ * an animation on its 100% frame, so 100% has to be the state the cover
+ * should hold for good — otherwise the reader who asked for stillness gets
+ * the half-lit frame of a pulse that never finishes.
+ */
+@keyframes hc-flow    { to { stroke-dashoffset: -24; } }
+@keyframes hc-standby { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes hc-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.72; } }
+@keyframes hc-drift   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.4px); } }
+@keyframes hc-meter   { from { transform: translateY(0); } to { transform: translateY(-16px); } }
+
+/* linear, and it stays linear: this is charge moving at a constant rate, and
+   easing a loop makes power look like it stutters. The one loop under 3s. */
+.hc-flow    { stroke-dasharray: 5 19; animation: hc-flow 1.5s linear infinite; }
+.hc-standby { animation: hc-standby 3.6s ease-in-out infinite; }
+.hc-breathe { animation: hc-breathe 6s ease-in-out infinite; }
+.hc-drift   { transform-box: fill-box; animation: hc-drift 9s ease-in-out infinite; }
+/* Travels 16 units through an 8-unit clip window, so its animated area is 128
+   square units — the exception the amplitude rule allows for clipped work. */
+.hc-meter   { animation: hc-meter 4s linear infinite; }
+
+/* ── The cover frame ─────────────────────────────────────────────────
+ *
+ * Three planes at three depths, moved by the pointer. The numbers are written
+ * by components/cover-frame.tsx; the depths are decided here.
+ *
+ * The planes are divs and the <svg> element itself, never an inner <g>:
+ * transforming a group repaints the whole 600x400 drawing every frame, while
+ * transforming a replaced element with will-change gets a real compositor
+ * layer and costs no paint whatsoever. That is also why the large, slow
+ * atmosphere lives out here rather than inside the artwork.
+ */
+.hc-cover {
+  position: absolute;
+  inset: 0;
+  /* Declared, not merely defaulted. Without these two lines the calc() below
+     is invalid at computed-value time and the entire transform is dropped —
+     so a browser with JavaScript off would lose the layout, not just the
+     parallax. */
+  --hc-px: 0;
+  --hc-py: 0;
+}
+/* A scene whose timeline is driven by the scroll wheel rather than by the
+   clock. The CSS play state has to be what holds it: a Web Animations
+   pause() is silently overridden whenever the cascade re-applies the
+   `animation` shorthand, and ScrollTrigger's pin does exactly that when it
+   re-parents the section into its spacer — after which the scene ran on by
+   itself between scrolls. This cannot be overridden, and seeking a paused
+   animation still works, which is all the scrubbing needs.
+   Applied and removed by components/journey-scroll.tsx. */
+.hc-hold {
+  animation-play-state: paused !important;
+}
+
+.hc-cover > svg,
+/* A kit scene arrives as markup and so needs one wrapper element; it stands
+   in for the <svg> in every rule below. See components/kit-illustration.tsx. */
+.hc-cover > .hc-kit,
+.hc-plane {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  /* Re-triggered on every animation frame, this reads as an exponential
+     follow: the planes lag the cursor by about a frame's worth of ease.
+     That lag is the whole sensation of weight. */
+  transition: transform 160ms var(--hc-ease);
+}
+.hc-plane { pointer-events: none; }
+/* Furthest back, so it moves WITH the pointer and most. */
+.hc-atmo  { transform: translate3d(calc(var(--hc-px) * 7px), calc(var(--hc-py) * 4px), 0); }
+/* The artwork, against the pointer and least. scale keeps a 3px shift from
+   ever exposing the frame edge inside the parent's overflow-hidden. */
+.hc-cover > svg,
+.hc-cover > .hc-kit { transform: translate3d(calc(var(--hc-px) * -3px), calc(var(--hc-py) * -2px), 0) scale(1.015); }
+/* Nearest, so it travels furthest — a sheen sliding across glass. */
+.hc-sheen { transform: translate3d(calc(var(--hc-px) * 14px), calc(var(--hc-py) * 8px), 0); }
+
+.hc-atmo {
+  background:
+    radial-gradient(58% 46% at 34% 26%, rgba(126, 155, 196, 0.10), transparent 70%),
+    radial-gradient(66% 30% at 50% 100%, rgba(42, 64, 102, 0.16), transparent 72%);
+}
+.hc-sheen {
+  background: radial-gradient(46% 38% at 26% 18%, rgba(180, 205, 240, 0.055), transparent 68%);
 }
 
 /* Reduced Motion */
@@ -458,15 +757,56 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  /* a dashed flow line left mid-cycle looks broken, so settle it solid */
+  .hc-flow {
+    stroke-dasharray: none !important;
+  }
+  .hc-draw {
+    stroke-dashoffset: 0 !important;
+  }
+  /* The blanket rule leaves a 0.01ms transition, which is still motion, and
+     the JS gate in cover-frame.tsx only reads the setting once at mount —
+     a reader who changes it mid-session needs this. */
+  .hc-cover > svg,
+  .hc-cover > .hc-kit,
+  .hc-plane {
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
-/* Mobile Tap Targets */
+/* Touch
+   Removes the ~300ms double-tap-to-zoom delay browsers hold on tappable
+   elements. Every control here is a discrete target, so there is nothing to
+   pinch-zoom into and the wait is pure lag. `manipulation` keeps pan and
+   pinch on the page itself, so only the double-tap gesture is given up.
+
+   The tap highlight is deliberately left alone: each control already has a
+   visible :active state, and killing the highlight without one leaves a
+   touch with no feedback at all. */
+button,
+a,
+input,
+select,
+textarea,
+summary,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* Mobile Tap Targets
+   `a` is deliberately excluded. It used to be in this list, which gave every
+   inline link inside a paragraph a 44px height — inflating the line it sits
+   on. Standalone tap targets opt in with .tap-target; links inside prose are
+   not tap targets, they are text. */
 @media (max-width: 768px) {
   button,
-  a,
   input,
   select,
-  textarea {
+  textarea,
+  summary,
+  .tap-target,
+  a[role="button"] {
     min-height: 44px;
   }
 }
@@ -481,19 +821,30 @@
     @apply px-4;
   }
 
-  .heading-display {
-    font-size: clamp(2rem, 8vw, 3rem);
-  }
-
-  .heading-section {
-    font-size: clamp(1.5rem, 6vw, 2.5rem);
-  }
 }
 
-/* Prevent horizontal overflow */
+/* Prevent horizontal overflow — WITHOUT breaking position: sticky.
+ *
+ * `overflow-x: hidden` does stop sideways scrolling, and it also makes the
+ * element a scroll container. A sticky descendant then sticks relative to
+ * THAT container rather than to the viewport, and since the container is
+ * exactly as tall as its own content it never has anything to stick against.
+ * So it simply scrolls away.
+ *
+ * Nothing on this site had ever stuck because of these four lines. The
+ * station list on the homepage has carried `sticky top-24` since it was
+ * written and has never once held position; the map beside it did the same
+ * the moment it was given the class.
+ *
+ * `overflow-x: clip` clips the same overflow and creates no scroll container,
+ * so sticky keeps working. The `hidden` line is left above it as the
+ * fallback for anything that does not know `clip` — those browsers keep
+ * today's behaviour rather than gaining a horizontal scrollbar.
+ */
 html,
 body {
   overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
 }
 
@@ -504,15 +855,108 @@ body {
    ============================================ */
 
 @layer utilities {
-  /* §3 Typography scale — fluid via clamp() */
-  .text-display { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.125; font-weight: 700; letter-spacing: -0.02em; }
-  .text-h1      { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.166; font-weight: 700; letter-spacing: -0.01em; }
-  .text-h2      { font-size: clamp(1.75rem, 3vw, 2rem); line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; }
-  .text-h3      { font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.333; font-weight: 600; letter-spacing: -0.005em; }
-  .text-body-lg { font-size: 1.125rem; line-height: 1.555; font-weight: 400; }
-  .text-body    { font-size: 1rem; line-height: 1.5; font-weight: 400; }
-  .text-label-md { font-size: 0.875rem; line-height: 1.428; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-  .text-caption { font-size: 0.75rem; line-height: 1.333; font-weight: 500; }
+  /* Skip link — visually hidden until focused (WCAG 2.4.1) */
+  .skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 100;
+    transform: translateY(-150%);
+    background: #FF7A00;
+    /* Navy, matching every other orange control — white here is 2.6:1, which
+       would leave the accessibility affordance itself failing AA. */
+    color: #0A192F;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    transition: transform 0.15s ease-out;
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  /* ── §3 Type scale ────────────────────────────────────────────────
+     Serif (Fraunces) owns display sizes; sans (Jakarta) owns structure and
+     body. Hard rule: serif never below 20px, never above weight 500. */
+
+  /* Serif display */
+  .text-display {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 120;
+    font-size: clamp(2.25rem, 8.5vw, 5.25rem);
+    font-weight: 400; line-height: 1.04; letter-spacing: -0.021em;
+    text-wrap: balance;
+  }
+  .text-h1 {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(2rem, 6.2vw, 3.75rem);
+    font-weight: 400; line-height: 1.08; letter-spacing: -0.016em;
+    text-wrap: balance;
+  }
+  .text-h2 {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 48;
+    font-size: clamp(1.75rem, 4.8vw, 2.875rem);
+    font-weight: 400; line-height: 1.12; letter-spacing: -0.013em;
+    text-wrap: balance;
+  }
+
+  /* Sans structure */
+  .text-h3 {
+    font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(1.125rem, 2.2vw, 1.375rem);
+    font-weight: 600; line-height: 1.3; letter-spacing: -0.011em;
+  }
+  .text-h4 {
+    font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+    font-size: 1.0625rem; font-weight: 600; line-height: 1.4;
+    letter-spacing: -0.006em;
+  }
+
+  /* Body — colour-neutral by design; context sets it (ink on light,
+     on-dark / muted-dark on navy). */
+  .text-body-lg { font-size: clamp(1rem, 1.4vw, 1.1875rem); font-weight: 400; line-height: 1.6; text-wrap: pretty; }
+  .text-body    { font-size: 1rem; font-weight: 400; line-height: 1.65; text-wrap: pretty; }
+  .text-body-sm { font-size: 0.9375rem; font-weight: 400; line-height: 1.6; }
+
+  /* Micro. The old .text-label-md was 14px and competed with H2s. */
+  .text-overline {
+    font-size: 0.6875rem; font-weight: 600; line-height: 1.3;
+    letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .text-caption { font-size: 0.8125rem; font-weight: 500; line-height: 1.45; }
+  /* The scale had no step below caption, so twenty-one footnotes were written
+     as text-[11px] instead. A design system that omits a size people need
+     doesn't prevent that size being used — it just makes it arbitrary. */
+  .text-footnote { font-size: 0.6875rem; font-weight: 400; line-height: 1.5; }
+
+  /* Sanctioned exceptions to the scale, so future greps don't "fix" them:
+     the journey illustration and the phone mockup use text-[9px]/[10px] to
+     simulate device UI seen at a distance. That type is a picture of text,
+     not text, and holding it to the reading scale would break the illusion. */
+
+  /* Specials */
+  .text-stat {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(2rem, 5.4vw, 3.5rem);
+    font-weight: 400; line-height: 1; letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .text-index {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 24;
+    font-size: 1.25rem; font-weight: 400; line-height: 1;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .text-quote {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-variation-settings: "opsz" 40;
+    font-size: clamp(1.25rem, 3.4vw, 2rem);
+    font-weight: 400; font-style: italic; line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
 
   /* §4 Section spacing */
   .py-section    { padding-top: 80px; padding-bottom: 80px; }
@@ -537,21 +981,17 @@ body {
     will-change: opacity, transform;
   }
   html.reveal-ready [data-reveal] {
-    transition: opacity .45s cubic-bezier(.16,1,.3,1), transform .45s cubic-bezier(.16,1,.3,1);
+    transition: opacity .45s var(--hc-ease), transform .45s var(--hc-ease);
   }
   /* Once revealed, drop the layer promotion so it doesn't pin GPU memory. */
   html.reveal-ready [data-reveal].reveal-in { opacity: 1; transform: none; will-change: auto; }
+  /* An arbitrary stagger, for lists whose length is data rather than three.
+     The three fixed steps below still work and still win, being later. */
+  html.reveal-ready [data-reveal] { transition-delay: var(--d, 0s); }
   html.reveal-ready [data-reveal][data-reveal-delay="1"] { transition-delay: .09s; }
   html.reveal-ready [data-reveal][data-reveal-delay="2"] { transition-delay: .18s; }
   html.reveal-ready [data-reveal][data-reveal-delay="3"] { transition-delay: .27s; }
   @media (prefers-reduced-motion: reduce) {
     html.reveal-ready [data-reveal] { opacity: 1; transform: none; }
   }
-
-  /* §7d Custom cursor — hide native cursor when active */
-  html.has-custom-cursor,
-  html.has-custom-cursor a,
-  html.has-custom-cursor button,
-  html.has-custom-cursor [role="button"],
-  html.has-custom-cursor label { cursor: none; }
 }

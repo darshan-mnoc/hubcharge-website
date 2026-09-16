@@ -1,3 +1,8 @@
 *.zip
 image-backups/
 public/images/_old_backup/
+# Playwright's scratch output — screenshots and page snapshots from local
+# verification runs. Git-based deploys never see untracked files, but a CLI
+# deploy uploads the working tree as-is.
+.playwright-mcp/
+.DS_Store
