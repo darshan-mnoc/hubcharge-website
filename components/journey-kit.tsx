@@ -11,6 +11,7 @@
  * scaled to a phone is five illegible thumbnails — the same swipe the
  * previous mobile layout had.
  */
+import { TEN_MINUTE_RANGE } from "@/lib/charging-math";
 import { JourneyScroll } from "@/components/journey-scroll";
 import { KitIllustration, type KitScene } from "@/components/kit-illustration";
 
@@ -20,6 +21,12 @@ const STEPS: { id: number; title: string; subtitle: string; scene: KitScene }[] 
   { id: 3, title: "Charge", subtitle: "We plug you in", scene: "hubcharge-step-3-charge" },
   { id: 4, title: "Add time or services", subtitle: "Extend or order food", scene: "hubcharge-step-4-add-time-or-services" },
   { id: 5, title: "Finish", subtitle: "We unplug • You’re done", scene: "hubcharge-step-5-finish" },
+];
+
+const SUMMARY = [
+  { v: "10 min", l: `Adds ${TEN_MINUTE_RANGE} miles, by car` },
+  { v: "Attendant", l: "Plugs in and unplugs for you" },
+  { v: "Lifestyle", l: "Delivered to your window" },
 ];
 
 export function JourneyKit() {
@@ -36,7 +43,7 @@ export function JourneyKit() {
       }
       strip={<KitIllustration name="hubcharge-how-it-works" />}
       mobile={
-        <>
+        <div>
           <div className="section-container mb-3">
             <p className="text-body-sm text-on-dark/60">Swipe to explore each step</p>
           </div>
@@ -56,7 +63,32 @@ export function JourneyKit() {
               </li>
             ))}
           </ul>
-        </>
+        </div>
+      }
+      after={
+        /* The summary row the scroll strip always ended on: a hairline spec
+           row on the section itself, matching the hero. */
+        <div className="section-container pb-16 lg:pb-20">
+          <div className="border-t border-white/10 pt-8 grid gap-8 lg:grid-cols-[minmax(0,28ch)_1fr] lg:gap-16">
+            <div>
+              <h3 className="text-h3 text-white mb-1.5">Your car is your space</h3>
+              <p className="text-body-sm text-on-dark/60">
+                Like home and office. We bring everything to you.
+              </p>
+            </div>
+            <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
+              {SUMMARY.map((stat, i) => (
+                <div
+                  key={stat.v}
+                  className={`py-4 sm:py-0 ${i === 0 ? "sm:pr-6" : "sm:px-6"} ${i === SUMMARY.length - 1 ? "sm:pr-0" : ""}`}
+                >
+                  <dt className="text-h3 text-white">{stat.v}</dt>
+                  <dd className="text-caption text-on-dark/55 mt-1">{stat.l}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
       }
     />
   );
