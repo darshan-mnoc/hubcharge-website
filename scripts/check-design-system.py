@@ -63,9 +63,6 @@ ALLOW = {
             "intentionally opt out for physical-object shapes'",
     },
     "microtype": {
-        "components/journey-battery.tsx":
-            "simulated device UI seen at a distance — globals.css: 'a picture "
-            "of text, not text'",
         "components/phone-charging-ui.tsx":
             "status bar and address bar inside the phone frame, same reason",
     },

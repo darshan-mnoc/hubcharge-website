@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { GuideCover } from "@/components/guide-cover";
+import { KitCover } from "@/components/kit-illustration";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
@@ -18,7 +18,7 @@ export default function Charging101Page() {
     <PageShell
       backTo={{ href: "/", label: "Home" }}
       eyebrow="Guides"
-      cover={<GuideCover motif="station" />}
+      cover={<KitCover name="hubcharge-charging-hero" />}
       title="Charging 101"
       intro="New to EVs, or just want straight answers? Everything about charging, in plain English — no jargon, no sales pitch."
     >

@@ -1,58 +1,95 @@
 /**
  * Shared illustration primitives.
  *
- * These were written for the homepage charging-journey strip and are the best
- * drawings in this codebase: one light source upper-left, a contact shadow, a
- * ground reflection, the rocker as the darkest plane, a beltline highlight,
- * and roof and glass drawn separately so the pillars read. Meanwhile
- * components/guide-cover.tsx hand-rolled fourteen of its own primitives and a
- * far worse car, over eight rounds, while these sat in the same repository.
+ * These are the drawings every scene is assembled from: the homepage
+ * charging-journey strip and all twenty-one guide covers place these four
+ * components and nothing else, so the hardware can never disagree with itself
+ * from one page to the next.
  *
- * Moved here unchanged apart from one thing: each took its gradient namespace
- * from useId(), which forces a client component. They take an `id` prop now,
- * so the guide covers can server-render them with no JavaScript.
- * components/journey-battery.tsx keeps thin wrappers that supply useId().
+ * REDRAWN against the product photography (public/images/alhambra-unit.webp,
+ * charging-service-v2.webp, valet-greet-v2.webp). What changed and why:
+ *
+ *   - The charger was a generic pedestal: a slim monolith with one screen,
+ *     one blade and one round holster. The real cabinet is a broad off-white
+ *     column with the wordmark across the top, two status dashes beneath it,
+ *     a portrait touchscreen, a card reader, TWO holsters — CCS1 on the left,
+ *     NACS on the right, both labelled — and cable arms on the crown with the
+ *     leads looping down to the couplers. A reader who has stood at one of
+ *     our bays now recognises the drawing.
+ *   - The car had a long bonnet and a cab set well back, which reads as a
+ *     combustion saloon. It is an EV now: short bonnet, cab forward, a tall
+ *     glasshouse and a fastback, with the charge port on the rear quarter.
+ *   - The attendant wore a cap and a boiler suit. Our people wear a white
+ *     shirt and a dark waistcoat, which is what the photography shows.
+ *
+ * THREE NUMBERS CANNOT MOVE, because guide-cover.tsx derives every placement
+ * and every cable anchor from them:
+ *
+ *   - the car's tyres touch at y = 63.1 of a 200x70 box, and its charge port
+ *     is at (158, 37). scripts/check-cover-accuracy.py asserts both.
+ *   - the unit stands on y = 85.5 of a 48x88 box.
+ *   - the attendant stands on y = 100 of a 60x104 box.
+ *
+ * The unit's holster DID move — the real cabinet holsters at chest height,
+ * not at the knee — so holsterAt() in guide-cover.tsx reads 51.3 now. That
+ * pair has to stay in step; it is the one number shared across two files.
+ *
+ * Each drawing is authored in its own comfortable coordinate space and then
+ * placed into the published viewBox by a single transform, so the art can be
+ * edited without re-deriving the contract above.
+ *
+ * Colour comes from ILLO only. Every value there is measured off the
+ * photographs at night levels, which is why the cabinet is a warm greige
+ * rather than the white it is in daylight.
  */
 import { ILLO, CABLE_CASING } from "@/lib/illustration";
 
 /**
- * The car's silhouette, written once.
+ * Where the drawings' anchors land, in their own published viewBoxes.
  *
- * It is used three times — the body, its ground reflection, and the haze that
- * lies over it at distance — and it used to be three copies of the same
- * literal, which is how a reflection ends up drawing last round's car.
- *
- * The shape follows a reference the client supplied: a long low bonnet with
- * the cab set well back, a domed roof peaking behind the middle and falling
- * into a fastback, a full haunch over the rear wheel, and — the thing that
- * most changes the character — WHEELS HALF THE HEIGHT OF THE CAR.
+ * guide-cover.tsx places every element and hangs every cable off these, and
+ * scripts/check-cover-accuracy.py re-derives them from the artwork below and
+ * fails if the drawing has moved away from what is declared here. One set of
+ * numbers, read by both, so a redraw cannot quietly detach a cable again.
  */
+export const ANCHOR = {
+  /** Car, in a 200x70 box: where the tyres touch, and the charge port. */
+  carFoot: 63.1,
+  port: { x: 158, y: 37 },
+  /** Unit, in a 48x88 box: the contact shadow, and the couplers — which sit
+   *  at chest height, 8.8 either side of centre (CCS1 left, NACS right). */
+  unitFoot: 85.5,
+  holster: { y: 51.3, dx: 8.8 },
+  /** Attendant, in a 60x104 box. */
+  valetFoot: 100,
+} as const;
+
+/* ── The car ──────────────────────────────────────────────────────────
+ *
+ * Drawn nose-right in a 384-long space with the ground at y=128, then placed
+ * MIRRORED so the car faces left and its port lands on (158, 37) — the site's
+ * convention, and what the covers' cable maths expects.
+ */
+const CAR_PLACE = "translate(185.9 6.55) scale(-0.4453 0.4453)";
+
+/** Bonnet short, cab forward, roof peaking ahead of centre, long fastback
+ *  tail, and wheels half the height of the car. */
 const BODY_D =
-  "M10,50 C10,43 12,39 18,37 C30,33.4 42,31.6 56,31 C64,30.6 70,26.4 79,20.8 C88,15.6 96,12.8 106,12.8 C118,13 129,16 140,21 C154,27.4 168,32.8 177,36.6 C180.6,38 181.6,40.4 181.2,44 C180.6,48.4 178,51.4 172,52.8 L155,54 C153.6,44.6 148,37.2 140,37.2 C132,37.2 126.4,44.6 125,54 L68,55 C66.6,45.4 61,37.6 53,37.6 C45,37.6 39.4,45 38,54 L20,53 C14,52.4 10,52 10,50 Z";
+  "M22,112C14,110 11,100 12,90C13,78 18,66 34,60C56,54 80,50 100,44C130,28 170,16 212,16" +
+  "C246,16 270,26 300,48C320,55 346,60 368,64C384,67 393,73 394,84C395,94 392,104 386,110" +
+  "L384,112H345A34,34 0 1 0 279,112H121A34,34 0 1 0 55,112Z";
 
-/** The greenhouse: shallow, and set well back on that long bonnet. */
+/** The glasshouse: tall, and set forward on a short bonnet. */
 const GLASS_D =
-  "M70,29.6 C77,23.6 84,18.6 92,16 C100,13.8 108,13.2 116,13.8 C126,14.8 134,17.6 142,21.6 C145.6,23.4 147,26.6 148,29.6 Z";
+  "M104,57C128,42 170,23 212,23C242,23 266,33 292,52C230,54 160,56 104,57Z";
 
-/**
- * Where the wheels sit, and how big they are.
- *
- * The radius went from 9.6 to 12.5 — half again as large — because that is
- * the single biggest difference between the reference and what this drew
- * before. A car with small wheels reads as a cartoon; a car with big wheels
- * reads as a car.
- *
- * The one number that cannot move is the SUM: scripts/check-cover-accuracy.py
- * asserts that cy + r equals the foot fraction declared in guide-cover.tsx, so
- * the tyre still touches the floor exactly where every cover expects it to.
- * 50.6 + 12.5 = 63.1, unchanged.
- *
- * The axles also moved forward, from 55/147 to 53/140. At 147 the bigger rear
- * tyre reached x=159.5 and swallowed the charge port — which is pinned at 158
- * because guide-cover.tsx's portAt() and six cable anchors are derived from
- * it. The port now sits clear on the rear quarter, where a port belongs.
- */
-const AXLE = [53, 140] as const;
+const TAIL_D = "M12.6,86C13.2,75 18.5,66.5 34,60.4L35.6,64.6C23.4,69.6 18.6,77 17.8,87Z";
+const HEAD_D = "M377,68.6C386,71 391.6,75 393.6,81L386.6,82.4C384.2,78 380.8,75.2 375,73.2Z";
+
+const AXLE = [88, 312] as const;
+/** Local coordinates of the charge port. Maps to (158, 37) once placed, which
+ *  is where portAt() in guide-cover.tsx looks for it. */
+const PORT = { x: 62.6, y: 68.38 } as const;
 
 export function CarSVG({
   id,
@@ -65,172 +102,205 @@ export function CarSVG({
   className?: string;
   style?: React.CSSProperties;
   /**
-   * Distance, 0 to 1.
-   *
-   * Callers used to fake this by lowering the whole car's opacity, which
-   * against a near-black plate makes a far car DARKER than a near one — the
-   * exact opposite of what distance does. Air between you and an object takes
-   * contrast away and lifts it toward the colour of the sky. So this lays the
-   * sky's own haze over the car's silhouette instead: shape intact, contrast
-   * gone. The near car stays the darkest thing in the frame, as it should.
+   * Distance, 0 to 1. Air between you and an object takes contrast away and
+   * lifts it toward the colour of the sky, so this lays the sky's own haze
+   * over the silhouette rather than lowering opacity — which, against a
+   * near-black plate, would make a far car DARKER than a near one.
    */
   haze?: number;
 }) {
   return (
     <svg viewBox="0 0 200 70" className={className} style={style}>
       <defs>
-        {/* Body. The reference is a light car shaded from a bright shoulder
-            down to a dark sill; this is the same ramp in the site's steel. */}
         <linearGradient id={`carBody-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor={ILLO.carSheen} />
+          <stop offset="12%" stopColor={ILLO.carSheen} />
           <stop offset="38%" stopColor={ILLO.carTop} />
-          <stop offset="76%" stopColor={ILLO.carMid} />
+          <stop offset="68%" stopColor={ILLO.carMid} />
           <stop offset="100%" stopColor={ILLO.carLow} />
         </linearGradient>
-
-        {/* Greenhouse: darker at the base, as glass reads against a body. */}
         <linearGradient id={`glass-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor={ILLO.glassTop} stopOpacity="0.42" />
-          <stop offset="55%" stopColor={ILLO.glassMid} stopOpacity="0.6" />
-          <stop offset="100%" stopColor={ILLO.glassLow} stopOpacity="0.78" />
+          <stop offset="0%" stopColor={ILLO.glassTop} stopOpacity="0.5" />
+          <stop offset="55%" stopColor={ILLO.glassMid} stopOpacity="0.68" />
+          <stop offset="100%" stopColor={ILLO.glassLow} stopOpacity="0.9" />
         </linearGradient>
-
         <linearGradient id={`reflect-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor={ILLO.carTop} stopOpacity="0.28" />
-          <stop offset="100%" stopColor={ILLO.carTop} stopOpacity="0" />
+          <stop offset="45%" stopColor={ILLO.carTop} stopOpacity="0" />
+          <stop offset="100%" stopColor={ILLO.carTop} stopOpacity="0.2" />
         </linearGradient>
-
         <radialGradient id={`contact-${id}`} cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor={ILLO.shadow} stopOpacity="0.55" />
           <stop offset="100%" stopColor={ILLO.shadow} stopOpacity="0" />
         </radialGradient>
-
-        {/* The alloy face. The reference's wheels are the brightest thing on
-            the car after the glass, so the rim gets its own ramp rather than
-            a flat fill. */}
         <linearGradient id={`rim-${id}`} x1="20%" y1="0%" x2="80%" y2="100%">
           <stop offset="0%" stopColor="#5B6E88" />
           <stop offset="100%" stopColor={ILLO.rim} />
         </linearGradient>
+        <radialGradient id={`port-${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={ILLO.live} stopOpacity="0.55" />
+          <stop offset="100%" stopColor={ILLO.live} stopOpacity="0" />
+        </radialGradient>
       </defs>
 
-      {/* Contact shadow, offset right — one light source, upper-left. Wide and
-          soft, the way the reference's is. */}
-      <ellipse cx="100" cy="64" rx="88" ry="5.2" fill={`url(#contact-${id})`} />
+      {/* Contact shadow, offset right — one light source, upper-left. */}
+      <ellipse cx="100" cy="64" rx="88" ry="4.4" fill={`url(#contact-${id})`} />
 
-      {/* Reflection, mirrored about the line the tyres touch: c(1+s) where
-          c = 63.1 and s = 0.34. It used to say 127 — which mirrors about 94.8
-          and sent the sill to y=107.6, outside a box 70 tall, so it had never
-          drawn a single pixel. */}
-      <g transform="translate(0,84.554) scale(1,-0.34)" opacity="0.45">
-        <path d={BODY_D} fill={`url(#reflect-${id})`} />
-      </g>
+      <g transform={CAR_PLACE}>
+        {/* Reflection, squashed and fading down, then the wheel wells behind
+            the body so the arches read as openings rather than as paint. */}
+        <g transform="translate(0 128) scale(1 -0.28) translate(0 -128)">
+          <path d={BODY_D} fill={`url(#reflect-${id})`} />
+        </g>
+        {AXLE.map((cx) => (
+          <circle key={`well-${cx}`} cx={cx} cy="101" r="31" fill={ILLO.shadow} />
+        ))}
 
-      <path d={BODY_D} fill={`url(#carBody-${id})`} />
+        <path d={BODY_D} fill={`url(#carBody-${id})`} />
 
-      {/* The rocker — the darkest plane, and what grounds the car. */}
-      <path
-        d="M40,53.4 C58,55.4 110,55.6 152,53.8 L154,55.6 C112,57.4 60,57.2 39,55.4 Z"
-        fill={ILLO.carRocker}
-      />
+        {/* The rocker — the darkest plane, and what grounds the car. */}
+        <path d="M121,105.5H279V112H121Z" fill={ILLO.carRocker} opacity="0.85" />
+        <path d="M20,104H55L55.5,112H22C19,111 17,108 16,104Z" fill={ILLO.carRocker} opacity="0.55" />
+        <path d="M358,105L388,104L386,110L360,111Z" fill={ILLO.carRocker} />
 
-      {/* The shoulder. One highlight along the top of the flank is the
-          strongest depth cue at this size, and the reference has exactly one. */}
-      <path
-        d="M14,41 C32,35 56,32 84,30.8 C116,29.6 152,31.6 178,37"
-        stroke="rgba(255,255,255,0.30)"
-        strokeWidth="1"
-        fill="none"
-        strokeLinecap="round"
-      />
-      {/* and the crease along the flank, low and long */}
-      <path
-        d="M26,45.6 C66,43.4 124,43 174,44.4"
-        stroke="rgba(255,255,255,0.10)"
-        strokeWidth="1.1"
-        fill="none"
-        strokeLinecap="round"
-      />
+        {/* The shoulder, then the crease along the flank, low and long. */}
+        <path
+          d="M26,70C110,60 250,58 391,80"
+          stroke="rgba(255,255,255,0.4)"
+          strokeWidth="1.3"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <path
+          d="M64,94C150,91 260,91 366,95"
+          stroke="rgba(255,255,255,0.09)"
+          strokeWidth="1.2"
+          fill="none"
+          strokeLinecap="round"
+        />
 
-      <path d={GLASS_D} fill={`url(#glass-${id})`} />
-      {/* the bright top edge of the window frame */}
-      <path
-        d="M72,28.6 C80,21.6 90,16.4 102,14.8 C120,13.4 136,17.6 146,28.6"
-        stroke="rgba(255,255,255,0.34)"
-        strokeWidth="0.9"
-        fill="none"
-        strokeLinecap="round"
-      />
-      {/* B-pillar */}
-      <path d="M106,13.6 L109,13.7 L109,29.4 L106,29.4 Z" fill={ILLO.glassLow} opacity="0.9" />
-      {/* door shut line and handle — small, and what stops a car reading as
-          a solid lozenge */}
-      <path d="M100,30 L100,53.4" stroke={ILLO.carLow} strokeWidth="0.8" strokeOpacity="0.7" />
-      <rect x="114" y="34" width="8" height="2" rx="1" fill={ILLO.carTop} opacity="0.8" />
+        {/* Glasshouse: the well, a driver behind it, the glass, a reflection
+            streak, the B-pillar, and the bright trim that separates the DLO
+            from the body. */}
+        <path d={GLASS_D} fill={ILLO.glassLow} />
+        <g opacity="0.85">
+          <circle cx="238" cy="37.6" r="6.6" fill={ILLO.bodyLight} />
+          <path d="M224,54Q226,44.6 238,44.6Q250,44.6 252,54Z" fill={ILLO.bodyLight} />
+        </g>
+        <path d={GLASS_D} fill={`url(#glass-${id})`} />
+        <path d="M154,28L176,24L146,56H122Z" fill="rgba(255,255,255,0.07)" />
+        <path d="M192,24.4L200,24V54.4L192,54.8Z" fill={ILLO.carRocker} />
+        <path
+          d={GLASS_D}
+          fill="none"
+          stroke={ILLO.hub}
+          strokeWidth="1.3"
+          strokeOpacity="0.85"
+          strokeLinejoin="round"
+        />
 
-      {/* Lights: presence, not glow. */}
-      <path d="M10.4,40.6 C13.6,39.4 17,38.8 20.4,38.6 L20.4,41.6 C17,41.8 13.6,42.4 10.6,43.4 Z" fill="rgba(255,255,255,0.7)" />
-      <path d="M181.4,40.4 C179,40 176.6,39.8 174.4,39.8 L174.4,42.8 C176.8,42.8 179.2,43 181.2,43.4 Z" fill={ILLO.fault} opacity="0.72" />
+        {/* Shut lines, handles, mirror — small, and what stops a car reading
+            as a solid lozenge. */}
+        <path d="M200,57L202,105" stroke={ILLO.carRocker} strokeOpacity="0.45" strokeWidth="0.9" />
+        <path
+          d="M130,58C128,80 128,92 132,103"
+          fill="none"
+          stroke={ILLO.carRocker}
+          strokeOpacity="0.3"
+          strokeWidth="0.9"
+        />
+        <rect x="154" y="63" width="15" height="2.6" rx="1.3" fill={ILLO.hub} opacity="0.7" />
+        <rect x="244" y="62" width="15" height="2.6" rx="1.3" fill={ILLO.hub} opacity="0.7" />
+        <path d="M282,53C285,47.5 296,47 301,51L299.5,57H285Z" fill={ILLO.carMid} />
+        <path
+          d="M284,51.5C288,48.4 295,48.2 300,50.6"
+          fill="none"
+          stroke="rgba(255,255,255,0.35)"
+          strokeWidth="0.9"
+        />
 
-      {/* Wheels. Half the height of the car, with an open five-spoke face —
-          the two things that most separate the reference from a generic
-          side-on car drawing. */}
-      {AXLE.map((cx) => (
-        <g key={cx}>
-          <circle cx={cx} cy={50.6} r="12.5" fill={ILLO.tyre} />
-          <circle cx={cx} cy={50.6} r="12.5" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="0.9" />
-          <circle cx={cx} cy="50.6" r="8.8" fill={`url(#rim-${id})`} />
-          <g transform={`translate(${cx} 50.6)`}>
-            {[0, 72, 144, 216, 288].map((a) => (
-              <path
-                key={a}
-                d="M-1.5,-2.4 L-2.5,-7.9 A 7.9 7.9 0 0 1 2.5,-7.9 L1.5,-2.4 Z"
-                transform={`rotate(${a})`}
-                fill={ILLO.hub}
-                opacity="0.5"
-              />
+        {/* Lights: presence, not glow. */}
+        <path d={HEAD_D} fill="rgba(255,255,255,0.75)" />
+        <path d={TAIL_D} fill={ILLO.fault} opacity="0.75" />
+
+        {/* Charge port, on the rear quarter where a port belongs. The glow and
+            the dot together are what read at cover scale. */}
+        <rect
+          x={PORT.x - 7}
+          y={PORT.y - 5.5}
+          width="14"
+          height="11"
+          rx="3.2"
+          fill={ILLO.carMid}
+          stroke={ILLO.carRocker}
+          strokeOpacity="0.5"
+          strokeWidth="0.7"
+        />
+        <circle cx={PORT.x} cy={PORT.y} r="11" fill={`url(#port-${id})`} />
+        <circle cx={PORT.x} cy={PORT.y} r="4.4" fill={ILLO.live} opacity="0.95" />
+
+        {/* Wheels. Half the height of the car, with an open five-spoke face. */}
+        {AXLE.map((cx) => (
+          <g key={cx}>
+            <circle cx={cx} cy="100" r="27" fill={ILLO.tyre} />
+            <circle cx={cx} cy="100" r="24.6" fill="none" stroke={ILLO.rim} strokeWidth="2.4" />
+            <circle cx={cx} cy="100" r="19.5" fill={`url(#rim-${id})`} />
+            <g transform={`translate(${cx} 100)`}>
+              {[0, 72, 144, 216, 288].map((a) => (
+                <path
+                  key={a}
+                  d="M-1.6,-4.2L-4.4,-18.3Q0,-19.7 4.4,-18.3L1.6,-4.2Z"
+                  transform={`rotate(${a})`}
+                  fill={ILLO.hub}
+                  opacity="0.65"
+                />
+              ))}
+              <circle r="18.6" fill="none" stroke={ILLO.hub} strokeWidth="0.8" opacity="0.5" />
+              <circle r="4" fill={ILLO.hub} opacity="0.9" />
+            </g>
+          </g>
+        ))}
+
+        {/* Atmosphere, over the silhouette only. */}
+        {haze > 0 && (
+          <g fill={ILLO.skyHaze} opacity={haze} aria-hidden>
+            <path d={BODY_D} />
+            {AXLE.map((cx) => (
+              <circle key={cx} cx={cx} cy="100" r="27" />
             ))}
           </g>
-          <circle cx={cx} cy="50.6" r="2.4" fill={ILLO.hub} opacity="0.9" />
-        </g>
-      ))}
-
-      {/* Charge port — a point of light. Held at (158, 37) because
-          guide-cover.tsx's portAt() and six cable anchors are derived from
-          exactly these two numbers. */}
-      <circle cx="158" cy="37" r="2" fill={ILLO.live} opacity="0.95" />
-
-      {/* Atmosphere, over the silhouette only. Drawn as the same shapes rather
-          than as a rectangle, because a rectangle of haze would sit visibly
-          across the horizon glow behind it. */}
-      {haze > 0 && (
-        <g fill={ILLO.skyHaze} opacity={haze} aria-hidden>
-          <path d={BODY_D} />
-          {AXLE.map((cx) => (
-            <circle key={cx} cx={cx} cy="50.6" r="12.5" />
-          ))}
-        </g>
-      )}
+        )}
+      </g>
     </svg>
   );
 }
 
-/**
- * The attendant.
+/* ── The attendant ────────────────────────────────────────────────────
  *
- * The first version drew a featureless grey disc for a head, with a comment
- * defending it as "a pictogram". At the size this renders it just looked like
- * a person with no face, which is unsettling rather than neutral — and the
- * whole proposition here is that a human being handles your cable. Hiding
- * their face undercut the one thing the illustration exists to say.
+ * Drawn 160 tall with the feet on y=160, then placed so they stand on y=100
+ * of the published 60x104 box.
  *
- * So: brow, eyes, nose and mouth, drawn at weights that survive being scaled
- * to ~40px wide. The viewBox is taller than before so the head has room.
- *
- * Sleeves are uniform-coloured in every variant. Previously they flipped to
- * orange in two of the three, which broke the scene's one colour rule — that
- * orange means energy — by putting it on a person's arms.
+ * The uniform is the one in valet-greet-v2.webp: white shirt, dark waistcoat,
+ * dark trousers, and a single orange name badge. The cap went because our
+ * people do not wear one, and because a cap plus a boiler suit read as a
+ * forecourt attendant from 1970 rather than as the service this sells.
  */
+const VALET_PLACE = "translate(1.88 -12.5) scale(0.703)";
+
+const sleeveOf = (d: string) => (
+  <>
+    <path d={d} fill="none" stroke={ILLO.uniform} strokeWidth="5.8" strokeLinecap="round" />
+    <path
+      d={d}
+      fill="none"
+      stroke={ILLO.uniformShade}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeOpacity="0.55"
+      transform="translate(1.2 0)"
+    />
+  </>
+);
+const handAt = (x: number, y: number) => <circle cx={x} cy={y} r="3.1" fill={ILLO.skin} />;
+
 export function ValetSVG({
   id,
   className = "",
@@ -245,133 +315,151 @@ export function ValetSVG({
 }) {
   return (
     <svg viewBox="0 0 60 104" className={className} style={style}>
-      <ellipse cx="30" cy="100" rx="11" ry="2.2" fill={ILLO.shadow} opacity="0.28" />
+      <ellipse cx="30" cy="100" rx="11" ry="2.2" fill={ILLO.shadow} opacity="0.32" />
+      <g transform={VALET_PLACE}>
+        {/* Legs and shoes */}
+        <rect x="31.6" y="96" width="8" height="59" rx="3.6" fill={ILLO.garment} />
+        <rect x="40.4" y="96" width="8" height="59" rx="3.6" fill={ILLO.garment} />
+        <rect x="44.6" y="98" width="3.4" height="54" rx="1.7" fill={ILLO.shadow} opacity="0.35" />
+        <path
+          d="M29.4,153.6H39.6A2,2 0 0 1 41.6,155.6V158.4A1.4,1.4 0 0 1 40.2,159.8H28.2A1.4,1.4 0 0 1 26.8,158.4V157.4A3.6,3.6 0 0 1 29.4,153.6Z"
+          fill={ILLO.shadow}
+        />
+        <path
+          d="M50.6,153.6H40.4A2,2 0 0 0 38.4,155.6V158.4A1.4,1.4 0 0 0 39.8,159.8H51.8A1.4,1.4 0 0 0 53.2,158.4V157.4A3.6,3.6 0 0 0 50.6,153.6Z"
+          fill={ILLO.shadow}
+        />
+        <rect x="30" y="94.6" width="20" height="4.4" rx="1" fill={ILLO.shadow} />
 
-      {/* Legs */}
-      <rect x="22" y="64" width="7" height="34" rx="3.5" fill={ILLO.garment} />
-      <rect x="31" y="64" width="7" height="34" rx="3.5" fill={ILLO.garment} />
-      <rect x="21.5" y="95" width="8" height="4" rx="1.6" fill={ILLO.shadow} />
-      <rect x="30.5" y="95" width="8" height="4" rx="1.6" fill={ILLO.shadow} />
+        {/* Neck, shirt, waistcoat, tie, collar, badge */}
+        <rect x="36.6" y="44" width="6.8" height="11" rx="2" fill={ILLO.skinShade} />
+        <path d="M25,60Q26,53 33,52H47Q54,53 55,60L52.5,97H27.5Z" fill={ILLO.uniform} />
+        <path
+          d="M27.4,62Q27.4,56 33,55H36.2L40,71L43.8,55H47Q52.6,56 52.6,62L51.2,98L40,101.4L28.8,98Z"
+          fill={ILLO.body}
+        />
+        <path
+          d="M40,71L43.8,55H47Q52.6,56 52.6,62L51.2,98L40,101.4Z"
+          fill={ILLO.bodyDark}
+          opacity="0.75"
+        />
+        <path d="M38.6,55.5H41.4L40.9,58L42,68L40,71L38,68L39.1,58Z" fill={ILLO.shadow} />
+        <path d="M35.4,52.6L40,57.2L44.6,52.6L43,51.6L40,54.8L37,51.6Z" fill={ILLO.uniform} />
+        <circle cx="40" cy="79" r="0.9" fill={ILLO.seam} />
+        <circle cx="40" cy="87" r="0.9" fill={ILLO.seam} />
+        <rect x="44.6" y="63.6" width="5.6" height="2" rx="0.5" fill={ILLO.live} />
 
-      {/* Torso. One orange element on the whole figure — the chest stripe —
-          so the accent stays legible as "this is HubCharge staff". */}
-      <path d="M17,36 Q17,29 30,29 Q43,29 43,36 L45,64 L15,64 Z" fill={ILLO.uniform} />
-      <path d="M30,29 L30,64 L45,64 L43,36 Q43,29 30,29 Z" fill={ILLO.uniformShade} opacity="0.45" />
-      <rect x="26.5" y="32" width="7" height="2" rx="1" fill={ILLO.live} />
-      <rect x="24" y="38" width="7" height="8" rx="1.5" fill={ILLO.stage} opacity="0.1" />
+        {/* Arms and what they are holding */}
+        {holding === "terminal" ? (
+          <>
+            {sleeveOf("M27,58C23,68 23,79 31,84")}
+            {sleeveOf("M53,58C57,68 57,79 49,84")}
+            <rect x="31.5" y="76" width="17" height="13" rx="2" fill={ILLO.bodyLight} />
+            <rect x="33.3" y="77.8" width="13.4" height="6.6" rx="1" fill={ILLO.recess} />
+            <rect x="35" y="79.8" width="10" height="1.3" rx="0.6" fill={ILLO.live} />
+            <rect x="35" y="82" width="6" height="1" rx="0.5" fill={ILLO.seam} />
+            <rect x="35" y="85.6" width="10" height="1.6" rx="0.8" fill={ILLO.recess} />
+            {handAt(31.6, 85)}
+            {handAt(48.4, 85)}
+          </>
+        ) : holding === "cable" ? (
+          <>
+            {sleeveOf("M27,58C24,70 23.5,80 23.8,91")}
+            {handAt(23.8, 93.5)}
+            {sleeveOf("M53,58C60,64 66,72 72,80")}
+            {/* The coupler in hand, held the way it is carried to the car */}
+            <g transform="translate(75 84) rotate(28)">
+              <rect x="-4.6" y="-8" width="9.2" height="7.5" rx="2.4" fill={ILLO.silverMid} />
+              <path d="M-4,-1.5H4L3.3,11Q3,14.6 0,15Q-3,14.6 -3.3,11Z" fill={ILLO.silverTop} />
+              <circle cx="0" cy="2.4" r="1.2" fill={ILLO.silverLow} />
+              <rect x="-1.9" y="14" width="3.8" height="4.4" rx="1" fill={ILLO.shadow} />
+            </g>
+            {handAt(73.5, 82)}
+          </>
+        ) : (
+          <>
+            {sleeveOf("M27,58C24,70 23.5,80 23.8,91")}
+            {handAt(23.8, 93.5)}
+            {sleeveOf("M53,58C58,68 61,74 59,79")}
+            {/* A tray: one cup, one bag. The service, carried to the window. */}
+            <path d="M50,79.2H76" stroke={ILLO.uniformShade} strokeWidth="2.6" strokeLinecap="round" />
+            <path d="M55,69.6H62.4L61.4,78H56Z" fill={ILLO.uniform} />
+            <rect x="54.4" y="67.8" width="8.6" height="2.2" rx="0.8" fill={ILLO.recess} />
+            <rect x="55.5" y="72.2" width="6.4" height="2.8" fill={ILLO.live} />
+            <rect x="64.2" y="67.4" width="9.6" height="10.6" rx="1" fill={ILLO.heat} />
+            <path d="M64.2,70.2H73.8" stroke={ILLO.recess} strokeWidth="0.8" opacity="0.5" />
+            <circle cx="69" cy="74" r="1.6" fill={ILLO.live} />
+            {handAt(59.5, 79.6)}
+          </>
+        )}
 
-      {/* Shoulder seams — the value break needs an edge to sit against */}
-      <path d="M17.5,38 Q22,35.5 24,40" fill="none" stroke={ILLO.uniformShade} strokeWidth="0.8" opacity="0.8" />
-      <path d="M42.5,38 Q38,35.5 36,40" fill="none" stroke={ILLO.uniformShade} strokeWidth="0.8" opacity="0.8" />
-
-      {/* Collar */}
-      <path d="M25.5,29.5 L30,35 L34.5,29.5" fill="none" stroke={ILLO.uniformShade} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
-
-      {/* Arms and held item */}
-      {holding === "terminal" ? (
-        <>
-          <path d="M17.5,38 Q13,44 16,53 L21,56 L24,52 Q20,45 22,40 Z" fill={ILLO.uniformShade} />
-          <path d="M42.5,38 Q47,44 44,53 L39,56 L36,52 Q40,45 38,40 Z" fill={ILLO.uniformShade} />
-          <circle cx="21" cy="57" r="2.9" fill={ILLO.skin} />
-          <circle cx="39" cy="57" r="2.9" fill={ILLO.skin} />
-          {/* Payment terminal */}
-          <rect x="20" y="52" width="17" height="12" rx="2.4" fill={ILLO.bodyLight} />
-          <rect x="21.5" y="53.5" width="14" height="9" rx="1.6" fill={ILLO.recess} />
-          <rect x="23" y="55.5" width="8" height="1.4" rx="0.7" fill={ILLO.live} opacity="0.9" />
-          <rect x="23" y="58.5" width="5.5" height="1.2" rx="0.6" fill={ILLO.seam} opacity="0.7" />
-        </>
-      ) : holding === "cable" ? (
-        <>
-          {/* Left arm tucked, right arm extended with the connector */}
-          <path d="M17.5,38 Q13,45 15,54 L19,56 L22,52 Q19,46 22,40 Z" fill={ILLO.uniformShade} />
-          <path d="M42.5,38 Q48,42 51,50 L48,54 L44,51 Q42,45 38,41 Z" fill={ILLO.uniformShade} />
-          <circle cx="19.5" cy="57" r="2.9" fill={ILLO.skin} />
-          <circle cx="47.5" cy="54.5" r="2.9" fill={ILLO.skin} />
-          {/* Connector in hand — live, because it is about to deliver power */}
-          <rect x="44" y="50" width="12" height="8.5" rx="2.6" fill={ILLO.bodyDark} />
-          <rect x="45.8" y="52" width="8.4" height="5" rx="1.8" fill={ILLO.live} />
-          <circle cx="50" cy="54.5" r="1.5" fill={ILLO.liveGlow} />
-        </>
-      ) : (
-        <>
-          <path d="M17.5,38 Q13,45 16,54 L20,57 L23,53 Q20,46 22,40 Z" fill={ILLO.uniformShade} />
-          <path d="M42.5,38 Q47,45 44,54 L40,57 L37,53 Q40,46 38,40 Z" fill={ILLO.uniformShade} />
-          <circle cx="21.5" cy="58" r="2.9" fill={ILLO.skin} />
-          <circle cx="38.5" cy="58" r="2.9" fill={ILLO.skin} />
-          {/* Delivery bag, carried in front of both hands */}
-          <path d="M25,55 L25,51.5 Q30,48.5 35,51.5 L35,55" fill="none" stroke={ILLO.uniformShade} strokeWidth="1.8" strokeLinecap="round" />
-          <rect x="22" y="55" width="16" height="13" rx="1.8" fill={ILLO.uniform} />
-          <rect x="22" y="55" width="16" height="13" rx="1.8" fill="none" stroke={ILLO.uniformShade} strokeWidth="0.7" />
-          <circle cx="30" cy="61.5" r="4" fill={ILLO.live} opacity="0.16" />
-          <text x="30" y="64" textAnchor="middle" fontSize="6.5" fontWeight="700" fill={ILLO.liveDim}>H</text>
-        </>
-      )}
-
-      {/* Neck */}
-      <rect x="26.5" y="22" width="7" height="9" rx="2.6" fill={ILLO.skinShade} />
-
-      {/* Head. Features are the point of this rewrite — a jaw that tapers,
-          a brow that sits above the eyes, and enough contrast in `feature`
-          to survive downscaling. */}
-      <path
-        d="M19,15 Q19,4 30,4 Q41,4 41,15 Q41,22.5 36.5,26 Q33.5,28.5 30,28.5 Q26.5,28.5 23.5,26 Q19,22.5 19,15 Z"
-        fill={ILLO.skin}
-      />
-      <path
-        d="M30,4 Q41,4 41,15 Q41,22.5 36.5,26 Q33.5,28.5 30,28.5 Z"
-        fill={ILLO.skinShade}
-        opacity="0.32"
-      />
-      {/* Ears */}
-      <circle cx="18.9" cy="17" r="2.1" fill={ILLO.skinShade} />
-      <circle cx="41.1" cy="17" r="2.1" fill={ILLO.skinShade} />
-      {/* Brows — heavy, because at this scale they carry the expression */}
-      <path d="M23.2,14 Q25.8,12.5 28.4,13.8" stroke={ILLO.feature} strokeWidth="1.9" fill="none" strokeLinecap="round" />
-      <path d="M31.6,13.8 Q34.2,12.5 36.8,14" stroke={ILLO.feature} strokeWidth="1.9" fill="none" strokeLinecap="round" />
-      {/* Eyes */}
-      <ellipse cx="25.6" cy="17.8" rx="2" ry="2.2" fill={ILLO.feature} />
-      <ellipse cx="34.4" cy="17.8" rx="2" ry="2.2" fill={ILLO.feature} />
-      <circle cx="26.3" cy="17.1" r="0.75" fill="#fff" opacity="0.9" />
-      <circle cx="35.1" cy="17.1" r="0.75" fill="#fff" opacity="0.9" />
-      {/* Nose + a plain, friendly mouth */}
-      <path d="M30,19.4 L30,22" stroke={ILLO.skinShade} strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M26.8,24.2 Q30,26.6 33.2,24.2" stroke={ILLO.feature} strokeWidth="1.6" fill="none" strokeLinecap="round" />
-
-      {/* Cap */}
-      <path d="M19,14 Q19,2.5 30,2.5 Q41,2.5 41,14 Z" fill={ILLO.garment} />
-      <rect x="18.2" y="12.4" width="23.6" height="2.9" rx="1.45" fill={ILLO.shadow} />
-      <rect x="26.8" y="5.5" width="6.4" height="2.1" rx="1" fill={ILLO.live} opacity="0.95" />
+        {/* Head. Features are the point: a jaw that tapers, a brow above the
+            eyes, and enough contrast in `feature` to survive downscaling. */}
+        <ellipse cx="30.6" cy="35.6" rx="1.7" ry="2.7" fill={ILLO.skinShade} />
+        <ellipse cx="49.4" cy="35.6" rx="1.7" ry="2.7" fill={ILLO.skinShade} />
+        <ellipse cx="40" cy="34.6" rx="9.6" ry="11" fill={ILLO.skin} />
+        <path d="M40,23.6A9.6,11 0 0 1 40,45.6Z" fill={ILLO.skinShade} opacity="0.22" />
+        <path
+          d="M30.3,33.5Q29.5,21.5 40,21.3Q50.5,21.5 49.7,33.5Q48.6,27.4 43,26.6Q36,27 33.4,28.6Q31.2,30.4 30.3,33.5Z"
+          fill={ILLO.feature}
+        />
+        <path
+          d="M34.6,33.2Q36.3,32.3 38,32.9M42,32.9Q43.7,32.3 45.4,33.2"
+          fill="none"
+          stroke={ILLO.feature}
+          strokeWidth="1.1"
+          strokeLinecap="round"
+        />
+        <ellipse cx="36.3" cy="36" rx="1.1" ry="1.3" fill={ILLO.feature} />
+        <ellipse cx="43.7" cy="36" rx="1.1" ry="1.3" fill={ILLO.feature} />
+        <path d="M40,37.6V40" stroke={ILLO.skinShade} strokeWidth="1.1" strokeLinecap="round" />
+        <path
+          d="M37.2,41.4Q40,43.6 42.8,41.4"
+          fill="none"
+          stroke={ILLO.feature}
+          strokeWidth="1.1"
+          strokeLinecap="round"
+        />
+      </g>
     </svg>
   );
 }
 
-
-/**
- * The charging pedestal.
+/* ── The charging cabinet ─────────────────────────────────────────────
  *
- * Two rewrites got this wrong before landing here.
+ * Drawn with the front face 100 wide and 235 tall, the plinth ending at
+ * y=247 and the cable arms reaching up to y=-19, then placed so the plinth
+ * lands on y=85 of the published 48x88 box.
  *
- * The first was colour semantics: the status light was `active ? green :
- * orange`, and because every scene passed `active` differently it read
- * orange, orange, green, green, orange across five steps — a code a reader
- * can only conclude means nothing. One rule now: dim at rest, brand orange
- * when power moves.
+ * At 40px wide only a handful of things survive: the silhouette with its
+ * arms, the wordmark band, the status dashes, the screen, and the two
+ * couplers. Those are drawn with weight; everything else is there for the
+ * covers that render the unit large.
  *
- * The second was that the unit had no presence. Its body was #16233D on a
- * #0A192F stage — 1.12:1, barely distinguishable — so a carefully drawn
- * screen, LED strip and holster all dissolved into the background and the
- * whole thing read as a dark stick with a stripe. The body now sits in the
- * car's value range (1.6-2.3:1), which is the object it has to stand beside.
- *
- * The form follows current DC hardware rather than a 2015 pedestal: a broad
- * monolith with a soft crown, a screen that dominates the upper face, a light
- * blade under it, and a cable holster recessed into the body. At 36px wide
- * only four things survive — silhouette, screen, blade, holster — so those
- * are the only things drawn with any weight.
- *
- * The screen is stateful, which is the "smart" part: a battery at rest, a
- * filling arc while charging, a check when the session completes.
+ * Colour semantics, unchanged: dim at rest, GREEN when the bay is free,
+ * brand orange when power is moving.
  */
+const UNIT_PLACE = "translate(8.25 7.2) scale(0.315)";
+/** Local x of each holster. The NACS one is where a live cable leaves from,
+ *  which is what holsterAt() in guide-cover.tsx is derived from. */
+const HOLSTER = { ccs: 22, nacs: 78, y: 140 } as const;
+
+const dockedCable = (d: string) => (
+  <>
+    {CABLE_CASING.map((c, i) => (
+      <path
+        key={i}
+        d={d}
+        fill="none"
+        stroke={c.stroke}
+        strokeWidth={c.width}
+        strokeLinecap="round"
+        opacity={"opacity" in c ? c.opacity : 1}
+      />
+    ))}
+  </>
+);
+
 export function ChargerSVG({
   id,
   still = false,
@@ -380,27 +468,39 @@ export function ChargerSVG({
   style = {},
   active = false,
   done = false,
+  out = "nacs",
 }: {
   /** Namespaces this instance's gradient ids. */
   id: string;
   /** Hold every animation still — for prefers-reduced-motion. */
   still?: boolean;
-  /** Bay is available. The real cabinet's light blade is GREEN when free —
-   *  drawing it orange made a free bay and a charging bay look identical. */
+  /** Bay is available. The real cabinet's status dashes are GREEN when free. */
   free?: boolean;
   className?: string;
   style?: React.CSSProperties;
   active?: boolean;
   done?: boolean;
+  /** Which coupler is in use while `active`. It is drawn out of its holster,
+   *  so a scene's own cable has somewhere honest to come from. */
+  out?: "nacs" | "ccs";
 }) {
   const lit = active || done;
+  const status = free ? ILLO.ok : lit ? ILLO.live : ILLO.idle;
   return (
     <svg viewBox="0 0 48 88" className={className} style={style}>
       <defs>
-        <linearGradient id={`unit-${id}`} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor={ILLO.unitTop} />
-          <stop offset="42%" stopColor={ILLO.unitMid} />
-          <stop offset="100%" stopColor={ILLO.unitLow} />
+        <linearGradient id={`unit-${id}`} x1="0%" y1="0%" x2="100%" y2="30%">
+          <stop offset="0%" stopColor={ILLO.cabTop} />
+          <stop offset="60%" stopColor={ILLO.cabMid} />
+          <stop offset="100%" stopColor={ILLO.cabLow} />
+        </linearGradient>
+        <linearGradient id={`crown-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#fff" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id={`plinth-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor={ILLO.graphiteMid} />
+          <stop offset="100%" stopColor={ILLO.graphiteLow} />
         </linearGradient>
         <linearGradient id={`screen-${id}`} x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#16233B" />
@@ -410,117 +510,195 @@ export function ChargerSVG({
           <stop offset="0%" stopColor={ILLO.live} stopOpacity="0.5" />
           <stop offset="100%" stopColor={ILLO.live} stopOpacity="0" />
         </radialGradient>
+        <radialGradient id={`blade-${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={status} stopOpacity="0.7" />
+          <stop offset="100%" stopColor={status} stopOpacity="0" />
+        </radialGradient>
       </defs>
 
       {/* ground contact */}
       <ellipse cx="24" cy="85.5" rx="16" ry="2.6" fill={ILLO.shadow} opacity="0.38" />
 
-      {/* plinth — wider than the body, so the unit sits rather than floats */}
-      <path d="M7,74 H41 A3,3 0 0 1 41,84 H7 A3,3 0 0 1 7,74 Z" fill={ILLO.unitLow} />
-      <rect x="7" y="74" width="34" height="2.4" rx="1.2" fill={ILLO.edge} opacity="0.35" />
+      <g transform={UNIT_PLACE}>
+        {/* Cable arms on the crown, which is how the leads stay off the floor */}
+        {[
+          { post: 19, bar: -19, hook: -19 },
+          { post: 76, bar: 76, hook: 115 },
+        ].map((a) => (
+          <g key={a.post}>
+            <rect x={a.post} y="-16" width="5" height="13" fill={ILLO.silverLow} />
+            <rect x={a.bar} y="-19.5" width="43" height="4.8" rx="1.4" fill={ILLO.silverMid} />
+            <rect x={a.hook} y="-19.5" width="4" height="10.5" rx="1.3" fill={ILLO.silverMid} />
+            <rect x={a.bar} y="-19.5" width="43" height="1.2" rx="0.6" fill={ILLO.silverTop} opacity="0.7" />
+          </g>
+        ))}
 
-      {/* body — a broad monolith with a soft crown */}
-      <path
-        d="M11,13 Q11,4 24,4 Q37,4 37,13 L37,75 H11 Z"
-        fill={`url(#unit-${id})`}
-      />
-      {/* A brushed edge, traced on the silhouette itself. Drawn as a separate
-          arc it floated clear of the crown and read as a hook hanging off the
-          unit. */}
-      <path
-        d="M11,13 Q11,4 24,4 Q37,4 37,13 L37,75 H11 Z"
-        fill="none"
-        stroke={ILLO.edge}
-        strokeWidth="0.9"
-        strokeOpacity="0.4"
-        strokeLinejoin="round"
-      />
-      <rect x="12.4" y="14" width="1.4" height="60" rx="0.7" fill={ILLO.edge} opacity="0.28" />
-      <rect x="34.4" y="14" width="1.6" height="60" rx="0.8" fill={ILLO.shadow} opacity="0.45" />
-
-      {/* screen — the dominant face, inset behind glass */}
-      <rect x="14" y="11" width="20" height="26" rx="3.4" fill={ILLO.shadow} />
-      <rect x="14.9" y="11.9" width="18.2" height="24.2" rx="2.9" fill={`url(#screen-${id})`} />
-
-      {lit && (
-        <ellipse cx="24" cy="24" rx="13" ry="15" fill={`url(#bloom-${id})`} opacity={done ? 0.5 : 0.75} />
-      )}
-
-      {done ? (
-        /* session complete */
-        <path
-          d="M19.5,24.2 L22.7,27.6 L28.6,20.6"
+        {/* Cabinet: the flank in shadow, the crown cap, then the front face */}
+        <path d="M-7,3.6L0,1V235H-7Z" fill={ILLO.cabShade} />
+        <rect x="-8" y="-3.8" width="109" height="5.4" rx="1.3" fill={ILLO.cabTop} />
+        <rect x="0" y="1.6" width="100" height="233.4" fill={`url(#unit-${id})`} />
+        <rect x="0" y="1.6" width="100" height="70" fill={`url(#crown-${id})`} />
+        <rect x="94" y="1.6" width="6" height="233.4" fill={ILLO.shadow} opacity="0.18" />
+        <rect
+          x="4"
+          y="5"
+          width="92"
+          height="226"
+          rx="2"
           fill="none"
-          stroke={ILLO.live}
-          strokeWidth="2.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          stroke={ILLO.cabTop}
+          strokeWidth="0.6"
+          opacity="0.45"
         />
-      ) : active ? (
-        /* filling arc — reads as progress even at 36px */
-        <>
-          <circle cx="24" cy="24" r="7.6" fill="none" stroke={ILLO.idle} strokeWidth="2.2" opacity="0.55" />
-          <circle
-            cx="24" cy="24" r="7.6" fill="none"
-            stroke={ILLO.live} strokeWidth="2.2" strokeLinecap="round"
-            strokeDasharray="47.8" strokeDashoffset="34"
-            transform="rotate(-90 24 24)"
-          >
-            {!still && <animate attributeName="stroke-dashoffset" values="40;6;40" dur="3s" repeatCount="indefinite" />}
-          </circle>
-          <path d="M24,19.6 L21.4,24.4 L24,24.4 L23.2,28.4 L26.4,23.4 L23.9,23.4 Z" fill={ILLO.liveGlow} />
-        </>
-      ) : (
-        /* at rest — a battery, waiting */
-        <>
-          <rect x="18.4" y="20.6" width="10.4" height="6.4" rx="1.5" fill="none" stroke={ILLO.idle} strokeWidth="1.5" />
-          <rect x="29.4" y="22.4" width="1.5" height="2.8" rx="0.7" fill={ILLO.idle} />
-          <rect x="20" y="22.2" width="3.2" height="3.2" rx="0.6" fill={ILLO.idle} opacity="0.8" />
-        </>
-      )}
 
-      {/* light blade — the single strongest "is it alive" cue */}
-      <rect x="15" y="41" width="18" height="3" rx="1.5" fill={ILLO.shadow} />
-      <rect
-        x="15.7" y="41.6" width="16.6" height="1.8" rx="0.9"
-        fill={free ? ILLO.ok : lit ? ILLO.live : ILLO.idle}
-        opacity={free || lit ? 1 : 0.5}
-      >
-        {active && !done && !still && (
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite" />
+        {/* Wordmark across the top, as on the cabinet */}
+        <text
+          x="50"
+          y="19.6"
+          textAnchor="middle"
+          fontSize="11.2"
+          fontWeight="800"
+          letterSpacing="0.2"
+        >
+          <tspan fill={ILLO.hub}>HUB</tspan>
+          <tspan fill={ILLO.live}>CHARGE</tspan>
+        </text>
+        <rect x="26" y="23" width="48" height="1.6" rx="0.8" fill={ILLO.hub} opacity="0.45" />
+
+        {/* Status dashes. Two of them, under the wordmark, exactly as the unit
+            wears them — and the single strongest "is this bay free" cue. */}
+        {lit || free ? (
+          <ellipse cx="50" cy="34.3" rx="24" ry="6.5" fill={`url(#blade-${id})`} />
+        ) : null}
+        {[33, 53].map((x) => (
+          <rect key={x} x={x} y="33" width="14" height="2.6" rx="1.3" fill={status} opacity={free || lit ? 1 : 0.5}>
+            {active && !done && !still && (
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite" />
+            )}
+          </rect>
+        ))}
+
+        {/* Touchscreen — the dominant face, inset behind glass */}
+        <rect x="31" y="44" width="38" height="66" rx="3.6" fill={ILLO.shadow} />
+        <rect x="33.5" y="47" width="33" height="60" rx="2" fill={`url(#screen-${id})`} />
+        <rect x="36" y="50" width="28" height="1.2" rx="0.6" fill={ILLO.edge} opacity="0.4" />
+
+        {lit && (
+          <ellipse cx="50" cy="70" rx="26" ry="30" fill={`url(#bloom-${id})`} opacity={done ? 0.5 : 0.75} />
         )}
-      </rect>
 
-      {/* wordmark */}
-      <rect x="16.5" y="48" width="15" height="2" rx="1" fill={ILLO.edge} opacity="0.5" />
-      <rect x="16.5" y="51.4" width="9" height="1.4" rx="0.7" fill={ILLO.edge} opacity="0.25" />
-
-      {/* cable holster, recessed into the body */}
-      <circle cx="24" cy="63" r="7.4" fill={ILLO.shadow} />
-      <circle cx="24" cy="63" r="5.6" fill={ILLO.glass} />
-      <circle cx="24" cy="63" r="3.4" fill={lit ? ILLO.liveDim : ILLO.idle}>
-        {active && !done && !still && (
-          <animate
-            attributeName="fill"
-            values={`${ILLO.liveDim};${ILLO.live};${ILLO.liveDim}`}
-            dur="1.8s"
-            repeatCount="indefinite"
-          />
+        {done ? (
+          /* session complete */
+          <>
+            <circle cx="50" cy="70" r="10.5" fill={ILLO.ok} fillOpacity="0.14" stroke={ILLO.ok} strokeWidth="1.8" />
+            <path
+              d="M45.2,70.6L48.7,74.1L55,66.8"
+              fill="none"
+              stroke={ILLO.ok}
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </>
+        ) : active ? (
+          /* filling arc — reads as progress even at 36px */
+          <>
+            <circle cx="50" cy="70" r="10.5" fill="none" stroke={ILLO.idle} strokeWidth="2.4" opacity="0.55" />
+            <circle
+              cx="50"
+              cy="70"
+              r="10.5"
+              fill="none"
+              stroke={ILLO.live}
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              pathLength="100"
+              strokeDasharray="100"
+              strokeDashoffset="38"
+              transform="rotate(-90 50 70)"
+            >
+              {!still && (
+                <animate attributeName="stroke-dashoffset" values="62;14;62" dur="3s" repeatCount="indefinite" />
+              )}
+            </circle>
+            <path d="M51.2,63.4L45.6,71.2H49.6L48.5,76.8L54.4,68.6H50.4Z" fill={ILLO.liveGlow} />
+          </>
+        ) : (
+          /* at rest — a battery, waiting */
+          <>
+            <rect x="41" y="64" width="14" height="9" rx="2" fill="none" stroke={ILLO.idle} strokeWidth="1.6" />
+            <rect x="55.6" y="66.4" width="2" height="4" rx="0.8" fill={ILLO.idle} />
+            <rect x="43" y="66" width="5" height="5" rx="0.6" fill={ILLO.idle} opacity="0.8" />
+          </>
         )}
-      </circle>
-      <circle cx="24" cy="63" r="1.4" fill={lit ? ILLO.liveGlow : ILLO.seam} />
+
+        {/* Card reader under the screen */}
+        <rect x="43.5" y="116" width="13" height="24" rx="2.6" fill={ILLO.recess} />
+        <circle cx="50" cy="119.4" r="0.95" fill={ILLO.cold} />
+        <path
+          d="M48.2,125.5q1.8,3.2 0,6.4M50.6,124.2q2.8,4.5 0,9"
+          fill="none"
+          stroke={ILLO.seam}
+          strokeWidth="0.8"
+          strokeLinecap="round"
+        />
+
+        {/* CCS1 and NACS, labelled on the face the way the cabinet labels them */}
+        <rect x="16" y="127" width="12" height="1.8" rx="0.9" fill={ILLO.hub} opacity="0.5" />
+        <rect x="72" y="127" width="12" height="1.8" rx="0.9" fill={ILLO.hub} opacity="0.5" />
+        {[HOLSTER.ccs, HOLSTER.nacs].map((x) => (
+          <g key={x}>
+            <rect x={x - 7} y="134" width="14" height="12" rx="3.5" fill={ILLO.bodyDark} />
+            <rect x={x - 5} y="136" width="10" height="8" rx="2.5" fill={ILLO.shadow} />
+          </g>
+        ))}
+
+        {/* Vents and the graphite plinth it stands on */}
+        {[212, 216, 220].map((y) => (
+          <rect key={y} x="34" y={y} width="32" height="0.8" rx="0.4" fill={ILLO.cabTop} opacity="0.4" />
+        ))}
+        <rect x="-7" y="235" width="108" height="12" rx="1.4" fill={`url(#plinth-${id})`} />
+        <rect x="-7" y="235" width="108" height="1.2" fill={ILLO.edge} opacity="0.55" />
+
+        {/* The CCS1 lead */}
+        {!(active && out === "ccs") && (
+        <g>
+          {dockedCable("M-17,-9C-34,50 -36,208 -18,232C-6,248 -2,199 13,162.3")}
+          <g transform="translate(22 140) rotate(22)">
+            <rect x="-6" y="-2" width="12" height="8" rx="2.6" fill={ILLO.bodyDark} />
+            <rect x="-1.5" y="-3.4" width="3" height="3" rx="0.8" fill={ILLO.seam} />
+            <path d="M-5,5H5L4,17Q3.6,21 0,21.5Q-3.6,21 -4,17Z" fill={ILLO.bodyDark} />
+            <path d="M-3.4,6.6L-2.7,16.6" stroke={ILLO.seam} strokeWidth="0.9" strokeLinecap="round" />
+            <rect x="-2.2" y="20" width="4.4" height="4.4" rx="1" fill={ILLO.shadow} />
+          </g>
+        </g>
+        )}
+
+        {/* The NACS lead. Whichever coupler `out` names leaves its holster
+            while power is moving, because that is where the cable the scene
+            draws around this unit is coming from. */}
+        {!(active && out === "nacs") && (
+          <g>
+            {dockedCable("M117,-9C134,50 136,208 118,232C106,248 102,199 87,162.3")}
+            <g transform="translate(78 140) rotate(-22)">
+              <rect x="-4.6" y="-2" width="9.2" height="7.5" rx="2.4" fill={ILLO.silverMid} />
+              <path d="M-4,4.5H4L3.3,17Q3,20.6 0,21Q-3,20.6 -3.3,17Z" fill={ILLO.silverTop} />
+              <circle cx="0" cy="8.4" r="1.2" fill={ILLO.silverLow} />
+              <rect x="-1.9" y="20" width="3.8" height="4.4" rx="1" fill={ILLO.shadow} />
+            </g>
+          </g>
+        )}
+      </g>
     </svg>
   );
 }
-
 
 /**
  * The cable.
  *
  * Casing is ink, energy is orange, and both scenes that draw one get the
- * identical treatment — previously the energy layer mixed orange with amber
- * `#fbbf24` and a cream `#ffe2bd`, which put three warm colours on a part
- * that should read as one material carrying one thing.
+ * identical treatment. The head is the NACS coupler the cabinet carries,
+ * rather than a generic block.
  */
 export function CableSVG({
   id,
@@ -545,11 +723,7 @@ export function CableSVG({
   const particles = [0, 0.3, 0.6, 0.9, 1.2];
 
   return (
-    <svg
-      viewBox={isMobile ? "0 0 75 35" : "0 0 60 30"}
-      className={className}
-      fill="none"
-    >
+    <svg viewBox={isMobile ? "0 0 75 35" : "0 0 60 30"} className={className} fill="none">
       {CABLE_CASING.map((c, i) => (
         <path
           key={i}
@@ -589,12 +763,13 @@ export function CableSVG({
         </>
       )}
 
-      {/* Plug head */}
-      <rect x={endX - 4} y={endY - 3} width="8" height="6" rx="2" fill={ILLO.shadow} />
-      <rect
-        x={endX - 2.5} y={endY - 1.6} width="5" height="3.2" rx="1.2"
-        fill={active ? ILLO.live : ILLO.idle}
-      />
+      {/* The NACS coupler, pointing into the port */}
+      <g transform={`translate(${endX} ${endY}) rotate(-118)`}>
+        <rect x="-2.6" y="-1.2" width="5.2" height="4.2" rx="1.4" fill={ILLO.silverMid} />
+        <path d="M-2.3,2.6H2.3L1.9,9.6Q1.7,11.6 0,11.8Q-1.7,11.6 -1.9,9.6Z" fill={ILLO.silverTop} />
+        <circle cx="0" cy="4.8" r="0.7" fill={active ? ILLO.live : ILLO.silverLow} />
+        <rect x="-1.1" y="11.2" width="2.2" height="2.6" rx="0.6" fill={ILLO.shadow} />
+      </g>
     </svg>
   );
 }
@@ -645,11 +820,3 @@ export function MotionSVG({
     </svg>
   );
 }
-
-// ============================================
-// FLOATING CARD — elevated glass style
-// ============================================
-
-// ============================================
-// SCENE PANELS — unchanged logic, polished markup
-// ============================================

@@ -2,7 +2,7 @@
  * A three-line meeting point for the smooth-scroll driver and anything that
  * needs to know it is running.
  *
- * SmoothScroll loads Lenis lazily; JourneyBattery loads GSAP lazily; and
+ * SmoothScroll loads Lenis lazily; JourneyScroll loads GSAP lazily; and
  * ScrollTrigger has to be told when Lenis moves the page, or its pinned
  * scene reads a scroll position that Lenis has already left behind. Before,
  * SmoothScroll did that by importing GSAP itself — which is exactly why 113 KB

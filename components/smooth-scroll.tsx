@@ -19,7 +19,7 @@ import { setSmoothScroller } from "@/lib/smooth-scroll-bus";
  *      the page is interactive rather than a chunk blocking it.
  *   2. GSAP is gone from here entirely. It was used for two things: as a rAF
  *      loop, which is four lines of rAF; and to keep ScrollTrigger in step,
- *      which is now ScrollTrigger's own business — JourneyBattery, the only
+ *      which is now ScrollTrigger's own business — JourneyScroll, the only
  *      scene that uses it, subscribes through the bus when IT loads. GSAP now
  *      ships only to the one page with a scene on it.
  *   3. It waits for an idle moment. Starting a wheel-smoothing loop during

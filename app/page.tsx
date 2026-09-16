@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 
 import { BatteryNav } from "@/components/battery-nav";
 import { HeroLifestyle } from "@/components/hero-lifestyle";
@@ -7,15 +6,14 @@ import { LifestyleDestinations } from "@/components/lifestyle-destinations";
 import { PricingExperience } from "@/components/pricing-experience";
 import { FindYourHub } from "@/components/find-your-hub";
 import { ChargerAccess } from "@/components/charger-access";
+import { JourneyKit } from "@/components/journey-kit";
 import { ContactSection } from "@/components/contact-section";
 import { LifestyleFooter } from "@/components/lifestyle-footer";
 import { ChatPopup } from "@/components/chat-popup";
 
-// The journey scene is ~2,000 lines of SVG + GSAP — split it out of the main bundle.
-const JourneyBattery = dynamic(
-  () => import("@/components/journey-battery").then((m) => m.JourneyBattery),
-  { loading: () => <div className="min-h-[60vh]" aria-hidden /> },
-);
+// The journey is now one inlined animated SVG per step, served from the
+// illustration kit in public/illustrations. It ships no client JavaScript, so
+// it does not need the dynamic import the GSAP version did.
 
 export default function HomePage() {
   return (
@@ -30,7 +28,7 @@ export default function HomePage() {
       <ProblemSection />
 
       {/* 3. THE JOURNEY: Step-by-step visual story */}
-      <JourneyBattery />
+      <JourneyKit />
 
       {/* 4. LIFESTYLE: What you can enjoy */}
       <LifestyleDestinations />

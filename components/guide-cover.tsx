@@ -1,6 +1,6 @@
 import { ILLO } from "@/lib/illustration";
 import { CoverFrame } from "@/components/cover-frame";
-import { CarSVG, ChargerSVG, ValetSVG } from "@/components/illustration/primitives";
+import { ANCHOR, CarSVG, ChargerSVG, ValetSVG } from "@/components/illustration/primitives";
 import { evModels } from "@/lib/ev-models";
 import { STATION_KW, TEMPERATURE_FACTORS, powerAtSoc } from "@/lib/charging-math";
 import { stations } from "@/lib/stations";
@@ -36,8 +36,9 @@ import {
  * the only text allowed here; motifs still make no written claims.
  *
  * THE RULES
- * The palette is already written in lib/illustration.ts and journey-battery
- * already draws to it: hardware is the ink ramp, energy is brand orange,
+ * The palette is already written in lib/illustration.ts and the shared
+ * primitives already draw to it: hardware is the ink ramp, energy is brand
+ * orange,
  * nothing else. A viewer learns the colour code once — orange means power is
  * moving — and it holds across every cover.
  *
@@ -126,13 +127,23 @@ const CURVE = CURVE_PLOT.d;
  * into thin air. Derived here so that cannot recur, and asserted in
  * scripts/check-cover-accuracy.py so it cannot recur silently.
  */
-function holsterAt(x: number, h: number): [number, number] {
-  return [x, FLOOR - (h * (UNIT_VB.foot * 88 - 63)) / 88];
+function holsterAt(x: number, h: number, toward?: number): [number, number] {
+  /* The redrawn cabinet holsters at chest height — 51.3 of its 88 — and it
+     carries TWO couplers: CCS1 at x=15.2 and NACS at x=32.8 of the 48-wide
+     box, 8.8 either side of centre. A lead leaves from whichever side the car
+     is on, so it never crosses the cabinet's own face. Pass the port's x as
+     `toward` and hand the same side to <Charger out=...>, or the coupler will
+     still be sitting in the holster the cable claims to leave from. */
+  const side = toward === undefined ? 0 : Math.sign(toward - x);
+  return [
+    x + (side * h * ANCHOR.holster.dx) / 88,
+    FLOOR - (h * (UNIT_VB.foot * 88 - ANCHOR.holster.y)) / 88,
+  ];
 }
 function portAt(x: number, w: number, flip = false): [number, number] {
   const h = (w * CAR_VB.h) / CAR_VB.w;
-  const dx = ((158 - CAR_VB.w / 2) / CAR_VB.w) * w;
-  return [x + (flip ? -dx : dx), FLOOR - (h * (CAR_VB.foot * 70 - 37)) / 70];
+  const dx = ((ANCHOR.port.x - CAR_VB.w / 2) / CAR_VB.w) * w;
+  return [x + (flip ? -dx : dx), FLOOR - (h * (CAR_VB.foot * 70 - ANCHOR.port.y)) / 70];
 }
 
 /**
@@ -608,8 +619,8 @@ function Pin({ x, y, r = 8, lit = false }: { x: number; y: number; r?: number; l
  * rather than by eye. That is the fix for "the chargers are not in proper
  * alignment": they were positioned individually.
  */
-const CAR_VB = { w: 200, h: 70, foot: 63.1 / 70 };
-const UNIT_VB = { w: 48, h: 88, foot: 85.5 / 88 };
+const CAR_VB = { w: 200, h: 70, foot: ANCHOR.carFoot / 70 };
+const UNIT_VB = { w: 48, h: 88, foot: ANCHOR.unitFoot / 88 };
 
 function Car({
   id,
@@ -662,7 +673,7 @@ function Car({
 
 /** The attendant, landed on FLOOR from their own foot fraction like everything
  *  else. ValetSVG puts their shadow at cy=100 of a 60x104 box. */
-const VALET_VB = { w: 60, h: 104, foot: 100 / 104 };
+const VALET_VB = { w: 60, h: 104, foot: ANCHOR.valetFoot / 104 };
 
 function Valet({
   id,
@@ -696,6 +707,7 @@ function Charger({
   active = false,
   done = false,
   free = false,
+  out = "nacs",
   dim,
 }: {
   id: string;
@@ -706,6 +718,9 @@ function Charger({
   done?: boolean;
   /** Bay is available — the light blade goes green, as the real one does. */
   free?: boolean;
+  /** Which coupler is in use, for covers that draw a live cable. It leaves
+   *  its holster empty, so set it to the side holsterAt() was pointed at. */
+  out?: "nacs" | "ccs";
   dim?: number;
 }) {
   const w = (h * UNIT_VB.w) / UNIT_VB.h;
@@ -722,7 +737,7 @@ function Charger({
           reduced-motion rule cannot reach. Covers get their one motion from
           the .hc-* CSS classes instead, so it is both controllable and
           switch-offable. */}
-      <ChargerSVG id={`${id}-u${Math.round(x)}`} active={active} done={done} free={free} still />
+      <ChargerSVG id={`${id}-u${Math.round(x)}`} active={active} done={done} free={free} out={out} still />
     </svg>
   );
 }
@@ -926,7 +941,7 @@ export const COVERS: Record<string, Motif> = {
         {/* Parked port-side-to, so the lead reaches the inlet instead of
             crossing the whole car. Both ends come from the primitives'
             own anchors, and the curve sags under its own weight. */}
-        <Cable d={sagPath(holsterAt(78, 84), portAt(198, 112, true), 34)} live animated />
+        <Cable d={sagPath(holsterAt(78, 84, 198), portAt(198, 112, true), 34)} live animated />
       </>
     ),
   },
@@ -937,9 +952,9 @@ export const COVERS: Record<string, Motif> = {
     pools: [230],
     draw: (id) => (
       <>
-        <Charger id={id} x={230} h={82} active />
+        <Charger id={id} x={230} h={82} active out="ccs" />
         <Car id={id} x={104} w={104} />
-        <Cable d={sagPath(holsterAt(230, 82), portAt(104, 104), 34)} live animated />
+        <Cable d={sagPath(holsterAt(230, 82, 104), portAt(104, 104), 34)} live animated />
         {/* was three unlabelled dots, which told a first-time visitor
             nothing. Named, it is the whole page in one line. */}
         <g>
@@ -1305,7 +1320,7 @@ export const COVERS: Record<string, Motif> = {
       <>
         <Charger id={id} x={66} h={78} active />
         <Car id={id} x={150} w={86} flip />
-        <Cable d={sagPath(holsterAt(66, 78), portAt(150, 86, true), 26)} live animated />
+        <Cable d={sagPath(holsterAt(66, 78, 150), portAt(150, 86, true), 26)} live animated />
         <Charger id={id} x={238} h={78} free />
         <g className="hc-standby">
           <ellipse cx={238} cy={110} rx={14} ry={22} fill={ILLO.ok} opacity={0.1} />
@@ -1650,8 +1665,8 @@ export const COVERS: Record<string, Motif> = {
         <Label x={258} y={50} text="UNPAID" size={8} tone={ILLO.live} anchor="end" />
         <Label x={142} y={76} text="DRIVING, PAID" size={8} tone={ILLO.ok} />
         <Car id={id} x={96} w={100} />
-        <Charger id={id} x={228} h={62} active />
-        <Cable d={sagPath(holsterAt(228, 62), portAt(96, 100), 22)} live animated />
+        <Charger id={id} x={228} h={62} active out="ccs" />
+        <Cable d={sagPath(holsterAt(228, 62, 96), portAt(96, 100), 22)} live animated />
       </>
     ),
   },
@@ -1691,7 +1706,7 @@ export const COVERS: Record<string, Motif> = {
         {/* Bay 1 — charging. The only live thing in the frame. */}
         <Charger id={id} x={26} h={56} active />
         <Car id={id} x={78} w={88} flip />
-        <Cable d={sagPath(holsterAt(26, 56), portAt(78, 88, true), 20)} live animated />
+        <Cable d={sagPath(holsterAt(26, 56, 78), portAt(78, 88, true), 20)} live animated />
 
         {/* Bay 2 — a car just in, not plugged yet. Its unit is at rest, so it
             pools no light: orange means power is moving. */}
@@ -1840,7 +1855,7 @@ export const COVERS: Record<string, Motif> = {
               sags under its own weight — the same machinery every other lead
               on the site uses, and the reason none of them can end in the air.
               The car is flipped so its inlet faces the unit. */}
-          <Cable d={sagPath(holsterAt(46, 78), portAt(132, 104, true), 30)} live animated />
+          <Cable d={sagPath(holsterAt(46, 78, 132), portAt(132, 104, true), 30)} live animated />
           <Label x={150} y={44} text="THE FIRST MONTH" size={8} tone={ILLO.hub} />
           <Label x={150} y={66} text="THEN YOU STOP" size={11} tone={ILLO.live} />
           <Label x={150} y={84} text="THINKING ABOUT IT" size={11} tone={ILLO.live} />

@@ -705,6 +705,9 @@
   --hc-py: 0;
 }
 .hc-cover > svg,
+/* A kit scene arrives as markup and so needs one wrapper element; it stands
+   in for the <svg> in every rule below. See components/kit-illustration.tsx. */
+.hc-cover > .hc-kit,
 .hc-plane {
   position: absolute;
   inset: 0;
@@ -719,7 +722,8 @@
 .hc-atmo  { transform: translate3d(calc(var(--hc-px) * 7px), calc(var(--hc-py) * 4px), 0); }
 /* The artwork, against the pointer and least. scale keeps a 3px shift from
    ever exposing the frame edge inside the parent's overflow-hidden. */
-.hc-cover > svg { transform: translate3d(calc(var(--hc-px) * -3px), calc(var(--hc-py) * -2px), 0) scale(1.015); }
+.hc-cover > svg,
+.hc-cover > .hc-kit { transform: translate3d(calc(var(--hc-px) * -3px), calc(var(--hc-py) * -2px), 0) scale(1.015); }
 /* Nearest, so it travels furthest — a sheen sliding across glass. */
 .hc-sheen { transform: translate3d(calc(var(--hc-px) * 14px), calc(var(--hc-py) * 8px), 0); }
 
@@ -752,6 +756,7 @@
      the JS gate in cover-frame.tsx only reads the setting once at mount —
      a reader who changes it mid-session needs this. */
   .hc-cover > svg,
+  .hc-cover > .hc-kit,
   .hc-plane {
     transform: none !important;
     transition: none !important;

@@ -137,37 +137,80 @@ check("the covers import the shared primitives",
       'from "@/components/illustration/primitives"' in src)
 
 # ── every element stands on the same ground line, by construction ──────
+#
+# The drawings are authored in their own coordinate space and placed into
+# their published viewBox by one transform each, so a foot or a port read
+# straight off a path would be read in the wrong space. primitives.tsx
+# declares where its anchors LAND, in ANCHOR, and everything below re-derives
+# those landings from the artwork and fails if the two have drifted apart.
 prim = pathlib.Path("components/illustration/primitives.tsx").read_text()
-# CarSVG: wheels cy=53.5 r=9.6 in a 0 0 200 70 box
-m = re.search(r'cy=\{([\d.]+)\} r="([\d.]+)" fill=\{ILLO\.tyre\}', prim)
-wcy, wr = float(m[1]), float(m[2])
-car_foot = (wcy + wr) / 70
-declared = float(re.search(r"foot: ([\d.]+) / 70", src)[1]) / 70
-check("the Car helper's foot matches CarSVG's real tyre contact",
-      abs(car_foot - declared) < 0.002, f"{car_foot:.4f} vs declared {declared:.4f}")
-# ChargerSVG: contact ellipse cy in a 0 0 48 88 box
+anchor_blk = re.search(r"export const ANCHOR = \{(.*?)\} as const;", prim, re.S)[1]
+A = lambda k: float(re.search(rf"{k}: ([\d.]+)", anchor_blk)[1])
+port_cx = float(re.search(r"port: \{ x: ([\d.]+), y: [\d.]+ \}", anchor_blk)[1])
+port_cy = float(re.search(r"port: \{ x: [\d.]+, y: ([\d.]+) \}", anchor_blk)[1])
+hol_cy = float(re.search(r"holster: \{ y: ([\d.]+), dx: [\d.]+ \}", anchor_blk)[1])
+hol_dx = float(re.search(r"holster: \{ y: [\d.]+, dx: ([\d.]+) \}", anchor_blk)[1])
+
+def placed(place_const, x, y):
+    """Run a local point through one of the drawings' placement transforms."""
+    t = re.search(rf"const {place_const} =\s*\"translate\(([-\d.]+) ([-\d.]+)\) "
+                  rf"scale\(([-\d.]+) ?([-\d.]+)?\)\"", prim)
+    tx, ty, sx = float(t[1]), float(t[2]), float(t[3])
+    sy = float(t[4]) if t[4] else sx
+    return (tx + sx * x, ty + sy * y)
+
+# The car: its tyres must touch ANCHOR.carFoot and its port must land on
+# ANCHOR.port, once the placement transform has been applied.
+wcy, wr = (float(v) for v in re.search(r'cy="(\d+)" r="(\d+)" fill=\{ILLO\.tyre\}', prim).groups())
+lport = re.search(r"const PORT = \{ x: ([\d.]+), y: ([\d.]+) \}", prim)
+drawn_foot = placed("CAR_PLACE", 0, wcy + wr)[1]
+drawn_port = placed("CAR_PLACE", float(lport[1]), float(lport[2]))
+check("the car's tyres touch the contact line it declares",
+      abs(drawn_foot - A("carFoot")) < 0.06, f"drawn {drawn_foot:.2f} vs declared {A('carFoot')}")
+check("the car's charge port lands where the covers look for it",
+      abs(drawn_port[0] - port_cx) < 0.1 and abs(drawn_port[1] - port_cy) < 0.1,
+      f"drawn ({drawn_port[0]:.1f}, {drawn_port[1]:.1f}) vs declared ({port_cx}, {port_cy})")
+
+# The unit: its couplers must hang at ANCHOR.holster, either side of centre.
+lh = re.search(r"const HOLSTER = \{ ccs: ([\d.]+), nacs: ([\d.]+), y: ([\d.]+) \}", prim)
+drawn_nacs = placed("UNIT_PLACE", float(lh[2]), float(lh[3]))
+drawn_ccs = placed("UNIT_PLACE", float(lh[1]), float(lh[3]))
+check("the unit's couplers hang at the height the cables leave from",
+      abs(drawn_nacs[1] - hol_cy) < 0.2, f"drawn {drawn_nacs[1]:.2f} vs declared {hol_cy}")
+check("the couplers sit the declared distance either side of centre",
+      abs((drawn_nacs[0] - 24) - hol_dx) < 0.2 and abs((24 - drawn_ccs[0]) - hol_dx) < 0.2,
+      f"NACS +{drawn_nacs[0]-24:.1f}, CCS1 -{24-drawn_ccs[0]:.1f}, declared {hol_dx}")
+check("CCS1 is drawn on the left and NACS on the right, as on the cabinet",
+      drawn_ccs[0] < drawn_nacs[0])
+
+# and the helpers in the covers must be derived from ANCHOR, not retyped
+for name, pat in [("the car's foot", r"foot: ANCHOR\.carFoot / 70"),
+                  ("the unit's foot", r"foot: ANCHOR\.unitFoot / 88"),
+                  ("the attendant's foot", r"foot: ANCHOR\.valetFoot / 104"),
+                  ("the holster anchor", r"ANCHOR\.holster\.y"),
+                  ("the port anchor", r"ANCHOR\.port\.x")]:
+    check(f"{name} is read from the primitives, not retyped",
+          re.search(pat, src) is not None)
+
 ccy = float(re.search(r'<ellipse cx="24" cy="([\d.]+)"', prim)[1])
-declared_u = float(re.search(r"foot: ([\d.]+) / 88", src)[1])
+declared_u = float(re.search(r"foot: ANCHOR\.unitFoot / 88", src) and A("unitFoot"))
 check("the Charger helper's foot matches ChargerSVG's contact shadow",
       abs(ccy - declared_u) < 0.01, f"{ccy} vs declared {declared_u}")
 
 # ── every cable hangs under gravity ───────────────────────────────────
-hol_cx, hol_cy = (float(v) for v in
-    re.search(r'<circle cx="(\d+)" cy="(\d+)" r="7.4" fill=\{ILLO\.shadow\}', prim).groups())
-port_cx, port_cy = (float(v) for v in
-    re.search(r'<circle cx="(\d+)" cy="(\d+)" r="2" fill=\{ILLO\.live\}', prim).groups())
-FOOT_U = float(re.search(r"foot: ([\d.]+) / 88", src)[1])
-FOOT_C = float(re.search(r"foot: ([\d.]+) / 70", src)[1])
+FOOT_U = A("unitFoot")
+FOOT_C = A("carFoot")
 
-def holster(x, h):
-    return (x, FLOOR - h * (FOOT_U - hol_cy) / 88)
+def holster(x, h, toward=None):
+    side = 0 if toward is None else (1 if toward > x else -1)
+    return (x + side * h * hol_dx / 88, FLOOR - h * (FOOT_U - hol_cy) / 88)
 def car_port(x, w, flip):
     h = w * 70 / 200
     dx = (port_cx - 100) / 200 * w
     return (x + (-dx if flip else dx), FLOOR - h * (FOOT_C - port_cy) / 70)
 
 calls = re.findall(
-    r"sagPath\(holsterAt\((\d+), (\d+)\), portAt\((\d+), (\d+)(, true)?\)", src)
+    r"sagPath\(holsterAt\((\d+), (\d+)(?:, \d+)?\), portAt\((\d+), (\d+)(, true)?\)", src)
 
 def lowest(x0, y0, x1, y1, sag):
     c1 = (x0 + (x1-x0)*0.3, y0 + sag)
@@ -179,7 +222,7 @@ def lowest(x0, y0, x1, y1, sag):
     return max(ys)
 calls = re.findall(r"sagPath\((\d+), (\d+), (\d+), (\d+), (\d+)\)", src)
 anchored = re.findall(
-    r"sagPath\(holsterAt\((\d+), (\d+)\), portAt\((\d+), (\d+)(, true)?\), (\d+)\)", src)
+    r"sagPath\(holsterAt\((\d+), (\d+)(?:, \d+)?\), portAt\((\d+), (\d+)(, true)?\), (\d+)\)", src)
 bad = []
 for hx, hh, cx_, cw, flip, sag in anchored:
     a = holster(float(hx), float(hh))
@@ -655,7 +698,7 @@ check("no two state colours are the same", len(set(states.values())) == len(stat
 # green means free, orange means charging — never swapped, the way the
 # connector names were
 prim_src = pathlib.Path("components/illustration/primitives.tsx").read_text()
-bars = re.search(r"fill=\{free \? ILLO\.(\w+) : lit \? ILLO\.(\w+) : ILLO\.(\w+)\}", prim_src)
+bars = re.search(r"const status = free \? ILLO\.(\w+) : lit \? ILLO\.(\w+) : ILLO\.(\w+);", prim_src)
 check("a free bay's light is green and a charging one's is orange",
       bool(bars) and bars[1] == "ok" and bars[2] == "live",
       f"free->{bars[1]}, charging->{bars[2]}" if bars else "pattern not found")
