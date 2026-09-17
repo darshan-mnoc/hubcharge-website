@@ -1,0 +1,4 @@
+# lib/connector-geometry.ts
+
+- PinRole · type · L33-L33 — type PinRole = "AC" | "PE" | "CP" | "PP" | "DC" | "SIGNAL";
+- PinSpec · type · L35-L55 — type PinSpec = { /** The contact's name in the standard — L1, PE, DC+ and so on. Also the * React key, so neither drawing has to fall back on an array index. */ id: string; /** Millimetres from the face centre. +x right, +y down. */ dx: number; dy: number; /** Contact radius in millimetres. */ r: number; role: PinRole; /** * An unpopulated well rather than a contact. * * CCS1's two AC pins are physically present on the inlet and absent on a DC * cable. Every cable HubCharge hangs is DC, so on our drawings they are * holes. This is the one property that must survive any redraw. */ empty?: boolean; /** Carries current while charging — the only pins that may be drawn live. */ power?: boolean; };
