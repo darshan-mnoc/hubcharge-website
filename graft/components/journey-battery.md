@@ -1,0 +1,15 @@
+# components/journey-battery.tsx
+
+- CarSVG · function · L31-L33 — function CarSVG(p: Omit<Parameters<typeof Base.CarSVG>[0], "id">)
+- ValetSVG · function · L34-L36 — function ValetSVG(p: Omit<Parameters<typeof Base.ValetSVG>[0], "id">)
+- ChargerSVG · function · L37-L43 — function ChargerSVG(p: Omit<Parameters<typeof Base.ChargerSVG>[0], "id" | "still">)
+- CableSVG · function · L44-L47 — function CableSVG(p: Omit<Parameters<typeof Base.CableSVG>[0], "id" | "still">)
+- MotionSVG · function · L48-L50 — function MotionSVG(p: Omit<Parameters<typeof Base.MotionSVG>[0], "id">)
+- Scene1 · function · L52-L110 — function Scene1({ progress, isActive, isMobile, }: { progress: number; isActive: boolean; isMobile: boolean; })
+- Scene2 · function · L112-L174 — function Scene2({ progress, isActive, isMobile, }: { progress: number; isActive: boolean; isMobile: boolean; })
+- Scene3 · function · L176-L281 — function Scene3({ progress, isActive, isMobile, }: { progress: number; isActive: boolean; isMobile: boolean; })
+- Scene4 · function · L283-L381 — function Scene4({ progress, isActive, isMobile, }: { progress: number; isActive: boolean; isMobile: boolean; })
+- Scene5 · function · L383-L468 — function Scene5({ progress, isActive, isMobile, }: { progress: number; isActive: boolean; isMobile: boolean; })
+- JourneyBattery · function · L485-L1095 — function JourneyBattery()
+- handleScroll · function · L508-L516 — handleScroll = ()
+- check · function · L523-L523 — check = ()

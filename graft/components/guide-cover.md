@@ -1,0 +1,28 @@
+# components/guide-cover.tsx
+
+- holsterAt · function · L129-L131 — function holsterAt(x: number, h: number): [number, number]
+- portAt · function · L132-L136 — function portAt(x: number, w: number, flip = false): [number, number]
+- sagPath · function · L147-L155 — function sagPath( [x0, y0]: [number, number], [x1, y1]: [number, number], sag = 26 )
+- leadPath · function · L176-L185 — function leadPath( [x0, y0]: [number, number], [x1, y1]: [number, number] )
+- Cable · function · L189-L209 — function Cable({ d, live = false, animated = false, }: { d: string; live?: boolean; /** Runs charge along the cable. Only ever true where power really flows. */ animated?: boolean; })
+- Plug · function · L225-L300 — function Plug({ x, y, r, kind = "nacs", lit = false, }: { x: number; y: number; /** Half the coupler's overall width, in cover units. */ r: number; kind?: "ccs1" | "nacs"; lit?: boolean; })
+- Cell · function · L303-L358 — function Cell({ x, y, w = 76, h = 34, from = 0, to = 0, tone = ILLO.live, modules = 3, }: { x: number; y: number; w?: number; h?: number; from?: number; to?: number; /** A paint, not just a colour — `url(#…)` is welcome here. */ tone?: string; /** How many module divisions show through the fill. */ modules?: number; })
+- fx · function · L334-L334 — fx = (f: number)
+- Roof · function · L361-L382 — function Roof({ x, w = 54, h = 40, pitch = 12 }: { x: number; w?: number; h?: number; pitch?: number })
+- Pip · function · L385-L393 — function Pip({ x, y, r = 3.4, lit = false }: { x: number; y: number; r?: number; lit?: boolean })
+- Wordmark · function · L400-L419 — function Wordmark()
+- Label · function · L426-L460 — function Label({ x, y, text, tone = ILLO.hub, size = 8.5, anchor = "middle", }: { x: number; y: number; text: string; tone?: string; size?: number; anchor?: "start" | "middle" | "end"; })
+- Display · function · L482-L511 — function Display({ x, y, text, size, tone = ILLO.live, anchor = "middle", }: { x: number; y: number; text: string; size: number; tone?: string; anchor?: "start" | "middle" | "end"; })
+- Ground · function · L516-L552 — function Ground({ id, kind = "plain", pools = [], freePools = [], }: { id: string; kind?: "bay" | "road" | "plain"; pools?: number[]; freePools?: number[]; })
+- Tick · function · L556-L570 — function Tick({ x, y, r = 9, tone = ILLO.ok }: { x: number; y: number; r?: number; tone?: string })
+- Cross · function · L572-L580 — function Cross({ x, y, r = 9, tone = ILLO.fault }: { x: number; y: number; r?: number; tone?: string })
+- Pin · function · L583-L598 — function Pin({ x, y, r = 8, lit = false }: { x: number; y: number; r?: number; lit?: boolean })
+- Car · function · L614-L661 — function Car({ id, x, w, flip = false, dim, groundY, }: { id: string; /** centre of the car on the cover's x axis */ x: number; /** drawn width in cover units */ w: number; flip?: boolean; /** * How near this car is, 0 (far) to 1 (near). The comment here has claimed * "haze back toward the sky rather than darkening it" since it was written, * while the code did the literal opposite: opacity, against a near-black * plate. On the fleet cover that turned two of the three cars into smudges. * It now keeps most of its opacity and gets real atmosphere instead. */ dim?: number; /** Where this car's tyres touch. Defaults to FLOOR — a car partway down a * receding road contacts the ground nearer the viewer than the horizon. */ groundY?: number; })
+- Valet · function · L667-L690 — function Valet({ id, x, h = 92, holding = "terminal", }: { id: string; x: number; h?: number; holding?: "terminal" | "food" | "cable"; })
+- Charger · function · L692-L728 — function Charger({ id, x, h = 74, active = false, done = false, free = false, dim, }: { id: string; x: number; /** drawn height in cover units; width follows the real proportion */ h?: number; active?: boolean; done?: boolean; /** Bay is available — the light blade goes green, as the real one does. */ free?: boolean; dim?: number; })
+- Defs · function · L732-L865 — function Defs({ id }: { id: string })
+- Plinth · function · L880-L888 — function Plinth({ id, x, w, h = 7 }: { id: string; x: number; w: number; h?: number })
+- Motif · type · L892-L911 — type Motif = { label: string; /** The heading in this cover's own guide that it illustrates. A check * asserts the guide's text really contains it, so a cover cannot drift * away from its page the way `milestones` and `paperwork` had. */ teaches?: string; draw: (id: string) => React.ReactNode; /** Floor treatment for the band below the horizon. Omit for "plain". */ ground?: "bay" | "road" | "plain"; /** x positions of CHARGING units, which pool orange light on the floor. */ pools?: number[]; /** x positions of FREE units, which pool green. */ freePools?: number[]; /** Power is moving somewhere in this cover, so the plate may carry the * orange bloom. Defaults to whether anything pools light on the floor. * Ten covers used to glow orange with nothing live in them at all, which * is exactly the rule lib/illustration.ts exists to prevent: orange means * power is moving, and never anything else. */ energy?: boolean; };
+- shield · function · L1736-L1745 — shield = (cx: number, cy: number, w: number)
+- CoverMotif · type · L1918-L1918 — type CoverMotif = keyof typeof COVERS;
+- GuideCover · function · L1922-L1960 — function GuideCover({ motif }: { motif: CoverMotif })
