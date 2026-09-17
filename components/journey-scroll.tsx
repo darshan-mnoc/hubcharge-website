@@ -52,18 +52,22 @@ export function JourneyScroll({
   header,
   strip,
   mobile,
+  after,
 }: {
   header: ReactNode;
   strip: ReactNode;
   mobile: ReactNode;
+  /** Rendered below the pinned block, so it only arrives once the strip
+   *  has finished and the pin lets go. */
+  after?: ReactNode;
 }) {
-  const section = useRef<HTMLElement>(null);
+  const pinned = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const still = useReducedMotion();
 
   useEffect(() => {
     if (still) return;
-    const root = section.current;
+    const root = pinned.current;
     const host = stage.current;
     if (!root || !host) return;
 
@@ -159,8 +163,10 @@ export function JourneyScroll({
   }, [still]);
 
   return (
-    <section ref={section} id="how-it-works" className="relative bg-ink-900">
-      <div className="relative py-12 lg:py-16">
+    <section id="how-it-works" className="relative bg-ink-900">
+      {/* Only this block pins. Anything in `after` sits outside it, so it is
+          held back until the strip has played through and the pin releases. */}
+      <div ref={pinned} className="relative bg-ink-900 pt-12 pb-10 lg:pt-16 lg:pb-12">
         <div className="section-container">{header}</div>
 
         <div ref={stage} className="hidden lg:block section-container">
@@ -175,6 +181,12 @@ export function JourneyScroll({
 
         <div className="lg:hidden">{mobile}</div>
       </div>
+
+      {/* Its own wrapper, so it is the only child of something. Rendered as a
+          sibling of the pinned block, an element built in a server component
+          lands in a children array and React asks it for a key it cannot
+          carry across the boundary. */}
+      <div>{after}</div>
     </section>
   );
 }
